@@ -51,8 +51,8 @@ else
 		if ! scp -qr root@"$HOST":/etc/bind/zones-rpz/"$rpz" "$_DIR" >> /dev/null 2>&1; then
 			mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
 			printf "COPIED: %s files of 11 files. One or more zones files are missing\nYou should create:\n" "${#ar_scp[@]}"
-     		printf -v miss_remote "%s" "$(echo "${ar_rpz[@]}" "${ar_scp[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-     		printf "%s\n%s\n" "$miss_remote" "Incomplete TASK"
+			printf -v miss_remote "%s" "$(echo "${ar_rpz[@]}" "${ar_scp[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
+			printf "%s\n%s\n" "$miss_remote" "Incomplete TASK"
 			exit 1
 		else
 			mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
