@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #	grab_cereal.sh
-#	v2.2
+#	v2.22.0
 # AUTHOR
 #	ngadimin@warnet-ersa.net
 
@@ -41,19 +41,22 @@ else
 	HOST="rpz.warnet-ersa.net"
 	ar_rpz=( "rpz.adultaa" "rpz.adultab" "rpz.adultac" "rpz.adultad" "rpz.adultae" "rpz.adultaf" \
 				"rpz.ipv4" "rpz.malware" "rpz.publicite" "rpz.redirector" "rpz.trust+" )
-	printf "\n\x1b[91mFAILED due to:\x1b[0m FOUND %s of 11 zone files:\n%s\n" "${#ar_zon[@]}" "${ar_zon[*]}"
-	printf "TRYING to get them from origin: %s\n" "$HOST"
+	printf "\n\x1b[91mFAILED due to:\x1b[0m FOUND %s of 11 zone. Missing zones files:\n" "${#ar_zon[@]}"
+	printf -v miss_local "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
+	printf "%s\n" "$miss_local"
+	printf "TRYING to get that file(s) from origin: %s\n" "$HOST"
 	if ping -w 1 "$HOST" >> /dev/null 2>&1; then
 		# passwordless ssh
-		scp -qr root@"$HOST":/etc/bind/zones-rpz/"${ar_rpz[*]}" "$_DIR" >> /dev/null 2>&1 || \
-		mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
-		if [ "${#ar_scp[@]}" -ne 11 ]; then
-			printf "FOUND: %s files. One or more zones files are missing, You should create:\n" "${#ar_scp[@]}"
-			printf -v ar_diff "%s" "$(echo "${ar_rpz[@]}" "${ar_scp[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-			printf "%s\n" "$ar_diff"
+		rpz="rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}"
+		if ! scp -qr root@"$HOST":/etc/bind/zones-rpz/"$rpz" "$_DIR" >> /dev/null 2>&1; then
+			mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
+			printf "COPIED: %s files of 11 files. One or more zones files are missing\nYou should create:\n" "${#ar_scp[@]}"
+     		printf -v miss_remote "%s" "$(echo "${ar_rpz[@]}" "${ar_scp[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
+     		printf "%s\n%s\n" "$miss_remote" "Incomplete TASK"
 			exit 1
 		else
-			printf "COPIED:\t%s\n" "${ar_scp[*]}"
+			mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
+			printf "Copied:\n%s\n" "$miss_local"
 			printf "RETRY running TASK again\n"
 			exec "$0"
 		fi
