@@ -1,0 +1,20 @@
+; generate at 2022-03-17 20:44:18 UTC by grab_build.sh v2.2
+;
+32.19.218.0.1.rpz-nsip IN CNAME .
+32.230.218.0.1.rpz-nsip IN CNAME .
+32.12.227.0.1.rpz-nsip IN CNAME .
+32.140.241.0.1.rpz-nsip IN CNAME .
+32.159.255.0.1.rpz-nsip IN CNAME .
+32.23.188.1.1.rpz-nsip IN CNAME .
+32.219.134.2.1.rpz-nsip IN CNAME .
+32.149.239.2.1.rpz-nsip IN CNAME .
+32.232.208.240.223.rpz-nsip IN CNAME .
+32.92.209.240.223.rpz-nsip IN CNAME .
+32.131.209.240.223.rpz-nsip IN CNAME .
+32.193.209.240.223.rpz-nsip IN CNAME .
+32.44.214.241.223.rpz-nsip IN CNAME .
+32.6.247.241.223.rpz-nsip IN CNAME .
+32.16.254.241.223.rpz-nsip IN CNAME .
+32.201.155.245.223.rpz-nsip IN CNAME .
+32.115.215.245.223.rpz-nsip IN CNAME .
+32.18.162.255.223.rpz-nsip IN CNAME .
