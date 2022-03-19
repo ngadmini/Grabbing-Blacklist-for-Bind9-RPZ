@@ -177,7 +177,7 @@ f_sm6 "$((DIF/60))" "$((DIF%60))s"
 unset -v ar_{cat,dmn,reg,sho,tmp,txt,url} isDOWN
 
 # offering OPTIONS: continued to next step OR stop here
-HOST="rad.warnet-ersa.net"		# tailorized to your environment
+HOST="rpz.warnet-ersa.net"		# tailorized to your environment
 f_sm0 "$HOST"
 read -r RETVAL
 case $RETVAL in
