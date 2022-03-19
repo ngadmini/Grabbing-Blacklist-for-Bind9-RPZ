@@ -33,7 +33,7 @@ f_excod() {	# exit code {9..18}
 			13)	printf "%s\nPlease reffer to '%s'\n" "$excod" "$p_ref"; exit 13;;
 			14)	printf "\n%s\n%s\n" "download failed" "$excod"; exit 14;;
 			15)	printf "\n%s\n%s\n" "category: must equal 6" "$excod"; exit 15;;
-			16)	printf "HOST = \x1b[93m%s\x1b[0m if that address is correct, maybe DOWN\n%s\n%s\n" "$HOST" "Incomplete TASK" "$excod"; exit 16;;
+			16)	printf "HOST = \x1b[93m$HOST\x1b[0m if that address is correct, maybe DOWN\n%s\n%s\n" "Incomplete TASK" "$excod"; exit 16;;
 			17)	printf "\n%s\n%s\n" "file: \"$2\" doesn't exist" "$excod"; exit 17;;
 			 *)	printf "\nUNKNOWN ERROR\n"; exit 18;;
 		esac

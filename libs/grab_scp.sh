@@ -14,5 +14,5 @@ trap f_trap EXIT INT TERM	# cleanUP on exit, interrupt & terminate
 source "$_DIR"/grab_lib.sh
 
 HOST="rpz.warnet-ersa.net"	# tailorized to your environment
-f_scp "$HOST" || f_excod 16
+f_scp "$HOST"
 exit 0

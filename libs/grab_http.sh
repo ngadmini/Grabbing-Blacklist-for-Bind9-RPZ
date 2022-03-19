@@ -177,14 +177,14 @@ f_sm6 "$((DIF/60))" "$((DIF%60))s"
 unset -v ar_{cat,dmn,reg,sho,tmp,txt,url} isDOWN
 
 # offering OPTIONS: continued to next step OR stop here
-HOST="rpz.warnet-ersa.net"		# tailorized to your environment
+HOST="rad.warnet-ersa.net"		# tailorized to your environment
 f_sm0 "$HOST"
 read -r RETVAL
 case $RETVAL in
 	1)	f_sm1; "$_DPL"; f_sm10 st;;
 	2)	f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
 	3)	f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;
-	4)	f_sm4 "$HOST"; "$_DPL"; "$_BLD"; "$_CRL"; f_scp "$HOST" || f_excod 16; f_sm10 th;;
+	4)	f_sm4 "$HOST"; "$_DPL"; "$_BLD"; "$_CRL"; f_scp "$HOST"; f_sm10 th;;
 	*)	printf "\x1b[91mNothing, just stop right now\x1b[0m\n";;
 esac
 printf "bye!\n"
