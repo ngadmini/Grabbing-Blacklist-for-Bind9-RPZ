@@ -15,6 +15,7 @@ trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
+cd "$(dirname "${BASH_SOURCE[0]}")"
 printf "\n\x1b[91m[2'nd] TASK:\x1b[0m\nSplitting adult category to 750.000 lines/sub-category\n"
 [ -f "txt.adult" ] || f_excod 17 "txt.adult"; split -l 750000 txt.adult txt.adult; mv txt.adult /tmp
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)
@@ -31,7 +32,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
       # txt.ip at number 6 based on 0-11
       if [ "$X" -eq 6 ]; then
          # NS-IP Trigger NXDOMAIN Action
-         append=$(grep -P "^#\tv.*" "$(basename "$0")" | cut -d$'\t' -f 2)
+         append=$(grep -P "v2.2" "$(basename "$0")" | cut -d ' ' -f 4)
          printf "%13s %-27s : " "rewriting" "${ar_cat[X]^^} to ${ar_dom[X]}"
          awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "${ar_txt[X]}" >> "${ar_dom[X]}"
          sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "${ar_dom[X]}"

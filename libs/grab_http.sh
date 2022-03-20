@@ -54,6 +54,7 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
 }
 
 # START MAIN SCRIPT
+cd "$(dirname "${BASH_SOURCE[0]}")"
 printf "\nstarting ...\n%s\n\x1b[93mPREPARING TASK:\x1b[0m Check the Remote Files isUP or isDOWN\n" "$start"
 [ ! "$UID" -eq 0 ] || f_excod 9      # comment for root privileges
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11
@@ -177,7 +178,7 @@ f_sm6 "$((DIF/60))" "$((DIF%60))s"
 unset -v ar_{cat,dmn,reg,sho,tmp,txt,url} isDOWN
 
 # offering OPTIONS: continued to next step OR stop here
-HOST="rpz.warnet-ersa.net"      # tailorized to your environment
+HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 f_sm0 "$HOST"
 read -r RETVAL
 case $RETVAL in

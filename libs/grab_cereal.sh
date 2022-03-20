@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v2.2
+#   v2.2.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -10,6 +10,7 @@ if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
+cd "$(dirname "${BASH_SOURCE[0]}")"
 printf "\n\x1b[91m[3'th] TASK:\x1b[0m\nIncrementing serial of zone files (rpz.* files)\n"
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
 if [ "${#ar_zon[@]}" -eq 11 ]; then
@@ -38,7 +39,7 @@ if [ "${#ar_zon[@]}" -eq 11 ]; then
    printf "all serial zones incremented to \x1b[93m%s\x1b[0m\n" "$newSERIAL"
 
 else
-   HOST="rpz.warnet-ersa.net"
+   HOST="rpz.warnet-ersa.net"   # fqdn or ip-address
    ar_rpz=( "rpz.adultaa" "rpz.adultab" "rpz.adultac" "rpz.adultad" "rpz.adultae" "rpz.adultaf" \
             "rpz.ipv4" "rpz.malware" "rpz.publicite" "rpz.redirector" "rpz.trust+" )
    printf "\n\x1b[91mFAILED due to:\x1b[0m FOUND %s of 11 zone. Missing zones files:\n" "${#ar_zon[@]}"
