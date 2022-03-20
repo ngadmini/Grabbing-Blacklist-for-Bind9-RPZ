@@ -18,7 +18,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
 
 f_trap() {
    printf "\n"; f_tmp;
-   unset -v ar_{cat,dom,dmn,reg,sho,tmp,txt,url} isDOWN
+   unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN
    }
 
 f_excod() {   # exit code {9..18}
