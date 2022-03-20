@@ -1,6 +1,6 @@
 ; rpz.publicite
 $TTL 3600
-@	SOA	publicite.localhost. dummy.publicite.localhost. (2022031112 3600 300 86400 60)
+@   SOA   publicite.localhost. dummy.publicite.localhost. (2022031112 3600 300 86400 60)
 @       NS      publicite.localhost.
 @       IN      A       127.0.11.1
 ;

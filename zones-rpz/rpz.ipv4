@@ -1,6 +1,6 @@
 ; rpz.ipv4
 $TTL 3600
-@	SOA	ipv4.localhost. dummy.ipv4.localhost. (2022031112 3600 300 86400 60)
+@   SOA   ipv4.localhost. dummy.ipv4.localhost. (2022031112 3600 300 86400 60)
 @       NS      ipv4.localhost.
 @       IN      A       127.0.9.1
 ;
