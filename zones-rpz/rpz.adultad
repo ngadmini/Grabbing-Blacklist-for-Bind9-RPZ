@@ -1,0 +1,7 @@
+; rpz.adultad
+$TTL 3600
+@	SOA	adultad.localhost. dummy.adultad.localhost. (2022031112 3600 300 86400 60)
+@       NS      adultad.localhost.
+@       IN      A       127.0.6.1
+;
+$INCLUDE "/etc/bind/zones-rpz/db.adultad"
