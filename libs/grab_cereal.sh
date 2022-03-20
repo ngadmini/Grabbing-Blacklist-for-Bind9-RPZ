@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v2.2.0
+#   v2.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 

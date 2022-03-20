@@ -32,7 +32,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
       # txt.ip at number 6 based on 0-11
       if [ "$X" -eq 6 ]; then
          # NS-IP Trigger NXDOMAIN Action
-         append=$(grep -P "v2.2" "$(basename "$0")" | cut -d ' ' -f 4)
+         append=$(grep -P "^#   v.*" "$(basename "$0")" | cut -d ' ' -f 4)
          printf "%13s %-27s : " "rewriting" "${ar_cat[X]^^} to ${ar_dom[X]}"
          awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "${ar_txt[X]}" >> "${ar_dom[X]}"
          sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "${ar_dom[X]}"
