@@ -1,15 +1,15 @@
 ; rpz.adultaa
 $TTL 3600
-@	SOA	adultaa.localhost. dummy.adultaa.localhost. (2022031112 3600 300 86400 60)
+@   SOA   adultaa.localhost. dummy.adultaa.localhost. (2022031112 3600 300 86400 60)
 @       NS      adultaa.localhost.
 @       IN      A       127.0.3.1
 ;
-*.adult	CNAME .
-*.porn	CNAME .
-*.sex		CNAME .
-*.sexy	CNAME .
-*.xxx		CNAME .
-xn--videospornosenespaol-sva22ay2bwa.com	CNAME .	
-*.xn--videospornosenespaol-sva22ay2bwa.com	CNAME .
+*.adult  CNAME .
+*.porn   CNAME .
+*.sex    CNAME .
+*.sexy   CNAME .
+*.xxx    CNAME .
+xn--videospornosenespaol-sva22ay2bwa.com   CNAME .   
+*.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"
