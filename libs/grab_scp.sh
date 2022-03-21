@@ -17,11 +17,5 @@ source "$_DIR"/grab_lib.sh
 HOST="rpz.warnet-ersa.net"   # fqdn or ip-address
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e 's/\.\///' | sort)
-mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
-if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
-	f_scp "$HOST"
-else
-	exit 1
-fi
+f_scp "$HOST"
 exit 0

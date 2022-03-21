@@ -117,21 +117,33 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY
 f_scp() {   # passwordless ssh to BIND9-server for "backUP and sending the newDB"
    printf "\n\x1b[91m[4'th] TASK:\x1b[0m\n"
    if ping -w 1 "$1" >> /dev/null 2>&1; then
-      timestamp=$(date "+%Y-%m-%d")
-      dbID="/home/rpz-$timestamp.tar.gz"
-      #
-      printf "Create archive dBase RPZ : %s\n" "$dbID"
-      ssh -q root@"$1" "cd /etc/bind; tar -czf $dbID zones-rpz"
-      printf "Find and remove old RPZ's archive file \n"
-      ssh -q root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-      printf "Copying latest RPZ dBase files to %s\n" "$1"
-      scp -q {db,rpz}.* root@"$1":/etc/bind/zones-rpz
-      # reboot [after +@ minute] due to low memory
-      printf "HOST : \x1b[92m%s\x1b[0m scheduled for reboot at %s WIB\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
-      ssh root@"$1" "shutdown -r --no-wall >> /dev/null 2>&1"
-      # OR comment 2 lines above AND uncomment 2 lines below, if have enough memory
-      #printf "Reload BIND9-server\n"
-      #ssh root@"$1" "rndc reload"
+      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e 's/\.\///' | sort)
+      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
+      if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
+         timestamp=$(date "+%Y-%m-%d")
+         dbID="/home/rpz-$timestamp.tar.gz"
+         #
+         printf "Create archive of RPZ dBase on %s: %s\n" "$1" "$dbID"
+         ssh -q root@"$1" "cd /etc/bind; tar -I 'gzip -1' -cf $dbID zones-rpz"
+         printf "Find and remove old RPZ's archive file \n"
+         ssh -q root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
+         printf "Syncronizing latest the RPZ dBase files to %s\n" "$1"
+         mkdir zones-rpz; mv {rpz,db}.* zones-rpz
+         rsync -rqc zones-rpz/ root@"$1":/etc/bind/zones-rpz/
+         # reboot [after +@ minute] due to low memory
+         printf "HOST : \x1b[92m%s\x1b[0m scheduled for reboot at %s WIB\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
+         ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
+         # OR comment 2 lines above AND uncomment 2 lines below, if have enough memory
+         #printf "Reload BIND9-server\n"
+         #ssh root@"$1" "rndc reload"
+         mv zones-rpz/{rpz,db}.* .
+      else
+         local _BLD="$_DIR"/grab_build.sh
+         local _CRL="$_DIR"/grab_cereal.sh
+         printf "NOT found db.* and rpz.* files. Try to [re]create them\n"
+         "$_BLD"; "$_CRL"
+         exec "$0"
+      fi
    else
       f_excod 16
    fi
