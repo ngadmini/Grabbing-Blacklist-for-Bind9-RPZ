@@ -1,4 +1,4 @@
-; generate at 2022-03-17 20:44:19 UTC by grab_build.sh v2.2
+; generate at 2022-03-21 16:36:48 UTC by grab_build.sh v2.2
 ;
 00-gov.cn IN CNAME .
 0001.best IN CNAME .
