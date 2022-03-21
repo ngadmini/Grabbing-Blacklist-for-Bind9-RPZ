@@ -15,7 +15,7 @@ trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$_DIR"
 printf "\n\x1b[91m[2'nd] TASK:\x1b[0m\nSplitting adult category to 750.000 lines/sub-category\n"
 [ -f "txt.adult" ] || f_excod 17 "txt.adult"; split -l 750000 txt.adult txt.adult; mv txt.adult /tmp
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)

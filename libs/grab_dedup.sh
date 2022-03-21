@@ -16,7 +16,7 @@ trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$_DIR"
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)
 if [ "${#ar_txt[@]}" -eq 6 ]; then
    # declare tmp files as array

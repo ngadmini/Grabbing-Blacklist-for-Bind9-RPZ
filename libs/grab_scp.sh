@@ -16,6 +16,6 @@ trap f_trap EXIT INT TERM    # cleanUP on exit, interrupt & terminate
 source "$_DIR"/grab_lib.sh
 HOST="rpz.warnet-ersa.net"   # fqdn or ip-address
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$_DIR"
 f_scp "$HOST"
 exit 0

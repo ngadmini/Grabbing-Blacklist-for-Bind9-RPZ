@@ -10,7 +10,7 @@ if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$_DIR"
 printf "\n\x1b[91m[3'th] TASK:\x1b[0m\nIncrementing serial of zone files (rpz.* files)\n"
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
 if [ "${#ar_zon[@]}" -eq 11 ]; then
