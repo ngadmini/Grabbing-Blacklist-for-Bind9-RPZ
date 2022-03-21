@@ -22,19 +22,19 @@
 8. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/zones-rpz) --pack of zone-files
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
-- [x] _curl faketime dos2unix shellcheck_. Install with `apt install -y curl faketime dos2unix shellcheck`
-- [x] linux desktop, we use debian q4os as workstation
-- [x] passwordless SSH to remote BIND9-server
+- [x] `curl faketime dos2unix shellcheck`. Install with `apt install -y curl faketime dos2unix shellcheck` on your linux desktop workstation.
+- [x] Make sure in the BIND9-server installed `rsync`, if not install it's with `apt policy rsync`
+- [x] passwordless `SSH - rsync` to remote BIND9-server
 - [x] BIND9 file structure : `/etc/bind9/zones-rpz` as place for all rpz database and zone-file.
 ### usage:
 - [x] make executable all bash script `chmod +x *.sh`
-- [x] tailorized to your environment. please see this [wiki](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment) to fitting your environment
-- [x] just invoke `grab_http.sh` then follow the next step
+- [x] to tailorizing your environment, please see this [wiki](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment) to fitting your environment
+- [x] just fire-up `grab_http.sh` then follow the next step
 ### output:
-- [x] new files with prefix `db.*` are data base for RPZ that ready to use at BIND9-server
-- [x] modified files with prefix `rpz.*` are zone-files that ready to use too
-- [x] new files with prefix `txt.*` are raw blacklist in categorized
-- [x] a very small example output displayed at [exp-output](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/exp-outpout)
+- [x] new files with prefix `db.*` are data base for RPZ and ready to use at BIND9-server
+- [x] modified files with prefix `rpz.*` are zone-files, ready to use too
+- [x] new files with prefix `txt.*` are raw domains blacklist
+- [x] a small part of script output, displayed at [exp-output](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/exp-outpout)
 ### in the real world
 the partial output of this script pack, can be found at [Partial Output](https://github.com/ngadmini/partial-output)
 ### others:
