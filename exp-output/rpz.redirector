@@ -1,6 +1,6 @@
 ; rpz.redirector
 $TTL 3600
-@   SOA   redirector.localhost. dummy.redirector.localhost. (2022031112 3600 300 86400 60)
+@	SOA	redirector.localhost. dummy.redirector.localhost. (2022032104 3600 300 86400 60)
 @       NS      redirector.localhost.
 @       IN      A       127.0.12.1
 ;
