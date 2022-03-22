@@ -30,7 +30,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
    for X in {0..10}; do
       if [ "$X" -eq 6 ]; then
          # txt.ipv4 at number 6 on (0..10). policy: NS-IP Trigger NXDOMAIN Action
-         append=$(grep -P "^#   v.*" "$(basename "$0")" | cut -d ' ' -f 4)
+         append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d ' ' -f 4)
          printf "%13s %-27s : " "rewriting" "${ar_cat[X]^^} to ${ar_dom[X]}"
          awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "${ar_txt[X]}" >> "${ar_dom[X]}"
          f_net "${ar_dom[X]}"
@@ -42,7 +42,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
       fi
    done
-   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d ' ' -f 2)"
+   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
    printf "%41s : %10s entries\n" "TOTAL" "$ttl"
 else
    printf "\n\x1b[91mFAILED due to:\x1b[0m just FOUND %s of 11 domain list:\n\t%s\n" "${#ar_txt[@]}" "${ar_txt[*]}"

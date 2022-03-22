@@ -114,8 +114,8 @@ for adv_ip in ${ar_txt[3]}; do f_falsg "$adv_ip" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # CATEGORY: MALWARE --> ${ar_cat[2]} with 7 additional entries: ${ar_url[12..18]}
 f_sm8 "${ar_cat[2]}" 7
-f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d ' ' -f 2 >> "${ar_dmn[2]}"; f_sm5
-f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed '1,11d;/^;/d' | cut -d ' ' -f 1 >> "${ar_dmn[2]}"; f_sm5
+f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_sm5
+f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed '1,11d;/^;/d' | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_sm5
 for F in {14..18}; do
    f_sm7 "$F" "${ar_sho[F]}"; f_add "${ar_url[F]}" | _grep -v '^#' >> "${ar_dmn[2]}"; f_sm5
 done
@@ -144,7 +144,7 @@ for J in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "$aqr_sum"
 done
-printf -v ttl_sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d ' ' -f 3)"
+printf -v ttl_sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$ttl_sum"
 
 # SORTING AND PRUNING SUB-domains if domains present
@@ -168,7 +168,7 @@ for L in {0..5}; do
    printf -v aqr_sp "%'d" "$(wc -l < "${ar_txt[L]}")"
    printf "%12s: %9s entries\n" "${ar_cat[L]}" "$aqr_sp"
 done
-printf -v ttl_sp "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d ' ' -f 3)"
+printf -v ttl_sp "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$ttl_sp"
 
 # TASK: completed

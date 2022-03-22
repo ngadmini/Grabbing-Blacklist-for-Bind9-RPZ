@@ -184,7 +184,7 @@ f_ddup() {  # used by grab_dedup.sh
 f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 
 f_rpz() {   # used by grab_build.sh
-   append=$(grep -P "^#   v.*" "$(basename "$0")" | cut -d ' ' -f 4)
+   append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d' ' -f4)
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk '{print $0" IN CNAME ."}'  "$2" >> "$1"
    awk '{print "*."$0" IN CNAME ."}' "$2" >>  "$1"

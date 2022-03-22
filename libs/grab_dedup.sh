@@ -79,7 +79,7 @@ for P in {0..5}; do
    printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "$dpl"
 done
-printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d ' ' -f 3)"
+printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$dpl_ttl"
 printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0

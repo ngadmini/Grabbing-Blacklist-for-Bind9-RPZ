@@ -17,7 +17,7 @@ if [ "${#ar_zon[@]}" -eq 11 ]; then
    printf "FOUND:\t%s complete\n" "${#ar_zon[@]}"
    for each in "${ar_zon[@]}"; do
       DATE=$(date +%Y%m%d)
-      SERIAL=$(grep "SOA" "$each" | cut -d \( -f 2 | cut -d ' ' -f 1)
+      SERIAL=$(grep "SOA" "$each" | cut -d \( -f2 | cut -d' ' -f1)
       if [ ${#SERIAL} -lt ${#DATE} ]; then
          newSERIAL="${DATE}00"
       else
