@@ -123,11 +123,11 @@ f_scp() {   # passwordless ssh to BIND9-server for "backUP and sending the newDB
          timestamp=$(date "+%Y-%m-%d")
          dbID="/home/rpz-$timestamp.tar.gz"
          #
-         printf "Create archive of RPZ dBase on %s: %s\n" "$1" "$dbID"
+         printf "Create archive of RPZ dBase in %s:%s\n" "$1" "$dbID"
          ssh -q root@"$1" "cd /etc/bind; tar -I 'gzip -1' -cf $dbID zones-rpz"
-         printf "Find and remove old RPZ's archive file \n"
+         printf "Find and remove old RPZ dBase archive in %s:/home\n" "$1"
          ssh -q root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-         printf "Syncronizing the latest RPZ dBase files to %s\n" "$1"
+         printf "Syncronizing the latest RPZ dBase to %s\n" "$1"
          mkdir zones-rpz; mv {rpz,db}.* zones-rpz
          rsync -rqc zones-rpz/ root@"$1":/etc/bind/zones-rpz/
          # reboot [after +@ minute] due to low memory
