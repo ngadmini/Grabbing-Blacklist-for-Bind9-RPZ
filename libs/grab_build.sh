@@ -30,7 +30,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
    for X in {0..10}; do
       if [ "$X" -eq 6 ]; then
          # txt.ipv4 at number 6 on (0..10). policy: NS-IP Trigger NXDOMAIN Action
-         append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d ' ' -f 4)
+         append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d' ' -f4)
          printf "%13s %-27s : " "rewriting" "${ar_cat[X]^^} to ${ar_dom[X]}"
          awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "${ar_txt[X]}" >> "${ar_dom[X]}"
          f_net "${ar_dom[X]}"
