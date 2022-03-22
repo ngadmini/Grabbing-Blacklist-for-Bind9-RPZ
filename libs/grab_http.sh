@@ -73,7 +73,7 @@ for U in ${untrust}; do
    _grep -E "${ar_reg[3]}" "$U" | _sort -u >> "${trust}"
    # delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "$U" >> "${ar_dmn[5]}"
-done;   f_sm5
+done; f_sm5
 
 # fixing bad, duplicate and false entry
 for trusted in ${ar_dmn[5]}; do

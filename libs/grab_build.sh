@@ -20,7 +20,6 @@ printf "\n\x1b[91m[2'nd] TASK:\x1b[0m\nSplitting adult category to 750.000 lines
 [ -f "txt.adult" ] || f_excod 17 "txt.adult"; split -l 750000 txt.adult txt.adult; mv txt.adult /tmp
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)
 if [ "${#ar_txt[@]}" -eq 11 ]; then
-   # declare new arrays
    ar_cat=(); ar_dom=()
    for Y in {0..10}; do
       ar_cat+=("${ar_txt[Y]/txt./}")
@@ -29,17 +28,17 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
    find . -maxdepth 1 -type f -name "db.*" -print0 | xargs -0 -r rm
    printf "Rewriting all domain lists to RPZ format :\n\x1b[93m%s\x1b[0m\n" "${ar_cat[*]}"
    for X in {0..10}; do
-      # txt.ip at number 6 based on 0-11
       if [ "$X" -eq 6 ]; then
-         # NS-IP Trigger NXDOMAIN Action
+         # txt.ipv4 at number 6 on (0..10). policy: NS-IP Trigger NXDOMAIN Action
          append=$(grep -P "^#   v.*" "$(basename "$0")" | cut -d ' ' -f 4)
          printf "%13s %-27s : " "rewriting" "${ar_cat[X]^^} to ${ar_dom[X]}"
          awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "${ar_txt[X]}" >> "${ar_dom[X]}"
+         f_net "${ar_dom[X]}"
          sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "${ar_dom[X]}"
          printf -v acq_ip "%'d" "$(wc -l < "${ar_dom[X]}")"
          printf "%10s entries\n" "$acq_ip"
       else
-         # QNAME Trigger NXDOMAIN Action
+         # policy QNAME Trigger NXDOMAIN Action
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
       fi
    done

@@ -180,6 +180,7 @@ f_ddup() {  # used by grab_dedup.sh
    printf "%11s = deduplicating %s entries \t\t" "STEP 0.$1" "$2"
    _sort "$3" "$4" | uniq -d | _sort -u > "$5"
    }
+
 f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 
 f_rpz() {   # used by grab_build.sh
@@ -190,4 +191,10 @@ f_rpz() {   # used by grab_build.sh
    sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
+   }
+
+f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http.sh
+   _url="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
+   curl -C - -s  "$_url" | grep '\/[0-9]\{2\}$' | sed 's/\//\./g' | sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
+      | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    }
