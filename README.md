@@ -23,7 +23,7 @@
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
 - [x] `curl faketime dos2unix shellcheck`. Install with `apt install -y curl faketime dos2unix shellcheck` on your linux desktop workstation.
-- [x] Make sure in the BIND9-server installed `rsync`, if not install it's with `apt policy rsync`
+- [x] Make sure in the BIND9-server installed `rsync`, if not install it's with `apt install rsync`
 - [x] passwordless `SSH - rsync` to remote BIND9-server
 - [x] BIND9 file structure : `/etc/bind9/zones-rpz` as place for all rpz database and zone-file.
 ### usage:
