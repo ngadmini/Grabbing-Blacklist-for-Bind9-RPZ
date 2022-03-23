@@ -95,7 +95,8 @@ for mat_ip in ${ar_txt[0]}; do f_falsg "$mat_ip" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # CATEGORY: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 f_sm8 "${ar_cat[4]}" 2
-printf "%12s: %-64s\t" "Xtracting" "${ar_sho[6]}"; f_sm5
+printf "%12s: %-64s\t" "Xtracting" "${ar_sho[4]}"; f_sm5
+printf "%12s: %-64s\t" "Xtracting" "${ar_sho[5]}"; f_sm5
 # fixing bad, duplicate and false entry
 for vpn in ${ar_dmn[4]}; do
    f_falsf "${ar_cat[4]}" "$vpn" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
