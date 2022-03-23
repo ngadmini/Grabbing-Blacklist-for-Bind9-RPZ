@@ -44,7 +44,7 @@ else
             rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
    printf "\x1b[91m[Error]\x1b[0m Failed due to: \"FOUND %s of 11 zones\". Missing zones files:\n" "${#ar_zon[@]}"
    printf -v ms_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-	printf "%s" "$ms_v" | tr '\n' ',' | sed -e 's/,$//g' > /tmp/mr_p
+   printf "%s" "$ms_v" | tr '\n' ',' | sed -e 's/,$//g' > /tmp/mr_p
    printf "~ %s\n" "$(cat /tmp/mr_p)"
    printf "\x1b[32m[Info]\x1b[0m Trying to get the missing file(s) from origin: %s\n" "$HOST"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
