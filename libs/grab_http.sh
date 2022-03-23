@@ -55,11 +55,12 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
 
 # START MAIN SCRIPT
 cd "$_DIR"
-printf "\nstarting ...\n%s\n\x1b[93mPREPARING TASK:\x1b[0m Check the Remote Files isUP or isDOWN\n" "$start"
+printf "\nstarting ...\n%s\n" "$start"
 [ ! "$UID" -eq 0 ] || f_excod 9      # comment for root privileges
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11
 [ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12
-[ -x "$_DPL" ] || f_excod 10 "$_DPL"; [ -x "$_BLD" ] || f_excod 10 "$_BLD"; [ -x "$_CRL" ] || f_excod 10 "$_CRL"
+[ -x "$_DPL" ] && [ -x "$_BLD" ] && [ -x "$_CRL" ] || f_excod 10 "$_CRL"
+printf "\x1b[93mPREPARING TASK:\x1b[0m Check the Remote Files isUP or isDOWN\n"
 ar_sho=(); f_crawl "$_URL" || true; f_grab
 
 # CATEGORY: TRUST+ --> ${ar_cat[3]} with 2 additional entries: ${urls[1,7]}
@@ -177,7 +178,7 @@ DIF=$((endTime - startTime))
 f_sm6 "$((DIF/60))" "$((DIF%60))s"
 unset -v ar_{cat,dmn,reg,sho,tmp,txt,url} isDOWN
 
-# offering OPTIONS: continued to next step OR stop here
+# offering OPTIONS: continued to next stept OR stop here
 HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 f_sm0 "$HOST"
 read -r RETVAL

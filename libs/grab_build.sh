@@ -38,7 +38,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
          printf -v acq_ip "%'d" "$(wc -l < "${ar_dom[X]}")"
          printf "%10s entries\n" "$acq_ip"
       else
-         # policy QNAME Trigger NXDOMAIN Action
+         # policy: QNAME Trigger NXDOMAIN Action
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
       fi
    done

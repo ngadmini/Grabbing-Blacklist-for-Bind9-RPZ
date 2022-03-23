@@ -40,31 +40,30 @@ if [ "${#ar_zon[@]}" -eq 11 ]; then
 
 else
    HOST="rpz.warnet-ersa.net"   # fqdn or ip-address
-   ar_rpz=( "rpz.adultaa" "rpz.adultab" "rpz.adultac" "rpz.adultad" "rpz.adultae" "rpz.adultaf" \
-            "rpz.ipv4" "rpz.malware" "rpz.publicite" "rpz.redirector" "rpz.trust+" )
-   printf "\n\x1b[91mFAILED due to:\x1b[0m FOUND %s of 11 zone. Missing zones files:\n" "${#ar_zon[@]}"
-   printf -v miss_local "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-   printf "%s\n" "$miss_local"
-   printf "TRYING to get that file(s) from origin: %s\n" "$HOST"
+   ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
+            rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
+   printf "\x1b[91m[Error]\x1b[0m Failed due to: \"FOUND %s of 11 zones\". Missing zones files:\n" "${#ar_zon[@]}"
+   printf -v ms_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
+	printf "%s" "$ms_v" | tr '\n' ',' | sed -e 's/,$//g' > /tmp/mr_p
+   printf "~ %s\n" "$(cat /tmp/mr_p)"
+   printf "\x1b[32m[Info]\x1b[0m Trying to get the missing file(s) from origin: %s\n" "$HOST"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
+      miss="$(cat /tmp/mr_p)"
       # passwordless ssh
-      rpz="rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}"
-      if ! scp -qr root@"$HOST":/etc/bind/zones-rpz/"$rpz" "$_DIR" >> /dev/null 2>&1; then
-         mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
-         printf "COPIED: %s files of 11 files. One or more zones files are missing\nYou should create:\n" "${#ar_scp[@]}"
-         printf -v miss_remote "%s" "$(echo "${ar_rpz[@]}" "${ar_scp[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-         printf "%s\n%s\n" "$miss_remote" "Incomplete TASK"
+      if ! scp -qr root@$HOST:/etc/bind/zones-rpz/"{$miss}" "$_DIR" >> /dev/null 2>&1; then
+         printf "\x1b[32m[Info]\x1b[0m One or more zones files are missing. %s\n" "You should create:"
+         printf "~ %s\n\x1b[91m[Error]\x1b[0m %s\n" "$miss" "Incomplete TASK"
          exit 1
       else
-         mapfile -t ar_scp < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
-         printf "Copied:\n%s\n" "$miss_local"
-         printf "RETRY running TASK again\n"
+         printf "\x1b[32m[Info]\x1b[0m Successfully copied:\n~ %s\n" "$miss"
+         printf "\x1b[32m[Info]\x1b[0m Retry running TASK again\n"
          exec "$0"
       fi
    else
       printf "HOST = \x1b[93m%s\x1b[0m if that address is correct, maybe DOWN\n%s\n" "$HOST" "Incomplete TASK"
       exit 1
    fi
+   rm /tmp/mr_p
 fi
-unset -v ar_{zon,rpz,scp}
+unset -v ar_{zon,rpz}
 exit 0
