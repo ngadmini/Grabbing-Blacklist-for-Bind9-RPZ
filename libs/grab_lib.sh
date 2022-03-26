@@ -199,3 +199,13 @@ f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http
    curl -C - -s  "$_url" | grep '\/[0-9]\{2\}$' | sed 's/\//\./g' | sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
       | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    }
+
+f_ip4() {
+   append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d' ' -f4)
+   printf "%13s %-27s : " "rewriting" "${3^^} to $1"
+   awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "$2" >> "$1"
+   f_net "$1"
+   sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "$1"
+   printf -v acq_ip "%'d" "$(wc -l < "$1")"
+   printf "%10s entries\n" "$acq_ip"
+   }

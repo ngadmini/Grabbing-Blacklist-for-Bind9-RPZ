@@ -29,14 +29,8 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
    printf "Rewriting all domain lists to RPZ format :\n\x1b[93m%s\x1b[0m\n" "${ar_cat[*]}"
    for X in {0..10}; do
       if [ "$X" -eq 6 ]; then
-         # txt.ipv4 at number 6 on (0..10). policy: NS-IP Trigger NXDOMAIN Action
-         append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d' ' -f4)
-         printf "%13s %-27s : " "rewriting" "${ar_cat[X]^^} to ${ar_dom[X]}"
-         awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "${ar_txt[X]}" >> "${ar_dom[X]}"
-         f_net "${ar_dom[X]}"
-         sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "${ar_dom[X]}"
-         printf -v acq_ip "%'d" "$(wc -l < "${ar_dom[X]}")"
-         printf "%10s entries\n" "$acq_ip"
+         # policy: NS-IP Trigger NXDOMAIN Action
+         f_ip4 "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
       else
          # policy: QNAME Trigger NXDOMAIN Action
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"

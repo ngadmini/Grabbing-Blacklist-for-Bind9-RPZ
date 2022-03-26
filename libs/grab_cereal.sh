@@ -21,14 +21,10 @@ if [ "${#ar_zon[@]}" -eq 11 ]; then
       if [ ${#SERIAL} -lt ${#DATE} ]; then
          newSERIAL="${DATE}00"
       else
-         # 20190104
-         SERIAL_date=${SERIAL::-2}
-         # same day
-         if [ "$DATE" -eq "$SERIAL_date" ]; then
-            # 04 (max used 99 times)
-            SERIAL_num=${SERIAL: -2}
-            # force decimal increment
-            SERIAL_num=$((10#$SERIAL_num + 1))
+         SERIAL_date=${SERIAL::-2}                   # slice to [20190104]
+         if [ "$DATE" -eq "$SERIAL_date" ]; then     # same day
+            SERIAL_num=${SERIAL: -2}                 # give [00-99] times to change
+            SERIAL_num=$((10#$SERIAL_num + 1))       # force decimal increment
             newSERIAL="${DATE}$(printf '%02d' $SERIAL_num)"
          else
             newSERIAL="${DATE}00"
