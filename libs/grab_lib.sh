@@ -184,11 +184,8 @@ f_ddup() {  # used by grab_dedup.sh
 
 f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 
-f_rpz() {   # used by grab_build.sh
+f_app() {   # used by grab_build.sh
    append=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
-   printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   awk '{print $0" IN CNAME ."}'  "$2" >> "$1"
-   awk '{print "*."$0" IN CNAME ."}' "$2" >>  "$1"
    sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $_foo $append\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
@@ -200,12 +197,15 @@ f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http
       | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    }
 
+f_rpz() {
+   printf "%13s %-27s : " "rewriting" "${3^^} to $1"
+   awk '{print $0" IN CNAME ."}'  "$2" >> "$1"
+   awk '{print "*."$0" IN CNAME ."}' "$2" >>  "$1"
+   f_app "$1"
+   }
+
 f_ip4() {
-   append=$(grep -P "^#\s{2,}v.*" "$(basename "$0")" | cut -d' ' -f4)
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "$2" >> "$1"
-   f_net "$1"
-   sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $(basename "$0") $append\n;" "$1"
-   printf -v acq_ip "%'d" "$(wc -l < "$1")"
-   printf "%10s entries\n" "$acq_ip"
+   f_net "$1"; f_app "$1"
    }
