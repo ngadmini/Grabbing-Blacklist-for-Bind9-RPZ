@@ -185,8 +185,8 @@ f_ddup() {  # used by grab_dedup.sh
 f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 
 f_app() {   # used by grab_build.sh
-   append=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
-   sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $_foo $append\n;" "$1"
+   _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
+   sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
    }

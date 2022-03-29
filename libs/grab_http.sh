@@ -179,7 +179,7 @@ DIF=$((endTime - startTime))
 f_sm6 "$((DIF/60))" "$((DIF%60))s"
 unset -v ar_{cat,dmn,reg,sho,tmp,txt,url} isDOWN
 
-# offering OPTIONS: continued to next stept OR stop here
+# offerring OPTIONS: continued to next stept OR stop here
 HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 f_sm0 "$HOST"
 read -r RETVAL
