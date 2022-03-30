@@ -93,12 +93,7 @@ f_sm6() {   # display FINISH messages
 # display processing messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nProcessing for \x1b[93m%s CATEGORY\x1b[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
-f_sm9() {
-   ms="bads, duplicates and false entries at ${1^^}"
-   printf "%12s: %-64s\t" "fixing" "$ms"
-   }
-
-# display new task messages when getting options
+f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n\x1b[91mTASK[s]\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
 
 f_add() { curl -C - -fs "$1" || f_excod 14; }      # grabbing remote files
@@ -107,8 +102,7 @@ f_add() { curl -C - -fs "$1" || f_excod 14; }      # grabbing remote files
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed '/[^\o0-\o177]/d' | _sed -e "$4" -e "$5" > "$3"; }
 
 f_falsg() { # throw ip-address entry to ipv4 CATEGORY
-   mvip="IP-address entries into $3 CATEGORY"
-   printf "%12s: %-64s\t" "moving" "$mvip"
+   printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
    _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" >> "$2" || true
    _sed -Ei "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" "$1"
    f_sm5
@@ -121,8 +115,8 @@ f_scp() {   # passwordless ssh to BIND9-server for "backUP and sending the newDB
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e 's/\.\///' | sort)
       mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
       if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
-         timestamp=$(date "+%Y-%m-%d")
-         _ID="/home/rpz-$timestamp.tar.gz"
+         local timestamp; timestamp=$(date "+%Y-%m-%d")
+         local _ID; _ID="/home/rpz-$timestamp.tar.gz"
          #
          printf "Create archive of RPZ dBase in %s:%s\n" "$1" "$_ID"
          ssh -q root@"$1" "cd /etc/bind; tar -I 'gzip -1' -cf $_ID zones-rpz"
@@ -154,6 +148,7 @@ f_crawl() { # verify "URLS" isUP
    isDOWN=(); local i=-1
    while IFS= read -r line || [[ -n "$line" ]]; do
       # slicing urls && add element to ${ar_sho[@]}
+		local lll; local ll; local l; local p_url
       lll="${line##htt*\/\/}"; ll="$(basename "$line")"; l="${lll/\/*/}"; p_url="$l/..?../$ll"
       ar_sho+=("${p_url}"); ((i++))
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
@@ -185,14 +180,14 @@ f_ddup() {  # used by grab_dedup.sh
 f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 
 f_app() {   # used by grab_build.sh
-   _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
+   local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
    sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
    }
 
 f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http.sh
-   _url="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
+   local _url; _url="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
    curl -C - -s  "$_url" | grep '\/[0-9]\{2\}$' | sed 's/\//\./g' | sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
       | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    }
