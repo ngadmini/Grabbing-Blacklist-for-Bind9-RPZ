@@ -59,7 +59,7 @@ printf "\nstarting ...\n%s\n" "$start"
 [ ! "$UID" -eq 0 ] || f_excod 9      # comment for root privileges
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11
 [ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12
-[ -x "$_DPL" ] && [ -x "$_BLD" ] && [ -x "$_CRL" ] || f_excod 10 "$_CRL"
+[ -x "$_DPL" ] || f_excod 10 "$_DPL"; [ -x "$_BLD" ] || f_excod 10 "$_BLD"; [ -x "$_CRL" ] || f_excod 10 "$_CRL"
 printf "\x1b[93mPREPARING TASK:\x1b[0m Check the Remote Files isUP or isDOWN\n"
 ar_sho=(); f_crawl "$_URL" || true; f_grab
 
