@@ -148,7 +148,7 @@ f_crawl() { # verify "URLS" isUP
    isDOWN=(); local i=-1
    while IFS= read -r line || [[ -n "$line" ]]; do
       # slicing urls && add element to ${ar_sho[@]}
-		local lll; local ll; local l; local p_url
+	   local lll; local ll; local l; local p_url
       lll="${line##htt*\/\/}"; ll="$(basename "$line")"; l="${lll/\/*/}"; p_url="$l/..?../$ll"
       ar_sho+=("${p_url}"); ((i++))
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
