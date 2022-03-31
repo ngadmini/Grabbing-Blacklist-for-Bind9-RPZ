@@ -1,20 +1,10 @@
-; generate at 2022-03-21 16:36:48 UTC by grab_build.sh v2.2
+; generate at 31-Mar-22 17:47:10 (UTC) by grab_build.sh v2.2
 ;
 00-gov.cn IN CNAME .
+*.00-gov.cn IN CNAME .
 0001.best IN CNAME .
+*.0001.best IN CNAME .
 000123456789.online IN CNAME .
+*.000123456789.online IN CNAME .
 000123456789.site IN CNAME .
-000123456789.space IN CNAME .
-0024aaaa.com IN CNAME .
-003store.com IN CNAME .
-006a039c957c142bb.com IN CNAME .
-*.zzsssy.com IN CNAME .
-*.zzssywh.cn IN CNAME .
-*.zztuu.cn IN CNAME .
-*.zzuzcy.cloud IN CNAME .
-*.zzwpsm.cn IN CNAME .
-*.zzxhx.com IN CNAME .
-*.zzxjlr.com IN CNAME .
-*.zzxlhwyp.com IN CNAME .
-*.zzyonghao.com IN CNAME .
-*.zzznews.ru IN CNAME .
+*.000123456789.site IN CNAME .

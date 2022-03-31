@@ -1,20 +1,10 @@
-; generate at 2022-03-21 16:36:48 UTC by grab_build.sh v2.2
+; generate at 31-Mar-22 17:47:11 (UTC) by grab_build.sh v2.2
 ;
 0--ass-cinema-newsp.da.ru IN CNAME .
+*.0--ass-cinema-newsp.da.ru IN CNAME .
 0--fightingshaving.da.ru IN CNAME .
+*.0--fightingshaving.da.ru IN CNAME .
 0--foodwarez.da.ru IN CNAME .
+*.0--foodwarez.da.ru IN CNAME .
 0--gratis.dk IN CNAME .
-0-0-0.com IN CNAME .
-0-0-6.dk IN CNAME .
-0-0.org IN CNAME .
-0-01.com IN CNAME .
-*.zzyxmrzx.com IN CNAME .
-*.zzyzg.com IN CNAME .
-*.zzyzxgallery.com IN CNAME .
-*.zzyzxzzyzx.com IN CNAME .
-*.zzz.myspiritlife.net IN CNAME .
-*.zzz321zzz.tumblr.com IN CNAME .
-*.zzzg.xyz IN CNAME .
-*.zzzoor.blogspot.com IN CNAME .
-*.zzzzz01.com IN CNAME .
-*.zzzzzbored.tumblr.com IN CNAME .
+*.0--gratis.dk IN CNAME .

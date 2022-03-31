@@ -148,7 +148,7 @@ f_crawl() { # verify "URLS" isUP
    isDOWN=(); local i=-1
    while IFS= read -r line || [[ -n "$line" ]]; do
       # slicing urls && add element to ${ar_sho[@]}
-      local lll; local ll; local l; local p_url
+	   local lll; local ll; local l; local p_url
       lll="${line##htt*\/\/}"; ll="$(basename "$line")"; l="${lll/\/*/}"; p_url="$l/..?../$ll"
       ar_sho+=("${p_url}"); ((i++))
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
@@ -181,7 +181,7 @@ f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "
 
 f_app() {   # used by grab_build.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
-   sed -i -e "1i ; generate at $(date -u '+%F %T') UTC by $_foo $_tag\n;" "$1"
+   sed -i -e "1i ; generate at $(date -u '+%d-%b-%y %T') \(UTC\) by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
    }
@@ -194,8 +194,7 @@ f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http
 
 f_rpz() {
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   awk '{print $0" IN CNAME ."}'  "$2" >> "$1"
-   awk '{print "*."$0" IN CNAME ."}' "$2" >>  "$1"
+   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
    f_app "$1"
    }
 
