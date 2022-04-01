@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v2.2
+#   v3.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -32,7 +32,7 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
    for B in {0..5}; do
       tar_dsi=$(basename "${ar_url[B]}"); ext_dsi=${tar_dsi/.tar.gz/}
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[B]}"
-      curl -C - -ksfO "${ar_url[B]}" || f_excod 14
+      curl -C - -ksfO "${ar_url[B]}" || f_excod 14 "${ar_url[B]}"
       tar -xzf "$tar_dsi" "$ext_dsi/domains" ; f_sm5
    done
 

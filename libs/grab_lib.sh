@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_lib.sh
-#   v2.2
+#   v3.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -32,7 +32,7 @@ f_excod() {   # exit code {9..18}
          11) printf "\n%s\n%s\n" "$_xcod" "[grab_urls]: must contain 21 lines"; exit 1;;
          12) printf "\n%s\n%s\n" "$_xcod" "[greb_regex]: must contain 4 lines"; exit 1;;
          13) printf "%s\nPlease reffer to '%s'\n" "$_xcod" "$_reff"; exit 1;;
-         14) printf "\n%s\n%s\n" "$_xcod" "download failed"; exit 1;;
+         14) printf "\n%s\n%s\n" "$_xcod" "download failed from ""$2"""; exit 1;;
          15) printf "\n%s\n%s\n" "$_xcod" "[category]: must equal 6"; exit 1;;
          16) printf "%s\n[host]: \x1b[93m$HOST\x1b[0m if that address is correct, maybe DOWN\n%s\n" "$_xcod" "Incomplete TASK"; exit 1;;
          17) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: doesn't exist"; exit 1;;
@@ -96,7 +96,7 @@ f_sm8() { printf "\nProcessing for \x1b[93m%s CATEGORY\x1b[0m with (%d) addition
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n\x1b[91mTASK[s]\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
 
-f_add() { curl -C - -fs "$1" || f_excod 14; }      # grabbing remote files
+f_add() { curl -C - -fs "$1" || f_excod 14 "$2"; }      # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed '/[^\o0-\o177]/d' | _sed -e "$4" -e "$5" > "$3"; }
@@ -188,7 +188,7 @@ f_app() {   # used by grab_build.sh
 
 f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http.sh
    local _url; _url="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
-   curl -C - -s  "$_url" | grep '\/[0-9]\{2\}$' | sed 's/\//\./g' | sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
+   f_add  "$_url" | grep '\/[0-9]\{2\}$' | sed 's/\//\./g' | sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
       | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    }
 
