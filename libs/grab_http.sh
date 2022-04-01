@@ -33,7 +33,7 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
       tar_dsi=$(basename "${ar_url[B]}"); ext_dsi=${tar_dsi/.tar.gz/}
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[B]}"
       curl -C - -ksfO "${ar_url[B]}" || f_excod 14 "${ar_url[B]}"
-      tar -xzf "$tar_dsi" "$ext_dsi/domains" ; f_sm5
+      tar -xzf "$tar_dsi" "$ext_dsi/domains"; f_sm5
    done
 
    # define initial category and verify main category are present in array
