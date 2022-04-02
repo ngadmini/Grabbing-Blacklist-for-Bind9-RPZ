@@ -96,7 +96,7 @@ f_sm8() { printf "\nProcessing for \x1b[93m%s CATEGORY\x1b[0m with (%d) addition
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n\x1b[91mTASK[s]\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
 
-f_add() { curl -C - -fs "$1" || f_excod 14 "$2"; }      # grabbing remote files
+f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed '/[^\o0-\o177]/d' | _sed -e "$4" -e "$5" > "$3"; }
