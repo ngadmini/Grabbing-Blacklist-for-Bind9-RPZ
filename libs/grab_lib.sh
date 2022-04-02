@@ -188,7 +188,7 @@ f_app() {   # used by grab_build.sh
 
 f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http.sh
    local _url; _url="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
-   f_add  "$_url" | grep '\/[0-9]\{2\}$' | sed 's/\//\./g' | sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
+   f_add  "$_url" | _grep '\/[0-9]\{2\}$' | _sed 's/\//\./g' | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
       | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    }
 
