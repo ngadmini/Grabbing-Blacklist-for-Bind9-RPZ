@@ -1,10 +1,10 @@
-; generate at 31-Mar-22 17:47:09 (UTC) by grab_build.sh v2.2
+; generate at 01-Apr-22 20:17:25 (UTC) by grab_build.sh v3.2
 ;
-starekoronkiiarszenik.blogspot.fr IN CNAME .
-*.starekoronkiiarszenik.blogspot.fr IN CNAME .
-starekoronkiiarszenik.blogspot.hk IN CNAME .
-*.starekoronkiiarszenik.blogspot.hk IN CNAME .
-starekoronkiiarszenik.blogspot.hr IN CNAME .
-*.starekoronkiiarszenik.blogspot.hr IN CNAME .
-starekoronkiiarszenik.blogspot.hu IN CNAME .
-*.starekoronkiiarszenik.blogspot.hu IN CNAME .
+somnophiliac.blogspot.com.mt IN CNAME .
+*.somnophiliac.blogspot.com.mt IN CNAME .
+somnophiliac.blogspot.com.ng IN CNAME .
+*.somnophiliac.blogspot.com.ng IN CNAME .
+somnophiliac.blogspot.com.tr IN CNAME .
+*.somnophiliac.blogspot.com.tr IN CNAME .
+somnophiliac.blogspot.com.uy IN CNAME .
+*.somnophiliac.blogspot.com.uy IN CNAME .
