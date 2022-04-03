@@ -83,7 +83,6 @@ for trust_ip in ${ar_txt[5]}; do f_falsg "$trust_ip" "${ar_dmn[1]}" "${ar_cat[1]
 
 # CATEGORY: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-#printf "%12s: %-64s\t" "Xtracting" "${ar_sho[1]}"; f_sm5
 printf "%12s: %-64s\t" "Obtaining" "Porn domains from $(basename "${ar_sho[0]}")"; f_sm5
 printf "%12s: %-64s\t" "Obtaining" "Porn domains from ${ar_cat[5]} category"; f_sm5
 printf "%12s: %-64s\t" "Obtaining" "Porn domains from $(basename "${ar_sho[7]}")"; f_sm5
