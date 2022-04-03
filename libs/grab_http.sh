@@ -14,16 +14,15 @@ _CRL="$_DIR"/grab_cereal.sh
 _DPL="$_DIR"/grab_dedup.sh
 _REG="$_DIR"/grab_regex
 _URL="$_DIR"/grab_urls
+_LIB="$_DIR"/grab_lib.sh
 umask 077
 export LC_NUMERIC=id_ID.UTF-8
 trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d%tTIME: %H:%M:%S")
 # shellcheck source=/dev/null
-source "$_DIR"/grab_lib.sh
+source "$_LIB"
 
-# do not placed this function at grab_lib due to the shellcheck's warning about
-# "... referenced but not assigned." although it's can be ignored.
 f_grab() {    # initialize CATEGORY, many categories are obtained but it's the main one is adult
    local to_acc="to accommodate ipv4 entries from the others category"
    printf "\n\x1b[93mPERFORMING TASK.\x1b[0m Obtaining CATEGORY of domains\n"
@@ -56,10 +55,10 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
 # START MAIN SCRIPT
 cd "$_DIR"
 printf "\nstarting ...\n%s\n" "$start"
-[ ! "$UID" -eq 0 ] || f_excod 9      # comment for root privileges
+[ ! "$UID" -eq 0 ] || f_excod 10      # comment for root privileges
+for a in {"$_DPL","$_BLD","$_CRL","$_LIB"}; do [ -f "$a" ] || f_excod 17 "$a"; [ -x "$a" ] || chmod +x "$a"; done
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11
 [ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12
-[ -x "$_DPL" ] || f_excod 10 "$_DPL"; [ -x "$_BLD" ] || f_excod 10 "$_BLD"; [ -x "$_CRL" ] || f_excod 10 "$_CRL"
 printf "\x1b[93mPREPARING TASK:\x1b[0m Check the Remote Files isUP or isDOWN\n"
 ar_sho=(); f_crawl "$_URL" || true; f_grab
 

@@ -27,8 +27,7 @@ f_excod() {   # exit code {9..18}
       local _xcod="[$_foo]: Exit error $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
-          9) printf "\n%s\n%s\n" "$_xcod" "you must login as non-root"; exit 1;;
-         10) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: doesn't executable"; exit 1;;
+         10) printf "\n%s\n%s\n" "$_xcod" "you must login as non-root"; exit 1;;
          11) printf "\n%s\n%s\n" "$_xcod" "[grab_urls]: must contain 21 lines"; exit 1;;
          12) printf "\n%s\n%s\n" "$_xcod" "[greb_regex]: must contain 4 lines"; exit 1;;
          13) printf "%s\nPlease reffer to '%s'\n" "$_xcod" "$_reff"; exit 1;;
