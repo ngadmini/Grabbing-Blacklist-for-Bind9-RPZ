@@ -24,8 +24,7 @@ start=$(date "+DATE: %Y-%m-%d%tTIME: %H:%M:%S")
 source "$_LIB"
 
 f_grab() {    # initialize CATEGORY, many categories are obtained but it's the main one is adult
-   local to_acc="to accommodate ipv4 entries from the others category"
-   printf "\n\x1b[93mPERFORMING TASK.\x1b[0m Obtaining CATEGORY of domains\n"
+   printf "\n\x1b[93mPERFORMING TASK.\x1b[0m Initiating CATEGORY of domains\n"
    f_tmp      # remove temporary dir-file if any
    # grabbing dsi.ut-capitole.fr use as initial category
    for B in {0..5}; do
@@ -36,9 +35,9 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
    done
 
    # define initial category and verify main category are present in array
-   printf "%12s: %-66s" "adding IPV4" "$to_acc"
-   mkdir ipv4; mv phishing malware; mv gambling trust+; cat vpn/domains >> redirector/domains; rm -r vpn; f_sm5
+   mkdir ipv4; mv phishing malware; mv gambling trust+; cat vpn/domains >> redirector/domains; rm -r vpn
    mapfile -t ar_cat < <(find . -maxdepth 1 -type d | sed -e '1d;s/\.\///' | sort)
+   printf "%12s: \x1b[93m%s\x1b[0m (%s CATEGORIES)\t" "initiating" "${ar_cat[*]}" "${#ar_cat[@]}"
    [ "${#ar_cat[@]}" -eq 6 ] || f_excod 15
 
    # remove previously domain lists if any && define temporary array based on initial category
@@ -49,7 +48,7 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
       ar_tmp+=(tmq."${ar_cat[A]}")
       ar_txt+=(txt."${ar_cat[A]}")
    done
-   printf "%12s: \x1b[93m%.66s\x1b[0m (%s CATEGORIES)\n" "obtained" "${ar_cat[*]}" "${#ar_cat[@]}"
+   f_sm5
 }
 
 # START MAIN SCRIPT
