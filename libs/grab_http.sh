@@ -37,7 +37,7 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
    # define initial category and verify main category are present in array
    mkdir ipv4; mv phishing malware; mv gambling trust+; cat vpn/domains >> redirector/domains; rm -r vpn
    mapfile -t ar_cat < <(find . -maxdepth 1 -type d | sed -e '1d;s/\.\///' | sort)
-   printf "%12s: \x1b[93m%s\x1b[0m (%s CATEGORIES)\t" "initiating" "${ar_cat[*]}" "${#ar_cat[@]}"
+   printf "%12s: \x1b[93m%-66s\x1b[0m" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    [ "${#ar_cat[@]}" -eq 6 ] || f_excod 15
 
    # remove previously domain lists if any && define temporary array based on initial category
