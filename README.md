@@ -14,12 +14,12 @@
 1. [grab_http.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_http.sh) --grabbing and proccessing raw domains
 2. [grab_dedup.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_dedup.sh) --removing duplicate entries between domain lists
 3. [grab_build.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_build.sh) --rewriting to BIND9-rpz format
-4. [grab_cereal.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh) --incrementing serial zones
+4. [grab_cereal.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh) --incrementing serial zones of rpz-files
 5. [grab_lib.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_lib.sh) --contain some of functions needed by others script
 6. [grab_urls](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_urls) --urls list of remote files, strick ordering and line counted. 
 7. [grab_regex](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_regex) --list of reguler expressions for several purpose, strick ordering and line counted.
-7. [grab_scp.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_scp.sh) --scripts tool for copy, backup and update rpz-dBASE to host
-8. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/zones-rpz) --pack of zone-files
+7. [grab_scp.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_scp.sh) --additional scripts tool for updating rpz- files and dBASE to Bind9 host
+8. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/zones-rpz) --pack of zone-files, needed by [grab_cereal.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh) 
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
 - [x] `curl faketime dos2unix shellcheck`. Install with `apt install -y curl faketime dos2unix shellcheck` on your linux desktop workstation.
@@ -27,9 +27,8 @@
 - [x] passwordless `SSH - rsync` to remote BIND9-server
 - [x] BIND9 file structure : `/etc/bind9/zones-rpz` as place for all rpz database and zone-file.
 ### usage:
-- [x] make executable all bash script `chmod +x *.sh`
-- [x] to tailorizing your environment, please see this [wiki](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment) to fitting your environment
 - [x] just fire-up `grab_http.sh` then follow the next step
+- [x] to tailorizing your environment, please see this [wiki](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment) to fitting your environment
 ### output:
 - [x] new files with prefix `db.*` are data base for RPZ and ready to use at BIND9-server
 - [x] modified files with prefix `rpz.*` are zone-files, ready to use too
