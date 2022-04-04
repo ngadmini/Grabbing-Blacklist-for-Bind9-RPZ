@@ -25,15 +25,13 @@ f_trap() {
 f_excod() {   # exit code {9..18}
    for EC in $1; do
       _lin=$(grep -n '^HOST' "$_foo" | cut -d':' -f1)
-      _url="$(wc -l "$2" | cut -d' ' -f1)"
-      _reg="$(wc -l "$2" | cut -d' ' -f1)"
       local _xcod="[$_foo]: at line ${BASH_LINENO[0]}. Exit error $EC"
       local _exit="[$_foo]: at line $_lin. Exit error $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
          10) printf "\n%s\n%s\n" "$_xcod" "you must login as non-root"; exit 1;;
-         11) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $_url urls. it's must contain 21 urls"; exit 1;;
-         12) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $_reg lines. it's must contain 4 lines"; exit 1;;
+         11) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $(wc -l < "$2") urls. it should consist of 21 urls"; exit 1;;
+         12) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $(wc -l < "$2") lines. it should consist of 4 lines"; exit 1;;
          13) printf "Check out [grab_urls]. if those url[s] are correct,\nplease reffer to: %s\n" "$_reff"; exit 1;;
          14) printf "\n%s\n%s\n" "$_xcod" "download failed from ""$2"""; exit 1;;
          15) printf "\n%s\n%s\n" "$_xcod" "[category]: must equal 6"; exit 1;;
