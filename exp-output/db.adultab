@@ -1,10 +1,10 @@
-; generate at 01-Apr-22 20:17:22 (UTC) by grab_build.sh v3.2
+; generate at [04-Apr-22 15:50:00 UTC] by grab_build.sh v4.2
 ;
-camryndqaudqf.blogspot.bg IN CNAME .
-*.camryndqaudqf.blogspot.bg IN CNAME .
-camryndqaudqf.blogspot.ca IN CNAME .
-*.camryndqaudqf.blogspot.ca IN CNAME .
-camryndqaudqf.blogspot.ch IN CNAME .
-*.camryndqaudqf.blogspot.ch IN CNAME .
-camryndqaudqf.blogspot.cl IN CNAME .
-*.camryndqaudqf.blogspot.cl IN CNAME .
+campseguin.com IN CNAME .
+*.campseguin.com IN CNAME .
+campsexy.com IN CNAME .
+*.campsexy.com IN CNAME .
+campshane.com IN CNAME .
+*.campshane.com IN CNAME .
+campsiestudio.com IN CNAME .
+*.campsiestudio.com IN CNAME .

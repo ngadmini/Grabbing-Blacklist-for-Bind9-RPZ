@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v3.2
+#   v4.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -15,9 +15,9 @@ printf "\n\x1b[91m[3'th] TASK:\x1b[0m\nIncrementing serial of zone files (rpz.* 
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
 if [ "${#ar_zon[@]}" -eq 11 ]; then
    printf "FOUND:\t%s complete\n" "${#ar_zon[@]}"
-   for each in "${ar_zon[@]}"; do
+   for Z in "${ar_zon[@]}"; do
       DATE=$(date +%Y%m%d)
-      SERIAL=$(grep "SOA" "$each" | cut -d \( -f2 | cut -d' ' -f1)
+      SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d' ' -f1)
       if [ ${#SERIAL} -lt ${#DATE} ]; then
          newSERIAL="${DATE}00"
       else
@@ -30,7 +30,7 @@ if [ "${#ar_zon[@]}" -eq 11 ]; then
             newSERIAL="${DATE}00"
          fi
       fi
-      sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$each"
+      sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$Z"
    done
    printf "all serial zones incremented to \x1b[93m%s\x1b[0m\n" "$newSERIAL"
 

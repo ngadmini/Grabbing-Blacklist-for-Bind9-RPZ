@@ -1,10 +1,10 @@
-; generate at 01-Apr-22 20:17:23 (UTC) by grab_build.sh v3.2
+; generate at [04-Apr-22 15:50:01 UTC] by grab_build.sh v4.2
 ;
-frauenschwanze.blogspot.it IN CNAME .
-*.frauenschwanze.blogspot.it IN CNAME .
-frauenschwanze.blogspot.jp IN CNAME .
-*.frauenschwanze.blogspot.jp IN CNAME .
-frauenschwanze.blogspot.kr IN CNAME .
-*.frauenschwanze.blogspot.kr IN CNAME .
-frauenschwanze.blogspot.li IN CNAME .
-*.frauenschwanze.blogspot.li IN CNAME .
+frankfurtstories.blogspot.li IN CNAME .
+*.frankfurtstories.blogspot.li IN CNAME .
+frankfurtstories.blogspot.lt IN CNAME .
+*.frankfurtstories.blogspot.lt IN CNAME .
+frankfurtstories.blogspot.lu IN CNAME .
+*.frankfurtstories.blogspot.lu IN CNAME .
+frankfurtstories.blogspot.md IN CNAME .
+*.frankfurtstories.blogspot.md IN CNAME .

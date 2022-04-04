@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_lib.sh
-#   v3.2
+#   v4.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -24,16 +24,20 @@ f_trap() {
 
 f_excod() {   # exit code {9..18}
    for EC in $1; do
-      local _xcod="[$_foo]: Exit error $EC"
+      _lin=$(grep -n '^HOST' "$_foo" | cut -d':' -f1)
+      _url="$(wc -l "$2" | cut -d' ' -f1)"
+      _reg="$(wc -l "$2" | cut -d' ' -f1)"
+      local _xcod="[$_foo]: at line ${BASH_LINENO[0]}. Exit error $EC"
+      local _exit="[$_foo]: at line $_lin. Exit error $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
          10) printf "\n%s\n%s\n" "$_xcod" "you must login as non-root"; exit 1;;
-         11) printf "\n%s\n%s\n" "$_xcod" "[grab_urls]: must contain 21 lines"; exit 1;;
-         12) printf "\n%s\n%s\n" "$_xcod" "[greb_regex]: must contain 4 lines"; exit 1;;
-         13) printf "%s\nPlease reffer to '%s'\n" "$_xcod" "$_reff"; exit 1;;
+         11) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $_url urls. it's must contain 21 urls"; exit 1;;
+         12) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $_reg lines. it's must contain 4 lines"; exit 1;;
+         13) printf "Check out [grab_urls]. if those url[s] are correct,\nplease reffer to: %s\n" "$_reff"; exit 1;;
          14) printf "\n%s\n%s\n" "$_xcod" "download failed from ""$2"""; exit 1;;
          15) printf "\n%s\n%s\n" "$_xcod" "[category]: must equal 6"; exit 1;;
-         16) printf "%s\n[host]: \x1b[93m$HOST\x1b[0m if that address is correct, maybe DOWN\n%s\n" "$_xcod" "Incomplete TASK"; exit 1;;
+         16) printf "%s\n[\x1b[93m$HOST\x1b[0m]: if these address is correct, maybe isDOWN\n%s\n" "$_exit" "Incomplete TASK"; exit 1;;
          17) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: doesn't exist"; exit 1;;
           *) printf "\nUNKNOWN ERROR\n"; exit 1;;
       esac
@@ -162,7 +166,7 @@ f_crawl() { # verify "URLS" isUP
    done < "$1"
    local isDOWNCount=${#isDOWN[@]}
    if [ "$isDOWNCount" -eq 0 ]; then
-      printf "%20s\n" " " | tr ' ' -
+      printf "%30s\n" " " | tr ' ' -
       printf "%s\n" "All URLS of remote files isUP."
    else
       printf "%20s\n" " " | tr ' ' -
@@ -180,7 +184,7 @@ f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "
 
 f_app() {   # used by grab_build.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
-   sed -i -e "1i ; generate at $(date -u '+%d-%b-%y %T') \(UTC\) by $_foo $_tag\n;" "$1"
+   sed -i -e "1i ; generate at \[$(date -u '+%d-%b-%y %T') UTC\] by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
    }

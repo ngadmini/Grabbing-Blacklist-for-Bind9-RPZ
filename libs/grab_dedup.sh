@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_dedup.sh
-#   v3.2
+#   v4.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -21,10 +21,10 @@ mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\//
 if [ "${#ar_txt[@]}" -eq 6 ]; then
    # declare tmp files as array
    ar_cat=(); ar_dmn=(); ar_tmp=()
-   for A in {0..5}; do
-      ar_cat+=("${ar_txt[A]/txt./}")
-      ar_dmn+=(dmn."${ar_txt[A]/txt./}")
-      ar_tmp+=(tmr."${ar_txt[A]/txt./}")
+   for B in {0..5}; do
+      ar_cat+=("${ar_txt[B]/txt./}")
+      ar_dmn+=(dmn."${ar_txt[B]/txt./}")
+      ar_tmp+=(tmr."${ar_txt[B]/txt./}")
    done
 
    printf "\n\x1b[91m[1'st] TASK:\x1b[0m\nEliminating duplicate entries between domain lists\n"
