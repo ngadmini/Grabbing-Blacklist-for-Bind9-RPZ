@@ -37,7 +37,7 @@ f_excod() {   # exit code {9..18}
          15) printf "\n%s\n%s\n" "$_xcod" "[category]: must equal 6"; exit 1;;
          16) printf "%s\n[\x1b[93m$HOST\x1b[0m]: if these address is correct, maybe isDOWN\n%s\n" "$_exit" "Incomplete TASK"; exit 1;;
          17) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: doesn't exist"; exit 1;;
-          *) printf "\nUNKNOWN ERROR\n"; exit 1;;
+          *) printf "\nUnknown exit code [f_excod %s], please check:\n%s\n" "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
       esac
    done
    }
@@ -48,7 +48,7 @@ f_sm0() {   # getting options display messages
    printf "%4s. option [1] and rewriting all domain lists to RPZ format (db.* files)\n" "2"
    printf "%4s. option [1,2] and incrementing serial at zone files (rpz.* files)\n" "3"
    printf "%4s. option [1,2,3] and copying latest rpz.* and db.* files to %s\n" "4" "$1"
-   printf "ENTER choice number \x1b[93m[1-4]\x1b[0m or [*] to QUIT\t"
+   printf "ENTER: \x1b[93m[1|2|3|4]\x1b[0m or [*] to QUIT\t"
    }
 
 f_sm1() {   # display messages when 1'st option chosen
