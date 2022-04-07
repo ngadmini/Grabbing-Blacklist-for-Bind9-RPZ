@@ -82,9 +82,7 @@ for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-printf "%12s: %-64s\t" "Obtaining" "Porn domains from $(basename "${ar_sho[0]}")"; f_sm5
-printf "%12s: %-64s\t" "Obtaining" "Porn domains from ${ar_cat[5]} category"; f_sm5
-printf "%12s: %-64s\t" "Obtaining" "Porn domains from $(basename "${ar_sho[7]}")"; f_sm5
+for V in {0,6,7}; do f_sm7 "$V" "${ar_sho[V]}"; f_sm5; done
 cat "${trust}" >> "${ar_dmn[0]}"
 # fixing bad, duplicate and false entry
 for G in ${ar_dmn[0]}; do
@@ -94,8 +92,7 @@ for H in ${ar_txt[0]}; do f_falsg "$H" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 f_sm8 "${ar_cat[4]}" 2
-printf "%12s: %-64s\t" "Xtracting" "${ar_sho[4]}"; f_sm5
-printf "%12s: %-64s\t" "Xtracting" "${ar_sho[5]}"; f_sm5
+for W in {4,5}; do f_sm7 "$W" "${ar_sho[W]}"; f_sm5; done
 # fixing bad, duplicate and false entry
 for I in ${ar_dmn[4]}; do
    f_falsf "${ar_cat[4]}" "$I" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
@@ -133,8 +130,7 @@ f_sm7 20 "${ar_sho[20]}"; f_add "${ar_url[20]}" | _grep -v '^#' >> "${ar_dmn[1]}
 # fixing bad, duplicate and false entry
 f_sm9 "${ar_cat[1]}"
 for R in ${ar_dmn[1]}; do
-   awk '!x[$0]++' "$R" | _sed -e '/:\|\.$\|\//d' \
-      | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
+   awk '!x[$0]++' "$R" | _sed -e '/:\|\.$\|\//d' | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
 done; f_sm5
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
@@ -187,7 +183,9 @@ case $RETVAL in
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
    3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;
    4) f_sm4 "$HOST"; "$_DPL"; "$_BLD"; "$_CRL"; f_scp "$HOST"; f_sm10 th;;
-   *) printf "\x1b[91mNothing, just stop right now\x1b[0m\n";;
+   *) printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
+      printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" \
+         "[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]";;
 esac
 printf "bye!\n"
 exit 0
