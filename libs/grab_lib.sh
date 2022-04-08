@@ -75,12 +75,10 @@ f_sm3() {   # display messages when 3'th option chosen
 f_sm4() {   # display messages when 4'th option chosen
    printf "\n%s'th TASK option chosen\n" "$RETVAL"
    printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
-   printf "%25s all domain lists to RPZ format (db.* files)\n" "~rewriting"
-   printf "%28s serial zone files (rpz.* files)\n" "~incrementing"
-   printf "%23s latest rpz.* and db.* files to %s\n" "~copying" "$1"
-   printf "\x1b[32m%13s:\x1b[0m %s will REBOOT due to low memory\n" "WARNING" "$1"
-   printf "%18s \x1b[92m'shutdown -c'\x1b[0m at remote HOST to abort\n" "use"
-   printf "\x1b[93mPerforming task based on %s'th option ...\x1b[0m\n" "$RETVAL"
+   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
+   printf "%28s serial zone files [rpz.*]\n" "~incrementing"
+   printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$1"
+   printf "\x1b[93mPerforming TASK based on %s'th option ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm5() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }      # display DONE
@@ -93,7 +91,7 @@ f_sm6() {   # display FINISH messages
 
 # display processing messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
-f_sm8() { printf "\nProcessing for \x1b[93m%s CATEGORY\x1b[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
+f_sm8() { printf "\nProcessing \x1b[93m%s CATEGORY\x1b[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n\x1b[91mTASK[s]\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
 
@@ -127,9 +125,10 @@ f_scp() {   # passwordless ssh to BIND9-server for "backUP and sending the newDB
          mkdir zones-rpz; mv {rpz,db}.* zones-rpz
          rsync -rqc zones-rpz/ root@"$1":/etc/bind/zones-rpz/
          # reboot [after +@ minute] due to low memory
-         printf "HOST : \x1b[92m%s\x1b[0m scheduled for reboot at %s WIB\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
+         printf "HOST: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
+         printf "use \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "$1"
          ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-         # OR comment 2 lines above AND uncomment 2 lines below, if have enough memory
+         # OR comment 3 lines above AND uncomment 2 lines below, if you have enough memory
          #printf "Reload BIND9-server\n"
          #ssh root@"$1" "rndc reload"
          mv zones-rpz/{rpz,db}.* .
@@ -196,11 +195,11 @@ f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http
 f_rpz() {
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-   f_app "$1"
+   f_app "$@"
    }
 
 f_ip4() {
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "$2" >> "$1"
-   f_net "$1"; f_app "$1"
+   f_net "$@"; f_app "$@"
    }
