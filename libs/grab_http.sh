@@ -115,7 +115,7 @@ f_sm8 "${ar_cat[2]}" 7
 f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_sm5
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed '1,11d;/^;/d' | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_sm5
 for O in {14..18}; do
-   f_sm7 "$O" "${ar_sho[O]}"; f_add "${ar_url[O]}" | _grep -v '^#' >> "${ar_dmn[2]}"; f_sm5
+   f_sm7 "$O" "${ar_sho[O]}"; f_add "${ar_url[O]}" | _grep -v '^#' | _sed 's/\s#*.*//' >> "${ar_dmn[2]}"; f_sm5
 done
 # fixing bad, duplicate and false entry
 for P in ${ar_dmn[2]}; do
