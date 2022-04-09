@@ -48,39 +48,37 @@ f_sm0() {   # getting options display messages
    printf "\n\x1b[93mCHOOSE one of the following options :\x1b[0m\n"
    printf "%4s. eliminating duplicate entries between domain lists\n" "1"
    printf "%4s. option [1] and rewriting all domain lists to RPZ format [db.* files]\n" "2"
-   printf "%4s. option [1,2] and incrementing serial at zone files [rpz.*]\n" "3"
-   printf "%4s. option [1,2,3] and [rsync]ronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
+   printf "%4s. options [1,2] and incrementing serial at zone files [rpz.*]\n" "3"
+   printf "%4s. options [1,2,3] and [rsync]ronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
    printf "ENTER: \x1b[93m[1|2|3|4]\x1b[0m or [*] to QUIT\t"
    }
 
 f_sm1() {   # display messages when 1'st option chosen
-   f_sm11
-   printf "\x1b[93mPerforming task based on %s'th option ...\x1b[0m\n" "$RETVAL"
+   printf "\n\x1b[91m[%s'st] TASK options chosen\x1b[0m\n" "$RETVAL"
+   printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
+   printf "\x1b[93mPerforming task based on %s'st options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm2() {   # display messages when 2'nd option chosen
    f_sm11
-   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
-   printf "\x1b[93mPerforming task based on %s'th option ...\x1b[0m\n" "$RETVAL"
+   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm3() {   # display messages when 3'th option chosen
    f_sm11
-   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
-   printf "\x1b[93mPerforming task based on %s'th option ...\x1b[0m\n" "$RETVAL"
+   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm4() {   # display messages when 4'th option chosen
    f_sm11
-   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    printf "%28s serial zone files [rpz.*]\n" "~incrementing"
    printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$1"
    if grep -qE "^\s{2,}#s(*.*)d\"" grab_lib.sh; then
        printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$1"
        printf "%18s \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "use" "$1"
    fi
-   printf "\x1b[93mPerforming task based on %s'th option ...\x1b[0m\n" "$RETVAL"
+   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm5() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }      # display DONE
@@ -97,8 +95,9 @@ f_sm8() { printf "\nProcessing \x1b[93m%s CATEGORY\x1b[0m with (%d) additional r
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n\x1b[91mTASK[s]\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
 f_sm11() {
-   printf "\n%s'st TASK option chosen\n" "$RETVAL"
+   printf "\n\x1b[91m[%s'th] TASK options chosen\x1b[0m\n" "$RETVAL"
    printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
+   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    }
 
 f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
