@@ -17,5 +17,5 @@ source "$_DIR"/grab_lib.sh
 HOST="rpz.warnet-ersa.net"   # fqdn or ip-address
 
 cd "$_DIR"
-f_scp "$HOST"
+f_syn "$HOST"
 exit 0

@@ -1,10 +1,10 @@
-<h1 align="center">Grabbing Blacklist for Bind9 RPZ</h1>
+<h1 align="center">Grabbing Blacklist Domains for Bind9-RPZ</h1>
 
 <p align="center">
-  	<b>Tailorized bash script pack to update domain list in BIND9 Response Policy Zone<br>
+  	<b>Tailorized bash script-pack to update blacklist domains in BIND9 Response Policy Zone<br>
 	Please consider adapting this pack to fit your environment properties,<br>
 	since simple duplication may not given appropriate results</b><br>
-	The partial output of this scripts can be found at link below</b><br>
+	The partial output of this script-pack can be found at link below</b><br>
   	<a href="https://github.com/ngadmini/partial-output"><img src="https://img.shields.io/badge/bind9%20RPZ-Partial%20Output-blue?style=flat-square&logo=github"></a>
   	<br><br>
   	<a href="#"><img src="http://s.4cdn.org/image/title/105.gif"></a>
@@ -23,19 +23,19 @@
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
 - [x] `curl faketime dos2unix shellcheck`. Install with `apt install -y curl faketime dos2unix shellcheck` on your linux desktop workstation.
-- [x] Make sure in the BIND9-server installed `rsync`, if not install it's with `apt install rsync`
-- [x] passwordless `SSH - rsync` to remote BIND9-server
-- [x] BIND9 file structure : `/etc/bind9/zones-rpz` as place for all rpz database and zone-file.
+- [x] make sure in the BIND9-server installed `rsync and pigz`, if not install it's with `apt install -y rsync pigz`
+- [x] passwordless `ssh` to remote BIND9-server
+- [x] BIND9 file structure : `/etc/bind9/zones-rpz` as place for all dataBases and zone files.
 ### usage:
 - [x] just fire-up `grab_http.sh` then follow the next step
-- [x] to tailorizing your environment, please see this [wiki](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment) to fitting your environment
+- [x] to tailorizing your environment, please see [these wiki](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment) to fitting your environment
 ### output:
-- [x] new files with prefix `db.*` are data base for RPZ and ready to use at BIND9-server
-- [x] modified files with prefix `rpz.*` are zone-files, ready to use too
+- [x] new files with prefix `db.*` are dataBases for RPZ and ready to use at BIND9-server
+- [x] modified files with prefix `rpz.*` are zone -files, ready to use too
 - [x] new files with prefix `txt.*` are raw domains blacklist
-- [x] a small part of script output, displayed at [exp-output](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/exp-outpout)
+- [x] a small part output of this script-pack, displayed at [exp-output](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/exp-outpout)
 ### in the real world
-the partial output of this script pack, can be found at [Partial Output](https://github.com/ngadmini/partial-output)
+the partial output of this script-pack, can be found at [Partial Output](https://github.com/ngadmini/partial-output)
 ### others:
 - [x] **Credits to** : All Owner-Maintener of sources-list in [grab_urls](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_urls) and [KOMINFO NKRI](https://trustpositif.kominfo.go.id/assets/db/domains)
 - [x] **Disclaimer** : These script are as they are, and to be used at your own risk

@@ -9,6 +9,8 @@ shopt -s expand_aliases
 alias _sort="LC_ALL=C sort --buffer-size=80% --parallel=3"
 alias _sed="LC_ALL=C sed"
 alias _grep="LC_ALL=C grep"
+alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
+alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0")
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
@@ -112,7 +114,7 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
    }
 
-f_syn() {   # passwordless ssh to BIND9-server for "backUP oldDB and rsync newDB"
+f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
    printf "\n\x1b[91m[4'th] TASK:\x1b[0m\n"
    if ping -w 1 "$1" >> /dev/null 2>&1; then
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e 's/\.\///' | sort)
@@ -120,21 +122,22 @@ f_syn() {   # passwordless ssh to BIND9-server for "backUP oldDB and rsync newDB
       if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
          local timestamp; timestamp=$(date "+%Y-%m-%d")
          local _ID; _ID="/home/rpz-$timestamp.tar.gz"
-         #
-         printf "Create archive of RPZ dBase in %s:%s\n" "$1" "$_ID"
-         ssh -q root@"$1" "cd /etc/bind; tar -I 'gzip -1' -cf $_ID zones-rpz"
-         printf "Find and remove old RPZ dBase archive in %s:/home\n" "$1"
-         ssh -q root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-         printf "Syncronizing the latest RPZ dBase to %s\n" "$1"
-         mkdir zones-rpz; mv {rpz,db}.* zones-rpz
-         rsync -aqW zones-rpz/ root@"$1":/etc/bind/zones-rpz/
+
+         # use 'unpigz -v rpz-2022-04-09.tar.gz' then 'tar xvf rpz-2022-04-09.tar.gz' for decompression
+         printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$1" "$_ID"
+         _ssh root@"$1" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
+         printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$1"
+         _ssh root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
+         printf "[INFO] syncronizing the latest RPZ dBase to %s\n" "$1"
+         _rsync {rpz,db}.* root@"$1":/etc/bind/zones-rpz/
+
          # reboot [after +@ minute] due to low memory
-         printf "HOST: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
-         ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-         # OR comment 2 lines above AND uncomment 2 lines below, if you have enough memory
+         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
+         _ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
+         printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$1"
+         # OR comment 3 lines above AND uncomment 2 lines below, if yo have sufficient RAM
          #printf "Reload BIND9-server\n"
          #ssh root@"$1" "rndc reload"
-         mv zones-rpz/{rpz,db}.* .
       else
          local _BLD="$_DIR"/grab_build.sh
          local _CRL="$_DIR"/grab_cereal.sh
