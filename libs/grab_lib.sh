@@ -131,7 +131,7 @@ f_syn() {   # passwordless ssh to BIND9-server for "backUP oldDB and rsync newDB
          # reboot [after +@ minute] due to low memory
          printf "HOST: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
          ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-         # OR comment 3 lines above AND uncomment 2 lines below, if you have enough memory
+         # OR comment 2 lines above AND uncomment 2 lines below, if you have enough memory
          #printf "Reload BIND9-server\n"
          #ssh root@"$1" "rndc reload"
          mv zones-rpz/{rpz,db}.* .
