@@ -182,7 +182,7 @@ case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
    3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;
-   4) f_sm4 "$HOST"; "$_DPL"; "$_BLD"; "$_CRL"; f_scp "$HOST"; f_sm10 th;;
+   4) f_sm4 "$HOST"; "$_DPL"; "$_BLD"; "$_CRL"; f_syn "$HOST"; f_sm10 th;;
    *) printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
       printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" \
          "[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]";;
