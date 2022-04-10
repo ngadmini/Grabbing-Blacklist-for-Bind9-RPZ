@@ -129,12 +129,13 @@ for Q in ${ar_txt[2]}; do f_falsg "$Q" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: IPV4 --> ${ar_cat[1]} with 4 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
-f_sm7 19 "${ar_sho[19]}"; f_add "${ar_url[19]}" | _sed '/\(#\|\/\)/d' >> "${ar_dmn[1]}"; f_sm5
-f_sm7 20 "${ar_sho[20]}"; f_add "${ar_url[20]}" | _grep -v '^#' >> "${ar_dmn[1]}"; f_sm5
+for Z in {19,20}; do
+   f_sm7 "$Z" "${ar_sho[Z]}"; f_add "${ar_url[Z]}" | _grep -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\.32/" | _sed "s/\//\./" >> "${ar_dmn[1]}" ; f_sm5
+done
 # fixing bad, duplicate and false entry
 f_sm9 "${ar_cat[1]}"
 for R in ${ar_dmn[1]}; do
-   awk '!x[$0]++' "$R" | _sed -e '/:\|\.$\|\//d' | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
+   awk '!x[$0]++' "$R" | _sed -e '/:\|\.$\|\//d' | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 -o "${ar_txt[1]}"
 done; f_sm5
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 

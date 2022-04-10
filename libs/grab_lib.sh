@@ -19,10 +19,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
 
-f_trap() {
-   printf "\n"; f_tmp;
-   unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN
-   }
+f_trap() { printf "\n"; f_tmp; unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN; }
 
 f_excod() {   # exit code {9..18}
    for EC in $1; do
@@ -79,8 +76,7 @@ f_sm4() {   # display messages when 4'th option chosen
    }
 
 f_sm5() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }      # display DONE
-
-f_sm6() {   # display FINISH messages
+f_sm6() {                                             # display FINISH messages
    printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
    printf "\x1b[32mWARNING:\x1b[0m there are still remaining duplicate entries between domain lists.\n"
    printf "%17s continue to next TASK.\n" "consider"
@@ -104,10 +100,9 @@ f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed '/[^\o0-\o177]/d' | _sed -e "$4" -e
 
 f_falsg() { # throw ip-address entry to ipv4 CATEGORY
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
-   _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" >> "$2" || true
+   _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\.32/" >> "$2" || true
    _sed -Ei "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" "$1"
-   f_sm5
-   printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
+   f_sm5; printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
@@ -167,18 +162,17 @@ f_crawl() { # verify "URLS" isUP
       printf "%30s\n" " " | tr ' ' -
       printf "%s\n" "All URLS of remote files isUP."
    else
-      printf "%20s\n" " " | tr ' ' -
+      printf "%30s\n" " " | tr ' ' -
       printf "\x1b[91m%s\x1b[0m\n" "${isDOWN[@]}"
       f_excod 13
    fi
    }
 
+f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 f_ddup() {  # used by grab_dedup.sh
    printf "%11s = deduplicating %s entries \t\t" "STEP 0.$1" "$2"
    _sort "$3" "$4" | uniq -d | _sort -u > "$5"
    }
-
-f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 
 f_app() {   # used by grab_build.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
@@ -187,20 +181,14 @@ f_app() {   # used by grab_build.sh
    printf "%10s entries\n" "$acq_al"
    }
 
-f_net() {   # add "/24 - /31 subnet" to ipv4 category. NOT coverred by grab_http.sh
-   local _url; _url="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
-   f_add  "$_url" | _grep '\/[0-9]\{2\}$' | _sed 's/\//\./g' | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
-      | awk -F. '{print ""$5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
-   }
-
-f_rpz() {
+f_rpz() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
    f_app "$@"
    }
 
-f_ip4() {
+f_ip4() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   awk -F. '{print "32."$4"."$3"."$2"."$1".rpz-nsip"" IN CNAME ."}' "$2" >> "$1"
-   f_net "$@"; f_app "$@"
+   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+   f_app "$@"
    }
