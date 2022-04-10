@@ -33,7 +33,7 @@
 - [x] new files with prefix `db.*` are dataBases for RPZ and ready to use at BIND9-server
 - [x] modified files with prefix `rpz.*` are zone -files, ready to use too
 - [x] new files with prefix `txt.*` are raw domains blacklist
-- [x] a small part output of this script-pack, displayed at [exp-output](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/exp-outpout)
+- [x] a small part output of this script-pack, displayed at [exp-output](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/exp-output)
 ### in the real world
 the partial output of this script-pack, can be found at [Partial Output](https://github.com/ngadmini/partial-output)
 ### others:
