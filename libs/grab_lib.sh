@@ -60,19 +60,16 @@ f_sm1() {   # display messages when 1'st option chosen
    }
 
 f_sm2() {   # display messages when 2'nd option chosen
-   f_sm11
-   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
+   f_sm11; printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm3() {   # display messages when 3'th option chosen
-   f_sm11
-   printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
+   f_sm11; printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
    printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm4() {   # display messages when 4'th option chosen
-   f_sm11
-   printf "%28s serial zone files [rpz.*]\n" "~incrementing"
+   f_sm11; printf "%28s serial zone files [rpz.*]\n" "~incrementing"
    printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$1"
    if grep -qE "^\s{2,}#s(*.*)d\"" grab_lib.sh; then
        printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$1"
@@ -119,10 +116,9 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e 's/\.\///' | sort)
       mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
       if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
-         local timestamp; timestamp=$(date "+%Y-%m-%d")
-         local _ID; _ID="/home/rpz-$timestamp.tar.gz"
+         local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
 
-         # use 'unpigz -v rpz-2022-04-09.tar.gz' then 'tar xvf rpz-2022-04-09.tar.gz' for decompression
+         # use 'unpigz -v rpz-2022-04-09.tar.gz' then 'tar xvf rpz-2022-04-09.tar' for decompression
          printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$1" "$_ID"
          _ssh root@"$1" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
          printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$1"
@@ -153,7 +149,7 @@ f_crawl() { # verify "URLS" isUP
    isDOWN=(); local i=-1
    while IFS= read -r line || [[ -n "$line" ]]; do
       # slicing urls && add element to ${ar_sho[@]}
-	   local lll; local ll; local l; local p_url
+      local lll; local ll; local l; local p_url
       lll="${line##htt*\/\/}"; ll="$(basename "$line")"; l="${lll/\/*/}"; p_url="$l/..?../$ll"
       ar_sho+=("${p_url}"); ((i++))
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
