@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_scp.sh
-#   v4.2
+#   v5.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # NOTE
@@ -14,8 +14,9 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 trap f_trap EXIT INT TERM    # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
-HOST="rpz.warnet-ersa.net"   # fqdn or ip-address
+HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 
+ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 8 "$HOST"
 cd "$_DIR"
 f_syn "$HOST"
 exit 0

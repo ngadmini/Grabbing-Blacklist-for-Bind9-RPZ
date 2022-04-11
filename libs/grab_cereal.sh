@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v4.2
+#   v5.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -44,8 +44,9 @@ else
    printf "~ %s\n" "$(cat /tmp/mr_p)"
    printf "\x1b[32m[INFO]\x1b[0m Trying to get the missing file(s) from origin: %s\n" "$HOST"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
+      # passwordless ssh checking
+      ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || { printf "%s doesn't support passwordless ssh\n" "'$HOST'"; exit 1; }
       miss="$(cat /tmp/mr_p)"
-      # passwordless ssh
       if ! scp -qr root@$HOST:/etc/bind/zones-rpz/"{$miss}" "$_DIR" >> /dev/null 2>&1; then
          printf "\x1b[32m[INFO]\x1b[0m One or more zones files are missing. %s\n" "You should create:"
          printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$miss" "Incomplete TASK"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_dedup.sh
-#   v4.2
+#   v5.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_lib.sh
-#   v4.2
+#   v5.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -24,19 +24,22 @@ f_trap() { printf "\n"; f_tmp; unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,u
 f_excod() {   # exit code {9..18}
    for EC in $1; do
       _lin=$(grep -n "^HOST" "$_foo" | cut -d":" -f1)
-      local _xcod="[$_foo]: at line ${BASH_LINENO[0]}. Exit error $EC"
-      local _exit="[$_foo]: at line $_lin. Exit error $EC"
+      local _xcod="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit error code: $EC"
+      local _exit="[ERROR] $_foo: at line $_lin. Exit error code: $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
+          7) printf "\n%s\n%s\n" "$_xcod" "require passwordless ssh to remote host: '$2'"; exit 1;;
+          8) printf "\n%s\n%s\n" "$_xcod" "require '$2' but it's not installed"; exit 1;;
+          9) printf "\n%s\n%s\n" "$_xcod" "'$2' require '$3' but it's not installed"; exit 1;;
          10) printf "\n%s\n%s\n" "$_xcod" "you must login as non-root"; exit 1;;
-         11) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $(wc -l < "$2") urls. it should consist of 21 urls"; exit 1;;
-         12) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: $(wc -l < "$2") lines. it should consist of 4 lines"; exit 1;;
-         13) printf "Check out [grab_urls]. if those url[s] are correct,\nplease reffer to: %s\n" "$_reff"; exit 1;;
-         14) printf "\n%s\n%s\n" "$_xcod" "download failed from ""$2"""; exit 1;;
-         15) printf "\n%s\n%s\n" "$_xcod" "[category]: must equal 6"; exit 1;;
+         11) printf "\n%s\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") urls. it should consist of 21 urls"; exit 1;;
+         12) printf "\n%s\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") lines. it should consist of 4 lines"; exit 1;;
+         13) printf "[ERROR] Check out [grab_urls]. if those url[s] are correct,\nplease reffer to: %s\n" "$_reff"; exit 1;;
+         14) printf "\n%s\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
+         15) printf "\n%s\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
          16) printf "%s\n[\x1b[93m$HOST\x1b[0m]: if these address is correct, maybe isDOWN\n%s\n" "$_exit" "Incomplete TASK"; exit 1;;
-         17) printf "\n%s\n%s\n" "$_xcod" "[$(basename "$2")]: doesn't exist"; exit 1;;
-          *) printf "\nUnknown exit code [f_excod %s], please check:\n%s\n" "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
+         17) printf "\n%s\n%s\n" "$_xcod" "$(basename "$2"): doesn't exist"; exit 1;;
+          *) printf "\n[ERROR] Unknown exit code [f_excod %s], please check:\n%s\n" "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
       esac
    done
    }

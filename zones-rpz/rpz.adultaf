@@ -1,6 +1,6 @@
 ; rpz.adultaf
 $TTL 3600
-@   SOA   adultaf.localhost. dummy.adultaf.localhost. (2022032200 3600 300 86400 60)
+@   SOA   adultaf.localhost. dummy.adultaf.localhost. (2022041200 3600 300 86400 60)
 @       NS      adultaf.localhost.
 @       IN      A       127.0.8.1
 ;

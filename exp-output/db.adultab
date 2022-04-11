@@ -1,10 +1,10 @@
-; generate at [04-Apr-22 15:50:00 UTC] by grab_build.sh v4.2
+; generate at [11-Apr-22 19:24:38 UTC] by grab_build.sh v5.2
 ;
-campseguin.com IN CNAME .
-*.campseguin.com IN CNAME .
-campsexy.com IN CNAME .
-*.campsexy.com IN CNAME .
-campshane.com IN CNAME .
-*.campshane.com IN CNAME .
-campsiestudio.com IN CNAME .
-*.campsiestudio.com IN CNAME .
+cameronrpbgsy.blogspot.com.au IN CNAME .
+*.cameronrpbgsy.blogspot.com.au IN CNAME .
+cameronrpbgsy.blogspot.com.br IN CNAME .
+*.cameronrpbgsy.blogspot.com.br IN CNAME .
+cameronrpbgsy.blogspot.com.by IN CNAME .
+*.cameronrpbgsy.blogspot.com.by IN CNAME .
+cameronrpbgsy.blogspot.com.co IN CNAME .
+*.cameronrpbgsy.blogspot.com.co IN CNAME .
