@@ -18,7 +18,7 @@ source "$_DIR"/grab_lib.sh
 cd "$_DIR"
 printf "\n\x1b[91m[2'nd] TASK:\x1b[0m\nSplitting adult category to 750.000 lines/sub-category\n"
 [ -f "txt.adult" ] || f_excod 17 "txt.adult"; split -l 750000 txt.adult txt.adult; mv txt.adult /tmp
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_txt[@]}" -eq 11 ]; then
    ar_cat=(); ar_dom=()
    for Y in {0..10}; do
@@ -36,7 +36,7 @@ if [ "${#ar_txt[@]}" -eq 11 ]; then
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
       fi
    done
-   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
+   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
    printf "%41s : %10s entries\n" "TOTAL" "$ttl"
 else
    printf "\n\x1b[91mFAILED due to:\x1b[0m just FOUND %s of 11 domain list:\n\t%s\n" "${#ar_txt[@]}" "${ar_txt[*]}"

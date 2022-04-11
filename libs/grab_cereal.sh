@@ -12,12 +12,12 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 cd "$_DIR"
 printf "\n\x1b[91m[3'th] TASK:\x1b[0m\n[INFO] Incrementing serial of zone files (rpz.* files)\n"
-mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
+mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_zon[@]}" -eq 11 ]; then
    printf "[INFO] found:\t%s complete\n" "${#ar_zon[@]}"
    for Z in "${ar_zon[@]}"; do
       DATE=$(date +%Y%m%d)
-      SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d' ' -f1)
+      SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d" " -f1)
       if [ ${#SERIAL} -lt ${#DATE} ]; then
          newSERIAL="${DATE}00"
       else
@@ -25,7 +25,7 @@ if [ "${#ar_zon[@]}" -eq 11 ]; then
          if [ "$DATE" -eq "$SERIAL_date" ]; then     # same day
             SERIAL_num=${SERIAL: -2}                 # give [00-99] times to change
             SERIAL_num=$((10#$SERIAL_num + 1))       # force decimal increment
-            newSERIAL="${DATE}$(printf '%02d' $SERIAL_num)"
+            newSERIAL="${DATE}$(printf "%02d" $SERIAL_num)"
          else
             newSERIAL="${DATE}00"
          fi
@@ -40,7 +40,7 @@ else
             rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of 11 zones\". Missing zones files:\n" "${#ar_zon[@]}"
    printf -v ms_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-   printf "%s" "$ms_v" | tr '\n' ',' | sed -e 's/,$//g' > /tmp/mr_p
+   printf "%s" "$ms_v" | tr "\n" "," | sed -e "s/,$//g" > /tmp/mr_p
    printf "~ %s\n" "$(cat /tmp/mr_p)"
    printf "\x1b[32m[INFO]\x1b[0m Trying to get the missing file(s) from origin: %s\n" "$HOST"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then

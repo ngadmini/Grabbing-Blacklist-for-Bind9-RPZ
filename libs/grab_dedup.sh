@@ -17,7 +17,7 @@ trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 source "$_DIR"/grab_lib.sh
 
 cd "$_DIR"
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_txt[@]}" -eq 6 ]; then
    # declare tmp files as array
    ar_cat=(); ar_dmn=(); ar_tmp=()
@@ -73,13 +73,13 @@ fi
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
 unset -v ar_txt
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e 's/\.\///' | sort)
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 printf "\ndeduplicating domain lists (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
 for P in {0..5}; do
    printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "$dpl"
 done
-printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
+printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$dpl_ttl"
 printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0

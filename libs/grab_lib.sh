@@ -14,7 +14,7 @@ alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0")
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
-   find . -regextype posix-extended -regex '^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$' -print0 | xargs -0 -r rm
+   find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
@@ -23,7 +23,7 @@ f_trap() { printf "\n"; f_tmp; unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,u
 
 f_excod() {   # exit code {9..18}
    for EC in $1; do
-      _lin=$(grep -n '^HOST' "$_foo" | cut -d':' -f1)
+      _lin=$(grep -n "^HOST" "$_foo" | cut -d":" -f1)
       local _xcod="[$_foo]: at line ${BASH_LINENO[0]}. Exit error $EC"
       local _exit="[$_foo]: at line $_lin. Exit error $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
@@ -96,9 +96,9 @@ f_sm11() {
 f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
-f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed '/[^\o0-\o177]/d' | _sed -e "$4" -e "$5" > "$3"; }
+f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; }
 
-f_falsg() { # throw ip-address entry to ipv4 CATEGORY
+f_falsg() { # throw ip-address entry to ipv4 CATEGORY. add CIDR but with 'dot' not 'slash'
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
    _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\.32/" >> "$2" || true
    _sed -Ei "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" "$1"
@@ -108,8 +108,8 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
    printf "\n\x1b[91m[4'th] TASK:\x1b[0m\n"
    if ping -w 1 "$1" >> /dev/null 2>&1; then
-      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e 's/\.\///' | sort)
-      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e 's/\.\///' | sort)
+      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
+      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
       if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
          local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
 
@@ -122,7 +122,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
          _rsync {rpz,db}.* root@"$1":/etc/bind/zones-rpz/
 
          # reboot [after +@ minute] due to low memory
-         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f '+5m' date +%H:%M:%S)"
+         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f "+5m" date +%H:%M:%S)"
          _ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
          printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$1"
          # OR comment 3 lines above AND uncomment 2 lines below, if yo have sufficient RAM
@@ -159,10 +159,10 @@ f_crawl() { # verify "URLS" isUP
    done < "$1"
    local isDOWNCount=${#isDOWN[@]}
    if [ "$isDOWNCount" -eq 0 ]; then
-      printf "%30s\n" " " | tr ' ' -
+      printf "%30s\n" " " | tr " " -
       printf "%s\n" "All URLS of remote files isUP."
    else
-      printf "%30s\n" " " | tr ' ' -
+      printf "%30s\n" " " | tr " " -
       printf "\x1b[91m%s\x1b[0m\n" "${isDOWN[@]}"
       f_excod 13
    fi
@@ -175,8 +175,8 @@ f_ddup() {  # used by grab_dedup.sh
    }
 
 f_app() {   # used by grab_build.sh
-   local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
-   sed -i -e "1i ; generate at \[$(date -u '+%d-%b-%y %T') UTC\] by $_foo $_tag\n;" "$1"
+   local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
+   sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
    }
