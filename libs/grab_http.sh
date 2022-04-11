@@ -61,7 +61,7 @@ printf "\x1b[93mPREPARING TASK:\x1b[0m %-64s" "Check programs dependecies on loc
 for X in {curl,faketime,dos2unix,rsync,shellcheck}; do hash "$X" >>/dev/null 2>&1 || f_excod 8 "$X"; done; f_sm5
 
 printf "\x1b[93mPREPARING TASK:\x1b[0m %-64s" "Check programs dependecies on '$HOST'"
-for Y in {rsync,pigz}; do ssh root@rpz.warnet-ersa.net "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_sm5
+for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_sm5
 
 printf "\x1b[93mPREPARING TASK:\x1b[0m %-64s" "Check availability and properties of script-pack"
 for C in {"$_DPL","$_BLD","$_CRL","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
