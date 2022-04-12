@@ -11,7 +11,7 @@ PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 cd "$_DIR"
-printf "\n\x1b[91m[3'th] TASK:\x1b[0m\n[INFO] Incrementing serial of zone files (rpz.* files)\n"
+printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\n[INFO] Incrementing serial of zone files (rpz.* files)\n"
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_zon[@]}" -eq 11 ]; then
    printf "[INFO] found:\t%s complete\n" "${#ar_zon[@]}"
@@ -42,22 +42,24 @@ else
    printf -v ms_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
    printf "%s" "$ms_v" | tr "\n" "," | sed -e "s/,$//g" > /tmp/mr_p
    printf "~ %s\n" "$(cat /tmp/mr_p)"
-   printf "\x1b[32m[INFO]\x1b[0m Trying to get the missing file(s) from origin: %s\n" "$HOST"
+   printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       # passwordless ssh checking
-      ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || { printf "%s doesn't support passwordless ssh\n" "'$HOST'"; exit 1; }
+      ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 \
+         || { printf "%s doesn't support passwordless ssh\n" "'$HOST'"; exit 1; }
       miss="$(cat /tmp/mr_p)"
       if ! scp -qr root@$HOST:/etc/bind/zones-rpz/"{$miss}" "$_DIR" >> /dev/null 2>&1; then
-         printf "\x1b[32m[INFO]\x1b[0m One or more zones files are missing. %s\n" "You should create:"
+         printf "[INFO] One or more zones files are missing. %s\n" "You should create:"
          printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$miss" "Incomplete TASK"
          exit 1
       else
-         printf "\x1b[32m[INFO]\x1b[0m Successfully copied:\n~ %s\n" "$miss"
-         printf "\x1b[32m[INFO]\x1b[0m Retry running TASK again\n"
+         printf "[INFO] Successfully copied:\n~ %s\n" "$miss"
+         printf "[INFO] Retry running TASK again\n"
          exec "$0"
       fi
    else
-      printf "[ERROR] host = \x1b[93m%s\x1b[0m if that address is correct, maybe DOWN\n%s\n" "$HOST" "Incomplete TASK"
+      printf "[ERROR] host = \x1b[93m%s\x1b[0m if that address is correct, maybe DOWN\n%s\n" \
+         "$HOST" "Incomplete TASK"
       exit 1
    fi
    rm /tmp/mr_p

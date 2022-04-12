@@ -19,7 +19,8 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
 
-f_trap() { printf "\n"; f_tmp; unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN; }
+f_uset() { unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN; }
+f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_excod() {   # exit code {9..18}
    for EC in $1; do
@@ -28,18 +29,27 @@ f_excod() {   # exit code {9..18}
       local _exit="[ERROR] $_foo: at line $_lin. Exit error code: $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
-          7) printf "\n%s\n%s\n" "$_xcod" "require passwordless ssh to remote host: '$2'"; exit 1;;
-          8) printf "\n%s\n%s\n" "$_xcod" "require '$2' but it's not installed"; exit 1;;
-          9) printf "\n%s\n%s\n" "$_xcod" "'$2' require '$3' but it's not installed"; exit 1;;
-         10) printf "\n%s\n%s\n" "$_xcod" "you must login as non-root"; exit 1;;
-         11) printf "\n%s\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") urls. it should consist of 21 urls"; exit 1;;
-         12) printf "\n%s\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") lines. it should consist of 4 lines"; exit 1;;
-         13) printf "[ERROR] Check out [grab_urls]. if those url[s] are correct,\nplease reffer to: %s\n" "$_reff"; exit 1;;
-         14) printf "\n%s\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
-         15) printf "\n%s\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
-         16) printf "%s\n[\x1b[93m$HOST\x1b[0m]: if these address is correct, maybe isDOWN\n%s\n" "$_exit" "Incomplete TASK"; exit 1;;
-         17) printf "\n%s\n%s\n" "$_xcod" "$(basename "$2"): doesn't exist"; exit 1;;
-          *) printf "\n[ERROR] Unknown exit code [f_excod %s], please check:\n%s\n" "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
+          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
+                "require passwordless ssh to remote host: '$2'"; exit 1;;
+          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
+                "require '$2' but it's not installed"; exit 1;;
+          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
+                "'$2' require '$3' but it's not installed"; exit 1;;
+         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
+                "you must login as non-root"; exit 1;;
+         11) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
+                "$(basename "$2"): $(wc -l < "$2") urls. it's should consist of 21 urls"; exit 1;;
+         12) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
+                "$(basename "$2"): $(wc -l < "$2") lines. it's should consist of 4 lines"; exit 1;;
+         13) printf "\n\x1b[91m[ERROR]\x1b[0m Check out [grab_urls]. if those url[s] are correct, please reffer to:\n\t%s\n" \
+                "$_reff"; exit 1;;
+         14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
+         15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
+         16) printf "%s\n\x1b[93m$HOST\x1b[0m: if these address is correct, maybe isDOWN\n%s\n" \
+                "$_exit" "Incomplete TASK"; exit 1;;
+         17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): doesn't exist"; exit 1;;
+          *) printf "\n\x1b[91m[ERROR]\x1b[0m Unknown exit code [f_excod %s], please check:\n%s\n" \
+                "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
       esac
    done
    }
@@ -82,7 +92,7 @@ f_sm5() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }      # display DONE
 f_sm6() {                                             # display FINISH messages
    printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
    printf "\x1b[32mWARNING:\x1b[0m there are still remaining duplicate entries between domain lists.\n"
-   printf "%17s continue to next TASK.\n" "consider"
+   printf "%17s continue to next TASKs.\n" "consider"
    }
 
 # display processing messages
@@ -95,6 +105,7 @@ f_sm11() {
    printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
    printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    }
+f_sm12() { printf "\x1b[32m%s\x1b[0m\n" "OK"; }      # display DONE
 
 f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
 
@@ -109,7 +120,7 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY. add CIDR but with 'dot' n
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
-   printf "\n\x1b[91m[4'th] TASK:\x1b[0m\n"
+   printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\n"
    if ping -w 1 "$1" >> /dev/null 2>&1; then
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
       mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
