@@ -22,7 +22,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
 f_uset() { unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
-f_excod() {   # exit code {9..18}
+f_excod() {   # exit code {7..17}
    for EC in $1; do
       _lin=$(grep -n "^HOST" "$_foo" | cut -d":" -f1)
       local _xcod="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit error code: $EC"
@@ -99,13 +99,15 @@ f_sm6() {                                             # display FINISH messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nProcessing \x1b[93m%s CATEGORY\x1b[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
-f_sm10() { printf "\n\x1b[91mTASK[s]\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
+f_sm10() { printf "\n\x1b[91mTASKs\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
+
 f_sm11() {
    printf "\n\x1b[91m[%s'th] TASK options chosen\x1b[0m\n" "$RETVAL"
    printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
    printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    }
-f_sm12() { printf "\x1b[32m%s\x1b[0m\n" "OK"; }      # display DONE
+
+f_sm12() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
 
 f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
 

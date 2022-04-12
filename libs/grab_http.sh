@@ -52,19 +52,19 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
 # START MAIN SCRIPT
 cd "$_DIR"; printf "\nstarting ...\n%s\n" "$start"
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-64s" "Check script is firring by non-root privileges"
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is firring by non-root privileges"
 [ ! "$UID" -eq 0 ] || f_excod 10; f_sm12
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-64s" "Check capability '$HOST' for passwordless ssh"
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check capability '$HOST' for passwordless ssh"
 ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_sm12
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-64s" "Check programs dependency on local host"
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check programs dependency on local host"
 for X in {curl,faketime,dos2unix,rsync,shellcheck}; do hash "$X" >>/dev/null 2>&1 || f_excod 8 "$X"; done; f_sm12
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-64s" "Check programs dependency on '$HOST'"
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check programs dependency on '$HOST'"
 for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_sm12
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-64s" "Check availability and property of script-pack"
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
 for C in {"$_DPL","$_BLD","$_CRL","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11 "$_URL"
 [ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12 "$_REG"
@@ -172,34 +172,35 @@ for U in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[U]}")"
    printf "%12s: %9s entries\n" "${ar_cat[U]}" "$aqr_sum"
 done
-printf -v ttl_sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
-printf "%12s: %9s entries\n" "TOTAL" "$ttl_sum"
+printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
+printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
 # SORTING and PRUNING sub-domains if domains present
-printf "\nSORT & PRUNE: sorting and pruning sub-domains if domains present%-17s" " "
+printf "\n\x1b[93mSORT & PRUNE\x1b[0m: sorting and pruning sub-domains if domains present\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
-for V in {0..5}; do   # skip ipV4 from sorting and pruning
-   if [ "$V" -eq 1 ]; then continue; fi
-   _sort -u "${ar_txt[V]}" -o "${ar_txt[V]}"
-   _sed 's/^/\./' "${ar_txt[V]}" | rev | _sort -u \
-      | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-      | rev | _sed "s/^\.//" | _sort > "${ar_tmp[V]}"
-   unset -v ar_txt
-   mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
-   cp "${ar_tmp[V]}" "${ar_txt[V]}"
-done
-f_sm5
 
-# display the result of SORTING AND PRUNING
-printf "Acquired domains (\x1b[93m%s CATEGORIES\x1b[0m) after sorting and pruning:\n" "${#ar_txt[@]}"
-for W in {0..5}; do
-   printf -v aqr_sp "%'d" "$(wc -l < "${ar_txt[W]}")"
-   printf "%12s: %9s entries\n" "${ar_cat[W]}" "$aqr_sp"
+for V in {0..5}; do
+   if [ "$V" -eq 1 ]; then
+      # skip ipv4 from sorting and pruning
+      cp "${ar_txt[V]}" "${ar_tmp[V]}"
+      printf -v _ipv4 "%'d" "$(wc -l < "${ar_tmp[V]}")"
+      printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_ipv4"
+   else
+      _sort -u "${ar_txt[V]}" -o "${ar_txt[V]}"
+      _sed 's/^/\./' "${ar_txt[V]}" | rev | _sort -u \
+         | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
+         | rev | _sed "s/^\.//" | _sort > "${ar_tmp[V]}"
+      printf -v _snp "%'d" "$(wc -l < "${ar_tmp[V]}")"
+      printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_snp"
+      cp "${ar_tmp[V]}" "${ar_txt[V]}"
+   fi
 done
-printf -v ttl_sp "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
-printf "%12s: %9s entries\n" "TOTAL" "$ttl_sp"
 
 # TASKs: completed
+unset -v ar_txt
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
+printf "%12s: %s entries\n" "TOTAL" "$_tsp"
 endTime=$(date +%s); DIF=$((endTime - startTime)); f_sm6 "$((DIF/60))" "$((DIF%60))s"; f_uset
 
 # offerring OPTIONs: continued to next stept OR stop here

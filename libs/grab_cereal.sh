@@ -11,7 +11,7 @@ PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 cd "$_DIR"
-printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\n[INFO] Incrementing serial of zone files (rpz.* files)\n"
+printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\n[INFO] incrementing serial of zone files (rpz.* files)\n"
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_zon[@]}" -eq 11 ]; then
    printf "[INFO] found:\t%s complete\n" "${#ar_zon[@]}"
