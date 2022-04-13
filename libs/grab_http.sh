@@ -187,7 +187,7 @@ for V in {0..5}; do
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
          END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[V]}"
       done < "${ar_txt[V]}"
-      _sed -i "s/\//\./" "${ar_txt[V]}"
+      _sed -i "s/\//\./" "${ar_tmp[V]}"
       printf -v _ipv4 "%'d" "$(wc -l < "${ar_tmp[V]}")"
       printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_ipv4"
       cp "${ar_tmp[V]}" "${ar_txt[V]}"
