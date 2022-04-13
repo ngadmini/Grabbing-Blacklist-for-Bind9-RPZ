@@ -16,7 +16,7 @@ trap f_trap EXIT INT TERM    # cleanUP on exit, interrupt & terminate
 source "$_DIR"/grab_lib.sh
 HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 
-ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 8 "$HOST"
+ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"
 cd "$_DIR"
 f_syn "$HOST"
 exit 0

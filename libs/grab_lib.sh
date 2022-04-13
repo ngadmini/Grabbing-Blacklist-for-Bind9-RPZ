@@ -45,9 +45,10 @@ f_excod() {   # exit code {7..17}
                 "$_reff"; exit 1;;
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
-         16) printf "%s\n\x1b[93m$HOST\x1b[0m: if these address is correct, maybe isDOWN\n%s\n" \
-                "$_exit" "Incomplete TASK"; exit 1;;
+         16) printf "%s\n\x1b[93m%s\x1b[0m: if these address is correct, maybe isDOWN\n%s\n" \
+                "$_exit" """$2""" "Incomplete TASK"; exit 1;;
          17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): doesn't exist"; exit 1;;
+         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" """$2"" doesn't exist in ""$3"""; exit 1;;
           *) printf "\n\x1b[91m[ERROR]\x1b[0m Unknown exit code [f_excod %s], please check:\n%s\n" \
                 "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
       esac
@@ -124,18 +125,20 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
    printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\n"
    if ping -w 1 "$1" >> /dev/null 2>&1; then
+      _remdir="/etc/bind/zones-rpz/"
+      _ssh root@"$1" [[ -d "$_remdir" ]] || f_excod 18 "$_remdir" "$1"
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
       mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
       if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
          local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
 
-         # use 'unpigz -v rpz-2022-04-09.tar.gz' then 'tar xvf rpz-2022-04-09.tar' for decompression
+         # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
          printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$1" "$_ID"
          _ssh root@"$1" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
          printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$1"
          _ssh root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
          printf "[INFO] syncronizing the latest RPZ dBase to %s\n" "$1"
-         _rsync {rpz,db}.* root@"$1":/etc/bind/zones-rpz/
+         _rsync {rpz,db}.* root@"$1":"$_remdir"
 
          # reboot [after +@ minute] due to low memory
          printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f "+5m" date +%H:%M:%S)"
@@ -152,7 +155,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
          exec "$0"
       fi
    else
-      f_excod 16
+      f_excod 16 "$1"
    fi
    }
 
@@ -207,4 +210,27 @@ f_ip4() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
    f_app "$@"
+   }
+
+f_cer() {   # used by grab_cereal.sh
+   if ping -w 1 "$1" >> /dev/null 2>&1; then
+      local _remdir; _remdir="/etc/bind/zones-rpz"
+      # passwordless ssh
+      _ssh -o BatchMode=yes "$1" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$1"
+      _ssh root@"$1" [[ -d "$_remdir" ]] || f_excod 18 "'_remdir'" "$1"
+
+      local miss; miss="$(cat /tmp/mr_p)"
+      if ! scp -qr root@"$1":"$_remdir"/rpz.* "$_DIR" >> /dev/null 2>&1; then
+         printf "[INFO] One or more zone files are missing. %s\n" "You should create:"
+         printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$miss" "Incomplete TASK"
+         return 1
+      else
+         printf "[INFO] Successfully copied:\n~ %s\n" "$miss"
+         printf "[INFO] Retry running TASK again\n"
+         exec "$0"
+      fi
+
+   else
+      f_excod 16 "$1"
+   fi
    }
