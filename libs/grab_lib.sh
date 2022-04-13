@@ -70,16 +70,16 @@ f_sm1() {   # display messages when 1'st option chosen
    }
 
 f_sm2() {   # display messages when 2'nd option chosen
-   f_sm11; printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
+   f_sm5; printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm3() {   # display messages when 3'th option chosen
-   f_sm11; printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
+   f_sm5; printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
    printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
 f_sm4() {   # display messages when 4'th option chosen
-   f_sm11; printf "%28s serial zone files [rpz.*]\n" "~incrementing"
+   f_sm5; printf "%28s serial zone files [rpz.*]\n" "~incrementing"
    printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$1"
    if grep -qE "^\s{2,}#s(*.*)d\"" grab_lib.sh; then
        printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$1"
@@ -88,7 +88,13 @@ f_sm4() {   # display messages when 4'th option chosen
    printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
-f_sm5() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }      # display DONE
+f_sm5() {
+   printf "\n\x1b[91m[%s'th] TASK options chosen\x1b[0m\n" "$RETVAL"
+   printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
+   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
+   }
+
+
 f_sm6() {                                             # display FINISH messages
    printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
    printf "\x1b[32mWARNING:\x1b[0m there are still remaining duplicate entries between domain lists.\n"
@@ -100,25 +106,19 @@ f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nProcessing \x1b[93m%s CATEGORY\x1b[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n\x1b[91mTASKs\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
-
-f_sm11() {
-   printf "\n\x1b[91m[%s'th] TASK options chosen\x1b[0m\n" "$RETVAL"
-   printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
-   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
-   }
-
-f_sm12() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
+f_ok() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
+f_do() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }         # display DONE
 
 f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; }
 
-f_falsg() { # throw ip-address entry to ipv4 CATEGORY. add CIDR but with 'dot' not 'slash'
+f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
-   _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\.32/" >> "$2" || true
+   _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\/32/" >> "$2" || true
    _sed -Ei "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" "$1"
-   f_sm5; printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
+   f_do; printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"

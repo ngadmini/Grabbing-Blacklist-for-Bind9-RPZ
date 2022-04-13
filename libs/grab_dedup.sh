@@ -39,7 +39,7 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_txt[C]}" \
          | _sort > "${ar_dmn[C]}"
       cp "${ar_dmn[C]}" "${ar_txt[C]}"
-      f_sm5
+      f_do
    done
 
    f_dupl "${ar_cat[3]}"   # based on ${ar_cat[3]}
@@ -48,7 +48,7 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_txt[D]}" \
          | _sort > "${ar_dmn[D]}"
       cp "${ar_dmn[D]}" "${ar_txt[D]}"
-      f_sm5
+      f_do
    done
 
    f_dupl "${ar_cat[5]}"   # based on ${ar_cat[5]}
@@ -57,7 +57,7 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_txt[E]}" \
          | _sort > "${ar_dmn[E]}"
       cp "${ar_dmn[E]}" "${ar_txt[E]}"
-      f_sm5
+      f_do
    done
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
@@ -66,7 +66,7 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[4]}" "${ar_txt[4]}" \
       | _sort > "${ar_dmn[4]}"
    cp "${ar_dmn[4]}" "${ar_txt[4]}"
-   f_sm5
+   f_do
 
 else
    printf "\n\x1b[91m[FAILED]\x1b[0m due to: just FOUND %s of 6 domain list:\n\t%s\n" \

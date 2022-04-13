@@ -32,7 +32,7 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -C - -ksfO "${ar_url[A]}" || f_excod 14 "${ar_url[A]}"
       tar -xzf "$tar_dsi" "$ext_dsi/domains"
-      f_sm5
+      f_do
    done
 
    # define initial category and verify main category are present in array
@@ -53,22 +53,22 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
 cd "$_DIR"; printf "\nstarting ...\n%s\n" "$start"
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is firring by non-root privileges"
-[ ! "$UID" -eq 0 ] || f_excod 10; f_sm12
+[ ! "$UID" -eq 0 ] || f_excod 10; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check capability '$HOST' for passwordless ssh"
-ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_sm12
+ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check programs dependency on local host"
-for X in {curl,faketime,dos2unix,rsync,shellcheck}; do hash "$X" >>/dev/null 2>&1 || f_excod 8 "$X"; done; f_sm12
+for X in {curl,dos2unix,faketime,perl,rsync}; do hash "$X" >>/dev/null 2>&1 || f_excod 8 "$X"; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check programs dependency on '$HOST'"
-for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_sm12
+for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
 for C in {"$_DPL","$_BLD","$_CRL","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11 "$_URL"
 [ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12 "$_REG"
-f_sm12
+f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m Check the remote files isUP or isDOWN\n"
 ar_sho=(); f_crawl "$_URL" || true
@@ -77,7 +77,7 @@ f_grab
 # CATEGORY: TRUST+ --> ${ar_cat[3]} with 2 additional entries: ${urls[1,7]}
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
-f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v "^#" >> "${porn}"; f_sm5
+f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v "^#" >> "${porn}"; f_do
 for D in ${untrust}; do
    f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed "/[^\o0-\o177]/d" | _sed -e "${ar_reg[2]}" >> "$D"
    # throw porn-domains in ${untrust} and ${porn} to ${ar_dmn[0]}, use "${trust}" as temporary
@@ -86,83 +86,83 @@ for D in ${untrust}; do
    # delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "$D" >> "${ar_dmn[5]}"
 done
-f_sm5
+f_do
 
 # fixing bad, duplicate and false entry
 for E in ${ar_dmn[5]}; do
    f_falsf "${ar_cat[5]}" "$E" "${ar_txt[5]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_sm5
+f_do
 for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_sm5; done
+for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_do; done
 cat "${trust}" >> "${ar_dmn[0]}"
 # fixing bad, duplicate and false entry
 for H in ${ar_dmn[0]}; do
    f_falsf "${ar_cat[0]}" "$H" "${ar_txt[0]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_sm5
+f_do
 for I in ${ar_txt[0]}; do f_falsg "$I" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 f_sm8 "${ar_cat[4]}" 2
-for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_sm5; done
+for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_do; done
 # fixing bad, duplicate and false entry
 for K in ${ar_dmn[4]}; do
    f_falsf "${ar_cat[4]}" "$K" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_sm5
+f_do
 for L in ${ar_txt[4]}; do f_falsg "$L" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: PUBLICITE --> ${ar_cat[3]} with 4 additional entries: ${urls[8..11]}
 f_sm8 "${ar_cat[3]}" 4
 for M in {8..11}; do
-   f_sm7 "$M" "${ar_sho[M]}"; f_add "${ar_url[M]}" | _grep -v "^#" >> "${ar_dmn[3]}"; f_sm5
+   f_sm7 "$M" "${ar_sho[M]}"; f_add "${ar_url[M]}" | _grep -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 # fixing bad, duplicate and false entry
 for N in ${ar_dmn[3]}; do
    f_falsf "${ar_cat[3]}" "$N" "${ar_txt[3]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_sm5
+f_do
 for O in ${ar_txt[3]}; do f_falsg "$O" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: MALWARE --> ${ar_cat[2]} with 7 additional entries: ${ar_url[12..18]}
 f_sm8 "${ar_cat[2]}" 7
-f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d" " -f2 >> "${ar_dmn[2]}"; f_sm5
-f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d" " -f1 >> "${ar_dmn[2]}"; f_sm5
+f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d" " -f2 >> "${ar_dmn[2]}"; f_do
+f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d" " -f1 >> "${ar_dmn[2]}"; f_do
 for P in {14..18}; do
    if [ "$P" -eq 15 ]; then
-      f_sm7 "$P" "${ar_sho[P]}"; f_add "${ar_url[P]}" | _grep -v "^#" | _sed "s/\s#*.*//" >> "${ar_dmn[2]}"; f_sm5
+      f_sm7 "$P" "${ar_sho[P]}"
+      f_add "${ar_url[P]}" | _grep -v "^#" | _sed "s/\s#*.*//" >> "${ar_dmn[2]}"
+      f_do
    else
-      f_sm7 "$P" "${ar_sho[P]}"; f_add "${ar_url[P]}" | _grep -v "^#" >> "${ar_dmn[2]}"; f_sm5
+      f_sm7 "$P" "${ar_sho[P]}"
+      f_add "${ar_url[P]}" | _grep -v "^#" >> "${ar_dmn[2]}"
+      f_do
    fi
 done
 # fixing bad, duplicate and false entry
 for Q in ${ar_dmn[2]}; do
    f_falsf "${ar_cat[2]}" "$Q" "${ar_txt[2]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_sm5
+f_do
 for R in ${ar_txt[2]}; do f_falsg "$R" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # CATEGORY: IPV4 --> ${ar_cat[1]} with 4 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
-for S in {19,20}; do   # add CIDR if not present then change 'slash' to 'dot'
+for S in {19,20}; do
    f_sm7 "$S" "${ar_sho[S]}"
-   f_add "${ar_url[S]}" | _grep -v "^#" \
-      | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\.32/" \
-      | _sed "s/\//\./" >> "${ar_dmn[1]}"
-   f_sm5
+   f_add "${ar_url[S]}" | _grep -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
+   f_do
 done
 # fixing bad, duplicate and false entry
 f_sm9 "${ar_cat[1]}"
 for T in ${ar_dmn[1]}; do
-   awk '!x[$0]++' "$T" \
-      | _sed -e "/\(:\|\.$\)/d" \
-      | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 -o "${ar_txt[1]}"
+   awk '!x[$0]++' "$T" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
 done
-f_sm5
+f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
@@ -175,17 +175,24 @@ done
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
-# SORTING and PRUNING sub-domains if domains present
-printf "\n\x1b[93mSORT & PRUNE\x1b[0m: sorting and pruning sub-domains if domains present\n"
+# SORTING and PRUNING sub-domains if domains present and sub-net in CIDR
+printf "\n\x1b[93mPRUNING\x1b[0m: sub-domains if domains present and sub-nets in CIDR\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for V in {0..5}; do
    if [ "$V" -eq 1 ]; then
-      # skip ipv4 from sorting and pruning
-      cp "${ar_txt[V]}" "${ar_tmp[V]}"
+      # prune sub-nets in CIDR
+      while read -r; do
+         perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
+         $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
+         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[V]}"
+      done < "${ar_txt[V]}"
+      _sed -i "s/\//\./" "${ar_txt[V]}"
       printf -v _ipv4 "%'d" "$(wc -l < "${ar_tmp[V]}")"
       printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_ipv4"
+      cp "${ar_tmp[V]}" "${ar_txt[V]}"
    else
+      # prune sub-domains if domain present
       _sort -u "${ar_txt[V]}" -o "${ar_txt[V]}"
       _sed 's/^/\./' "${ar_txt[V]}" | rev | _sort -u \
          | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
