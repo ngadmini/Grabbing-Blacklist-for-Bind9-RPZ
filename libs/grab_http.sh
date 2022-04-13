@@ -58,10 +58,11 @@ printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is firring by non-r
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check capability '$HOST' for passwordless ssh"
 ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_ok
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check programs dependency on local host"
-for X in {curl,dos2unix,faketime,perl,rsync}; do hash "$X" >>/dev/null 2>&1 || f_excod 8 "$X"; done; f_ok
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on local host"
+pkg='curl dos2unix faketime libnet-netmask-perl perl rsync'
+for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_excod 8 "$X"; fi; done; f_ok
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check programs dependency on '$HOST'"
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on remote host: $HOST"
 for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
@@ -99,6 +100,7 @@ for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 f_sm8 "${ar_cat[0]}" 3
 for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_do; done
 cat "${trust}" >> "${ar_dmn[0]}"
+
 # fixing bad, duplicate and false entry
 for H in ${ar_dmn[0]}; do
    f_falsf "${ar_cat[0]}" "$H" "${ar_txt[0]}" "${ar_reg[0]}" "${ar_reg[1]}"
@@ -109,6 +111,7 @@ for I in ${ar_txt[0]}; do f_falsg "$I" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 # CATEGORY: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 f_sm8 "${ar_cat[4]}" 2
 for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_do; done
+
 # fixing bad, duplicate and false entry
 for K in ${ar_dmn[4]}; do
    f_falsf "${ar_cat[4]}" "$K" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
@@ -121,6 +124,7 @@ f_sm8 "${ar_cat[3]}" 4
 for M in {8..11}; do
    f_sm7 "$M" "${ar_sho[M]}"; f_add "${ar_url[M]}" | _grep -v "^#" >> "${ar_dmn[3]}"; f_do
 done
+
 # fixing bad, duplicate and false entry
 for N in ${ar_dmn[3]}; do
    f_falsf "${ar_cat[3]}" "$N" "${ar_txt[3]}" "${ar_reg[0]}" "${ar_reg[1]}"
@@ -143,6 +147,7 @@ for P in {14..18}; do
       f_do
    fi
 done
+
 # fixing bad, duplicate and false entry
 for Q in ${ar_dmn[2]}; do
    f_falsf "${ar_cat[2]}" "$Q" "${ar_txt[2]}" "${ar_reg[0]}" "${ar_reg[1]}"
@@ -157,6 +162,7 @@ for S in {19,20}; do
    f_add "${ar_url[S]}" | _grep -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
+
 # fixing bad, duplicate and false entry
 f_sm9 "${ar_cat[1]}"
 for T in ${ar_dmn[1]}; do
@@ -175,13 +181,13 @@ done
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
-# SORTING and PRUNING sub-domains if domains present and sub-net in CIDR
-printf "\n\x1b[93mPRUNING\x1b[0m: sub-domains if domains present and sub-nets in CIDR\n"
+# SORT and PRUNE: sub-domains if domains present and turn sub-nets into CIDR blocks if any
+printf "\n\x1b[93mPRUNING\x1b[0m: sub-domains if domains present and sub-nets into CIDR blocks if any\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for V in {0..5}; do
    if [ "$V" -eq 1 ]; then
-      # prune sub-nets in CIDR
+      # prune sub-nets in CIDR. require 'perl' and 'libnet-netmask-perl'
       while read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
@@ -190,7 +196,6 @@ for V in {0..5}; do
       _sed -i "s/\//\./" "${ar_tmp[V]}"
       printf -v _ipv4 "%'d" "$(wc -l < "${ar_tmp[V]}")"
       printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_ipv4"
-      cp "${ar_tmp[V]}" "${ar_txt[V]}"
    else
       # prune sub-domains if domain present
       _sort -u "${ar_txt[V]}" -o "${ar_txt[V]}"
@@ -199,8 +204,8 @@ for V in {0..5}; do
          | rev | _sed "s/^\.//" | _sort > "${ar_tmp[V]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[V]}")"
       printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_snp"
-      cp "${ar_tmp[V]}" "${ar_txt[V]}"
    fi
+   cp "${ar_tmp[V]}" "${ar_txt[V]}"
 done
 
 # TASKs: completed

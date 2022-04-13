@@ -25,8 +25,8 @@ f_trap() { printf "\n"; f_tmp; f_uset; }
 f_excod() {   # exit code {7..17}
    for EC in $1; do
       _lin=$(grep -n "^HOST" "$_foo" | cut -d":" -f1)
-      local _xcod="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit error code: $EC"
-      local _exit="[ERROR] $_foo: at line $_lin. Exit error code: $EC"
+      local _xcod="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
+      local _exit="[ERROR] $_foo: at line $_lin. Exit code: $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
