@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_dedup.sh
-#   v5.2
+#   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
 SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
-startTime=$(date +%s)
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 umask 077
 export LC_NUMERIC=id_ID.UTF-8
+startTime=$(date +%s)
+start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
@@ -27,8 +28,9 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
       ar_tmp+=(tmr."${ar_txt[B]/txt./}")
    done
 
-   printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nEliminating duplicate entries between domain lists\n"
-   printf "FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
+   printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
+   printf "[INFO] Eliminating duplicate entries between domain lists\n"
+   printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
    # based on ${ar_dom[1,4]}
    printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing" "${ar_cat[1]^^}"
    printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\tdo nothing\n" "${ar_cat[4]^^}"
@@ -84,5 +86,5 @@ for P in {0..5}; do
 done
 printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$dpl_ttl"
-printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
+printf "[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0

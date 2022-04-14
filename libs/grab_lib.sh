@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_lib.sh
-#   v5.2
+#   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
@@ -12,6 +12,7 @@ alias _grep="LC_ALL=C grep"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0")
+HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
@@ -41,7 +42,7 @@ f_excod() {   # exit code {7..17}
                 "$(basename "$2"): $(wc -l < "$2") urls. it's should consist of 21 urls"; exit 1;;
          12) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
                 "$(basename "$2"): $(wc -l < "$2") lines. it's should consist of 4 lines"; exit 1;;
-         13) printf "\n\x1b[91m[ERROR]\x1b[0m Check out [grab_urls]. if those url[s] are correct, please reffer to:\n\t%s\n" \
+         13) printf "\x1b[91m[ERROR]\x1b[0m Check out [grab_urls]. if those url[s] are correct, please reffer to:\n\t%s\n" \
                 "$_reff"; exit 1;;
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
@@ -81,23 +82,23 @@ f_sm3() {   # display messages when 3'th option chosen
 
 f_sm4() {   # display messages when 4'th option chosen
    f_sm5; printf "%28s serial zone files [rpz.*]\n" "~incrementing"
-   printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$1"
+   printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$HOST"
    if grep -qE "^\s{2,}#s(*.*)d\"" grab_lib.sh; then
-       printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$1"
-       printf "%18s \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "use" "$1"
+       printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$HOST"
+       printf "%18s \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "use" "$HOST"
    fi
    printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
    }
 
-f_sm5() {
+f_sm5() {   # sub-function. must include in f_sm2 ... f_sm4
    printf "\n\x1b[91m[%s'th] TASK options chosen\x1b[0m\n" "$RETVAL"
    printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
    printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    }
 
 
-f_sm6() {                                             # display FINISH messages
-   printf "completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
+f_sm6() {   # display FINISH messages
+   printf "\n[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
    printf "\x1b[32mWARNING:\x1b[0m there are still remaining duplicate entries between domain lists.\n"
    printf "%17s continue to next TASKs.\n" "consider"
    }
@@ -123,30 +124,31 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
-   printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\n"
-   if ping -w 1 "$1" >> /dev/null 2>&1; then
+   # shellcheck disable=SC2154
+   printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
+   if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       _remdir="/etc/bind/zones-rpz/"
-      _ssh root@"$1" [[ -d "$_remdir" ]] || f_excod 18 "$_remdir" "$1"
+      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_excod 18 "$_remdir" "$HOST"
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
       mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
-      if [ "${#ar_db[@]}" -eq 11 ] && [ "${#ar_rpz[@]}" -eq 11 ]; then
+      if [ "${#ar_db[@]}" -eq 12 ] && [ "${#ar_rpz[@]}" -eq 12 ]; then
          local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
 
          # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
-         printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$1" "$_ID"
-         _ssh root@"$1" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
-         printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$1"
-         _ssh root@"$1" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-         printf "[INFO] syncronizing the latest RPZ dBase to %s\n" "$1"
-         _rsync {rpz,db}.* root@"$1":"$_remdir"
+         printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
+         _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
+         printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
+         _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
+         printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
+         _rsync {rpz,db}.* root@"$HOST":"$_remdir"
 
          # reboot [after +@ minute] due to low memory
-         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$1" "$(faketime -f "+5m" date +%H:%M:%S)"
-         _ssh root@"$1" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-         printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$1"
+         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
+         _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
+         printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
          # OR comment 3 lines above AND uncomment 2 lines below, if yo have sufficient RAM
-         #printf "Reload BIND9-server\n"
-         #ssh root@"$1" "rndc reload"
+         #printf "Reload BIND9-server:%s\n" "$HOST"
+         #ssh root@"$HOST" "rndc reload"
       else
          local _BLD="$_DIR"/grab_build.sh
          local _CRL="$_DIR"/grab_cereal.sh
@@ -155,11 +157,11 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
          exec "$0"
       fi
    else
-      f_excod 16 "$1"
+      f_excod 16 "$HOST"
    fi
    }
 
-f_crawl() { # verify "URLS" isUP
+f_crawl() {   # verify "URLS" isUP
    isDOWN=(); local i=-1
    while IFS= read -r line || [[ -n "$line" ]]; do
       # slicing urls && add element to ${ar_sho[@]}
@@ -181,7 +183,7 @@ f_crawl() { # verify "URLS" isUP
       printf "%30s\n" " " | tr " " -
       printf "%s\n" "All URLS of remote files isUP."
    else
-      printf "%30s\n" " " | tr " " -
+      printf "%84s\n" " " | tr " " -
       printf "\x1b[91m%s\x1b[0m\n" "${isDOWN[@]}"
       f_excod 13
    fi
@@ -193,34 +195,39 @@ f_ddup() {  # used by grab_dedup.sh
    _sort "$3" "$4" | uniq -d | _sort -u > "$5"
    }
 
-f_app() {   # used by grab_build.sh
+f_g4b() {   # used by grab_build.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
    sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "$acq_al"
    }
 
+f_g4c() {   # used by grab_cereal.sh
+   local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
+   sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
+   }
+
 f_rpz() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-   f_app "$@"
+   f_g4b "$@"
    }
 
 f_ip4() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
-   f_app "$@"
+   f_g4b "$@"
    }
 
-f_cer() {   # used by grab_cereal.sh
-   if ping -w 1 "$1" >> /dev/null 2>&1; then
+f_cer() {   # used by grab_cereal.sh to copy zone-files
+   if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       local _remdir; _remdir="/etc/bind/zones-rpz"
       # passwordless ssh
-      _ssh -o BatchMode=yes "$1" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$1"
-      _ssh root@"$1" [[ -d "$_remdir" ]] || f_excod 18 "'_remdir'" "$1"
+      _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"
+      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_excod 18 "'_remdir'" "$HOST"
 
       local miss; miss="$(cat /tmp/mr_p)"
-      if ! scp -qr root@"$1":"$_remdir"/rpz.* "$_DIR" >> /dev/null 2>&1; then
+      if ! scp -qr root@"$HOST":"$_remdir"/rpz.* "$_DIR" >> /dev/null 2>&1; then
          printf "[INFO] One or more zone files are missing. %s\n" "You should create:"
          printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$miss" "Incomplete TASK"
          return 1
@@ -231,6 +238,6 @@ f_cer() {   # used by grab_cereal.sh
       fi
 
    else
-      f_excod 16 "$1"
+      f_excod 16 "$HOST"
    fi
    }

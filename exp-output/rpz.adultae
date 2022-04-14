@@ -1,7 +1,0 @@
-; rpz.adultae
-$TTL 3600
-@   SOA   adultae.localhost. dummy.adultae.localhost. (2022041200 3600 300 86400 60)
-@       NS      adultae.localhost.
-@       IN      A       127.0.7.1
-;
-$INCLUDE "/etc/bind/zones-rpz/db.adultae"

@@ -1,32 +1,33 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v5.2
+#   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 
 SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
-HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
 _CRL="$_DIR"/grab_cereal.sh
 _DPL="$_DIR"/grab_dedup.sh
+_LIB="$_DIR"/grab_lib.sh
+_SCP="$_DIR"/grab_scp.sh
 _REG="$_DIR"/grab_regex
 _URL="$_DIR"/grab_urls
-_LIB="$_DIR"/grab_lib.sh
+startTime=$(date +%s)
+start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 umask 077
 export LC_NUMERIC=id_ID.UTF-8
 trap f_trap EXIT INT TERM       # cleanUP on exit, interrupt & terminate
-startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d%tTIME: %H:%M:%S")
 # shellcheck source=/dev/null
 source "$_LIB"
 
-f_grab() {    # initialize CATEGORY, many categories are obtained but it's the main one is adult
-   printf "\n\x1b[93mPERFORMING TASK.\x1b[0m Initiating CATEGORY of domains\n"
+f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
+   printf "\n\x1b[93mPERFORMING TASKs:\x1b[0m Initiating CATEGORY of domains\n"
    f_tmp                 # remove temporary dir-file if any
+
    for A in {0..5}; do   # grabbing dsi.ut-capitole.fr use as initial category
       tar_dsi=$(basename "${ar_url[A]}"); ext_dsi=${tar_dsi/.tar.gz/}
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
@@ -44,13 +45,14 @@ f_grab() {    # initialize CATEGORY, many categories are obtained but it's the m
    # remove previously domain lists if any && define temporary array based on initial category
    find . -maxdepth 1 -type f -name "txt.*" -print0 | xargs -0 -r rm
    ar_dmn=(); ar_tmp=(); ar_txt=()
+
    for B in {0..5}; do
       ar_dmn+=("${ar_cat[B]}"/domains); ar_tmp+=(tmq."${ar_cat[B]}"); ar_txt+=(txt."${ar_cat[B]}")
    done
 }
 
 # START MAIN SCRIPT
-cd "$_DIR"; printf "\nstarting ...\n%s\n" "$start"
+cd "$_DIR"; printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is firring by non-root privileges"
 [ ! "$UID" -eq 0 ] || f_excod 10; f_ok
@@ -63,10 +65,11 @@ pkg='curl dos2unix faketime libnet-netmask-perl perl rsync'
 for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_excod 8 "$X"; fi; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on remote host: $HOST"
+# shellcheck disable=SC2029
 for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
-for C in {"$_DPL","$_BLD","$_CRL","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
+for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
 [ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11 "$_URL"
 [ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12 "$_REG"
 f_ok
@@ -79,6 +82,7 @@ f_grab
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v "^#" >> "${porn}"; f_do
+
 for D in ${untrust}; do
    f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed "/[^\o0-\o177]/d" | _sed -e "${ar_reg[2]}" >> "$D"
    # throw porn-domains in ${untrust} and ${porn} to ${ar_dmn[0]}, use "${trust}" as temporary
@@ -136,6 +140,7 @@ for O in ${ar_txt[3]}; do f_falsg "$O" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 f_sm8 "${ar_cat[2]}" 7
 f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d" " -f2 >> "${ar_dmn[2]}"; f_do
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d" " -f1 >> "${ar_dmn[2]}"; f_do
+
 for P in {14..18}; do
    if [ "$P" -eq 15 ]; then
       f_sm7 "$P" "${ar_sho[P]}"
@@ -174,15 +179,17 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 # display of ACQUIRED DOMAINS
 [ "${#ar_txt[@]}" -eq 6 ] || f_excod 15
 printf "\nAcquired domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
+
 for U in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[U]}")"
    printf "%12s: %9s entries\n" "${ar_cat[U]}" "$aqr_sum"
 done
+
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
 # SORT and PRUNE: sub-domains if domains present and turn sub-nets into CIDR blocks if any
-printf "\n\x1b[93mPRUNING\x1b[0m: sub-domains if domains present and sub-nets into CIDR blocks if any\n"
+printf "\n\x1b[93mPRUNING:\x1b[0m sub-domains if domains present and sub-nets into CIDR blocks if any\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for V in {0..5}; do
@@ -222,7 +229,7 @@ case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
    3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;
-   4) f_sm4 "$HOST"; "$_DPL"; "$_BLD"; "$_CRL"; f_syn "$HOST"; f_sm10 th;;
+   4) f_sm4; "$_DPL"; "$_BLD"; "$_CRL"; "$_SCP"; f_sm10 th;;
    *) printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
       printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" \
          "[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]";;

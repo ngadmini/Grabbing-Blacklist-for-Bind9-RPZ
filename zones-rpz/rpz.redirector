@@ -1,6 +1,7 @@
-; rpz.redirector
+; generate at [14-Apr-22 15:40:51 UTC] by grab_cereal.sh v6.2
+;   rpz.redirector
 $TTL 3600
-@   SOA   redirector.localhost. dummy.redirector.localhost. (2022041200 3600 300 86400 60)
+@   SOA   redirector.localhost. dummy.redirector.localhost. (2022041422 3600 300 86400 60)
 @       NS      redirector.localhost.
 @       IN      A       127.0.12.1
 ;

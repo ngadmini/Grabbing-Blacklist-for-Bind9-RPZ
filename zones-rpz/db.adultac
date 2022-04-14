@@ -1,0 +1,10 @@
+; generate at [14-Apr-22 15:40:46 UTC] by grab_build.sh v6.2
+;
+foottopmodel.com IN CNAME .
+*.foottopmodel.com IN CNAME .
+foottopsite.com IN CNAME .
+*.foottopsite.com IN CNAME .
+foottug.com IN CNAME .
+*.foottug.com IN CNAME .
+footvideo.com IN CNAME .
+*.footvideo.com IN CNAME .
