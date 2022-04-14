@@ -1,5 +1,5 @@
 0. about /etc/bind/zones-rpz/ dir
-1. designed to reguler update with rsync
+1. designed for regular update with rsync
 2. only contains
       db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag db.ipv4 db.malware db.publicite db.redirector db.trust+
       rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
