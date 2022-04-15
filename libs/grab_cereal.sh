@@ -15,11 +15,15 @@ trap f_trap EXIT INT TERM       # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
+# these array is predefined and as a blanko, to counter part 'ar_zon' array
+ar_blanko=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
+      rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
+mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
+
 cd "$_DIR"
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "[INFO] Incrementing serial of zone files (rpz.* files)\n"
-mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
-if [ "${#ar_zon[@]}" -eq 12 ]; then
+if [ "${#ar_zon[@]}" -eq "${#ar_blanko[@]}" ]; then
    printf "[INFO] FOUND:\t%s complete\n" "${#ar_zon[@]}"
    for Z in "${ar_zon[@]}"; do
       DATE=$(date +%Y%m%d)
@@ -41,12 +45,14 @@ if [ "${#ar_zon[@]}" -eq 12 ]; then
    done
    printf "[INFO] ALL serial zones incremented to \x1b[93m%s\x1b[0m\n" "$newSERIAL"
 
+elif [ "${#ar_zon[@]}" -gt "${#ar_blanko[@]}" ]; then
+     printf "[ERROR] rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_blanko[@]}"
+     printf "[HINTS] please double-check number of db.* files and rpz.* files\n"
+     exit 1
 else
-   ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
-   printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of 12 zones\". %s\n" \
-      "${#ar_zon[@]}" "Missing zone files:"
-   printf -v ms_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
+   printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
+      "${#ar_zon[@]}" "${#ar_blanko[@]}" "Missing zone files:"
+   printf -v ms_v "%s" "$(echo "${ar_blanko[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
    printf "%s" "$ms_v" | tr "\n" "," | sed -e "s/,$//g" > /tmp/mr_p
    printf "~ %s\n" "$(cat /tmp/mr_p)"
    printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"

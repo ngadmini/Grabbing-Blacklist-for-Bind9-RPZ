@@ -23,7 +23,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
 f_uset() { unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
-f_excod() {   # exit code {7..17}
+f_excod() {   # exit code {7..18}
    for EC in $1; do
       _lin=$(grep -n "^HOST" "$_foo" | cut -d":" -f1)
       local _xcod="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
@@ -130,31 +130,45 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       _remdir="/etc/bind/zones-rpz/"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_excod 18 "$_remdir" "$HOST"
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
-      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
-      if [ "${#ar_db[@]}" -eq 12 ] && [ "${#ar_rpz[@]}" -eq 12 ]; then
-         local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
 
-         # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
-         printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
-         _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
-         printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
-         _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-         printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
-         _rsync {rpz,db}.* root@"$HOST":"$_remdir"
+      if [ "${#ar_db[@]}" -gt 12 ]; then
+         printf "[ERROR] database exceeds expectations\n"
+         printf "[HINTS] db.* files: %s NOT equal 12\n" "${#ar_db[@]}"
+         return 1
 
-         # reboot [after +@ minute] due to low memory
-         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
-         _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-         printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
-         # OR comment 3 lines above AND uncomment 2 lines below, if yo have sufficient RAM
-         #printf "Reload BIND9-server:%s\n" "$HOST"
-         #ssh root@"$HOST" "rndc reload"
-      else
+      elif [ "${#ar_db[@]}" -lt 12 ]; then
          local _BLD="$_DIR"/grab_build.sh
          local _CRL="$_DIR"/grab_cereal.sh
          printf "NOT found db.* and rpz.* files. Try to [re]create them\n"
          "$_BLD"; "$_CRL"
          exec "$0"
+
+      else
+         mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
+         if [ "${#ar_db[@]}" -ne "${#ar_rpz[@]}" ]; then
+            printf "[ERROR] something wrong with number of zone files (rpz.*)\n"
+            printf "[HINTS] please double-check: grab_cereal.sh and number of zone files\n"
+            printf "[HINTS] rpz.* files: %s NOT equal 12\n" "${#ar_rpz[@]}"
+            return 1
+         else
+            # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
+            local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
+            printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
+            _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
+            printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
+            _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
+            printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
+            _rsync {rpz,db}.* root@"$HOST":"$_remdir"
+
+            # reboot [after +@ minute] due to low memory
+            printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
+            _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
+            printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
+
+            # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
+            #printf "Reload BIND9-server:%s\n" "$HOST"
+            #ssh root@"$HOST" "rndc reload"
+         fi
       fi
    else
       f_excod 16 "$HOST"
