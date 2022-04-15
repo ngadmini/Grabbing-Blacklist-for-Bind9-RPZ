@@ -4,6 +4,7 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
+# see README and LICENSE
 
 shopt -s expand_aliases
 alias _sort="LC_ALL=C sort --buffer-size=80% --parallel=3"
@@ -20,7 +21,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
 
-f_uset() { unset -v ar_{cat,db,dom,dmn,reg,rpz,sho,tmp,txt,url} isDOWN; }
+f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw1,raw2,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_excod() {   # exit code {7..18}
@@ -159,6 +160,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
             printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
             _rsync {rpz,db}.* root@"$HOST":"$_remdir"
+            _ssh root@"$HOST" "chmod 640 $_remdir{rpz,db}.*"
 
             # reboot [after +@ minute] due to low memory
             printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
@@ -167,7 +169,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
             #printf "Reload BIND9-server:%s\n" "$HOST"
-            #ssh root@"$HOST" "rndc reload"
+            #ssh root@"$HOST" "rndc reload"   # DON'T add space after "#". it's use by this script at line 86
          fi
       fi
    else

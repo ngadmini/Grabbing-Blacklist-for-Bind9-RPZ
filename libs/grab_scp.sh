@@ -4,8 +4,7 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# NOTE
-#   passwordless ssh for backUP and sending newDB
+# see README and LICENSE
 
 SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
@@ -18,7 +17,7 @@ trap f_trap EXIT INT TERM    # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
-ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"
+_ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"
 cd "$_DIR"
 f_syn
 endTime=$(date +%s)

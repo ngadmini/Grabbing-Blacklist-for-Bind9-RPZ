@@ -4,12 +4,12 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
+# see README and LICENSE
 
 SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-umask 077
 export LC_NUMERIC=id_ID.UTF-8
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")

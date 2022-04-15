@@ -1,0 +1,54 @@
+v6.2
+These program is tailorized to updating blackist domains
+   at BIND9 - Response Policy Zone 
+---------------------------
+
+author:
+	ngadimin@warnet-ersa.net
+
+licence:
+	These program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	These program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	you should have received a copy of the GNU General Public License
+	along with these program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111, USA.
+
+file parts of this version:
+	1. grab_http.sh --grabing and proccessing raw domains
+	2. grab_dedup.sh --removing duplicate entries between domain lists
+	3. grab_build.sh --rewriting to BIND9-rpz format
+	4. grab_cereal.sh --incrementing serial zones
+	5. grab_lib.sh --contain some of functions needed by others script
+	6. grab_urls --urls list of remote files
+	7. grab_regex --list of reguler expressions to fixing false entries
+	7. grab_scp.sh --scripts tool for syncronizing update blacklist
+        and zone files to remote-host
+	8. rpz.{adulta(a-g),ipv4,malware,publicite,redirector,trust+}
+all of them must present under the same directory
+
+usage:
+	~ invoke grab_http.sh from different machine of bind9-server
+       then follow the next step
+   ~ to fitting your bind9-server environment, please see :
+       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki
+
+output:
+	~ db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf
+		 db.adultag db.ipv4 db.malware db.publicite db.redirector db.trust+
+	~ rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
+		 rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+	~ txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
+
+disclaimer:
+	These program are as they are, and to be used at your own risk
+
+please use our discussion for questions, feedback and bug fixes:
+	https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions

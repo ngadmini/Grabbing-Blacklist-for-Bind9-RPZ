@@ -4,7 +4,9 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
+# see README and LICENSE
 
+umask 027
 SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
@@ -18,7 +20,6 @@ _REG="$_DIR"/grab_regex
 _URL="$_DIR"/grab_urls
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
-umask 077
 export LC_NUMERIC=id_ID.UTF-8
 trap f_trap EXIT INT TERM       # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
@@ -58,7 +59,7 @@ printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is firring by non-r
 [ ! "$UID" -eq 0 ] || f_excod 10; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check capability '$HOST' for passwordless ssh"
-ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_ok
+_ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on local host"
 pkg='curl dos2unix faketime libnet-netmask-perl perl rsync'
@@ -66,7 +67,7 @@ for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_excod 8 "$X"; fi; 
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on remote host: $HOST"
 # shellcheck disable=SC2029
-for Y in {rsync,pigz}; do ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_ok
+for Y in {rsync,pigz}; do _ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
 for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
@@ -93,8 +94,7 @@ for D in ${untrust}; do
 done
 f_do
 
-# fixing bad, duplicate and false entry
-for E in ${ar_dmn[5]}; do
+for E in ${ar_dmn[5]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[5]}" "$E" "${ar_txt[5]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 f_do
@@ -105,8 +105,7 @@ f_sm8 "${ar_cat[0]}" 3
 for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_do; done
 cat "${trust}" >> "${ar_dmn[0]}"
 
-# fixing bad, duplicate and false entry
-for H in ${ar_dmn[0]}; do
+for H in ${ar_dmn[0]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[0]}" "$H" "${ar_txt[0]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 f_do
@@ -116,8 +115,7 @@ for I in ${ar_txt[0]}; do f_falsg "$I" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 f_sm8 "${ar_cat[4]}" 2
 for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_do; done
 
-# fixing bad, duplicate and false entry
-for K in ${ar_dmn[4]}; do
+for K in ${ar_dmn[4]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[4]}" "$K" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 f_do
@@ -129,8 +127,7 @@ for M in {8..11}; do
    f_sm7 "$M" "${ar_sho[M]}"; f_add "${ar_url[M]}" | _grep -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 
-# fixing bad, duplicate and false entry
-for N in ${ar_dmn[3]}; do
+for N in ${ar_dmn[3]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[3]}" "$N" "${ar_txt[3]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 f_do
@@ -153,8 +150,7 @@ for P in {14..18}; do
    fi
 done
 
-# fixing bad, duplicate and false entry
-for Q in ${ar_dmn[2]}; do
+for Q in ${ar_dmn[2]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[2]}" "$Q" "${ar_txt[2]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 f_do
@@ -168,8 +164,7 @@ for S in {19,20}; do
    f_do
 done
 
-# fixing bad, duplicate and false entry
-f_sm9 "${ar_cat[1]}"
+f_sm9 "${ar_cat[1]}"   # fixing bad, duplicate and false entry
 for T in ${ar_dmn[1]}; do
    awk '!x[$0]++' "$T" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
 done
