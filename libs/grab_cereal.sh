@@ -7,8 +7,7 @@
 # see README and LICENSE
 
 umask 027
-SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
+set -Eeu
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 startTime=$(date +%s)
@@ -22,7 +21,7 @@ ar_blanko=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adult
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 
-cd "$_DIR"
+cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_excod 10
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "[INFO] Incrementing serial of zone files (rpz.* files)\n"
 if [ "${#ar_zon[@]}" -eq "${#ar_blanko[@]}" ]; then

@@ -17,8 +17,8 @@ trap f_trap EXIT INT TERM    # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
+cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_excod 10
 _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"
-cd "$_DIR"
 f_syn
 endTime=$(date +%s)
 DIF=$((endTime - startTime))

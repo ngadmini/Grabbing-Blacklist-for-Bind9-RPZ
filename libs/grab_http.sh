@@ -7,8 +7,7 @@
 # see README and LICENSE
 
 umask 027
-SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
+set -Eeu
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh

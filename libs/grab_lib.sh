@@ -31,28 +31,19 @@ f_excod() {   # exit code {7..18}
       local _exit="[ERROR] $_foo: at line $_lin. Exit code: $EC"
       local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
-          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
-                "require passwordless ssh to remote host: '$2'"; exit 1;;
-          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
-                "require '$2' but it's not installed"; exit 1;;
-          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
-                "'$2' require '$3' but it's not installed"; exit 1;;
-         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
-                "you must login as non-root"; exit 1;;
-         11) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
-                "$(basename "$2"): $(wc -l < "$2") urls. it's should consist of 21 urls"; exit 1;;
-         12) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" \
-                "$(basename "$2"): $(wc -l < "$2") lines. it's should consist of 4 lines"; exit 1;;
-         13) printf "\x1b[91m[ERROR]\x1b[0m Check out [grab_urls]. if those url[s] are correct, please reffer to:\n\t%s\n" \
-                "$_reff"; exit 1;;
+          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "require passwordless ssh to remote host: '$2'"; exit 1;;
+          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "require '$2' but it's not installed"; exit 1;;
+          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "'$2' require '$3' but it's not installed"; exit 1;;
+         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "you must login as non-root privileges"; exit 1;;
+         11) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") urls. it's should consist of 21 urls"; exit 1;;
+         12) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") lines. it's should consist of 4 lines"; exit 1;;
+         13) printf "\x1b[91m[ERROR]\x1b[0m Check out [grab_urls]. if those url[s] are correct, please reffer to:\n\t%s\n" "$_reff"; exit 1;;
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
-         16) printf "%s\n\x1b[93m%s\x1b[0m: if these address is correct, maybe isDOWN\n%s\n" \
-                "$_exit" """$2""" "Incomplete TASK"; exit 1;;
+         16) printf "%s\n\x1b[93m%s\x1b[0m: if these address is correct, maybe isDOWN\n%s\n" "$_exit" """$2""" "Incomplete TASK"; exit 1;;
          17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): doesn't exist"; exit 1;;
          18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" """$2"" doesn't exist in ""$3"""; exit 1;;
-          *) printf "\n\x1b[91m[ERROR]\x1b[0m Unknown exit code [f_excod %s], please check:\n%s\n" \
-                "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
+          *) printf "\n\x1b[91m[ERROR]\x1b[0m Unknown exit code [f_excod %s], please check:\n%s\n" "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
       esac
    done
    }
@@ -160,7 +151,6 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
             printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
             _rsync {rpz,db}.* root@"$HOST":"$_remdir"
-            _ssh root@"$HOST" "chmod 640 $_remdir{rpz,db}.*"
 
             # reboot [after +@ minute] due to low memory
             printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
@@ -169,7 +159,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
             #printf "Reload BIND9-server:%s\n" "$HOST"
-            #ssh root@"$HOST" "rndc reload"   # DON'T add space after "#". it's use by this script at line 86
+            #ssh root@"$HOST" "rndc reload"   # DON'T add space after "#". it's use by this script at line 78
          fi
       fi
    else
