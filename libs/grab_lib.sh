@@ -19,6 +19,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
+   find /tmp -maxdepth 1 -type f -name "mr_p" -print0 | xargs -0 rm
    }
 
 f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw1,raw2,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
@@ -161,7 +162,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
-            #    DON'T add space after "#". it's use by this script at line 78
+            #    DON'T add space after "#" if you comment. it's use by this script at line 83
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
          fi
