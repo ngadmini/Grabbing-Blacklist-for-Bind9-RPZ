@@ -35,15 +35,14 @@ f_xcd() {   # exit code {7..18}
       _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
       _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC"
       _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
-      printf -v _lyn "%s" "$(basename "$2"): $(wc -l < "$2")"
       printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
           9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; exit 1;;
          10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; exit 1;;
-         11) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lyn" "$_msj"; exit 1;;
-         12) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lyn" "$_msg"; exit 1;;
+         11) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msj"; exit 1;;
+         12) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msg"; exit 1;;
          13) printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
@@ -164,7 +163,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
-            #    DON'T add space after "#" if you comment. it's use by this script at line 85
+            #    DON'T add space after "#" if you comment. it's use by this script at line 84
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
          fi
