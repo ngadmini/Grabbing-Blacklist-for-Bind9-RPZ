@@ -25,9 +25,9 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_raw2 < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 
-cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_excod 10
+cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_xcd 10
 printf "\n\x1b[91m[2'nd] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
-[[ -f "txt.adult" ]] || f_excod 17 "txt.adult"
+[[ -f "txt.adult" ]] || f_xcd 17 "txt.adult"
 if [ "${#ar_raw1[@]}" -eq "${#ar_raw2[@]}" ]; then
    unset ar_raw2
    printf "[INFO] Splitting adult category to 750.000 lines/sub-category\n"

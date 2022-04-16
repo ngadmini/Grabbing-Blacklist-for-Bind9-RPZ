@@ -21,7 +21,7 @@ ar_blanko=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adult
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 
-cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_excod 10
+cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_xcd 10
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "[INFO] Incrementing serial of zone files (rpz.* files)\n"
 if [ "${#ar_zon[@]}" -eq "${#ar_blanko[@]}" ]; then

@@ -13,7 +13,7 @@ alias _grep="LC_ALL=C grep"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0")
-HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
+HOST=rpz.warnet-ersa.net      # fqdn or ip-address
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
@@ -24,26 +24,30 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
 f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw1,raw2,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
-f_excod() {   # exit code {7..18}
+f_xcd() {   # exit code {7..18}
    for EC in $1; do
-      _lin=$(grep -n "^HOST" "$_foo" | cut -d":" -f1)
-      local _xcod="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
-      local _exit="[ERROR] $_foo: at line $_lin. Exit code: $EC"
-      local _reff="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
+      _lin=$(grep -n "^HOST" "grab_lib.sh" | cut -d":" -f1)
+      _msj="urls. it's should consist of 21 urls"
+      _msg="lines. it's should consist of 4 lines"
+      _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to"
+      _ukn="Unknown exit code [f_excod %s], please check:"
+      _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
+      _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC"
+      _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       case $EC in
-          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "require passwordless ssh to remote host: '$2'"; exit 1;;
-          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "require '$2' but it's not installed"; exit 1;;
-          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "'$2' require '$3' but it's not installed"; exit 1;;
-         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "you must login as non-root privileges"; exit 1;;
-         11) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") urls. it's should consist of 21 urls"; exit 1;;
-         12) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): $(wc -l < "$2") lines. it's should consist of 4 lines"; exit 1;;
-         13) printf "\x1b[91m[ERROR]\x1b[0m Check out [grab_urls]. if those url[s] are correct, please reffer to:\n\t%s\n" "$_reff"; exit 1;;
-         14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "download failed from '$2'"; exit 1;;
-         15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "category: must equal 6"; exit 1;;
-         16) printf "%s\n\x1b[93m%s\x1b[0m: if these address is correct, maybe isDOWN\n%s\n" "$_exit" """$2""" "Incomplete TASK"; exit 1;;
-         17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" "$(basename "$2"): doesn't exist"; exit 1;;
-         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcod" """$2"" doesn't exist in ""$3"""; exit 1;;
-          *) printf "\n\x1b[91m[ERROR]\x1b[0m Unknown exit code [f_excod %s], please check:\n%s\n" "$1" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
+          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
+          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
+          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; exit 1;;
+         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; exit 1;;
+         11) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msj"; exit 1;;
+         12) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msg"; exit 1;;
+         13) printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
+         14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
+         15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
+         16) printf "\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"; exit 1;;
+         17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "$(basename "$2"): doesn't exist"; exit 1;;
+         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" """$2"" doesn't exist in ""$3"""; exit 1;;
+          *) printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
       esac
    done
    }
@@ -103,10 +107,10 @@ f_sm10() { printf "\n\x1b[91mTASKs\x1b[0m based on %s'%s options: \x1b[32mDONE\x
 f_ok() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
 f_do() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }         # display DONE
 
-f_add() { curl -C - -fs "$1" || f_excod 14 "$1"; }      # grabbing remote files
+f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }      # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
-f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; }
+f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; f_do; }
 
 f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
@@ -116,11 +120,9 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
-   # shellcheck disable=SC2154
-   printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       _remdir="/etc/bind/zones-rpz/"
-      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_excod 18 "$_remdir" "$HOST"
+      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "$_remdir" "$HOST"
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
 
       if [ "${#ar_db[@]}" -gt 12 ]; then
@@ -142,6 +144,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[HINTS] please double-check: grab_cereal.sh and number of zone files\n"
             printf "[HINTS] rpz.* files: %s NOT equal 12\n" "${#ar_rpz[@]}"
             return 1
+
          else
             # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
             local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
@@ -158,12 +161,13 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
+   			#    DON'T add space after "#". it's use by this script at line 78
             #printf "Reload BIND9-server:%s\n" "$HOST"
-            #ssh root@"$HOST" "rndc reload"   # DON'T add space after "#". it's use by this script at line 78
+            #ssh root@"$HOST" "rndc reload"
          fi
       fi
    else
-      f_excod 16 "$HOST"
+      f_xcd 16 "$HOST"
    fi
    }
 
@@ -191,7 +195,7 @@ f_crawl() {   # verify "URLS" isUP
    else
       printf "%84s\n" " " | tr " " -
       printf "\x1b[91m%s\x1b[0m\n" "${isDOWN[@]}"
-      f_excod 13
+      f_xcd 13
    fi
    }
 
@@ -229,8 +233,8 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       local _remdir; _remdir="/etc/bind/zones-rpz"
       # passwordless ssh
-      _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"
-      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_excod 18 "'_remdir'" "$HOST"
+      _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
+      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "'_remdir'" "$HOST"
 
       local miss; miss="$(cat /tmp/mr_p)"
       if ! scp -qr root@"$HOST":"$_remdir"/rpz.* "$_DIR" >> /dev/null 2>&1; then
@@ -244,6 +248,6 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files
       fi
 
    else
-      f_excod 16 "$HOST"
+      f_xcd 16 "$HOST"
    fi
    }

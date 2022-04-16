@@ -6,6 +6,7 @@
 #   ngadimin@warnet-ersa.net
 # see README and LICENSE
 
+umask 027
 set -Eeu
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -16,7 +17,7 @@ trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
-cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_excod 10
+cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_xcd 10
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_txt[@]}" -eq 6 ]; then
    # declare tmp files as array

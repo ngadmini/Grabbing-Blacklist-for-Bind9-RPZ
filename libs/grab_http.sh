@@ -31,7 +31,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    for A in {0..5}; do   # grabbing dsi.ut-capitole.fr use as initial category
       tar_dsi=$(basename "${ar_url[A]}"); ext_dsi=${tar_dsi/.tar.gz/}
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
-      curl -C - -ksfO "${ar_url[A]}" || f_excod 14 "${ar_url[A]}"
+      curl -C - -ksfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
       tar -xzf "$tar_dsi" "$ext_dsi/domains"
       f_do
    done
@@ -40,7 +40,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    mkdir ipv4; mv phishing malware; mv gambling trust+; cat vpn/domains >> redirector/domains; rm -r vpn
    mapfile -t ar_cat < <(find . -maxdepth 1 -type d | sed -e "1d;s/\.\///" | sort)
    printf "%12s: \x1b[93m%s\x1b[0m\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   [ "${#ar_cat[@]}" -eq 6 ] || f_excod 15
+   [ "${#ar_cat[@]}" -eq 6 ] || f_xcd 15
 
    # remove previously domain lists if any && define temporary array based on initial category
    find . -maxdepth 1 -type f -name "txt.*" -print0 | xargs -0 -r rm
@@ -54,31 +54,40 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 # START MAIN SCRIPT
 cd "$_DIR"; printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is firring by non-root privileges"
-[ ! "$UID" -eq 0 ] || f_excod 10; f_ok
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is execute by non-root privileges"
+[ ! "$UID" -eq 0 ] || f_xcd 10; f_ok
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check capability '$HOST' for passwordless ssh"
-_ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_excod 7 "$HOST"; f_ok
+printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability bind9-server: '$HOST'"
+if ping -w 1 "$HOST" >> /dev/null 2>&1; then
+   f_ok; printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check bind9-server: $HOST for passwordless ssh"
+   _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"; f_ok
+   printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on bind9-server: $HOST"
+   # shellcheck disable=SC2029
+   for Y in {rsync,pigz}; do _ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$Y"; done; f_ok
+else
+   f_xcd 16 "$HOST"
+fi
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on local host"
 pkg='curl dos2unix faketime libnet-netmask-perl perl rsync'
-for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_excod 8 "$X"; fi; done; f_ok
-
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on remote host: $HOST"
-# shellcheck disable=SC2029
-for Y in {rsync,pigz}; do _ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_excod 9 "$HOST" "$Y"; done; f_ok
+for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_xcd 8 "$X"; fi; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
-for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do [ -f "$C" ] || f_excod 17 "$C"; [ -x "$C" ] || chmod +x "$C"; done
-[ -f "$_URL" ] || f_excod 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_excod 11 "$_URL"
-[ -f "$_REG" ] || f_excod 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_excod 12 "$_REG"
+for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do
+   [ -f "$C" ] || f_xcd 17 "$C"
+   [ -x "$C" ] || chmod +x "$C"
+done
+[ -f "$_URL" ] || f_xcd 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_xcd 11 "$_URL"
+[ -f "$_REG" ] || f_xcd 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_xcd 12 "$_REG"
 f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m Check the remote files isUP or isDOWN\n"
 ar_sho=(); f_crawl "$_URL" || true
+
+# grabbing and processing domains
 f_grab
 
-# CATEGORY: TRUST+ --> ${ar_cat[3]} with 2 additional entries: ${urls[1,7]}
+# category: TRUST+ --> ${ar_cat[3]} with 2 additional entries: ${urls[1,7]}
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v "^#" >> "${porn}"; f_do
@@ -96,10 +105,9 @@ f_do
 for E in ${ar_dmn[5]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[5]}" "$E" "${ar_txt[5]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_do
 for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
-# CATEGORY: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
+# category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
 for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_do; done
 cat "${trust}" >> "${ar_dmn[0]}"
@@ -107,20 +115,18 @@ cat "${trust}" >> "${ar_dmn[0]}"
 for H in ${ar_dmn[0]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[0]}" "$H" "${ar_txt[0]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_do
 for I in ${ar_txt[0]}; do f_falsg "$I" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
-# CATEGORY: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
+# category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 f_sm8 "${ar_cat[4]}" 2
 for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_do; done
 
 for K in ${ar_dmn[4]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[4]}" "$K" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_do
 for L in ${ar_txt[4]}; do f_falsg "$L" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
-# CATEGORY: PUBLICITE --> ${ar_cat[3]} with 4 additional entries: ${urls[8..11]}
+# category: PUBLICITE --> ${ar_cat[3]} with 4 additional entries: ${urls[8..11]}
 f_sm8 "${ar_cat[3]}" 4
 for M in {8..11}; do
    f_sm7 "$M" "${ar_sho[M]}"; f_add "${ar_url[M]}" | _grep -v "^#" >> "${ar_dmn[3]}"; f_do
@@ -129,10 +135,9 @@ done
 for N in ${ar_dmn[3]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[3]}" "$N" "${ar_txt[3]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_do
 for O in ${ar_txt[3]}; do f_falsg "$O" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
-# CATEGORY: MALWARE --> ${ar_cat[2]} with 7 additional entries: ${ar_url[12..18]}
+# category: MALWARE --> ${ar_cat[2]} with 7 additional entries: ${ar_url[12..18]}
 f_sm8 "${ar_cat[2]}" 7
 f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d" " -f2 >> "${ar_dmn[2]}"; f_do
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d" " -f1 >> "${ar_dmn[2]}"; f_do
@@ -152,10 +157,9 @@ done
 for Q in ${ar_dmn[2]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[2]}" "$Q" "${ar_txt[2]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
-f_do
 for R in ${ar_txt[2]}; do f_falsg "$R" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
-# CATEGORY: IPV4 --> ${ar_cat[1]} with 4 additional entries: ${ar_url[19..20]}
+# category: IPV4 --> ${ar_cat[1]} with 4 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
 for S in {19,20}; do
    f_sm7 "$S" "${ar_sho[S]}"
@@ -171,7 +175,7 @@ f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
-[ "${#ar_txt[@]}" -eq 6 ] || f_excod 15
+[ "${#ar_txt[@]}" -eq 6 ] || f_xcd 15
 printf "\nAcquired domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
 
 for U in {0..5}; do
@@ -182,7 +186,8 @@ done
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
-# SORT and PRUNE: sub-domains if domains present and turn sub-nets into CIDR blocks if any
+# finishing
+# pruning sub-domains if domains present and turn sub-nets into CIDR blocks
 printf "\n\x1b[93mPRUNING:\x1b[0m sub-domains if domains present and sub-nets into CIDR blocks if any\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
@@ -216,6 +221,7 @@ printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %s entries\n" "TOTAL" "$_tsp"
 endTime=$(date +%s); DIF=$((endTime - startTime)); f_sm6 "$((DIF/60))" "$((DIF%60))s"; f_uset
 
+# end of grabbing and processing
 # offerring OPTIONs: continued to next stept OR stop here
 f_sm0 "$HOST"
 read -r RETVAL
