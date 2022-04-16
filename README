@@ -41,7 +41,7 @@ usage:
        grab_lib.sh:16:HOST=rpz.warnet-ersa.net      # fqdn or ip-address
        $ sed -i.bak "s/rpz.warnet-ersa.net/fqdn or ip-address/" grab_lib.sh
 
-	~ execute grab_http.sh from different machine of bind9-server
+   ~ execute grab_http.sh from different machine of bind9-server
        then follow the next step
    ~ to fitting your bind9-server environment, please see :
        https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki
