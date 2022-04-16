@@ -19,7 +19,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
-   find /tmp -maxdepth 1 -type f -name "mr_p" -print0 | xargs -0 rm
+   find /tmp -maxdepth 1 -type f -name "mr_p" -print0 | xargs -0 -r rm
    }
 
 f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw1,raw2,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
@@ -35,13 +35,14 @@ f_xcd() {   # exit code {7..18}
       _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
       _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC"
       _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
+      printf -v _lyn "%s" "$(basename "$2"): $(wc -l < "$2")"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
           9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; exit 1;;
          10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; exit 1;;
-         11) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msj"; exit 1;;
-         12) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msg"; exit 1;;
+         11) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lyn" "$_msj"; exit 1;;
+         12) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lyn" "$_msg"; exit 1;;
          13) printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
