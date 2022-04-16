@@ -52,10 +52,9 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 }
 
 # START MAIN SCRIPT
-cd "$_DIR"; printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
-
+printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check script is execute by non-root privileges"
-[ ! "$UID" -eq 0 ] || f_xcd 10; f_ok
+[ ! "$UID" -eq 0 ] || f_xcd 10; f_ok; cd "$_DIR"
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability bind9-server: '$HOST'"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then

@@ -16,13 +16,14 @@ trap f_trap EXIT INT TERM       # cleanUP on exit, interrupt & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
+[ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
+printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
+
 # these array is predefined and as a blanko, to counter part 'ar_zon' array
 ar_blanko=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 
-cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_xcd 10
-printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "[INFO] Incrementing serial of zone files (rpz.* files)\n"
 if [ "${#ar_zon[@]}" -eq "${#ar_blanko[@]}" ]; then
    printf "[INFO] FOUND:\t%s complete\n" "${#ar_zon[@]}"
@@ -50,6 +51,7 @@ elif [ "${#ar_zon[@]}" -gt "${#ar_blanko[@]}" ]; then
      printf "[ERROR] rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_blanko[@]}"
      printf "[HINTS] please double-check number of db.* files and rpz.* files\n"
      exit 1
+
 else
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
       "${#ar_zon[@]}" "${#ar_blanko[@]}" "Missing zone files:"
