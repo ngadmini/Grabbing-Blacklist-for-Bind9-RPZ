@@ -31,11 +31,12 @@ f_xcd() {   # exit code {7..18}
       _msj="urls. it's should consist of 21 urls"
       _msg="lines. it's should consist of 4 lines"
       _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to"
-      _ukn="Unknown exit code [f_excod %s], please check:"
+      _ukn="Unknown exit code [f_xcd $1], please check:"
       _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
       _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC"
       _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
       printf -v _lyn "%s" "$(basename "$2"): $(wc -l < "$2")"
+      printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
@@ -49,7 +50,7 @@ f_xcd() {   # exit code {7..18}
          16) printf "\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"; exit 1;;
          17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "$(basename "$2"): doesn't exist"; exit 1;;
          18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" """$2"" doesn't exist in ""$3"""; exit 1;;
-          *) printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$(grep -n "f_excod $1" -- *.sh)"; exit 1;;
+          *) printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"; exit 1;;
       esac
    done
    }
@@ -109,7 +110,7 @@ f_sm10() { printf "\n\x1b[91mTASKs\x1b[0m based on %s'%s options: \x1b[32mDONE\x
 f_ok() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
 f_do() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }         # display DONE
 
-f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }      # grabbing remote files
+f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }        # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; f_do; }
@@ -163,7 +164,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
-            #    DON'T add space after "#" if you comment. it's use by this script at line 84
+            #    DON'T add space after "#" if you comment. it's use by this script at line 85
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
          fi
