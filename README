@@ -1,7 +1,7 @@
 v6.2
 These program is tailorized to updating blackist domains
    at BIND9 - Response Policy Zone 
----------------------------
+----------------------------------
 
 author:
    ngadimin@warnet-ersa.net
@@ -23,45 +23,66 @@ licence:
 
 file parts of this version:
    1. grab_http.sh --grabing and proccessing raw domains.
-        run this script as long as the below script and rpz.* are
-        available in the same directory. IF no option is selected,
-        it just generates a txt.* which is not free from duplication
+        run this script as long as the below script and rpz.* are available in
+        the same directory. IF no option is selected, it just generates a txt.*
+        which is not free from duplication
    2. grab_dedup.sh --removing duplicate entries between domain lists.
-        run this scipt separately, only if txt.* are available in the
-        same directory.
+        run this scipt separately, only if txt.* are available in the same directory.
    3. grab_build.sh --rewriting to BIND9-rpz format.
-        run this scipt separately, only if txt.* are available in the
-        same directory. it generated db.* files
+        run this scipt separately, only if txt.* are available in the same directory.
+        it generated db.* files
    4. grab_cereal.sh --incrementing serial zones.
-        run this scipt separately, only if rpz.* are available in the
-        same directory. if not, it try to get from bind9-server.
-        it generated new serial at zone-files
-   5. grab_lib.sh --contain some of functions needed by others script.
-   6. grab_urls --urls list of remote raw-files.
+        run this scipt separately, only if rpz.* are available in the same directory.
+        if not, it try to get from bind9-server. it generated new serial at zone-files
+   5. grab_lib.sh --contain some of functions.
+   6. grab_urls --contain urls list of remote raw-files.
         strict order, line count and no blank lines
-   7. grab_regex --list of reguler expressions to fixing false entries.
+   7. grab_regex --contain reguler expressions.
         strict order, line count and no blank lines
-   8. grab_scp.sh --for syncronizing updated db.* and rpz.* files to remote-host
-   9. rpz.{adulta(a-g),ipv4,malware,publicite,redirector,trust+}
+   8. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
+        in addition to synchronizing, this script also generates a tar file to bakcup
+        old db.* and rpz.* files. use below to decompress
+
+        ~$ unpigz -v rpz-2022-04-09.tar.gz
+        ~$ tar -xvf rpz-2022-04-09.tar
+
+   9. rpz.{adulta[a-g],ipv4,malware,publicite,redirector,trust+}
   10. all of them must present in the same directory
 
+prerequisites:
+   ~ on your linux desktop workstation
+
+       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
+       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
+       ~$ grep -n "HOST=" *.sh
+       grab_lib.sh:16:HOST="rpz.warnet-ersa.net"      # fqdn or ip-address
+       # change to your BIND9-server if you use fqdn, ie. your.fqdn.net
+       ~$ sed -i.bak "s/rpz.warnet-ersa.net/your.fqdn.net/" grab_lib.sh
+       # OR if you use IP-address, ie. 192.168.0.1
+       ~$ sed -i.bak "s/rpz.warnet-ersa.net/192.168.0.1/" grab_lib.sh
+
+   ~ on your BIND9-server
+
+       ~$ apt policy pigz rsync
+       ~$ apt install -y pigz rsync
+
+   ~ passwordless ssh
+       your linux desktop and BIND9-server, both must configure to use passwordless for
+       ssh dan rsync connections. you can reffer to :
+       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH
+
+   ~ reconfigure your bind9-server to run RPZ BIND9-fiture. you can reffer to :
+       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
+
 usage:
-   ~ fitting your bind9-server configurations, you can see :
-       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki
-   ~ change grab_lib.sh at line 16 to your bind9-server fqdn OR ip-address
-
-       $ grep -n '^HOST' *.sh
-       grab_lib.sh:16:HOST=rpz.warnet-ersa.net      # fqdn or ip-address
-       $ sed -i.bak "s/rpz.warnet-ersa.net/fqdn or ip-address/" grab_lib.sh
-
-   ~ execute grab_http.sh from your linux desktop workstation,
-       then follow the next step
+   ~ execute grab_http.sh with non root privileges either directly as a root user or by use
+     of sudo command, from your linux desktop workstation then follow the next step
 
 output:
-   ~ db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf
-       db.adultag db.ipv4 db.malware db.publicite db.redirector db.trust+
-   ~ rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
-       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+   ~ db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
+       db.ipv4 db.malware db.publicite db.redirector db.trust+
+   ~ rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
+       rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
    ~ txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
 
 disclaimer:
