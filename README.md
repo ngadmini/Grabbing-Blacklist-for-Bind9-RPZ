@@ -22,7 +22,7 @@
 8. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/zones-rpz) --pack of zone-files, needed by [grab_cereal.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh) 
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
-- [x] `curl, dos2unix, faketime, perl, rsync, libnet-netmask-perl`. Install with `apt install -y curl dos2unix faketime perl rsync libnet-netmask-perl` on your linux desktop workstation.
+- [x] `curl, dos2unix, faketime, rsync, libnet-netmask-perl`. Install with `apt install -y curl dos2unix faketime rsync libnet-netmask-perl` on your linux desktop workstation.
 - [x] make sure in the BIND9-server installed `rsync and pigz`, if not install it's with `apt install -y rsync pigz`
 - [x] passwordless `ssh` to remote BIND9-server
 - [x] BIND9 file structure : `/etc/bind9/zones-rpz` as place for all dataBases and zone files.
