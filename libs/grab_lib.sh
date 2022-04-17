@@ -27,29 +27,42 @@ f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..18}
    for EC in $1; do
-      _lin=$(grep -n "^HOST" "grab_lib.sh" | cut -d":" -f1)
-      _msj="urls. it's should consist of 21 urls"
-      _msg="lines. it's should consist of 4 lines"
-      _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to"
-      _ukn="Unknown exit code [f_xcd $1], please check:"
-      _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
-      _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC"
-      _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
-      printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)"
+      local _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
           9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; exit 1;;
          10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; exit 1;;
-         11) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msj"; exit 1;;
-         12) printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$(basename "$2"): $(wc -l < "$2")" "$_msg"; exit 1;;
-         13) printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
+
+         11) _msj="urls. it's should consist of 21 urls";
+             printf -v _lmm "%s" "$(basename "$2"): $(wc -l < "$2")";
+             printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lmm" "$_msj";
+             exit 1;;
+
+         12) _msg="lines. it's should consist of 4 lines";
+             printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")";
+             printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lnn" "$_msg";
+             exit 1;;
+
+         13) _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes";
+             _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to";
+             printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
+
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
-         16) printf "\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"; exit 1;;
+
+         16) _lin=$(grep -n "^HOST" "grab_lib.sh" | cut -d":" -f1);
+             _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC";
+             printf "\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"
+             exit 1;;
+
          17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "$(basename "$2"): doesn't exist"; exit 1;;
          18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" """$2"" doesn't exist in ""$3"""; exit 1;;
-          *) printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"; exit 1;;
+
+          *) _ukn="Unknown exit code [f_xcd $1], please check:";
+             printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)";
+             printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"
+             exit 1;;
       esac
    done
    }
@@ -123,7 +136,7 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
-      _remdir="/etc/bind/zones-rpz/"
+      local _remdir="/etc/bind/zones-rpz/"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "$_remdir" "$HOST"
       mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
 
@@ -163,7 +176,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
-            #    DON'T add space after "#" if you comment. it's use by this script at line 84
+            #    DON'T add space after "#" if you comment. it's use by this script at line 97
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
          fi
@@ -181,7 +194,7 @@ f_crawl() {   # verify "URLS" isUP
       lll="${line##htt*\/\/}"; ll="$(basename "$line")"; l="${lll/\/*/}"; p_url="$l/..?../$ll"
       ar_sho+=("${p_url}"); ((i++))
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
-      statusCode=$(curl -C - -ks -o /dev/null -I -w "%{http_code}" "$line")
+      local statusCode; statusCode=$(curl -C - -ks -o /dev/null -I -w "%{http_code}" "$line")
       # https://trustpositif.kominfo.go.id/assets/db/domains give me "$statusCode" 405 = Method Not Allowed
       if [[ "$statusCode" != 2* && "$statusCode" != 405 ]]; then
          printf "\x1b[91m%s\x1b[0m\n" "Code: $statusCode"
@@ -233,7 +246,7 @@ f_ip4() {   # used by grab_build.sh
 
 f_cer() {   # used by grab_cereal.sh to copy zone-files
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
-      local _remdir; _remdir="/etc/bind/zones-rpz"
+      _remdir="/etc/bind/zones-rpz"
       # passwordless ssh
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "'_remdir'" "$HOST"

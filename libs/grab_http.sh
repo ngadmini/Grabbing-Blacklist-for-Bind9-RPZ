@@ -68,7 +68,7 @@ else
 fi
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on local host"
-pkg='curl dos2unix faketime libnet-netmask-perl perl rsync'
+pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_xcd 8 "$X"; fi; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
@@ -76,8 +76,11 @@ for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do
    [ -f "$C" ] || f_xcd 17 "$C"
    [ -x "$C" ] || chmod +x "$C"
 done
-[ -f "$_URL" ] || f_xcd 17 "$_URL"; mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_xcd 11 "$_URL"
-[ -f "$_REG" ] || f_xcd 17 "$_REG"; mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_xcd 12 "$_REG"
+# grab_urls && grab_regex must free from empty lines
+[ -f "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"
+[ -f "$_REG" ] || f_xcd 17 "$_REG"; _sed -i "/^$/d" "$_REG"
+mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_xcd 11 "$_URL"
+mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_xcd 12 "$_REG"
 f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m Check the remote files isUP or isDOWN\n"
@@ -192,7 +195,7 @@ dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for V in {0..5}; do
    if [ "$V" -eq 1 ]; then
-      # prune sub-nets in CIDR. require 'perl' and 'libnet-netmask-perl'
+      # turn sub-nets in CIDR blocks if any. require 'libnet-netmask-perl'
       while read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
