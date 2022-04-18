@@ -24,10 +24,10 @@ printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")"
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 for y in ${ar_raw[*]}; do
    if ! [ -f "$y" ]; then
-		mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+      mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
       printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       printf "[ERROR] not found: %s\n" "$miss_v"
-      printf "[INFO] require: %s\n" "${ar_raw[*]}"
+      printf "[HINTS] require: %s\n" "${ar_raw[*]}"
       exit 1
    fi
 done
@@ -85,7 +85,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
 
 else
    printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
-   printf "\n\x1b[91m[FAILED]\x1b[0m due to: FOUND %s of 6 domain list:\nNOT require: %s\n" \
+   printf "\n\x1b[91m[ERROR]\x1b[0m due to: FOUND %s of 6 domain list:\nNOT require: %s\n" \
       "${#ar_txt[@]}" "$miss_v"
    printf "[HINTS] remove or move to other direcory: %s" "$miss_v"
    exit 1
