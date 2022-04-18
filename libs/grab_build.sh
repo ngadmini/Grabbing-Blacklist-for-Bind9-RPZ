@@ -66,12 +66,13 @@ if [ "${#ar_raw1[@]}" -eq "${#ar_raw2[@]}" ]; then
       printf "[HINTS] please make adjustments to your rpz.* files and your bind9-server config\n"
       exit 1
    else
-      printf "\x1b[91m[ERROR] due to:\x1b[0m database shrunk than expected. can only create %s of %s db.* files:\n" \
+      _add="database shrunk than expected. can only create"
+      printf "\x1b[91m[ERROR] due to:\x1b[0m %s %s of %s db.* files:\n" "$_add" \
          "${#ar_txt[@]}" "${#ar_split[@]}"
       exit 1
    fi
 else
-   printf "\x1b[91m[ERROR]\x1b[0m due to: just FOUND %s domain list:\n\t%s\n" "${#ar_raw2[@]}" "${ar_raw2[*]}"
+   printf "\x1b[91m[ERROR]\x1b[0m due to: FOUND %s domain list:\n\t%s\n" "${#ar_raw2[@]}" "${ar_raw2[*]}"
    printf "[HINTS] expected %s domains list: \n\t%s\n" "${#ar_raw1[@]}" "${ar_raw1[*]}"
    exit 1
 fi

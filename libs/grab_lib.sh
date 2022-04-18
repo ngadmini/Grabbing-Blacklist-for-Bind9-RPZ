@@ -21,7 +21,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
 
-f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw,raw1,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
+f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,miss,raw,raw1,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..18}
@@ -174,7 +174,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
-            # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
+            # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
             #    DON'T add space after "#" if you comment. it's use by this script at line 96
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
@@ -245,21 +245,27 @@ f_ip4() {   # used by grab_build.sh
 
 f_cer() {   # used by grab_cereal.sh to copy zone-files
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
-      _remdir="/etc/bind/zones-rpz"
+      local _remdir="/etc/bind/zones-rpz"
       # passwordless ssh
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "'_remdir'" "$HOST"
 
-      if ! scp -qr root@"$HOST":"$_remdir"/rpz.* "$_DIR" >> /dev/null 2>&1; then
-         printf "[INFO] One or more zone files are missing. %s\n" "You should create:"
-         printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$ms_v" "Incomplete TASK"
-         return 1
-      else
-         printf "[INFO] Successfully copied:\n~ %s\n" "$ms_v"
-         printf "[INFO] Retry running TASK again\n"
-         exec "$0"
-      fi
+      for a in $1; do
+         if scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then
+            wait
+         else
+            # TO DO, for case:
+            #    missing rpz.adultaa and rpz.ipv4 and in the $HOST only available rpz.ipv4.
+            #    rpz.ipv4 is copied and stop here with error massage below.
+            printf "[INFO] not found in %s. %s\n" "$HOST" "You should create:"
+            printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$1" "Incomplete TASK"
+            return 1
+         fi
+     done
 
+     printf "[INFO] Successfully copied from %s\n~ %s\n" "$HOST" "$1"
+     printf "[INFO] Retry running TASK again\n"
+     exec "$0"
    else
       f_xcd 16 "$HOST"
    fi

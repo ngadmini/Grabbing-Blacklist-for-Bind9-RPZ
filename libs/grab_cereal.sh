@@ -20,6 +20,7 @@ source "$_DIR"/grab_lib.sh
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 
 # these array is predefined and as a blanko, to counter part 'ar_zon' array
+ar_miss=()
 ar_blanko=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
@@ -55,10 +56,11 @@ elif [ "${#ar_zon[@]}" -gt "${#ar_blanko[@]}" ]; then
 else
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
       "${#ar_zon[@]}" "${#ar_blanko[@]}" "Missing zone files:"
-   printf -v ms_v "%s" "$(echo "${ar_blanko[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
-   printf "~ %s\n" "$ms_v)"
+   printf -v miss "%s" "$(echo "${ar_blanko[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf "~ %s\n" "$miss"
+   ar_miss+=("$miss")
    printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"
-   f_cer
+   f_cer "${ar_miss[@]}"
 fi
 
 endTime=$(date +%s)

@@ -73,8 +73,7 @@ for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_xcd 8 "$X"; fi; do
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
 for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do
-   [ -f "$C" ] || f_xcd 17 "$C"
-   [ -x "$C" ] || chmod +x "$C"
+   [ -f "$C" ] || f_xcd 17 "$C"; [ -x "$C" ] || chmod +x "$C"
 done
 # grab_urls && grab_regex must free from empty lines
 [ -f "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"
