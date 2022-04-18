@@ -18,9 +18,22 @@ trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
 source "$_DIR"/grab_lib.sh
 
 [ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR";
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 
-if [ "${#ar_txt[@]}" -eq 6 ]; then
+# these array is predefined and as a blanko.
+ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
+for y in ${ar_raw[*]}; do
+   if ! [ -f "$y" ]; then
+		mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      printf "[ERROR] not found: %s\n" "$miss_v"
+      printf "[INFO] require: %s\n" "${ar_raw[*]}"
+      exit 1
+   fi
+done
+
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    # declare tmp files as array
    ar_cat=(); ar_dmn=(); ar_tmp=()
    for B in {0..5}; do
@@ -29,7 +42,6 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
       ar_tmp+=(tmr."${ar_txt[B]/txt./}")
    done
 
-   printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
    printf "[INFO] Eliminating duplicate entries between domain lists\n"
    printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
    # based on ${ar_dom[1,4]}
@@ -72,8 +84,10 @@ if [ "${#ar_txt[@]}" -eq 6 ]; then
    f_do
 
 else
-   printf "\n\x1b[91m[FAILED]\x1b[0m due to: just FOUND %s of 6 domain list:\n\t%s\n" \
-      "${#ar_txt[@]}" "${ar_txt[*]}"
+   printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf "\n\x1b[91m[FAILED]\x1b[0m due to: FOUND %s of 6 domain list:\nNOT require: %s\n" \
+      "${#ar_txt[@]}" "$miss_v"
+   printf "[HINTS] remove or move to other direcory: %s" "$miss_v"
    exit 1
 fi
 

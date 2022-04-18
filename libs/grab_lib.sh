@@ -19,10 +19,9 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
-   find /tmp -maxdepth 1 -type f -name "mr_p" -print0 | xargs -0 -r rm
    }
 
-f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw1,raw2,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
+f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,raw,raw1,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..18}
@@ -176,7 +175,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM
-            #    DON'T add space after "#" if you comment. it's use by this script at line 97
+            #    DON'T add space after "#" if you comment. it's use by this script at line 96
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
          fi
@@ -251,13 +250,12 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "'_remdir'" "$HOST"
 
-      local miss; miss="$(cat /tmp/mr_p)"
       if ! scp -qr root@"$HOST":"$_remdir"/rpz.* "$_DIR" >> /dev/null 2>&1; then
          printf "[INFO] One or more zone files are missing. %s\n" "You should create:"
-         printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$miss" "Incomplete TASK"
+         printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$ms_v" "Incomplete TASK"
          return 1
       else
-         printf "[INFO] Successfully copied:\n~ %s\n" "$miss"
+         printf "[INFO] Successfully copied:\n~ %s\n" "$ms_v"
          printf "[INFO] Retry running TASK again\n"
          exec "$0"
       fi

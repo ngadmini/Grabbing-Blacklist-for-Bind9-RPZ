@@ -55,9 +55,8 @@ elif [ "${#ar_zon[@]}" -gt "${#ar_blanko[@]}" ]; then
 else
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
       "${#ar_zon[@]}" "${#ar_blanko[@]}" "Missing zone files:"
-   printf -v ms_v "%s" "$(echo "${ar_blanko[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u)"
-   printf "%s" "$ms_v" | tr "\n" "," | sed -e "s/,$//g" > /tmp/mr_p
-   printf "~ %s\n" "$(cat /tmp/mr_p)"
+   printf -v ms_v "%s" "$(echo "${ar_blanko[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf "~ %s\n" "$ms_v)"
    printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"
    f_cer
 fi

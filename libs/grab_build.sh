@@ -26,9 +26,9 @@ ar_raw1=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 #    raw splitted domains list
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-mapfile -t ar_raw2 < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 
 [[ -f "txt.adult" ]] || f_xcd 17 "txt.adult"
+mapfile -t ar_raw2 < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 
 if [ "${#ar_raw1[@]}" -eq "${#ar_raw2[@]}" ]; then
    unset ar_raw2
