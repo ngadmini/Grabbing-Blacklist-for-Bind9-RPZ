@@ -20,7 +20,6 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
-
 f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,miss,raw,raw1,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
@@ -32,32 +31,25 @@ f_xcd() {   # exit code {7..18}
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
           9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; exit 1;;
          10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; exit 1;;
-
          11) _msj="urls. it's should consist of 21 urls";
              printf -v _lmm "%s" "$(basename "$2"): $(wc -l < "$2")";
              printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lmm" "$_msj";
              exit 1;;
-
          12) _msg="lines. it's should consist of 4 lines";
              printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")";
              printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lnn" "$_msg";
              exit 1;;
-
          13) _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes";
              _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to";
              printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
-
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
-
          16) _lin=$(grep -n "^HOST" "grab_lib.sh" | cut -d":" -f1);
              _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC";
              printf "\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"
              exit 1;;
-
          17) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "$(basename "$2"): doesn't exist"; exit 1;;
          18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" """$2"" doesn't exist in ""$3"""; exit 1;;
-
           *) _ukn="Unknown exit code [f_xcd $1], please check:";
              printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)";
              printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"
@@ -106,7 +98,6 @@ f_sm5() {   # sub-function. must include in f_sm2 ... f_sm4
    printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    }
 
-
 f_sm6() {   # display FINISH messages
    printf "\n[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
    printf "\x1b[32mWARNING:\x1b[0m there are still remaining duplicate entries between domain lists.\n"
@@ -120,12 +111,10 @@ f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at
 f_sm10() { printf "\n\x1b[91mTASKs\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
 f_ok() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
 f_do() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }         # display DONE
-
 f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }        # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; f_do; }
-
 f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
    _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\/32/" >> "$2" || true
@@ -143,14 +132,12 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
          printf "[ERROR] database exceeds expectations\n"
          printf "[HINTS] db.* files: %s NOT equal 12\n" "${#ar_db[@]}"
          return 1
-
       elif [ "${#ar_db[@]}" -lt 12 ]; then
          local _BLD="$_DIR"/grab_build.sh
          local _CRL="$_DIR"/grab_cereal.sh
          printf "NOT found db.* and rpz.* files. Try to [re]create them\n"
          "$_BLD"; "$_CRL"
          exec "$0"
-
       else
          mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
          if [ "${#ar_db[@]}" -ne "${#ar_rpz[@]}" ]; then
@@ -158,7 +145,6 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[HINTS] please double-check: grab_cereal.sh and number of zone files\n"
             printf "[HINTS] rpz.* files: %s NOT equal 12\n" "${#ar_rpz[@]}"
             return 1
-
          else
             # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
             local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
@@ -169,13 +155,13 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
             _rsync {rpz,db}.* root@"$HOST":"$_remdir"
 
-            # reboot [after +@ minute] due to low memory
+            # $HOST" will reboot [after +@ minute] due to low memory
             printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
             _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
             printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
-            #    DON'T add space after "#" if you comment. it's use by this script at line 96
+            #    DON'T add space after "#" if you comment. it's use by this script at line 88
             #printf "Reload BIND9-server:%s\n" "$HOST"
             #ssh root@"$HOST" "rndc reload"
          fi
@@ -202,6 +188,7 @@ f_crawl() {   # verify "URLS" isUP
          printf "\x1b[32m%s\x1b[0m\n" "isUP"
       fi
    done < "$1"
+
    local isDOWNCount=${#isDOWN[@]}
    if [ "$isDOWNCount" -eq 0 ]; then
       printf "%30s\n" " " | tr " " -
@@ -243,10 +230,9 @@ f_ip4() {   # used by grab_build.sh
    f_g4b "$@"
    }
 
-f_cer() {   # used by grab_cereal.sh to copy zone-files
+f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-scp
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       local _remdir="/etc/bind/zones-rpz"
-      # passwordless ssh
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "'_remdir'" "$HOST"
 
@@ -254,18 +240,16 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files
          if scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then
             wait
          else
-            # TO DO, for case:
-            #    missing rpz.adultaa and rpz.ipv4 and in the $HOST only available rpz.ipv4.
-            #    rpz.ipv4 is copied and stop here with error massage below.
-            printf "[INFO] not found in %s. %s\n" "$HOST" "You should create:"
-            printf "~ %s\n\x1b[91m[ERROR]\x1b[0m %s\n" "$1" "Incomplete TASK"
-            return 1
+            local origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/"
+            printf "\n[INFO] %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
+            printf "%s%s\n" "$origin""$a"
+            curl -C - -fs "$origin""$a" >> "$a" ||  f_xcd 14 "$origin"
+            printf "[INFO] successfully get %s from origin:\n" "$a"
+            printf "%s%s\n" "$origin""$a"
          fi
-     done
-
-     printf "[INFO] Successfully copied from %s\n~ %s\n" "$HOST" "$1"
-     printf "[INFO] Retry running TASK again\n"
-     exec "$0"
+      done
+      printf "\n[INFO] retrying TASK again"
+      exec "$0"
    else
       f_xcd 16 "$HOST"
    fi
