@@ -46,6 +46,13 @@ file parts of this version:
         ~$ unpigz -v rpz-2022-04-09.tar.gz
         ~$ tar -xvf rpz-2022-04-09.tar
 
+        BIND9-server will reboot after synchronizing, due to low RAM. but you can
+        change to 'rdnc reload', by modify grab_lib.sh at line :
+
+        ~$ sed -i.bak '159,161s/./#&/' grab_lib.sh
+        ~$ sed -i '165s/^.*$/\t\t\t\t#printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+        ~$ sed -i '166s/^.*$/\t\t\t\tssh root@"$HOST" "rndc reload"/' grab_lib.sh
+
    9. rpz.{adulta[a-g],ipv4,malware,publicite,redirector,trust+}
   10. all of them must present in the same directory
 

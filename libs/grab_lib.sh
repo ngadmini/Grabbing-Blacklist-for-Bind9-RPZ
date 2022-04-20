@@ -20,7 +20,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
-f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,miss,raw,raw1,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
+f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,miss,raw,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..18}
