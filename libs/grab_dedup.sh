@@ -42,8 +42,8 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    printf "[INFO] Eliminating duplicate entries between domain lists\n"
    printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
    # based on ${ar_dom[1,4]}
-   printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing" "${ar_cat[1]^^}"
-   printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\tdo nothing\n" "${ar_cat[4]^^}"
+   printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
+   printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
