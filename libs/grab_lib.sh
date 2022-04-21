@@ -202,7 +202,7 @@ f_crawl() {   # verify "URLS" isUP
 
 f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
 f_ddup() {  # used by grab_dedup.sh
-   printf "%11s = deduplicating %s entries \t\t" "STEP 0.$1" "$2"
+   printf "%11s = deduplicating %s entries \t\t" "STEP $6.$1" "$2"
    _sort "$3" "$4" | uniq -d | _sort -u > "$5"
    }
 

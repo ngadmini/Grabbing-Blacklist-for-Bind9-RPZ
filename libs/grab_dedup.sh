@@ -47,7 +47,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
 
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
-      f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}"
+      f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}" 1
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_txt[C]}" \
          | _sort > "${ar_dmn[C]}"
       cp "${ar_dmn[C]}" "${ar_txt[C]}"
@@ -56,7 +56,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
 
    f_dupl "${ar_cat[3]}"   # based on ${ar_cat[3]}
    for D in 2 4 5; do
-      f_ddup "$D" "${ar_cat[D]}" "${ar_txt[D]}" "${ar_txt[3]}" "${ar_tmp[D]}"
+      f_ddup "$D" "${ar_cat[D]}" "${ar_txt[D]}" "${ar_txt[3]}" "${ar_tmp[D]}" 2
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_txt[D]}" \
          | _sort > "${ar_dmn[D]}"
       cp "${ar_dmn[D]}" "${ar_txt[D]}"
@@ -65,7 +65,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
 
    f_dupl "${ar_cat[5]}"   # based on ${ar_cat[5]}
    for E in 3 4; do
-      f_ddup "$E" "${ar_cat[E]}" "${ar_txt[E]}" "${ar_txt[5]}" "${ar_tmp[E]}"
+      f_ddup "$E" "${ar_cat[E]}" "${ar_txt[E]}" "${ar_txt[5]}" "${ar_tmp[E]}" 3
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_txt[E]}" \
          | _sort > "${ar_dmn[E]}"
       cp "${ar_dmn[E]}" "${ar_txt[E]}"
@@ -73,7 +73,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    done
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
-   printf "%11s = deduplicating %s entries\t\t" "STEP 0.5" "${ar_cat[4]}"
+   printf "%11s = deduplicating %s entries\t\t" "STEP 4.4" "${ar_cat[4]}"
    _sort "${ar_txt[4]}" "${ar_txt[2]}" | uniq -d | _sort -u > "${ar_tmp[4]}"
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[4]}" "${ar_txt[4]}" \
       | _sort > "${ar_dmn[4]}"
