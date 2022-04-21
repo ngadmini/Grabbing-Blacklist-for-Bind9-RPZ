@@ -163,7 +163,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
             #    DON'T add space after "#" if you comment. it's use by this script at line 88
             #printf "Reload BIND9-server:%s\n" "$HOST"
-            #ssh root@"$HOST" "rndc reload"
+	         #ssh root@"$HOST" "rndc reload"
          fi
       fi
    else
@@ -218,13 +218,13 @@ f_g4c() {   # used by grab_cereal.sh
    sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
    }
 
-f_rpz() {   # used by grab_build.sh
+f_rpz() {   # used by grab_build.sh. change 'CNAME .' if you have other policy
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
    f_g4b "$@"
    }
 
-f_ip4() {   # used by grab_build.sh
+f_ip4() {   # used by grab_build.sh. change 'CNAME .' if you have other policy
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
    awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
    f_g4b "$@"

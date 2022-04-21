@@ -160,7 +160,7 @@ for Q in ${ar_dmn[2]}; do   # fixing bad, duplicate and false entry
 done
 for R in ${ar_txt[2]}; do f_falsg "$R" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
-# category: IPV4 --> ${ar_cat[1]} with 4 additional entries: ${ar_url[19..20]}
+# category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
 for S in {19,20}; do
    f_sm7 "$S" "${ar_sho[S]}"
