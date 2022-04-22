@@ -164,7 +164,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
             # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
             #    DON'T add space after "#" if you comment. it's use by this script at line 89
             #printf "Reload BIND9-server:%s\n" "$HOST"
-	         #ssh root@"$HOST" "rndc reload"
+            #ssh root@"$HOST" "rndc reload"
          fi
       fi
    else
