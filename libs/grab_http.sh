@@ -79,7 +79,7 @@ done
 [ -f "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"
 [ -f "$_REG" ] || f_xcd 17 "$_REG"; _sed -i "/^$/d" "$_REG"
 mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_xcd 11 "$_URL"
-mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 4 ] || f_xcd 12 "$_REG"
+mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
 f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m Check the remote files isUP or isDOWN\n"
@@ -91,17 +91,19 @@ f_grab
 # category: TRUST+ --> ${ar_cat[3]} with 2 additional entries: ${urls[1,7]}
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
+f_sm7 1 "${ar_sho[1]}"; f_do
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v "^#" >> "${porn}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 
+# throw porn-domains to ${ar_dmn[0]}, use ${porn} to identify porn domains in ${untrust}
+printf "%12s: %-64s\t" "throw" "porn domains to ${ar_cat[0]^^} category"
 for D in ${untrust}; do
-   f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed "/[^\o0-\o177]/d" | _sed -e "${ar_reg[2]}" >> "$D"
-   # throw porn-domains in ${untrust} and ${porn} to ${ar_dmn[0]}, use "${trust}" as temporary
    _sort "$D" "${porn}" | uniq -d >> "${trust}"
-   _grep -E "${ar_reg[3]}" "$D" | _sort -u >> "${trust}"
+   _grep -E "${ar_reg[2]}" "$D" | _sort -u >> "${trust}"
    # delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "$D" >> "${ar_dmn[5]}"
 done
-f_do
+cat "${trust}" >> "${ar_dmn[0]}"; f_do
 
 for E in ${ar_dmn[5]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[5]}" "$E" "${ar_txt[5]}" "${ar_reg[0]}" "${ar_reg[1]}"
@@ -111,7 +113,6 @@ for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
 for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_do; done
-cat "${trust}" >> "${ar_dmn[0]}"
 
 for H in ${ar_dmn[0]}; do   # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[0]}" "$H" "${ar_txt[0]}" "${ar_reg[0]}" "${ar_reg[1]}"

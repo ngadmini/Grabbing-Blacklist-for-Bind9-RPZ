@@ -16,8 +16,8 @@
 3. [grab_build.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_build.sh) --rewriting to BIND9-rpz format
 4. [grab_cereal.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh) --incrementing serial zones of rpz-files
 5. [grab_lib.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_lib.sh) --contain some of functions needed by others script
-6. [grab_urls](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_urls) --urls list of remote files. strict order, line count and no blank lines
-7. [grab_regex](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_regex) --list of reguler expressions for several purpose. strict order, line count and no blank lines
+6. [grab_urls](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_urls) --urls list of remote files. case sensitive, strict order, line count and no blank lines
+7. [grab_regex](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_regex) --list of reguler expressions for several purpose. case sensitive, strict order, line count and no blank lines
 7. [grab_scp.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_scp.sh) --additional scripts tool for updating rpz- files and dBASE to Bind9 host
 8. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/zones-rpz) --pack of zone-files, needed by [grab_cereal.sh](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh) 
 > <b>NOTE</b><br>Place theme all under the same directory

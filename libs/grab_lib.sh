@@ -64,7 +64,8 @@ f_sm0() {   # getting options display messages
    printf "%4s. option [1] and rewriting all domain lists to RPZ format [db.* files]\n" "2"
    printf "%4s. options [1,2] and incrementing serial at zone files [rpz.*]\n" "3"
    printf "%4s. options [1,2,3] and [rsync]ronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
-   printf "ENTER: \x1b[93m[1|2|3|4]\x1b[0m or [*] to QUIT\t"
+   printf "%4s. other than above to QUIT\n" "*"
+   printf "ENTER: \x1b[92m[1|2|3|4|*]\x1b[0m\t\t"
    }
 
 f_sm1() {   # display messages when 1'st option chosen
@@ -114,7 +115,7 @@ f_do() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }         # display DONE
 f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }        # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
-f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed "/[^\o0-\o177]/d" | _sed -e "$4" -e "$5" > "$3"; f_do; }
+f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$4" -e "$5" > "$3"; f_do; }
 f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
    _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\/32/" >> "$2" || true
