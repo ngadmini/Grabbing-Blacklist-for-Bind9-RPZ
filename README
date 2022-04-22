@@ -52,9 +52,9 @@ file parts of this version:
         BIND9-server will reboot after synchronizing, due to low RAM. but you can
         change to 'rdnc reload', by modify grab_lib.sh at line :
 
-        ~$ sed -i.bak '159,161s/./#&/' grab_lib.sh
-        ~$ sed -i '165s/^.*$/\t\t\t\t#printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
-        ~$ sed -i '166s/^.*$/\t\t\t\tssh root@"$HOST" "rndc reload"/' grab_lib.sh
+        ~$ sed -i.bak '160,162s/./#&/' grab_lib.sh
+        ~$ sed -i '166s/^.*$/\t\t\t\t#printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+        ~$ sed -i '167s/^.*$/\t\t\t\tssh root@"$HOST" "rndc reload"/' grab_lib.sh
 
    9. rpz.{adulta[a-g],ipv4,malware,publicite,redirector,trust+}
   10. all of them must present in the same directory
@@ -75,8 +75,8 @@ prerequisites:
 
        # afterward, you can change to your policy trigger
        $ grep -n '\sCNAME\s\.' grab_lib.sh
-       223:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-       229:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+       224:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+       230:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
        # change to your redirect page, ie. foo.redirect.page
        ~$ sed -i "s/\sCNAME\s\./ CNAME foo.redirect.page/g" grab_lib.sh
 
