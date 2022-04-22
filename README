@@ -53,7 +53,7 @@ file parts of this version:
         change to 'rdnc reload', by modify grab_lib.sh at line :
 
         ~$ sed -i.bak '160,162s/./#&/' grab_lib.sh
-        ~$ sed -i '166s/^.*$/\t\t\t\t#printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+        ~$ sed -i '166s/^.*$/\t\t\t\tprintf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
         ~$ sed -i '167s/^.*$/\t\t\t\tssh root@"$HOST" "rndc reload"/' grab_lib.sh
 
    9. rpz.{adulta[a-g],ipv4,malware,publicite,redirector,trust+}
