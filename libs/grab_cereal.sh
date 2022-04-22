@@ -12,7 +12,7 @@ PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d% TIME: %H:%M:%S")
-trap f_trap EXIT INT TERM       # cleanUP on exit, interrupt & terminate
+trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 

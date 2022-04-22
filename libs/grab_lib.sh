@@ -216,7 +216,11 @@ f_g4b() {   # used by grab_build.sh
 
 f_g4c() {   # used by grab_cereal.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
-   sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
+   if [ "$(grep -n "^; generate at" "$1" | cut -d':' -f1)" -eq 1 ]; then
+      sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
+   else
+      sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag" "$1"
+   fi
    }
 
 f_rpz() {   # used by grab_build.sh. change 'CNAME .' if you have other policy

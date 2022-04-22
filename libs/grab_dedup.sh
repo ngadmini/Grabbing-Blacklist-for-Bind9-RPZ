@@ -13,7 +13,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 export LC_NUMERIC=id_ID.UTF-8
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
-trap f_trap EXIT INT TERM   # cleanUP on exit, interrupt & terminate
+trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
@@ -41,7 +41,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
 
    printf "[INFO] Eliminating duplicate entries between domain lists\n"
    printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
-   # based on ${ar_dom[1,4]}
+   # based on ${ar_cat[1,5]}
    printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
    printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 
