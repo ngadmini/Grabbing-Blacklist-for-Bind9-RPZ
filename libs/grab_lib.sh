@@ -35,7 +35,7 @@ f_xcd() {   # exit code {7..18}
              printf -v _lmm "%s" "$(basename "$2"): $(wc -l < "$2")";
              printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lmm" "$_msj";
              exit 1;;
-         12) _msg="lines. it's should consist of 4 lines";
+         12) _msg="lines. it's should consist of 3 lines";
              printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")";
              printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lnn" "$_msg";
              exit 1;;
