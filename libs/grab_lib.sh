@@ -154,6 +154,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
 
       # run TASK
       local _remdir="/etc/bind/zones-rpz/"
+      _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "$_remdir" "$HOST"
 
       # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression

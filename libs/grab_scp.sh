@@ -18,7 +18,6 @@ source "$_DIR"/grab_lib.sh
 
 cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_xcd 10
 printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
-_ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
 f_syn
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
