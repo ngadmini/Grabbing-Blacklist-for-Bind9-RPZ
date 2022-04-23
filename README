@@ -44,7 +44,7 @@ file parts of this version:
         case sensitive, strict order, line count and no blank lines
    8. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
-        old db.* and rpz.* files. use below to decompress
+        old db.* and rpz.* files in BIND9-server. use below to decompress
 
         ~$ unpigz -v rpz-2022-04-09.tar.gz
         ~$ tar -xvf rpz-2022-04-09.tar
@@ -52,9 +52,16 @@ file parts of this version:
         BIND9-server will reboot after synchronizing, due to low RAM. but you can
         change to 'rdnc reload', by modify grab_lib.sh at line :
 
-        ~$ sed -i.bak '160,162s/./#&/' grab_lib.sh
-        ~$ sed -i '166s/^.*$/\t\t\t\tprintf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
-        ~$ sed -i '167s/^.*$/\t\t\t\tssh root@"$HOST" "rndc reload"/' grab_lib.sh
+        # comment IN line: 169-171
+        ~$ grep -n '\(fake\|shutdown\)' grab_lib.sh
+        ~$ sed -i.bak '169,171s/./#&/' grab_lib.sh
+
+        # comment OUT line: 175-176
+        ~$ grep -ne '[rR]eload' grab_lib.sh 
+        175:      #printf "Reload BIND9-server:%s\n" "$HOST"
+        176:      #ssh root@"$HOST" "rndc reload"
+        ~$ sed -i '175s/^.*$/      printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+        ~$ sed -i '176s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib.sh
 
    9. rpz.{adulta[a-g],ipv4,malware,publicite,redirector,trust+}
   10. all of them must present in the same directory

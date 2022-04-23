@@ -27,7 +27,6 @@ for y in ${ar_raw[*]}; do
       mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
       printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       f_xcd 17 "$miss_v"
-      exit 1
    fi
 done
 

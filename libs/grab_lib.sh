@@ -13,14 +13,14 @@ alias _grep="LC_ALL=C grep"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0")
-HOST=rpz.warnet-ersa.net      # fqdn or ip-address
+HOST=rpz.warnet-ersa.net      # CHANGE to fqdn or ip-address of your BIND9-server
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
-f_uset() { unset -v ar_{blanko,cat,db,dom,dmn,miss,raw,reg,rpz,sho,split,tmp,txt,url,zon} isDOWN; }
+f_uset() { unset -v ar_{cat,db,DB,dom,dmn,miss,raw,RAW,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..18}
@@ -125,48 +125,55 @@ f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
+      # check existance of db-files and rpz-files
+      ar_DB=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
+         db.ipv4 db.malware db.publicite db.redirector db.trust+)
+      ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
+         rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
+      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
+      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
+
+      for DB in ${ar_DB[*]}; do
+         if ! [ -f "$DB" ]; then
+            printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+            f_xcd 17 "$miss_DB"
+         fi
+      done
+
+      for RPZ in ${ar_RPZ[*]}; do
+         if ! [ -f "$RPZ" ]; then
+            printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+            f_xcd 17 "$miss_RPZ"
+          fi
+      done
+
+      if [ "${#ar_db[@]}" -ne "${#ar_DB[@]}" ] && [ "${#ar_rpz[@]}" -ne "${#ar_RPZ[@]}" ]; then
+         printf "[ERROR] something wrong with number of db-files or rpz-files\n"
+         return 1
+      fi
+
+      # run TASK
       local _remdir="/etc/bind/zones-rpz/"
       _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "$_remdir" "$HOST"
-      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
 
-      if [ "${#ar_db[@]}" -gt 12 ]; then
-         printf "[ERROR] database exceeds expectations\n"
-         printf "[HINTS] db.* files: %s NOT equal 12\n" "${#ar_db[@]}"
-         return 1
-      elif [ "${#ar_db[@]}" -lt 12 ]; then
-         local _BLD="$_DIR"/grab_build.sh
-         local _CRL="$_DIR"/grab_cereal.sh
-         printf "NOT found db.* and rpz.* files. Try to [re]create them\n"
-         "$_BLD"; "$_CRL"
-         exec "$0"
-      else
-         mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
-         if [ "${#ar_db[@]}" -ne "${#ar_rpz[@]}" ]; then
-            printf "[ERROR] something wrong with number of zone files (rpz.*)\n"
-            printf "[HINTS] please double-check: grab_cereal.sh and number of zone files\n"
-            printf "[HINTS] rpz.* files: %s NOT equal 12\n" "${#ar_rpz[@]}"
-            return 1
-         else
-            # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
-            local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
-            printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
-            _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
-            printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
-            _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-            printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
-            _rsync {rpz,db}.* root@"$HOST":"$_remdir"
+      # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
+      local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
+      printf "[INFO] archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
+      _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
+      printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
+      _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
+      printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
+      _rsync {rpz,db}.* root@"$HOST":"$_remdir"
 
-            # $HOST" will reboot [after +@ minute] due to low memory
-            printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
-            _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-            printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
+      # $HOST" will reboot [after +@ minute] due to low memory
+      printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
+      _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
+      printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
-            # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
-            #    DON'T add space after "#" if you comment. it's use by this script at line 89
-            #printf "Reload BIND9-server:%s\n" "$HOST"
-            #ssh root@"$HOST" "rndc reload"
-         fi
-      fi
+      # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
+      #    DON'T add space after "#" if you comment. it's use by this script at line 89
+      #printf "Reload BIND9-server:%s\n" "$HOST"
+      #ssh root@"$HOST" "rndc reload"
    else
       f_xcd 16 "$HOST"
    fi

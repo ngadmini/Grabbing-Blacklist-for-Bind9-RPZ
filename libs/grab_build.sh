@@ -29,16 +29,15 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
 
 for y in ${ar_raw[*]}; do
    if ! [ -f "$y" ]; then
-      mapfile -t ar_raw1 < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
-      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_raw1[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       f_xcd 17 "$miss_v"
-      exit 1
    fi
 done
 
-mapfile -t ar_raw1 < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
-if [ "${#ar_raw[@]}" -eq "${#ar_raw1[@]}" ]; then
-   unset ar_raw1
+mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
+   unset ar_RAW
    printf "[INFO] Splitting adult category to 750.000 lines/sub-category\n"
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp
@@ -79,7 +78,7 @@ if [ "${#ar_raw[@]}" -eq "${#ar_raw1[@]}" ]; then
       exit 1
    fi
 else
-   printf "\x1b[91m[ERROR]\x1b[0m due to: FOUND %s domain list:\n\t%s\n" "${#ar_raw1[@]}" "${ar_raw1[*]}"
+   printf "\x1b[91m[ERROR]\x1b[0m due to: FOUND %s domain list:\n\t%s\n" "${#ar_RAW[@]}" "${ar_RAW[*]}"
    printf "[HINTS] expected %s domains list: \n\t%s\n" "${#ar_raw[@]}" "${ar_raw[*]}"
    exit 1
 fi

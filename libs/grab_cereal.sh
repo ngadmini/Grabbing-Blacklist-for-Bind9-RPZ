@@ -21,12 +21,12 @@ printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")"
 
 # these array is predefined and as a blanko, to counter part 'ar_zon' array
 ar_miss=()
-ar_blanko=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
+ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 
 printf "[INFO] Incrementing serial of zone files (rpz.* files)\n"
-if [ "${#ar_zon[@]}" -eq "${#ar_blanko[@]}" ]; then
+if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
    printf "[INFO] FOUND:\t%s complete\n" "${#ar_zon[@]}"
    for Z in "${ar_zon[@]}"; do
       DATE=$(date +%Y%m%d)
@@ -48,15 +48,15 @@ if [ "${#ar_zon[@]}" -eq "${#ar_blanko[@]}" ]; then
    done
    printf "[INFO] ALL serial zones incremented to \x1b[93m%s\x1b[0m\n" "$newSERIAL"
 
-elif [ "${#ar_zon[@]}" -gt "${#ar_blanko[@]}" ]; then
-     printf "[ERROR] rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_blanko[@]}"
+elif [ "${#ar_zon[@]}" -gt "${#ar_rpz[@]}" ]; then
+     printf "[ERROR] rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_rpz[@]}"
      printf "[HINTS] please double-check number of db.* files and rpz.* files\n"
      exit 1
 
 else
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
-      "${#ar_zon[@]}" "${#ar_blanko[@]}" "Missing zone files:"
-   printf -v miss "%s" "$(echo "${ar_blanko[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      "${#ar_zon[@]}" "${#ar_rpz[@]}" "Missing zone files:"
+   printf -v miss "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
    printf "~ %s\n" "$miss"
    ar_miss+=("$miss")
    printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"
