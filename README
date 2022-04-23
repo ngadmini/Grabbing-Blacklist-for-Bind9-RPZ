@@ -56,11 +56,11 @@ file parts of this version:
         ~$ grep -n '\(fake\|shutdown\)' grab_lib.sh
         ~$ sed -i.bak '170,172s/./#&/' grab_lib.sh
 
-        # comment OUT line: 175-176
+        # comment OUT line: 176-177
         ~$ grep -n '[rR]eload' grab_lib.sh 
         176:      #printf "Reload BIND9-server:%s\n" "$HOST"
         177:      #ssh root@"$HOST" "rndc reload"
-        ~$ sed -i '177s/^.*$/      printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+        ~$ sed -i '176s/^.*$/      printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
         ~$ sed -i '177s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib.sh
 
    9. rpz.{adulta[a-g],ipv4,malware,publicite,redirector,trust+}
