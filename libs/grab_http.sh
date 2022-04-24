@@ -93,7 +93,7 @@ f_grab
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
 f_sm7 1 "${ar_sho[1]}"; f_do
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}"  >> "${untrust}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed -E "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" >> "${porn}"; f_do
 
 # throw porn-domains to ${ar_dmn[0]}, use ${porn} to identify porn domains in ${untrust}
@@ -148,15 +148,7 @@ f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d"
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d" " -f1 >> "${ar_dmn[2]}"; f_do
 
 for P in {14..18}; do
-   if [ "$P" -eq 15 ]; then
-      f_sm7 "$P" "${ar_sho[P]}"
-      f_add "${ar_url[P]}" | _grep -v "^#" | _sed "s/\s#*.*//" >> "${ar_dmn[2]}"
-      f_do
-   else
-      f_sm7 "$P" "${ar_sho[P]}"
-      f_add "${ar_url[P]}" | _grep -v "^#" >> "${ar_dmn[2]}"
-      f_do
-   fi
+   f_sm7 "$P" "${ar_sho[P]}"; f_add "${ar_url[P]}" | _grep -v "#" >> "${ar_dmn[2]}"; f_do
 done
 
 for Q in ${ar_dmn[2]}; do      # fixing bad, duplicate and false entry
