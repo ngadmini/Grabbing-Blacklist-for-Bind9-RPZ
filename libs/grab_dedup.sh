@@ -52,7 +52,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    done
 
    # based on ${ar_cat[1]}
-   printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
+   printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
    for D in {3..5}; do
