@@ -4,7 +4,8 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# see README and LICENSE
+# TL;DR
+#   see README and LICENSE
 
 umask 027
 set -Eeu
@@ -17,7 +18,7 @@ trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
 source "$_DIR"/grab_lib.sh
 
 [ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
-printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
+printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 
 # these array is predefined and as a blanko, to counter part 'ar_zon' array
 ar_miss=()
@@ -25,7 +26,7 @@ ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
 
-printf "[INFO] Incrementing serial of zone files (rpz.* files)\n"
+printf "\n[INFO] Incrementing serial of zone files (rpz.* files)\n"
 if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
    printf "[INFO] FOUND:\t%s complete\n" "${#ar_zon[@]}"
    for Z in "${ar_zon[@]}"; do

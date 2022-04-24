@@ -4,7 +4,8 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# see README and LICENSE
+# TL;DR
+#   see README and LICENSE
 
 umask 027
 set -Eeu
@@ -22,6 +23,7 @@ start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 export LC_NUMERIC=id_ID.UTF-8
 trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
 # shellcheck source=/dev/null
+# shellcheck disable=SC2029
 source "$_LIB"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
@@ -61,7 +63,6 @@ if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    f_ok; printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check bind9-server: $HOST for passwordless ssh"
    _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"; f_ok
    printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on bind9-server: $HOST"
-   # shellcheck disable=SC2029
    for Y in {rsync,pigz}; do _ssh root@"$HOST" "hash $Y >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$Y"; done; f_ok
 else
    f_xcd 16 "$HOST"
@@ -78,7 +79,7 @@ done
 # grab_urls && grab_regex must free from empty lines
 [ -f "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"
 [ -f "$_REG" ] || f_xcd 17 "$_REG"; _sed -i "/^$/d" "$_REG"
-mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 21 ] || f_xcd 11 "$_URL"
+mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 22 ] || f_xcd 11 "$_URL"
 mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
 f_ok
 
@@ -92,8 +93,8 @@ f_grab
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
 f_sm7 1 "${ar_sho[1]}"; f_do
-f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v "^#" >> "${porn}"; f_do
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -E "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" >> "${untrust}"; f_do
+f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _grep -v "^#" >> "${porn}"; f_do
 
 # throw porn-domains to ${ar_dmn[0]}, use ${porn} to identify porn domains in ${untrust}
 printf "%12s: %-64s\t" "throw" "porn domains to ${ar_cat[0]^^} category"
@@ -105,25 +106,27 @@ for D in ${untrust}; do
 done
 cat "${trust}" >> "${ar_dmn[0]}"; f_do
 
-for E in ${ar_dmn[5]}; do   # fixing bad, duplicate and false entry
+for E in ${ar_dmn[5]}; do      # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[5]}" "$E" "${ar_txt[5]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-for G in {0,6,7}; do f_sm7 "$G" "${ar_sho[G]}"; f_do; done
+f_sm7 0 "${ar_sho[0]}"; f_do   # done when initiating category
+f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grep -v '^#' >> "${ar_dmn[0]}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_do   # done when processing trust+ category
 
-for H in ${ar_dmn[0]}; do   # fixing bad, duplicate and false entry
+for H in ${ar_dmn[0]}; do      # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[0]}" "$H" "${ar_txt[0]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 for I in ${ar_txt[0]}; do f_falsg "$I" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
-f_sm8 "${ar_cat[4]}" 2
+f_sm8 "${ar_cat[4]}" 2         # done when initiating category
 for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_do; done
 
-for K in ${ar_dmn[4]}; do   # fixing bad, duplicate and false entry
+for K in ${ar_dmn[4]}; do      # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[4]}" "$K" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 for L in ${ar_txt[4]}; do f_falsg "$L" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
@@ -134,7 +137,7 @@ for M in {8..11}; do
    f_sm7 "$M" "${ar_sho[M]}"; f_add "${ar_url[M]}" | _grep -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 
-for N in ${ar_dmn[3]}; do   # fixing bad, duplicate and false entry
+for N in ${ar_dmn[3]}; do      # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[3]}" "$N" "${ar_txt[3]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 for O in ${ar_txt[3]}; do f_falsg "$O" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
@@ -156,7 +159,7 @@ for P in {14..18}; do
    fi
 done
 
-for Q in ${ar_dmn[2]}; do   # fixing bad, duplicate and false entry
+for Q in ${ar_dmn[2]}; do      # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[2]}" "$Q" "${ar_txt[2]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
 for R in ${ar_txt[2]}; do f_falsg "$R" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
@@ -169,11 +172,8 @@ for S in {19,20}; do
    f_do
 done
 
-f_sm9 "${ar_cat[1]}"   # fixing bad, duplicate and false entry
-for T in ${ar_dmn[1]}; do
-   awk '!x[$0]++' "$T" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
-done
-f_do
+f_sm9 "${ar_cat[1]}"           # fixing bad, duplicate and false entry
+awk '!x[$0]++' "${ar_dmn[1]}" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS

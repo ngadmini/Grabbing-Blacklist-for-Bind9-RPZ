@@ -4,7 +4,8 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# see README and LICENSE
+# TL;DR
+#   see README and LICENSE
 
 umask 027
 set -Eeu
@@ -17,7 +18,7 @@ trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
 source "$_DIR"/grab_lib.sh
 
 cd "$_DIR"; [ ! "$UID" -eq 0 ] || f_xcd 10
-printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
+printf "\n\x1b[91m[4'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 f_syn
 endTime=$(date +%s)
 DIF=$((endTime - startTime))

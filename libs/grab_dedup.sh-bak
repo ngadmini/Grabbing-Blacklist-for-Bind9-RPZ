@@ -4,22 +4,21 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# TL;DR
-#   see README and LICENSE
+# see README and LICENSE
 
 umask 027
 set -Eeu
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+export LC_NUMERIC=id_ID.UTF-8
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
-export LC_NUMERIC=id_ID.UTF-8
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
 [ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR";
-printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 
 # these array is predefined and as a blanko.
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
@@ -39,8 +38,11 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
       ar_cat+=("${ar_txt[B]/txt./}"); ar_dmn+=(dmn."${ar_txt[B]/txt./}"); ar_tmp+=(tmr."${ar_txt[B]/txt./}")
    done
 
-   printf "\n[INFO] Eliminating duplicate entries between domain lists\n"
+   printf "[INFO] Eliminating duplicate entries between domain lists\n"
    printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
+   # based on ${ar_cat[1,5]}
+   printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
+   printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
@@ -50,9 +52,6 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
       cp "${ar_dmn[C]}" "${ar_txt[C]}"
       f_do
    done
-
-   # based on ${ar_cat[1]}
-   printf "\neliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
    for D in {3..5}; do
@@ -80,8 +79,6 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    cp "${ar_dmn[5]}" "${ar_txt[5]}"
    f_do
 
-   # based on ${ar_cat[5]}
-   printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 else
    printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
    printf "\n\x1b[91m[ERROR]\x1b[0m due to: FOUND %s of %s domain list:\nNOT require: %s\n" \

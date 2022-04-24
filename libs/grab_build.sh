@@ -4,26 +4,27 @@
 #   v6.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# see README and LICENSE
+# TL;DR
+#   see README and LICENSE
 
 umask 027
 set -Eeu
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-export LC_NUMERIC=id_ID.UTF-8
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
+export LC_NUMERIC=id_ID.UTF-8
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib.sh
 
 [ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
-printf "\n\x1b[91m[2'nd] TASKs:\x1b[0m\nStarting %s ... %s\n" "$(basename "$0")" "$start"
+printf "\n\x1b[91m[2'nd] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 
 # these array is predefined and as a blanko, to counter part 'others' array
 #    raw domains list
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-#    raw splitted domains list
+#    splitted raw domains list
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 
@@ -38,7 +39,7 @@ done
 mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
    unset ar_RAW
-   printf "[INFO] Splitting adult category to 750.000 lines/sub-category\n"
+   printf "\n[INFO] Splitting adult category to 750.000 lines/sub-category\n"
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp
    mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
