@@ -93,8 +93,8 @@ f_grab
 f_sm8 "${ar_cat[5]}" 2
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
 f_sm7 1 "${ar_sho[1]}"; f_do
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -E "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" >> "${untrust}"; f_do
-f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _grep -v "^#" >> "${porn}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}"  >> "${untrust}"; f_do
+f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed -E "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" >> "${porn}"; f_do
 
 # throw porn-domains to ${ar_dmn[0]}, use ${porn} to identify porn domains in ${untrust}
 printf "%12s: %-64s\t" "throw" "porn domains to ${ar_cat[0]^^} category"
