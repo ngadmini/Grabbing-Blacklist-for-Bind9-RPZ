@@ -13,7 +13,7 @@ alias _sed="LC_ALL=C sed"
 alias _grep="LC_ALL=C grep"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
-_foo=$(basename "$0")
+_foo=$(basename "$0"); _fuu=$(basename "${BASH_SOURCE[0]}")
 HOST=rpz.warnet-ersa.net      # CHANGE to fqdn or ip-address of your BIND9-server
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
@@ -27,7 +27,7 @@ f_trap() { printf "\n"; f_tmp; f_uset; }
 f_xcd() {   # exit code {7..19}
    for EC in $1; do
       local _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
-      local _xce="[ERROR] grab_lib.sh: at line ${BASH_LINENO[0]}. Exit code: $EC"
+      local _xce="[ERROR] $_fuu: at line ${BASH_LINENO[0]}. Exit code: $EC"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
@@ -46,8 +46,8 @@ f_xcd() {   # exit code {7..19}
              printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
-         16) _lin=$(grep -n "^HOST" "grab_lib.sh" | cut -d":" -f1);
-             _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC";
+         16) _lin=$(grep -n "^HOST" "$_fuu" | cut -d":" -f1);
+             _ext="[ERROR] $_fuu: at line $_lin. Exit code: $EC";
              printf "\n\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"
              exit 1;;
          17) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; exit 1;;
@@ -119,11 +119,16 @@ f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }        # grabbing remote files
 
 # fixing false positive and bad entry. Applied to all except ipv4 CATEGORY
 f_falsf() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$4" -e "$5" > "$3"; f_do; }
-f_falsg() { # throw ip-address entry to ipv4 CATEGORY, save in CIDR
+
+f_ipp() { # capture and throw ip-address entry to ipv4 CATEGORY, save into CIDR block
+   _grep -P "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$" \
+      "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2" || true
+   _sed -i -E "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"
+}
+
+f_falsg() {
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
-   _grep -E "(?<=[^0-9.]|^)[1-9][0-9]{0,2}(\\.([0-9]{0,3})){3}(?=[^0-9.]|$)" "$1" | _sed "s/$/\/32/" >> "$2" || true
-   _sed -Ei "/^([0-9]{1,3}\\.){3}[0-9]{1,3}$/d" "$1"
-   f_do; printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
+   f_ipp "$@"; f_do; printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
@@ -258,3 +263,4 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
       f_xcd 16 "$HOST"
    fi
    }
+
