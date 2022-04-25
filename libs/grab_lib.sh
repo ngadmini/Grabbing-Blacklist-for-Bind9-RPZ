@@ -17,7 +17,7 @@ _foo=$(basename "$0")
 HOST=rpz.warnet-ersa.net      # CHANGE to fqdn or ip-address of your BIND9-server
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
-   find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*(gz|sex|rsk)$" -print0 | xargs -0 -r rm
+   find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*gz$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
@@ -27,6 +27,7 @@ f_trap() { printf "\n"; f_tmp; f_uset; }
 f_xcd() {   # exit code {7..19}
    for EC in $1; do
       local _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
+      local _xce="[ERROR] grab_lib.sh: at line ${BASH_LINENO[0]}. Exit code: $EC"
       case $EC in
           7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
           8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
@@ -47,10 +48,10 @@ f_xcd() {   # exit code {7..19}
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
          16) _lin=$(grep -n "^HOST" "grab_lib.sh" | cut -d":" -f1);
              _ext="[ERROR] grab_lib.sh: at line $_lin. Exit code: $EC";
-             printf "\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"
+             printf "\n\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"
              exit 1;;
          17) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; exit 1;;
-         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" """$2"" doesn't exist in ""$3"""; exit 1;;
+         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; exit 1;;
          19) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "unexpected, please remove: ""$2"""; exit 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check:";
              printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)";
@@ -137,15 +138,15 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
 
-      for DB in ${ar_DB[*]}; do if ! [ -f "$DB" ]; then f_xcd 17 "$miss_DB"; fi; done
-      for RPZ in ${ar_RPZ[*]}; do if ! [ -f "$RPZ" ]; then f_xcd 17 "$miss_RPZ"; fi; done
-      if [ "${#ar_db[@]}" -ne "${#ar_DB[@]}" ]; then f_xcd 19 "$miss_DB"; fi
-      if [ "${#ar_rpz[@]}" -ne "${#ar_RPZ[@]}" ]; then f_xcd 19 "$miss_RPZ"; fi
+      for DB in ${ar_DB[*]}; do [ -f "$DB" ] || f_xcd 17 "$miss_DB"; done
+      for RPZ in ${ar_RPZ[*]}; do [ -f "$RPZ" ] || f_xcd 17 "$miss_RPZ"; done
+      [ "${#ar_db[@]}" -eq "${#ar_DB[@]}" ] || f_xcd 19 "$miss_DB"
+      [ "${#ar_rpz[@]}" -eq "${#ar_RPZ[@]}" ] || f_xcd 19 "$miss_RPZ"
 
       # run TASK
       local _remdir="/etc/bind/zones-rpz/"
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
-      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "$_remdir" "$HOST"
+      _ssh root@"$HOST" [ -d "$_remdir" ] || f_xcd 18 "$_remdir" "$HOST"
 
       # use [unpigz -v rpz-2022-04-09.tar.gz] then [tar xvf rpz-2022-04-09.tar] for decompression
       local _ts; local _ID; _ts=$(date "+%Y-%m-%d"); _ID="/home/rpz-$_ts.tar.gz"
@@ -237,7 +238,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       local _remdir="/etc/bind/zones-rpz"
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
-      _ssh root@"$HOST" [[ -d "$_remdir" ]] || f_xcd 18 "'_remdir'" "$HOST"
+      _ssh root@"$HOST" [ -d "$_remdir" ] || f_xcd 18 "$_remdir" "$HOST"
 
       for a in $1; do
          if scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then

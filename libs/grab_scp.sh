@@ -8,7 +8,7 @@
 #   see README and LICENSE
 
 umask 027
-set -Eeu
+set -Eeuo pipefail
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 startTime=$(date +%s)
