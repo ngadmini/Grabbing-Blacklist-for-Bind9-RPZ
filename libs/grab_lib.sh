@@ -24,7 +24,7 @@ f_tmp() {   # remove temporary files/directories, array & function defined durin
 f_uset() { unset -v ar_{cat,db,DB,dom,dmn,miss,raw,RAW,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
-f_xcd() {   # exit code {7..19}
+f_xcd() {   # exit code {7..20}
    for EC in $1; do
       local _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
       local _xce="[ERROR] $_fuu: at line ${BASH_LINENO[0]}. Exit code: $EC"
@@ -53,6 +53,7 @@ f_xcd() {   # exit code {7..19}
          17) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; exit 1;;
          18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; exit 1;;
          19) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "unexpected, please remove: ""$2"""; exit 1;;
+         20) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xce" "$(basename "$2")"; exit 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check:";
              printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)";
              printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"
@@ -143,8 +144,8 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
 
-      for DB in ${ar_DB[*]}; do [ -f "$DB" ] || f_xcd 17 "$miss_DB"; done
-      for RPZ in ${ar_RPZ[*]}; do [ -f "$RPZ" ] || f_xcd 17 "$miss_RPZ"; done
+      for DB in ${ar_DB[*]}; do [ -f "$DB" ] || f_xcd 20 "$miss_DB"; done
+      for RPZ in ${ar_RPZ[*]}; do [ -f "$RPZ" ] || f_xcd 20 "$miss_RPZ"; done
       [ "${#ar_db[@]}" -eq "${#ar_DB[@]}" ] || f_xcd 19 "$miss_DB"
       [ "${#ar_rpz[@]}" -eq "${#ar_RPZ[@]}" ] || f_xcd 19 "$miss_RPZ"
 
@@ -168,7 +169,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
       # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
-      #    DON'T add space after "#" if you comment. it's use by this script at line 92
+      #    DON'T add space after "#" if you comment. it's use by this script at line 93
       #printf "Reload BIND9-server:%s\n" "$HOST"
       #ssh root@"$HOST" "rndc reload"
    else

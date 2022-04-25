@@ -77,7 +77,7 @@ if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
       exit 1
    fi
 else
-   printf "\x1b[91m[ERROR]\x1b[0m due to: FOUND %s domain list:\n\t%s\n" "${#ar_RAW[@]}" "${ar_RAW[*]}"
+   printf "\n\x1b[91m[ERROR]\x1b[0m due to: FOUND %s domain list:\n\t%s\n" "${#ar_RAW[@]}" "${ar_RAW[*]}"
    printf "[HINTS] expected %s domains list: \n\t%s\n" "${#ar_raw[@]}" "${ar_raw[*]}"
    exit 1
 fi
