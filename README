@@ -73,20 +73,20 @@ prerequisites:
 
       # BIND9-server will reboot after synchronizing, due to low RAM. but you can
       #   change to 'rdnc reload', by modify grab_lib.sh at line :
-      # comment IN line: 160-162
+      # comment IN line: 161-163
       ~$ grep -n '\(fake\|shutdown\)' grab_lib.sh
-      ~$ sed -i.bak '160,162s/./#&/' grab_lib.sh
-      # comment OUT line: 166-167
+      ~$ sed -i.bak '161,163s/./#&/' grab_lib.sh
+      # comment OUT line: 167-168
       ~$ grep -n '[rR]eload' grab_lib.sh 
-      166:      #printf "Reload BIND9-server:%s\n" "$HOST"
-      167:      #ssh root@"$HOST" "rndc reload"
-      ~$ sed -i '166s/^.*$/      printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
-      ~$ sed -i '167s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib.sh
+      167:      #printf "Reload BIND9-server:%s\n" "$HOST"
+      168:      #ssh root@"$HOST" "rndc reload"
+      ~$ sed -i '167s/^.*$/      printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+      ~$ sed -i '168s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib.sh
 
       # afterward, you can change to your policy trigger
       $ grep -n '\sCNAME\s\.' grab_lib.sh
-      226:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      232:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      227:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+      233:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
       # change to your redirect page, ie. foo.redirect.page
       ~$ sed -i "s/\sCNAME\s\./ CNAME foo.redirect.page/g" grab_lib.sh
 

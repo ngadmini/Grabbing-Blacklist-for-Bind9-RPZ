@@ -163,7 +163,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
       # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
-      #    DON'T add space after "#" if you comment. it's use by this script at line 91
+      #    DON'T add space after "#" if you comment. it's use by this script at line 92
       #printf "Reload BIND9-server:%s\n" "$HOST"
       #ssh root@"$HOST" "rndc reload"
    else
