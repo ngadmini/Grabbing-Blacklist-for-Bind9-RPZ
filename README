@@ -80,7 +80,7 @@ prerequisites:
       ~$ grep -n '[rR]eload' grab_lib.sh 
       173:      #printf "Reload BIND9-server:%s\n" "$HOST"
       174:      #ssh root@"$HOST" "rndc reload"
-      ~$ sed -i '173s/^.*$/      printf "Reload BIND9-server:%s\n" "$HOST"/' grab_lib.sh
+      ~$ sed -i '173s/^.*$/      printf "Reload BIND9-server:%s\\n" "$HOST"/' grab_lib.sh
       ~$ sed -i '174s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib.sh
 
       # afterward, you can change to your policy trigger

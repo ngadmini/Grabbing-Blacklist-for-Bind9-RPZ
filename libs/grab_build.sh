@@ -36,7 +36,7 @@ done
 
 mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
 if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
-   unset ar_RAW
+   unset -v ar_RAW
    printf "\n[INFO] Splitting adult category to 750.000 lines/sub-category\n"
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp

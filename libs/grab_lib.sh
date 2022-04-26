@@ -29,35 +29,35 @@ f_xcd() {   # exit code {7..20}
       local _xcd="[ERROR] $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC"
       local _xce="[ERROR] $_fuu: at line ${BASH_LINENO[0]}. Exit code: $EC"
       case $EC in
-          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; exit 1;;
-          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; exit 1;;
-          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; exit 1;;
-         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; exit 1;;
-         11) _msj="urls. it's should consist of 22 urls";
-             printf -v _lmm "%s" "$(basename "$2"): $(wc -l < "$2")";
-             printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lmm" "$_msj";
-             exit 1;;
-         12) _msg="lines. it's should consist of 3 lines";
-             printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")";
-             printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lnn" "$_msg";
-             exit 1;;
-         13) _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes";
-             _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to";
-             printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; exit 1;;
-         14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; exit 1;;
-         15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; exit 1;;
-         16) _lin=$(grep -n "^HOST" "$_fuu" | cut -d":" -f1);
-             _ext="[ERROR] $_fuu: at line $_lin. Exit code: $EC";
+          7) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; return 1;;
+          8) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "require '$2' but it's not installed"; return 1;;
+          9) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "'$2' require '$3' but it's not installed"; return 1;;
+         10) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "you must execute as non-root privileges"; return 1;;
+         11) _msj="urls. it's should consist of 22 urls"
+             printf -v _lmm "%s" "$(basename "$2"): $(wc -l < "$2")"
+             printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lmm" "$_msj"
+             return 1;;
+         12) _msg="lines. it's should consist of 3 lines"
+             printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")"
+             printf "\n\x1b[91m%s\x1b[0m\n%s %s\n" "$_xcd" "$_lnn" "$_msg"
+             return 1;;
+         13) _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
+             _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to"
+             printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; return 1;;
+         14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; return 1;;
+         15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; return 1;;
+         16) _lin=$(grep -n "^HOST" "$_fuu" | cut -d":" -f1)
+             _ext="[ERROR] $_fuu: at line $_lin. Exit code: $EC"
              printf "\n\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"
-             exit 1;;
-         17) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; exit 1;;
-         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; exit 1;;
-         19) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "unexpected, please remove: ""$2"""; exit 1;;
-         20) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xce" "$(basename "$2")"; exit 1;;
-          *) _ukn="Unknown exit code [f_xcd $1], please check:";
-             printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)";
+             return 1;;
+         17) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; return 1;;
+         18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; return 1;;
+         19) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "unexpected, please remove: ""$2"""; return 1;;
+         20) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xce" "$(basename "$2")"; return 1;;
+          *) _ukn="Unknown exit code [f_xcd $1], please check:"
+             printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)"
              printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"
-             exit 1;;
+             return 1;;
       esac
    done
    }
@@ -90,7 +90,7 @@ f_sm3() {   # display messages when 3'th option chosen
 f_sm4() {   # display messages when 4'th option chosen
    f_sm5; printf "%28s serial zone files [rpz.*]\n" "~incrementing"
    printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$HOST"
-   if grep -qE "^\s{2,}#s(*.*)d\"" grab_lib.sh; then
+   if grep -qE "^\s{2,}#s(*.*)d\"" "$_fuu"; then
        printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$HOST"
        printf "%18s \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "use" "$HOST"
    fi
@@ -264,4 +264,3 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
       f_xcd 16 "$HOST"
    fi
    }
-

@@ -7,18 +7,19 @@
 # TL;DR
 #   see README and LICENSE
 
+
 umask 027; set -Eeuo pipefail
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh; _CRL="$_DIR"/grab_cereal.sh
 _DPL="$_DIR"/grab_dedup.sh; _LIB="$_DIR"/grab_lib.sh
-_SCP="$_DIR"/grab_scp.sh; _REG="$_DIR"/grab_regex; _URL="$_DIR"/grab_urls
-startTime=$(date +%s); start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
+_SCP="$_DIR"/grab_scp.sh;   _REG="$_DIR"/grab_regex; _URL="$_DIR"/grab_urls
+startTime=$(date +%s);     start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 export LC_NUMERIC=id_ID.UTF-8   # change to your locale country
 trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
 # shellcheck source=/dev/null
 # shellcheck disable=SC2029
-source "$_LIB"
+source "$_DIR"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
    printf "\n\x1b[93mPERFORMING TASKs:\x1b[0m Initiating CATEGORY of domains\n"
@@ -81,7 +82,7 @@ printf "\x1b[93mPREPARING TASKs:\x1b[0m Check the remote files isUP or isDOWN\n"
 ar_sho=(); f_crawl "$_URL" || true   # check urls isUP or isDOWN
 f_grab                               # grabbing and processing domains
 
-f_sm8 "${ar_cat[5]}" 2         # category: TRUST+ --> ${ar_cat[3]} with 2 additional entries: ${urls[1,7]}
+f_sm8 "${ar_cat[5]}" 2         # category: TRUST+ --> ${ar_cat[5]} with 2 additional entries: ${urls[1,7]}
 trust=$(mktemp --tmpdir="$_DIR"); untrust=$(mktemp --tmpdir="$_DIR"); porn=$(mktemp --tmpdir="$_DIR")
 f_sm7 1 "${ar_sho[1]}"; f_do   # add gambling domain, done when initiating category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
@@ -170,13 +171,12 @@ for V in {0..5}; do
       while read -r; do      # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
-         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[V]}"
+         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' | \
+         _sed "s/\//\./" > "${ar_tmp[V]}"
       done < "${ar_txt[V]}"
-      _sed -i "s/\//\./" "${ar_tmp[V]}"
       printf -v _ipv4 "%'d" "$(wc -l < "${ar_tmp[V]}")"
       printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_ipv4"
    else                      # prune sub-domains if domain present
-      _sort -u "${ar_txt[V]}" -o "${ar_txt[V]}"
       _sed 's/^/\./' "${ar_txt[V]}" | rev | _sort -u \
          | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
          | rev | _sed "s/^\.//" | _sort > "${ar_tmp[V]}"
