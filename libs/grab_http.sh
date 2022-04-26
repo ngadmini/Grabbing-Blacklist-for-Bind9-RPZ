@@ -19,7 +19,7 @@ export LC_NUMERIC=id_ID.UTF-8   # change to your locale country
 trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
 # shellcheck source=/dev/null
 # shellcheck disable=SC2029
-source "$_DIR"
+source "$_LIB"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
    printf "\n\x1b[93mPERFORMING TASKs:\x1b[0m Initiating CATEGORY of domains\n"
@@ -115,7 +115,6 @@ for I in ${ar_txt[0]}; do f_falsg "$I" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
 f_sm8 "${ar_cat[4]}" 2         # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 for J in {4,5}; do f_sm7 "$J" "${ar_sho[J]}"; f_do; done   # done when initiating category
-
 for K in ${ar_dmn[4]}; do      # fixing bad, duplicate and false entry
    f_falsf "${ar_cat[4]}" "$K" "${ar_txt[4]}" "${ar_reg[0]}" "${ar_reg[1]}"
 done
@@ -201,9 +200,7 @@ case $RETVAL in    #   offering options with getopts
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
    3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;
    4) f_sm4; "$_DPL"; "$_BLD"; "$_CRL"; "$_SCP"; f_sm10 th;;
-   *) printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
-      printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" \
-         "[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]";;
+   *) f_rvu;;
 esac
 printf "bye!\n"
 exit 0

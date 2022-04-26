@@ -264,3 +264,9 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
       f_xcd 16 "$HOST"
    fi
    }
+
+f_rvu() {   # used by grab_http.sh
+   printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
+   printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" \
+      "[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]"
+   }
