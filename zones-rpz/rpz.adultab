@@ -1,8 +1,8 @@
-; generate at [14-Apr-22 15:40:51 UTC] by grab_cereal.sh v6.2
+; generate at [27-Apr-22 15:57:24 UTC] by grab_cereal.sh v6.2
 ;   rpz.adultab
 $TTL 3600
-@   SOA   adultab.localhost. dummy.adultab.localhost. (2022041422 3600 300 86400 60)
-@       NS      adultab.localhost.
-@       IN      A       127.0.4.1
+@   SOA   adultab.localhost. dummy.adultab.localhost. (2022042703 3600 300 86400 60)
+@    NS   adultab.localhost.
+@    IN   A    127.0.4.1
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultab"

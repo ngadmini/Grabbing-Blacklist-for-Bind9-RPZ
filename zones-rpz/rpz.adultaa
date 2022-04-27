@@ -1,9 +1,9 @@
-; generate at [14-Apr-22 15:40:51 UTC] by grab_cereal.sh v6.2
+; generate at [27-Apr-22 15:57:24 UTC] by grab_cereal.sh v6.2
 ;   rpz.adultaa
 $TTL 3600
-@   SOA   adultaa.localhost. dummy.adultaa.localhost. (2022041424 3600 300 86400 60)
-@       NS      adultaa.localhost.
-@       IN      A       127.0.3.1
+@   SOA   adultaa.localhost. dummy.adultaa.localhost. (2022042703 3600 300 86400 60)
+@    NS   adultaa.localhost.
+@    IN   A    127.0.3.1
 ;
 *.adult  CNAME .
 *.porn   CNAME .

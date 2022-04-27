@@ -1,9 +1,9 @@
-; generate at [14-Apr-22 15:40:51 UTC] by grab_cereal.sh v6.2
+; generate at [27-Apr-22 15:57:24 UTC] by grab_cereal.sh v6.2
 ;   rpz.redirector
 $TTL 3600
-@   SOA   redirector.localhost. dummy.redirector.localhost. (2022041422 3600 300 86400 60)
-@       NS      redirector.localhost.
-@       IN      A       127.0.12.1
+@   SOA   redirector.localhost. dummy.redirector.localhost. (2022042703 3600 300 86400 60)
+@    NS   redirector.localhost.
+@    IN   A    127.0.12.1
 ;
 ;ultrasurf
 ;https://otx.alienvault.com/indicator/domain/tcdn.me
@@ -12,8 +12,8 @@ ns-422.awsdns-52.com    CNAME .
 ns-843.awsdns-41.net    CNAME .
 ns-1179.awsdns-19.org   CNAME .
 ns-1891.awsdns-44.co.uk CNAME .
-*.tcdn.me               CNAME .
-*.northghost.com        CNAME .
-*.klafive.com           CNAME .
+*.tcdn.me         CNAME .
+*.northghost.com     CNAME .
+*.klafive.com        CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.redirector"

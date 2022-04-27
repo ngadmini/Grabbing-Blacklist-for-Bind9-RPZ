@@ -1,8 +1,27 @@
-; generate at [14-Apr-22 15:40:51 UTC] by grab_cereal.sh v6.2
+; generate at [27-Apr-22 15:57:24 UTC] by grab_cereal.sh v6.2
 ;   rpz.publicite
 $TTL 3600
-@   SOA   publicite.localhost. dummy.publicite.localhost. (2022041422 3600 300 86400 60)
-@       NS      publicite.localhost.
-@       IN      A       127.0.11.1
+@   SOA   publicite.localhost. dummy.publicite.localhost. (2022042703 3600 300 86400 60)
+@    NS   publicite.localhost.
+@    IN   A    127.0.11.1
 ;
+; indiehome
+d01.notifa.info IN CNAME .
+d31qbv1cthcecs.cloudfront.net IN CNAME .
+d5nxst8fruw4z.cloudfront.net IN CNAME .
+digiads.co.id IN CNAME .
+*.digiads.co.id IN CNAME .
+internetpositif.id IN CNAME .
+p01.notifa.info IN CNAME .
+p02.notifa.info IN CNAME .
+p03.notifa.info IN CNAME .
+p05.notifa.info IN CNAME .
+uadexchange.com IN CNAME .
+*.uadexchange.com IN CNAME .
+upoint.id IN CNAME .
+*.upoint.id IN CNAME .
+usearch.co.id IN CNAME .
+*.usearch.co.id IN CNAME .
+uzone.id IN CNAME .
+*.uzone.id IN CNAME .
 $INCLUDE "/etc/bind/zones-rpz/db.publicite"
