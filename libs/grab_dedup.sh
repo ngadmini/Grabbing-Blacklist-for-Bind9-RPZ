@@ -22,7 +22,7 @@ printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "
 # these array is predefined and as a blanko.
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 for y in ${ar_raw[*]}; do
-   if ! [ -f "$y" ]; then
+   if ! [ -e "$y" ]; then
       mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
       printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       f_xcd 17 "$miss_v"

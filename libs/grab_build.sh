@@ -27,7 +27,7 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 
 for y in ${ar_raw[*]}; do
-   if ! [ -f "$y" ]; then
+   if ! [ -e "$y" ]; then
       mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
       printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       f_xcd 17 "$miss_v"

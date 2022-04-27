@@ -144,8 +144,8 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
 
-      for DB in ${ar_DB[*]}; do [ -f "$DB" ] || f_xcd 20 "$miss_DB"; done
-      for RPZ in ${ar_RPZ[*]}; do [ -f "$RPZ" ] || f_xcd 20 "$miss_RPZ"; done
+      for DB in ${ar_DB[*]}; do [ -e "$DB" ] || f_xcd 20 "$miss_DB"; done
+      for RPZ in ${ar_RPZ[*]}; do [ -e "$RPZ" ] || f_xcd 20 "$miss_RPZ"; done
       [ "${#ar_db[@]}" -eq "${#ar_DB[@]}" ] || f_xcd 19 "$miss_DB"
       [ "${#ar_rpz[@]}" -eq "${#ar_RPZ[@]}" ] || f_xcd 19 "$miss_RPZ"
 
@@ -212,7 +212,7 @@ f_ddup() {  # used by grab_dedup.sh
    _sort "$3" "$4" | uniq -d | _sort -u > "$5"
    }
 
-f_g4b() {   # used by grab_build.sh
+f_g4b() {   # sub-function, must include in f_rpz and f_ip4
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
    sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
@@ -248,12 +248,12 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
 
       for a in $1; do
          if scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then
-            wait
+            :
          else
             local origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/"
             printf "\n[INFO] %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
             printf "%s%s\n" "$origin" "$a"
-            curl -C - -fs "$origin""$a" >> "$a" ||  f_xcd 14 "$origin"
+            curl -C - -fs "$origin""$a" >> "$a" || f_xcd 14 "$origin"
             printf "[INFO] successfully get %s from origin:\n" "$a"
             printf "%s%s\n" "$origin" "$a"
          fi

@@ -69,11 +69,11 @@ for X in $pkg; do if ! dpkg -s "$X" >> /dev/null 2>&1; then f_xcd 8 "$X"; fi; do
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
 for C in {"$_DPL","$_BLD","$_CRL","$_SCP","$_LIB"}; do
-   [ -f "$C" ] || f_xcd 17 "$C"; [ -x "$C" ] || chmod +x "$C"
+   [ -e "$C" ] || f_xcd 17 "$C"; [ -x "$C" ] || chmod +x "$C"
 done
 # "$_URL & $_REG": must exist and free from empty lines
-[ -f "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"
-[ -f "$_REG" ] || f_xcd 17 "$_REG"; _sed -i "/^$/d" "$_REG"
+[ -e "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"
+[ -e "$_REG" ] || f_xcd 17 "$_REG"; _sed -i "/^$/d" "$_REG"
 mapfile -t ar_url < "$_URL"; [ "${#ar_url[@]}" -eq 22 ] || f_xcd 11 "$_URL"
 mapfile -t ar_reg < "$_REG"; [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
 f_ok
