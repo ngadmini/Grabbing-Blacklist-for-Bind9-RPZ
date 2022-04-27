@@ -14,9 +14,9 @@ startTime=$(date +%s); start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 export LC_NUMERIC=id_ID.UTF-8   # change to your locale country
 trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
 # shellcheck source=/dev/null
-source "$_DIR"/grab_lib.sh
+source "$_DIR"/grab_lib
 
-[ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR";
+[ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
 printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 
 # these array is predefined and as a blanko.
