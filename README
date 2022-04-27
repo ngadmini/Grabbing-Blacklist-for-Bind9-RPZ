@@ -81,8 +81,8 @@ prerequisites:
       ~$ grep -n '[rR]eload' grab_lib 
       170:      #printf "Reload BIND9-server:%s\n" "$HOST"
       171:      #ssh root@"$HOST" "rndc reload"
-      # comment IN line: 164-165
-      ~$ sed -i.bak '164,165s/./#&/' grab_lib
+      # comment IN line: 164-166
+      ~$ sed -i.bak '164,166s/./#&/' grab_lib
       # comment OUT line: 170-171
       ~$ sed -i '170s/^.*$/      printf "Reload BIND9-server:%s\\n" "$HOST"/' grab_lib
       ~$ sed -i '171s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib
