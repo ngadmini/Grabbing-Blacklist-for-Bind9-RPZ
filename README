@@ -7,8 +7,8 @@ version
 author:
    ngadimin@warnet-ersa.net
 
-licence:
-*) Unlicence
+license:
+*) Unlicense
 *) For more information, please refer to <https://unlicense.org>
 
 what's new in v6.2:
@@ -108,9 +108,6 @@ output:
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
       rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
 *) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
-
-disclaimer:
-*) These program are as they are, and to be used at your own risk
 
 please use our discussion for questions, feedback and bug fixes:
 *) https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions
