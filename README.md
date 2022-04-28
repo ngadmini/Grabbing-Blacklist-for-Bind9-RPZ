@@ -34,7 +34,7 @@ the partial output of this script-pack, can be found at [Partial Output](https:/
 ### others:
 - [x] **Credits to** : All Owner-Maintener of sources-list in [grab_urls](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_urls) and [KOMINFO NKRI](https://trustpositif.kominfo.go.id/assets/db/domains)
 - [x] **Disclaimer** : These script are as they are, and to be used at your own risk
-- [x] [![Grabbing Blacklist for Bind9 RPZ](https://img.shields.io/badge/LICENSE:-GNU%20General%20Public%20License-blue?style=flat-square&logo=github)](./LICENSE) 
+- [x] [![Grabbing Blacklist for Bind9 RPZ](https://img.shields.io/badge/LICENSE:-Unlicense-blue?style=flat-square&logo=github)](./LICENSE) 
  [![Grabbing Blacklist for Bind9 RPZ](https://img.shields.io/badge/FEEDBACK:-Issues-blue?style=flat-square&logo=github)](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/issues) 
  [![Grabbing Blacklist for Bind9 RPZ](https://img.shields.io/badge/FEEDBACK:-Dicussions-blue?style=flat-square&logo=github)](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions)
  [![Grabbing Blacklist for Bind9 RPZ](https://img.shields.io/badge/USAGE:-Wiki-blue?style=flat-square&logo=github)](https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki)
