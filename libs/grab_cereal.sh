@@ -18,7 +18,7 @@ source "$_DIR"/grab_lib
 [ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 
-# these array is predefined and as a blanko, to counter part 'ar_zon' array
+# predefined array as a blanko to counter part 'ar_zon' array
 ar_miss=()
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )

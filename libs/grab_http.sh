@@ -10,14 +10,11 @@
 umask 027; set -Eeuo pipefail
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-_BLD="$_DIR"/grab_build.sh; _CRL="$_DIR"/grab_cereal.sh
-_DPL="$_DIR"/grab_dedup.sh; _SCP="$_DIR"/grab_scp.sh
-_REG="$_DIR"/grab_regex;    _URL="$_DIR"/grab_urls
+_BLD="$_DIR"/grab_build.sh; _CRL="$_DIR"/grab_cereal.sh; _REG="$_DIR"/grab_regex;
+_DPL="$_DIR"/grab_dedup.sh; _SCP="$_DIR"/grab_scp.sh;    _URL="$_DIR"/grab_urls
 startTime=$(date +%s);     start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
-export LC_NUMERIC=id_ID.UTF-8   # change to your locale country
 trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
-# shellcheck source=/dev/null
-# shellcheck disable=SC2029
+# shellcheck source=/dev/null disable=SC2029
 source "$_DIR"/grab_lib
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
@@ -92,7 +89,6 @@ for D in ${untrust}; do        # identifying porn domains, use it's to reduce po
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "$D" >> "${ar_dmn[5]}"
 done
 cat "${trust}" >> "${ar_dmn[0]}"; f_do
-
 for E in ${ar_dmn[5]}; do f_falsf "${ar_cat[5]}" "$E" "${ar_txt[5]}" "${ar_reg[0]}" "${ar_reg[1]}"; done
 for F in ${ar_txt[5]}; do f_falsg "$F" "${ar_dmn[1]}" "${ar_cat[1]^^}"; done
 
@@ -141,7 +137,7 @@ printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
 # finishing
-printf "\n\x1b[93mPRUNING:\x1b[0m sub-domains if domains present and sub-nets into CIDR blocks if any\n"
+printf "\n\x1b[93mPRUNING:\x1b[0m sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for V in {0..5}; do
@@ -149,14 +145,14 @@ for V in {0..5}; do
       while read -r; do      # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
-         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' | \
+         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' |\
          _sed "s/\//\./" > "${ar_tmp[V]}"
       done < "${ar_txt[V]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[V]}")"; printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_ip4"
-   else                      # prune sub-domains if domain present
-      _sed 's/^/\./' "${ar_txt[V]}" | rev | _sort -u \
-         | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-         | rev | _sed "s/^\.//" | _sort > "${ar_tmp[V]}"
+   else                      # prune sub-domains if parent domain present
+      _sed 's/^/\./' "${ar_txt[V]}" | rev | _sort -u |\
+         awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' |\
+         rev | _sed "s/^\.//" | _sort > "${ar_tmp[V]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[V]}")"; printf "%12s: %9s entries\n" "${ar_cat[V]}" "$_snp"
    fi
    cp "${ar_tmp[V]}" "${ar_txt[V]}"
@@ -171,7 +167,7 @@ endTime=$(date +%s); DIF=$((endTime - startTime)); f_sm6 "$((DIF/60))" "$((DIF%6
 
 f_sm0 "$HOST"      # offerring OPTIONs: continued to next stept OR stop here
 read -r RETVAL     # TO DO:
-case $RETVAL in    #   offering options with getopts
+case $RETVAL in    #   offerring options with getopts
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
    3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;

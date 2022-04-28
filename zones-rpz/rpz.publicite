@@ -24,4 +24,5 @@ usearch.co.id IN CNAME .
 *.usearch.co.id IN CNAME .
 uzone.id IN CNAME .
 *.uzone.id IN CNAME .
+;
 $INCLUDE "/etc/bind/zones-rpz/db.publicite"

@@ -24,9 +24,12 @@ licence:
 
 what's new in v6.2:
 *) add urls in grab_urls. now containing 22 lines.
-      optimizing reduce porn domains in trust+ category, with changing to
+      optimizing reduction porn domains in trust+ category, with changing to
       'shallalist porn-category' as identifyer porn domains
 *) fix regex in grab_lib when IPv4 with leading zero is captured
+*) fix ErrorMessage in grab_lib.sh and grab_build.sh
+*) tidy up rpz-files and adding fixed domain-list to rpz.publicite
+*) update grab_regex to optimizing reduction porn domains in trust+ category
 
 file parts of this version:
    1. grab_http.sh --grabing and proccessing raw domains.
@@ -75,22 +78,22 @@ prerequisites:
       # BIND9-server will reboot after synchronizing, due to low RAM. but you can
       #   change to 'rdnc reload', by modify grab_lib at line :
       ~$ grep -n '\(fake\|shutdown\)' grab_lib | grep 16
-      164:      printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
-      165:      _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-      166:      printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
+      165:      printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
+      166:      _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
+      167:      printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
       ~$ grep -n '[rR]eload' grab_lib 
-      170:      #printf "Reload BIND9-server:%s\n" "$HOST"
-      171:      #ssh root@"$HOST" "rndc reload"
-      # comment IN line: 164-166
-      ~$ sed -i.bak '164,166s/./#&/' grab_lib
-      # comment OUT line: 170-171
-      ~$ sed -i '170s/^.*$/      printf "Reload BIND9-server:%s\\n" "$HOST"/' grab_lib
-      ~$ sed -i '171s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib
+      171:      #printf "Reload BIND9-server:%s\n" "$HOST"
+      172:      #ssh root@"$HOST" "rndc reload"
+      # comment IN line: 165-167
+      ~$ sed -i.bak '165,167s/./#&/' grab_lib
+      # comment OUT line: 171-172
+      ~$ sed -i '171s/^.*$/      printf "Reload BIND9-server:%s\\n" "$HOST"/' grab_lib
+      ~$ sed -i '172s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib
 
       # afterward, you can modify grab_lib to your policy trigger
       $ grep -n '\sCNAME\s\.' grab_lib
-      226:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      232:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      227:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+      233:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
       # change to your redirect page, ie. foo.redirect.page
       ~$ sed -i "s/\sCNAME\s\./ CNAME foo.redirect.page/g" grab_lib
 

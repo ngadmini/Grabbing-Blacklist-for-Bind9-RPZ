@@ -14,7 +14,8 @@ alias _grep="LC_ALL=C grep"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0"); _fuu=$(basename "${BASH_SOURCE[0]}")
-HOST=rpz.warnet-ersa.net      # CHANGE to fqdn or ip-address of your BIND9-server
+HOST=rpz.warnet-ersa.net        # CHANGE to fqdn or ip-address of your BIND9-server
+export LC_NUMERIC=id_ID.UTF-8   # change to your locale country
 
 f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*gz$" -print0 | xargs -0 -r rm
@@ -166,7 +167,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
 
       # OR comment 3 lines above AND uncomment 2 lines below, if you have sufficient RAM and
-      #    DON'T add space after "#" if you comment. it's use by this script at line 93
+      #    DON'T add space after "#" if you comment. it's use by this script at line 94
       #printf "Reload BIND9-server:%s\n" "$HOST"
       #ssh root@"$HOST" "rndc reload"
    else
