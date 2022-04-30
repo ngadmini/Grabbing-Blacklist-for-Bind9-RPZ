@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_build.sh
-#   v6.2
+#   v6.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
 
-umask 027; set -Eeuo pipefail
+umask 027
+SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
+if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
-_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-startTime=$(date +%s); start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
-trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
-# shellcheck source=/dev/null
-source "$_DIR"/grab_lib
+_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+startTime=$(date +%s)
+start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
-[ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
 printf "\n\x1b[91m[2'nd] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+cd "$_DIR"
+# shellcheck source=/dev/null
+source "$_DIR"/grab_lib; trap f_trap 0 2 3 15; [ ! "$UID" -eq 0 ] || f_xcd 10
 
 # predefined array as a blanko to counter part 'others' array
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)

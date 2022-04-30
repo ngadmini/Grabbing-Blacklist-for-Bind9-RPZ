@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_dedup.sh
-#   v6.2
+#   v6.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
 
-umask 027; set -Eeuo pipefail
+umask 027
+SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
+if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
-_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-startTime=$(date +%s); start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
-trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
-# shellcheck source=/dev/null
-source "$_DIR"/grab_lib
+_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+startTime=$(date +%s)
+start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
-[ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
 printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+cd "$_DIR"
+# shellcheck source=/dev/null
+source "$_DIR"/grab_lib; trap f_trap 0 2 3 15; [ ! "$UID" -eq 0 ] || f_xcd 10
 
 # predefined array as a blanko
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
@@ -38,7 +40,6 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
 
    printf "\n[INFO] Eliminating duplicate entries between domain lists\n"
    printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
-
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
       f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}" 1
@@ -90,7 +91,7 @@ fi
 # display result
 endTime=$(date +%s); DIF=$((endTime - startTime)); unset -v ar_txt
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
-printf "\ndeduplicating domain lists (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
+printf "[INFO] deduplicating domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
 for P in {0..5}; do
    printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "$dpl"

@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v6.2
+#   v6.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
 
-umask 027; set -Eeuo pipefail
+umask 027
+SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
+if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
-_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-startTime=$(date +%s); start=$(date "+DATE: %Y-%m-%d% TIME: %H:%M:%S")
-trap f_trap 0 2 3 15      # cleanUP on exit, interrupt, quit & terminate
+_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+startTime=$(date +%s)
+start=$(date "+DATE: %Y-%m-%d% TIME: %H:%M:%S")
+
+printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+cd "$_DIR"
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
-
-[ ! "$UID" -eq 0 ] || f_xcd 10; cd "$_DIR"
-printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+trap f_trap 0 2 3 15   # cleanUP on exit, interrupt, quit & terminate
+[ ! "$UID" -eq 0 ] || f_xcd 10
 
 # predefined array as a blanko to counter part 'ar_zon' array
 ar_miss=()

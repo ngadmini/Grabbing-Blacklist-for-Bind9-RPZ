@@ -1,5 +1,5 @@
 version
-   *) v6.2
+   *) v6.3
    this program is tailorized to updating blackist domains
    at BIND9 - Response Policy Zone 
 ----------------------------------
@@ -11,14 +11,8 @@ license:
 *) Unlicense
 *) For more information, please refer to <https://unlicense.org>
 
-what's new in v6.2:
-*) add urls in grab_urls. now containing 22 lines.
-      optimizing reduction porn domains in trust+ category, with changing to
-      'shallalist porn-category' as identifyer porn domains
-*) fix regex in grab_lib when IPv4 with leading zero is captured
-*) fix ErrorMessage in grab_lib.sh and grab_build.sh
-*) tidy up rpz-files and adding fixed domain-list to rpz.publicite
-*) update grab_regex to optimizing reduction porn domains in trust+ category
+what's new in v6.3:
+*) add grab_cnf as an configuration file
 
 file parts of this version:
    1. grab_http.sh --grabing and proccessing raw domains.
@@ -33,56 +27,37 @@ file parts of this version:
    4. grab_cereal.sh --incrementing serial zones.
         run this scipt separately, only if rpz.* are available in the same directory.
         if not, it try to get from bind9-server. it generated new serial at zone-files
-   5. grab_lib --contain some of functions.
+   5. grab_cnf --configuration file..
+   6. grab_lib --contain some of functions.
         need modify. SEE prerequisites section in this README
-   6. grab_urls --contain urls list of remote raw-files.
+   7. grab_urls --contain urls list of remote raw-files.
         case sensitive, strict order, line count and no blank lines
-   7. grab_regex --contain reguler expressions.
+   8. grab_regex --contain reguler expressions.
         case sensitive, strict order, line count and no blank lines
-   8. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
+   9. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
         old db.* and rpz.* files in BIND9-server. use below to decompress
 
         ~$ unpigz -v rpz-2022-04-09.tar.gz
         ~$ tar -xvf rpz-2022-04-09.tar
 
-   9. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
+  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
         rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
-  10. all of them must present in the same directory
+  11. all of them must present in the same directory
 
 prerequisites:
 *) on your linux desktop workstation
-
       # check require package installed or NOT
       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
-      # modify file grab_lib to your fqdn BIND9-server OR ip-address, ie. your.fqdn.net
-      ~$ grep -n "HOST=" grab_lib
-      grab_lib:17:HOST="rpz.warnet-ersa.net"      # CHANGE to fqdn or ip-address of your BIND9-server
-      ~$ sed -i.bak "s/rpz.warnet-ersa.net/your.fqdn.net/" grab_lib
-      # OR if you use IP-address, ie. 192.168.0.1
-      ~$ sed -i.bak "s/rpz.warnet-ersa.net/192.168.0.1/" grab_lib
-
-      # BIND9-server will reboot after synchronizing, due to low RAM. but you can
-      #   change to 'rdnc reload', by modify grab_lib at line :
-      ~$ grep -n '\(fake\|shutdown\)' grab_lib | grep 16
-      165:      printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
-      166:      _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-      167:      printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
-      ~$ grep -n '[rR]eload' grab_lib 
-      171:      #printf "Reload BIND9-server:%s\n" "$HOST"
-      172:      #ssh root@"$HOST" "rndc reload"
-      # comment IN line: 165-167
-      ~$ sed -i.bak '165,167s/./#&/' grab_lib
-      # comment OUT line: 171-172
-      ~$ sed -i '171s/^.*$/      printf "Reload BIND9-server:%s\\n" "$HOST"/' grab_lib
-      ~$ sed -i '172s/^.*$/      ssh root@"$HOST" "rndc reload"/' grab_lib
+      # modify file grab_cnf to fit your BIND9-server environment and
+      #   local country numeric
 
       # afterward, you can modify grab_lib to your policy trigger
       $ grep -n '\sCNAME\s\.' grab_lib
-      227:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      233:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      222:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+      238:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
       # change to your redirect page, ie. foo.redirect.page
       ~$ sed -i "s/\sCNAME\s\./ CNAME foo.redirect.page/g" grab_lib
 

@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v6.2
+#   v6.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
 
-umask 027; set -Eeuo pipefail
+umask 027
+SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
+if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
-_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 _BLD="$_DIR"/grab_build.sh; _CRL="$_DIR"/grab_cereal.sh; _REG="$_DIR"/grab_regex;
 _DPL="$_DIR"/grab_dedup.sh; _SCP="$_DIR"/grab_scp.sh;    _URL="$_DIR"/grab_urls
 startTime=$(date +%s);     start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
-trap f_trap 0 2 3 15            # cleanUP on exit, interrupt, quit & terminate
-# shellcheck source=/dev/null disable=SC2029
-source "$_DIR"/grab_lib
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
    printf "\n\x1b[93mPERFORMING TASKs:\x1b[0m Initiating CATEGORY of domains\n"
@@ -47,7 +46,9 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 # START TASKs <main script>
 printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check $(basename "$0") is execute by non-root privileges"
-[ ! "$UID" -eq 0 ] || f_xcd 10; f_ok; cd "$_DIR"
+cd "$_DIR"
+# shellcheck source=/dev/null disable=SC2029
+source "$_DIR"/grab_lib; trap f_trap 0 2 3 15; [ ! "$UID" -eq 0 ] || f_xcd 10; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability bind9-server: '$HOST'"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then f_ok
@@ -165,8 +166,8 @@ endTime=$(date +%s); DIF=$((endTime - startTime)); f_sm6 "$((DIF/60))" "$((DIF%6
 # TASKs completed. end of grabbing and processing
 
 f_sm0 "$HOST"      # offerring OPTIONs: continued to next stept OR stop here
-read -r RETVAL     # TO DO:
-case $RETVAL in    #   offerring options with getopts
+read -r RETVAL
+case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
    3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;

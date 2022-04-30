@@ -1,7 +1,7 @@
-; generate at [27-Apr-22 15:57:24 UTC] by grab_cereal.sh v6.2
+; generate at [30-Apr-22 18:37:25 UTC] by grab_cereal.sh v6.3
 ;   rpz.adultad
 $TTL 3600
-@   SOA   adultad.localhost. dummy.adultad.localhost. (2022042703 3600 300 86400 60)
+@   SOA   adultad.localhost. dummy.adultad.localhost. (2022050100 3600 300 86400 60)
 @    NS   adultad.localhost.
 @    IN   A    127.0.6.1
 ;
