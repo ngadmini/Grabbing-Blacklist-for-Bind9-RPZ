@@ -1,10 +1,10 @@
-; generate at [14-Apr-22 15:40:48 UTC] by grab_build.sh v6.2
+; generate at [30-Apr-22 18:37:21 UTC] by grab_build.sh v6.3
 ;
-paypal.com.4ms.world IN CNAME .
-*.paypal.com.4ms.world IN CNAME .
-paypal.com.8fcd0e27a31c3fda36066daee.ga IN CNAME .
-*.paypal.com.8fcd0e27a31c3fda36066daee.ga IN CNAME .
-paypal.com.account-limited.review IN CNAME .
-*.paypal.com.account-limited.review IN CNAME .
-paypal.com.account-paypal.ga IN CNAME .
-*.paypal.com.account-paypal.ga IN CNAME .
+nguyenminhhoang.xyz IN CNAME .
+*.nguyenminhhoang.xyz IN CNAME .
+nguyenminhthong.xyz IN CNAME .
+*.nguyenminhthong.xyz IN CNAME .
+nguyennamphuongkiu.000webhostapp.com IN CNAME .
+*.nguyennamphuongkiu.000webhostapp.com IN CNAME .
+nguyennude.tumblr.com IN CNAME .
+*.nguyennude.tumblr.com IN CNAME .
