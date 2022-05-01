@@ -14,7 +14,7 @@ _fuu=$(basename "${BASH_SOURCE[0]}")
 
 # Set defaults if not specified
 readonly CONFIG="grab_cnf"; test -r "${CONFIG}" || chmod 644 "${CONFIG}"
-if [ "$(grep -Ecv "(#|^$)" "${CONFIG}")" != 3 ]; then 
+if [ "$(grep -Ecv "(#|^\s*$)" "${CONFIG}")" != 3 ]; then 
    printf "\x1b[91m[WARNING]\x1b[0m cannot read config from %s continuing with defaults\n" "${CONFIG}"
    # shellcheck source=/dev/null
    source "${CONFIG}" >> /dev/null 2>&1
