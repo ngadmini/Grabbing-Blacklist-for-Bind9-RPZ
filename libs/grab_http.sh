@@ -46,9 +46,10 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 # START TASKs <main script>
 printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check $(basename "$0") is execute by non-root privileges"
-cd "$_DIR"
+[ ! "$UID" -eq 0 ] || f_xcd 10; printf "\x1b[92m%s\x1b[0m\n" "isOK"
+cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null disable=SC2029
-source "$_DIR"/grab_lib; trap f_trap 0 2 3 15; [ ! "$UID" -eq 0 ] || f_xcd 10; f_ok
+source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability bind9-server: '$HOST'"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then f_ok

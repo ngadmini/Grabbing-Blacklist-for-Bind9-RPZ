@@ -27,7 +27,7 @@ file parts of this version:
    4. grab_cereal.sh --incrementing serial zones.
         run this scipt separately, only if rpz.* are available in the same directory.
         if not, it try to get from bind9-server. it generated new serial at zone-files
-   5. grab_cnf --configuration file..
+   5. grab_cnf --configuration file.
    6. grab_lib --contain some of functions.
         need modify. SEE prerequisites section in this README
    7. grab_urls --contain urls list of remote raw-files.
@@ -51,14 +51,18 @@ prerequisites:
       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
-      # modify file grab_cnf to fit your BIND9-server environment and
-      #   local country numeric
+      # modify file grab_cnf to fit your BIND9-server environment
+      #   there are three variables you have to change
+      HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
+      RNDC_RELOAD=no             # set 'yes' to run <rndc reload>  or 'no' to <reboot>
+                                 # Remote Name Daemon Control (rndc)
+      LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
 
-      # afterward, you can modify grab_lib to your policy trigger
+      # afterward, you can modify grab_lib if you have other RPZ policy
       $ grep -n '\sCNAME\s\.' grab_lib
       222:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      238:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
-      # change to your redirect page, ie. foo.redirect.page
+      228:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      # ie. change to your redirect page: foo.redirect.page
       ~$ sed -i "s/\sCNAME\s\./ CNAME foo.redirect.page/g" grab_lib
 
 *) on your BIND9-server

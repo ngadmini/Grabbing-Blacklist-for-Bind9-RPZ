@@ -4,19 +4,20 @@
 #   or ip-address
 #      HOST="172.30.254.253"
 #default
-HOST=rpz.warnet-ersa.net
+#HOST=rpz.warnet-ersa.net
 
-# bind9-server need reload after syncronizing new dataBASE. but some
+# bind9-server need reload rndc (Remote Name Daemon Control)
+#   after syncronizing new dataBASE. but some
 #   server with low_RAM will out off memory. in theese case you could
 #   'reboot' it's.
 #   set 'no' to reboot bind9-server after syncronizing
-#      RELOAD=no
-#   OR set 'yes' to run 'rndc reload' your bind9-server after syncronizing
-#      RELOAD=yes
+#      RNDC_RELOAD=no
+#   OR set 'yes' to run <rndc reload> bind9-server after syncronizing
+#      RNDC_RELOAD=yes
 #default
-RELOAD=no
+#RNDC_RELOAD=no
 
 # specifies locale country numeric
 #   change to your locale country
 #default is Indonesia [NKRI]
-LC_NUMERIC=id_ID.UTF-8
+#LC_NUMERIC=id_ID.UTF-8

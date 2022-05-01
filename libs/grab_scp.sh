@@ -14,9 +14,11 @@ startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d% TIME: %H:%M:%S")
 
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
-cd "$_DIR"
+[ ! "$UID" -eq 0 ] || f_xcd 10; printf "\x1b[92m%s\x1b[0m\n" "isOK"
+cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
-source "$_DIR"/grab_lib; trap f_trap 0 2 3 15; [ ! "$UID" -eq 0 ] || f_xcd 10
+source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+
 f_syn; endTime=$(date +%s); DIF=$((endTime - startTime))
 printf "[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0
