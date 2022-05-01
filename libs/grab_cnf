@@ -1,10 +1,24 @@
+# NOTE
+#   ALL VARIABLES MUST BE DETERMINED.
+#   DO NOT LEAVE ONE OF THE FOLLOWING VARIABLES UNDEFINED.
+#   SCRIPT WILL USE THE DEFAULT VARIABLE IF ONE THE
+#   FOLLOWING VARIABLES ARE NOT DETERMINED
+##########################################################
+ 
 # specifies host-name or ip-address of your bind9-server
 #   fqdn
 #      HOST="rpz.warnet-ersa.net"
 #   or ip-address
 #      HOST="172.30.254.253"
-#default
-#HOST=rpz.warnet-ersa.net
+# default is
+#   HOST=rpz.warnet-ersa.net
+HOST=rpz.warnet-ersa.net
+
+# specifies locale country numeric
+#   change to your locale country
+# default is Indonesia [NKRI]
+#   LC_NUMERIC=id_ID.UTF-8
+LC_NUMERIC=id_ID.UTF-8
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some
@@ -14,10 +28,6 @@
 #      RNDC_RELOAD=no
 #   OR set 'yes' to run <rndc reload> bind9-server after syncronizing
 #      RNDC_RELOAD=yes
-#default
-#RNDC_RELOAD=no
-
-# specifies locale country numeric
-#   change to your locale country
-#default is Indonesia [NKRI]
-#LC_NUMERIC=id_ID.UTF-8
+# default is
+#   RNDC_RELOAD=no
+RNDC_RELOAD=no

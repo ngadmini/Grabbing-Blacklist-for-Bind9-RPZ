@@ -53,6 +53,8 @@ prerequisites:
 
       # modify file grab_cnf to fit your BIND9-server environment
       #   there are three variables you have to change
+      #   do not leave one of the following variables undefined.
+      #   script will use the default variable if one the following are not determined
       HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
       RNDC_RELOAD=no             # set 'yes' to run <rndc reload>  or 'no' to <reboot>
                                  # Remote Name Daemon Control (rndc)
