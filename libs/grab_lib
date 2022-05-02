@@ -49,7 +49,7 @@ f_xcd() {   # exit code {7..20}
          14) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "download failed from '$2'"; return 1;;
          15) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "category: must equal 6"; return 1;;
          16) _lin=$(grep -n "^HOST" "$_fuu" | cut -d":" -f1); _ext="[ERROR] $_fuu: at line $_lin. Exit code: $EC"
-             printf "\n\x1b[91m%s\x1b[0m\n%s: if these address is correct, maybe isDOWN\n" "$_ext" "$2"; return 1;;
+             printf "\n\x1b[91m%s\x1b[0m\n%s: if this address is correct, maybe isDOWN\n" "$_ext" "$2"; return 1;;
          17) printf "\n\x1b[91m%s\x1b[0m\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; return 1;;
          18) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; return 1;;
          19) printf "\n\x1b[91m%s\x1b[0m\n%s\n" "$_xcd" "unexpected, please remove: ""$2"""; return 1;;

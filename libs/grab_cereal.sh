@@ -46,7 +46,8 @@ if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
          fi
       fi
       sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$Z"
-      f_g4c "$Z"; chmod 640 "$Z"
+      f_g4c "$Z"
+      find "$_DIR" -type f -name "$Z" -not -perm 640 -exec chmod -R 640 {} \;
    done
    printf "[INFO] ALL serial zones incremented to \x1b[93m%s\x1b[0m\n" "$newSERIAL"
 
