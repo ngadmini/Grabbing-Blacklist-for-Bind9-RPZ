@@ -12,7 +12,7 @@ license:
 *) For more information, please refer to <https://unlicense.org>
 
 what's new in v6.3:
-*) add grab_cnf as an configuration file
+*) add grab_cnf as a configuration file
 
 file parts of this version:
    1. grab_http.sh --grabing and proccessing raw domains.
