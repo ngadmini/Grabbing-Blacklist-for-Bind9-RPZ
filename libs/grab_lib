@@ -22,7 +22,7 @@ else
    source "${CONFIG}" >> /dev/null 2>&1
 fi
 
-f_tmp() {   # remove temporary files/directories, array & function defined during the execution of the script
+f_tmp() {   # remove temporary files/directories and arrays function defined during the execution of the script
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*gz$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
@@ -135,10 +135,10 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
          db.ipv4 db.malware db.publicite db.redirector db.trust+)
       ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
          rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
-      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | sed -e "s/\.\///" | sort)
-      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
-      printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
-      printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | _sed -e "s/\.\///" | sort)
+      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | _sed -e "s/\.\///" | sort)
+      printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
 
       for DB in ${ar_DB[*]}; do [ -e "$DB" ] || f_xcd 20 "$miss_DB"; done
       for RPZ in ${ar_RPZ[*]}; do [ -e "$RPZ" ] || f_xcd 20 "$miss_RPZ"; done
@@ -157,7 +157,7 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
       _rsync {rpz,db}.* root@"$HOST":"$_remdir"
 
       if [[ "$RNDC_RELOAD" == yes ]]; then
-         printf "Reload BIND9-server:%s\n" "$HOST"; ssh root@"$HOST" "rndc reload"
+         printf "Reload BIND9-server:%s\n" "$HOST"; _ssh root@"$HOST" "rndc reload"
       else   # $HOST" will reboot [after +@ minute] due to low memory
          printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
          _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
@@ -202,16 +202,16 @@ f_ddup() {  # used by grab_dedup.sh
 
 f_g4b() {   # included in f_rpz and f_ip4
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
-   sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag\n;" "$1"
+   _sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"; printf "%10s entries\n" "$acq_al"
    }
 
 f_g4c() {   # used by grab_cereal.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
    if [ "$(grep -n "^; generate at" "$1" | cut -d':' -f1)" -eq 1 ]; then
-      sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
+      _sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
    else
-      sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag" "$1"
+      _sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag" "$1"
    fi
    }
 
@@ -234,7 +234,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
       _ssh root@"$HOST" [ -d "$_remdir" ] || f_xcd 18 "$_remdir" "$HOST"
 
       for a in $1; do
-         if scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then :
+         if _scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then :
          else
             local origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/"
             printf "\n[INFO] %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
@@ -251,7 +251,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
    }
 
 f_rvu() {   # used by grab_http.sh
+   tools="[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]"
    printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
-   printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" \
-      "[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]"
+   printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" "$tools"
    }

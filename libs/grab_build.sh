@@ -29,19 +29,19 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
 
 for y in ${ar_raw[*]}; do
    if ! [ -e "$y" ]; then
-      mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
-      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
+      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       f_xcd 17 "$miss_v"
    fi
 done
 
-mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
    unset -v ar_RAW
    printf "\n[INFO] Splitting adult category to 750.000 lines/sub-category\n"
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp
-   mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+   mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 
    if [ "${#ar_txt[@]}" -eq "${#ar_split[@]}" ]; then
       ar_cat=(); ar_dom=()

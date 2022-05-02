@@ -30,7 +30,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 
    # define initial category and marking as an array
    mkdir ipv4; mv phishing malware; mv gambling trust+; cat vpn/domains >> redirector/domains; rm -r vpn
-   mapfile -t ar_cat < <(find . -maxdepth 1 -type d | sed -e "1d;s/\.\///" | sort)
+   mapfile -t ar_cat < <(find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort)
    printf "%12s: \x1b[93m%s\x1b[0m\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    [ "${#ar_cat[@]}" -eq 6 ] || f_xcd 15
 
@@ -160,7 +160,7 @@ for K in {0..5}; do
 done
 
 unset -v ar_txt
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %s entries\n" "TOTAL" "$_tsp"
 endTime=$(date +%s); DIF=$((endTime - startTime)); f_sm6 "$((DIF/60))" "$((DIF%60))s"; f_uset

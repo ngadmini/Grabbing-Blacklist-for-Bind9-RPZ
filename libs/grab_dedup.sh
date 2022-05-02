@@ -25,13 +25,13 @@ source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; 
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 for y in ${ar_raw[*]}; do
    if ! [ -e "$y" ]; then
-      mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
-      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
+      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
       f_xcd 17 "$miss_v"
    fi
 done
 
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    # declare tmp files as array
    ar_cat=(); ar_dmn=(); ar_tmp=()
@@ -82,7 +82,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    # based on ${ar_cat[5]}
    printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 else
-   printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
    printf "\n\x1b[91m[ERROR]\x1b[0m due to: FOUND %s of %s domain list:\nNOT require: %s\n" \
       "${#ar_txt[@]}" "${#ar_raw[@]}" "$miss_v"
    printf "[HINTS] remove or move to other direcory: %s" "$miss_v"
@@ -91,7 +91,7 @@ fi
 
 # display result
 endTime=$(date +%s); DIF=$((endTime - startTime)); unset -v ar_txt
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | sed -e "s/\.\///" | sort)
+mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 printf "[INFO] deduplicating domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
 for P in {0..5}; do
    printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"

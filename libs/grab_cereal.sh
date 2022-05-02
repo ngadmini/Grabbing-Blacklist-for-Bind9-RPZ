@@ -13,7 +13,7 @@ if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d% TIME: %H:%M:%S")
+start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10; printf "\x1b[92m%s\x1b[0m\n" "isOK"
@@ -25,7 +25,7 @@ source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; 
 ar_miss=()
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
-mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | sed -e "s/\.\///" | sort)
+mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | _sed -e "s/\.\///" | sort)
 
 printf "\n[INFO] Incrementing serial of zone files (rpz.* files)\n"
 if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
@@ -45,7 +45,7 @@ if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
             newSERIAL="${DATE}00"
          fi
       fi
-      sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$Z"
+      _sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$Z"
       f_g4c "$Z"
       find "$_DIR" -type f -name "$Z" -not -perm 640 -exec chmod -R 640 {} \;
    done
@@ -59,7 +59,7 @@ elif [ "${#ar_zon[@]}" -gt "${#ar_rpz[@]}" ]; then
 else
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
       "${#ar_zon[@]}" "${#ar_rpz[@]}" "Missing zone files:"
-   printf -v miss "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf -v miss "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
    printf "~ %s\n" "$miss"
    ar_miss+=("$miss")
    printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"
