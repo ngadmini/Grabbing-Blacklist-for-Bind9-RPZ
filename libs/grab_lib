@@ -88,7 +88,7 @@ f_sm3() {   # display messages when 3'th option chosen
 
 f_sm4() {   # display messages when 4'th option chosen
    f_sm5; printf "%28s serial zone files [rpz.*]\n" "~incrementing"
-   printf "%31s latest [rpz.* and db.*] files to %s\n" "~[rsync]ronizing" "$HOST"
+   printf "%31s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
    if [[ "$RNDC_RELOAD" == no ]]; then
        printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$HOST"
        printf "%18s \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "use" "$HOST"
