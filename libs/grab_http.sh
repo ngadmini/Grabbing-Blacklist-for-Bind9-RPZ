@@ -66,7 +66,7 @@ pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do if ! dpkg -s "$D" >> /dev/null 2>&1; then f_xcd 8 "$D"; fi; done; f_ok
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
-for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do [ -e "$E" ] || f_xcd 17 "$E"; [ -x "$E" ] || chmod +x "$D"; done
+for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do [ -e "$E" ] || f_xcd 17 "$E"; [ -x "$E" ] || chmod +x "$E"; done
 [ -e "$_URL" ] || f_xcd 17 "$_URL"; _sed -i "/^$/d" "$_URL"; mapfile -t ar_url < "$_URL"
 [ -e "$_REG" ] || f_xcd 17 "$_REG"; _sed -i "/^$/d" "$_REG"; mapfile -t ar_reg < "$_REG"
 [ "${#ar_url[@]}" -eq 22 ] || f_xcd 11 "$_URL"; [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
