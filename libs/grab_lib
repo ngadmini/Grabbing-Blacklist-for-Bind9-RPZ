@@ -16,8 +16,6 @@ _fuu=$(basename "${BASH_SOURCE[0]}")
 readonly CONFIG="grab_cnf"; test -r "${CONFIG}" || chmod 644 "${CONFIG}"
 if [ "$(grep -Ecv "(#|^\s*$)" "${CONFIG}")" != 3 ]; then 
    printf "\x1b[91m[WARNING]\x1b[0m cannot read config from %s continuing with defaults\n" "${CONFIG}"
-   # shellcheck source=/dev/null
-   source "${CONFIG}" >> /dev/null 2>&1
    : "${HOST:=rpz.warnet-ersa.net}"; : "${RNDC_RELOAD:=no}"; : "${LC_NUMERIC:=id_ID.UTF-8}"
 else
    # shellcheck source=/dev/null
