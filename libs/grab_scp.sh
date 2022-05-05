@@ -7,7 +7,8 @@
 # TL;DR
 #   see README and LICENSE
 
-umask 027; set -Eeuo pipefail
+SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
+if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
@@ -18,7 +19,10 @@ printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "
 cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+find "$_DIR" -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640 -exec chmod -R 640 {} \;
 
-f_syn; endTime=$(date +%s); DIF=$((endTime - startTime))
+f_syn   # start syncronizing
+
+endTime=$(date +%s); DIF=$((endTime - startTime))
 printf "[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0

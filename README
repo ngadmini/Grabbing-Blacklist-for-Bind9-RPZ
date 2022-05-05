@@ -29,7 +29,8 @@ file parts of this version:
         if not, it try to get from bind9-server. it generated new serial at zone-files
    5. grab_cnf --configuration file.
    6. grab_lib --contain some of functions.
-        need modify. SEE prerequisites section in this README
+        NO need modify, except you want change RPZ-policy triggers and actions.
+        please SEE prerequisites section in this README
    7. grab_urls --contain urls list of remote raw-files.
         case sensitive, strict order, line count and no blank lines
    8. grab_regex --contain reguler expressions.
@@ -60,12 +61,13 @@ prerequisites:
                                  # Remote Name Daemon Control (rndc)
       LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
 
-      # afterward, you can modify grab_lib if you have other RPZ policy
+      # afterward, you can modify grab_lib if you have other RPZ local-data action
+      #   ie. local-data = explanation.example.com as your redirect page
       $ grep -n '\sCNAME\s\.' grab_lib
       220:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
       226:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
-      # ie. change to your redirect page: foo.redirect.page
-      ~$ sed -i "s/\sCNAME\s\./ CNAME foo.redirect.page/g" grab_lib
+      # ie. change to : explanation.example.com
+      ~$ sed -i "s/\sCNAME\s\./ CNAME explanation.example.com./g" grab_lib
 
 *) on your BIND9-server
       ~$ apt policy pigz rsync
