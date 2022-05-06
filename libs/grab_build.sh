@@ -16,7 +16,7 @@ startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
 printf "\n\x1b[91m[2'nd] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
-[ ! "$UID" -eq 0 ] || f_xcd 10; printf "\x1b[92m%s\x1b[0m\n" "isOK"
+[ ! "$UID" -eq 0 ] || f_xcd 10
 cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
