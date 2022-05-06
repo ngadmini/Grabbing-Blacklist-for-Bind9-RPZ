@@ -234,7 +234,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files using passwordless ssh-s
       _ssh root@"$HOST" [ -d "$_remdir" ] || f_xcd 18 "$_remdir" "$HOST"
 
       for a in $1; do
-         if _scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR" >> /dev/null 2>&1; then :
+         if scp -qr root@"$HOST":"$_remdir"/"$a" "$_DIR"; then :
          else
             local origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/"
             printf "\n[INFO] %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
