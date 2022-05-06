@@ -8,8 +8,8 @@ author:
    ngadimin@warnet-ersa.net
 
 license:
-*) Unlicense
-*) For more information, please refer to <https://unlicense.org>
+*) Creative Commons BY-SA
+*) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 what's new in v6.3:
 *) add grab_cnf as a configuration file
