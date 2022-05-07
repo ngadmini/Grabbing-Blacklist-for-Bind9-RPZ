@@ -47,8 +47,9 @@ the partial output of this script-pack, can be found at [Partial Output][part-ou
 [issues-badge]: https://img.shields.io/badge/FEEDBACK:-Issues-lightgrey?style=flat&logo=github
 [discussions-badge]: https://img.shields.io/badge/FEEDBACK:-Dicussions-lightgrey?style=flat&logo=github
 [usage-wiki-badge]: https://img.shields.io/badge/USAGE:-Wiki-lightgrey?style=flat&logo=github
-[grab-http]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_http.sh)
-[grab-dedup]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_dedup.sh)
+
+[grab-http]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_http.sh
+[grab-dedup]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_dedup.sh
 [grab-build]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_build.sh
 [grab-cereal]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh
 [grab-lib]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_lib
