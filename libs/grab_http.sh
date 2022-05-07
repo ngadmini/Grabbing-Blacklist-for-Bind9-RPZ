@@ -120,7 +120,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 f_sm8 "${ar_cat[1]}" 2         # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 for I in {19,20}; do           # save ipv4 sub-nets into CIDR block
-   f_sm7 "$I" "${ar_sho[I]}"
+   f_sm7 "$I" "${ar_sho[I]}"   # Classless Inter-Domain Routing
    f_add "${ar_url[I]}" | _grep -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
@@ -143,7 +143,7 @@ printf "\n\x1b[93mPRUNING:\x1b[0m sub-domains if parent-domains present and sub-
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for K in {0..5}; do
-   if [ "$K" -eq 1 ]; then   # turn ipv4 sub-nets into CIDR blocks if any
+   if [ "$K" -eq 1 ]; then   # turn ipv4 sub-nets into Classless Inter-Domain Routing (CIDR) blocks if any
       while read -r; do      # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
