@@ -52,7 +52,8 @@ cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
 printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability bind9-server: '$HOST'"
-if ping -w 1 "$HOST" >> /dev/null 2>&1; then f_ok
+if ping -w 1 "$HOST" >> /dev/null 2>&1; then
+   f_ok
    printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check bind9-server: $HOST for passwordless ssh"
    _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"; f_ok
    printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on bind9-server: $HOST"
@@ -84,7 +85,7 @@ f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ip "$porn" "${ar_dmn[1]}"    # throw ipv4 to ${ar_dmn[1]} && identifying porn domains, use it's to
-_sort "${untrust}" "${porn}" | uniq -d >> "${trust}"   #+ reduce porn domains in trust+ category
+_sort "${untrust}" "${porn}" | uniq -d >> "${trust}"       #+ reduce porn domains in trust+ category
 _grep -E "${ar_reg[2]}" "${untrust}" >> "${trust}" && sort -u "${trust}" -o "${trust}"
 # delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
