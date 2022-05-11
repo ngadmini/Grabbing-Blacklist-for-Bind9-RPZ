@@ -148,8 +148,7 @@ for K in {0..5}; do
       while read -r; do      # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();
-         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' |\
-         _sed "s/\//\./" > "${ar_tmp[K]}"
+         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
       done < "${ar_txt[K]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"; printf "%12s: %9s entries\n" "${ar_cat[K]}" "$_ip4"
    else                      # prune sub-domains if parent domain present

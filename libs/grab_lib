@@ -223,7 +223,7 @@ f_rpz() {   # used by grab_build.sh. change 'CNAME .' if you have other policy
 
 f_ip4() {   # used by grab_build.sh. change 'CNAME .' if you have other policy
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+   _sed "s/\//\./" "$2" | awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
    f_g4b "$@"
    }
 
