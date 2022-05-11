@@ -13,6 +13,8 @@ license:
 
 what's new in v6.3:
 *) add grab_cnf as a configuration file
+*) fix grab_lib which results in an error generating timestamps at grab_cereal.sh
+*) change ipv4 raw-output in grab_http.sh to standard CIDR
 
 file parts of this version:
    1. grab_http.sh --grabing and proccessing raw domains.
