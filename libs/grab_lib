@@ -26,7 +26,7 @@ else
 fi
 
 f_tmp() {   # remove temporary files, directories && arrays defined during the execution of the script
-   find . -regextype posix-extended -regex "^.*(tm[pq]|txt.adulta).*|.*gz$" -print0 | xargs -0 -r rm
+   find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*gz$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
