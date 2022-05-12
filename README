@@ -71,8 +71,8 @@ prerequisites:
       # afterward, you can modify grab_lib if you have other RPZ local-data action
       #   ie. local-data = explanation.example.com as your redirect page
       $ grep -n '\sCNAME\s\.' grab_lib
-      238:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      244:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      241:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+      247:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
       # ie. change to : explanation.example.com
       ~$ sed -i "s/\sCNAME\s\./ CNAME explanation.example.com./g" grab_lib
 
