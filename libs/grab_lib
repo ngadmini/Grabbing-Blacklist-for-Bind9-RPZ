@@ -1,5 +1,11 @@
-# a library of functions and fundamental values
-# intended for use by other scripts, not to be executed directly.
+# TAGS;VERSION
+#   grab_cnf
+#   v6.3
+# AUTHOR
+#   ngadimin@warnet-ersa.net
+# NOTE
+#   a library of functions and fundamental values
+#   intended for use by other scripts, not to be executed directly.
 
 set -a
 CI="${CI:=false}"
@@ -14,15 +20,14 @@ _foo=$(basename "$0")
 _fuu=$(basename "${BASH_SOURCE[0]}")
 
 # Set defaults if not specified
-readonly CONFIG="grab_cnf"; test -r "${CONFIG}" || chmod 644 "${CONFIG}"
+readonly CONFIG="grab_cnf"
+test -r "${CONFIG}" || chmod 644 "${CONFIG}"
 if [ "$(grep -Ecv "(#|^\s*$)" "${CONFIG}")" = 3 ]; then
    # shellcheck source=/dev/null
    source "${CONFIG}" >> /dev/null 2>&1
 else
-   printf "\x1b[93m[WARNING]\x1b[0m cannot read config from %s continuing with defaults\n" "${CONFIG}"
-   : "${HOST:=rpz.warnet-ersa.net}"
-   : "${RNDC_RELOAD:=no}"
-   : "${LC_NUMERIC:=id_ID.UTF-8}"
+   printf "\x1b[91m[ERROR]\x1b[0m cannot read config from %s\nall variables must be determined\n" "${CONFIG}"
+   exit 1
 fi
 
 f_tmp() {   # remove temporary files, directories && arrays defined during the execution of the script
@@ -35,8 +40,8 @@ f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..20}
    for EC in $1; do
-      local _xcd=$(printf "\x1b[91m[ERROR]\x1b[0m $_foo: at line ${BASH_LINENO[0]}. Exit code: $EC")
-      local _xce=$(printf "\x1b[91m[ERROR]\x1b[0m $_fuu: at line ${BASH_LINENO[0]}. Exit code: $EC")
+      local _xcd; _xcd=$(printf "\x1b[91m[ERROR]\x1b[0m $_foo: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
+      local _xce; _xce=$(printf "\x1b[91m[ERROR]\x1b[0m $_fuu: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
       case $EC in
           7) printf "\n%s\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; return 1;;
           8) printf "\n%s\n%s\n" "$_xcd" "require '$2' but it's not installed"; return 1;;
@@ -53,8 +58,8 @@ f_xcd() {   # exit code {7..20}
              printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; return 1;;
          14) printf "\n%s\n%s\n" "$_xcd" "download failed from '$2'"; return 1;;
          15) printf "\n%s\n%s\n" "$_xcd" "category: must equal 6"; return 1;;
-         16) _ext=printf "\n\x1b[91m[ERROR]\x1b[0m\ "$CONFIG" : at line $_lin. Exit code: $EC"
-             printf -v _lin "%s" "$(grep -En "(^HOST|#HOST)" "$CONFIG" | cut -d":" -f1)"
+         16) printf -v _lin "%s" "$(grep -En "(^HOST|#HOST)" "$CONFIG" | cut -d":" -f1)"
+             _ext=$(printf "\n\x1b[91m[ERROR]\x1b[0m $CONFIG : at line $_lin. Exit code: %s" "$EC")
              printf "\n%s\n%s : if this address is correct, maybe isDOWN\n" "$_ext" "$2"; return 1;;
          17) printf "\n%s\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; return 1;;
          18) printf "\n%s\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; return 1;;
@@ -135,7 +140,9 @@ f_ip() { # capture and throw ip-address entry to ipv4 CATEGORY, save into CIDR b
 }
 f_fip() {
    printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
-   f_ip "$@"; f_do; printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
+   f_ip "$@"
+   f_do
+   printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
    }
 
 f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
