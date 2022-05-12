@@ -1,8 +1,9 @@
-version
-   *) v6.3
-   this program is tailorized to updating blackist domains
-   at BIND9 - Response Policy Zone 
-----------------------------------
+# version
+#   *) README
+#   *) v6.3
+#   this program is tailorized to updating blackist domains
+#   at BIND9 - Response Policy Zone 
+#----------------------------------
 
 author:
    ngadimin@warnet-ersa.net
@@ -22,15 +23,19 @@ file parts of this version:
         the same directory. IF no option is selected, it just generates a txt.*
         which is not free from duplication
    2. grab_dedup.sh --removing duplicate entries between domain lists.
-        run this scipt separately, only if txt.* are available in the same directory.
+        you can run this scipt separately, only if txt.* are available in the same directory.
+
+         ~ ls | grep txt | tr "\n" " "
+         txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
+
    3. grab_build.sh --rewriting to BIND9-rpz format.
-        run this scipt separately, only if txt.* are available in the same directory.
+        you can run this scipt separately, only if txt.* are available in the same directory.
         it generated db.* files
    4. grab_cereal.sh --incrementing serial zones.
-        run this scipt separately, only if rpz.* are available in the same directory.
+        you can run this scipt separately, only if rpz.* are available in the same directory.
         if not, it try to get from bind9-server. it generated new serial at zone-files
    5. grab_cnf --configuration file.
-   6. grab_lib --contain some of functions.
+   6. grab_lib --a library of functions and fundamental values
         NO need modify, except you want change RPZ-policy triggers and actions.
         please SEE prerequisites section in this README
    7. grab_urls --contain urls list of remote raw-files.
@@ -66,12 +71,13 @@ prerequisites:
       # afterward, you can modify grab_lib if you have other RPZ local-data action
       #   ie. local-data = explanation.example.com as your redirect page
       $ grep -n '\sCNAME\s\.' grab_lib
-      220:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      226:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      238:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+      244:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
       # ie. change to : explanation.example.com
       ~$ sed -i "s/\sCNAME\s\./ CNAME explanation.example.com./g" grab_lib
 
 *) on your BIND9-server
+      # check required package
       ~$ apt policy pigz rsync
       ~$ apt install -y pigz rsync
 
