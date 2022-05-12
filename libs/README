@@ -1,0 +1,104 @@
+# version
+#   *) README
+#   *) v6.3
+#   this program is tailorized to updating blackist domains
+#   at BIND9 - Response Policy Zone 
+#----------------------------------
+
+author:
+   ngadimin@warnet-ersa.net
+
+license:
+*) Creative Commons Attribution-ShareAlike 4.0 International License
+*) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
+
+what's new in v6.3:
+*) add grab_cnf as a configuration file
+*) fix grab_lib which results in an error generating timestamps at grab_cereal.sh
+*) change ipv4 raw-output in grab_http.sh to standard CIDR
+
+file parts of this version:
+   1. grab_http.sh --grabing and proccessing raw domains.
+        run this script as long as the below script and rpz.* are available in
+        the same directory. IF no option is selected, it just generates a txt.*
+        which is not free from duplication
+   2. grab_dedup.sh --removing duplicate entries between domain lists.
+        you can run this scipt separately, only if txt.* are available in the same directory.
+
+         ~ ls | grep txt | tr "\n" " "
+         txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
+
+   3. grab_build.sh --rewriting to BIND9-rpz format.
+        you can run this scipt separately, only if txt.* are available in the same directory.
+        it generated db.* files
+   4. grab_cereal.sh --incrementing serial zones.
+        you can run this scipt separately, only if rpz.* are available in the same directory.
+        if not, it try to get from bind9-server. it generated new serial at zone-files
+   5. grab_cnf --configuration file.
+   6. grab_lib --a library of functions and fundamental values
+        NO need modify, except you want change RPZ-policy triggers and actions.
+        please SEE prerequisites section in this README
+   7. grab_urls --contain urls list of remote raw-files.
+        case sensitive, strict order, line count and no blank lines
+   8. grab_regex --contain reguler expressions.
+        case sensitive, strict order, line count and no blank lines
+   9. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
+        in addition to synchronizing, this script also generates a tar file to bakcup
+        old db.* and rpz.* files in BIND9-server. use below to decompress
+
+        ~$ unpigz -v rpz-2022-04-09.tar.gz
+        ~$ tar -xvf rpz-2022-04-09.tar
+
+  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
+        rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+  11. all of them must present in the same directory
+
+prerequisites:
+*) on your linux desktop workstation
+      # check require package installed or NOT
+      ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
+      ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
+
+      # modify file grab_cnf to fit your BIND9-server environment
+      #   there are three variables you have to change
+      #   do not leave one of the following variables undefined.
+      #   script will use the default variable if one the following are not determined
+      HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
+      RNDC_RELOAD=no             # set 'yes' to run <rndc reload>  or 'no' to <reboot>
+                                 # Remote Name Daemon Control (rndc)
+      LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
+
+      # afterward, you can modify grab_lib if you have other RPZ local-data action
+      #   ie. local-data = explanation.example.com as your redirect page
+      $ grep -n '\sCNAME\s\.' grab_lib
+      238:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+      244:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
+      # ie. change to : explanation.example.com
+      ~$ sed -i "s/\sCNAME\s\./ CNAME explanation.example.com./g" grab_lib
+
+*) on your BIND9-server
+      # check required package
+      ~$ apt policy pigz rsync
+      ~$ apt install -y pigz rsync
+
+*) passwordless ssh
+      your linux desktop and BIND9-server, both must configure to use passwordless for
+      ssh, scp dan rsync connections. you can reffer to :
+      https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH
+
+*) reconfigure your bind9-server to run RPZ BIND9-fiture. you can reffer to :
+      https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
+
+usage:
+*) execute grab_http.sh with non root privileges either directly as a root user or by use
+      of sudo command, from your linux desktop workstation then follow the next step
+
+output:
+*) db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
+      db.ipv4 db.malware db.publicite db.redirector db.trust+
+*) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
+      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+*) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
+
+please use our discussion for questions, feedback and bug fixes:
+*) https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions

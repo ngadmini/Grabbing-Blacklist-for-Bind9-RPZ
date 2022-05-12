@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TAGS
+# TAGS;VERSION
 #   grab_build.sh
 #   v6.3
 # AUTHOR
@@ -15,11 +15,15 @@ _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
+cd "$_DIR"
+test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
+# shellcheck source=/dev/null
+source "$_DIR"/grab_lib
+trap f_trap EXIT TERM
+trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+
 printf "\n\x1b[91m[2'nd] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
-cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
-# shellcheck source=/dev/null
-source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
 # predefined array as a blanko to counter part 'others' array
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
@@ -30,7 +34,8 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
 for y in ${ar_raw[*]}; do
    if ! [ -e "$y" ]; then
       mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
-      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      _miss="$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      printf -v miss_v "%s" "$_miss"
       f_xcd 17 "$miss_v"
    fi
 done
@@ -44,7 +49,8 @@ if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
    mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 
    if [ "${#ar_txt[@]}" -eq "${#ar_split[@]}" ]; then
-      ar_cat=(); ar_dom=()
+      ar_cat=()   # declare temporary files as array
+      ar_dom=()   #
       for Y in {0..11}; do
          ar_cat+=("${ar_txt[Y]/txt./}")
          ar_dom+=("${ar_txt[Y]/txt./db.}")

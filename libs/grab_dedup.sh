@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TAGS
+# TAGS;VERSION
 #   grab_dedup.sh
 #   v6.3
 # AUTHOR
@@ -14,13 +14,17 @@ _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
+cd "$_DIR"
+test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
+# shellcheck source=/dev/null
+source "$_DIR"/grab_lib
+trap f_trap EXIT TERM
+trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+
 printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
-cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
-# shellcheck source=/dev/null
-source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-# predefined array as a blanko
+# predefined array as a blanko to counter part 'others' array
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 for y in ${ar_raw[*]}; do
    if ! [ -e "$y" ]; then
@@ -32,14 +36,18 @@ done
 
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
-   # declare tmp files as array
-   ar_cat=(); ar_dmn=(); ar_tmp=()
+   ar_cat=()    # declare temporary files as array
+   ar_dmn=()    #
+   ar_tmp=()    #
    for B in {0..5}; do
-      ar_cat+=("${ar_txt[B]/txt./}"); ar_dmn+=(dmn."${ar_txt[B]/txt./}"); ar_tmp+=(tmr."${ar_txt[B]/txt./}")
+      ar_cat+=("${ar_txt[B]/txt./}")
+      ar_dmn+=(dmn."${ar_txt[B]/txt./}")
+      ar_tmp+=(tmr."${ar_txt[B]/txt./}")
    done
 
    printf "\n[INFO] Eliminating duplicate entries between domain lists\n"
    printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
+
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
       f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}" 1
@@ -81,7 +89,8 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    # based on ${ar_cat[5]}
    printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 else
-   printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   _miss="$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf -v miss_v "%s" "$_miss"
    printf "\n\x1b[91m[ERROR]\x1b[0m due to: FOUND %s of %s domain list:\nNOT require: %s\n" \
       "${#ar_txt[@]}" "${#ar_raw[@]}" "$miss_v"
    printf "[HINTS] remove or move to other direcory: %s" "$miss_v"
@@ -89,7 +98,9 @@ else
 fi
 
 # display result
-endTime=$(date +%s); DIF=$((endTime - startTime)); unset -v ar_txt
+endTime=$(date +%s)
+DIF=$((endTime - startTime))
+unset -v ar_txt
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 printf "[INFO] deduplicating domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
 for P in {0..5}; do

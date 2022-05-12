@@ -1,9 +1,15 @@
+# TAGS;VERSION
+#   grab_cnf
+#   v6.3
+# AUTHOR
+#   ngadimin@warnet-ersa.net
 # NOTE
-#   ALL VARIABLES MUST BE DETERMINED.
-#   DO NOT LEAVE ONE OF THE FOLLOWING VARIABLES UNDEFINED.
-#   SCRIPT WILL USE THE DEFAULT VARIABLE IF ONE THE
-#   FOLLOWING VARIABLES ARE NOT DETERMINED
-##########################################################
+#   all variables must be determined.
+#   do not leave one of the following variables undefined.
+#   script will use the default variable if one the
+#   following variables are not determined
+#   blank lines and lines starting with '#' will be ignored
+###########################################################
  
 # specifies host-name or ip-address of your bind9-server
 #   fqdn

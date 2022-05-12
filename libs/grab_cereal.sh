@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TAGS
+# TAGS;VERSION
 #   grab_cereal.sh
 #   v6.3
 # AUTHOR
@@ -14,11 +14,15 @@ _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
+cd "$_DIR"
+test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
+# shellcheck source=/dev/null
+source "$_DIR"/grab_lib
+trap f_trap EXIT TERM
+trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+
 printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
-cd "$_DIR"; test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
-# shellcheck source=/dev/null
-source "$_DIR"/grab_lib; trap f_trap EXIT TERM; trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
 # predefined array as a blanko to counter part 'ar_zon' array
 ar_miss=()
@@ -58,9 +62,10 @@ elif [ "${#ar_zon[@]}" -gt "${#ar_rpz[@]}" ]; then
 else
    printf "\x1b[91m[ERROR]\x1b[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
       "${#ar_zon[@]}" "${#ar_rpz[@]}" "Missing zone files:"
-   printf -v miss "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
-   printf "~ %s\n" "$miss"
-   ar_miss+=("$miss")
+   _miss="$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   printf -v miss_v "%s" "$_miss"
+   printf "~ %s\n" "$miss_v"
+   ar_miss+=("$miss_v")
    printf "[INFO] Trying to get the missing file(s) from origin: %s\n" "$HOST"
    f_cer "${ar_miss[@]}"
 fi
