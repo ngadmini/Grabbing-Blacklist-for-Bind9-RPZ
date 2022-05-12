@@ -6,7 +6,7 @@
 # NOTE
 #   all variables must be determined.
 #   do not leave one of the following variables undefined.
-#   script will use the default variable if one the
+#   script will be terminated with error, if one the 
 #   following variables are not determined
 #   blank lines and lines starting with '#' will be ignored
 ###########################################################
