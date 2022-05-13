@@ -61,7 +61,7 @@ prerequisites:
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
       # modify file grab_cnf to fit your BIND9-server environment
-      #   there are three variables you have to change
+      #   there are 4 variables you have to change
       #   do not leave one of the following variables undefined,
       #   script will be terminating with error
       HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
