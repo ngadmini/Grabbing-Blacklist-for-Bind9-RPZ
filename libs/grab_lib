@@ -1,6 +1,6 @@
 # TAGS;VERSION
 #   grab_cnf
-#   v6.3
+#   v6.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # NOTE
@@ -19,14 +19,13 @@ alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo=$(basename "$0")
 _fuu=$(basename "${BASH_SOURCE[0]}")
 
-# Set defaults if not specified
 readonly CONFIG="grab_cnf"
 test -r "${CONFIG}" || chmod 644 "${CONFIG}"
-if [ "$(grep -Ecv "(#|^\s*$)" "${CONFIG}")" = 3 ]; then
+if [ "$(grep -Ecv "(#|^\s*$)" "${CONFIG}")" = 4 ]; then
    # shellcheck source=/dev/null
    source "${CONFIG}" >> /dev/null 2>&1
 else
-   printf "\x1b[91m[ERROR]\x1b[0m cannot read config from %s\nall variables must be determined\n" "${CONFIG}"
+   printf "\e[91m[ERROR]\e[0m cannot read config from %s\nall variables must be determined\n" "${CONFIG}"
    exit 1
 fi
 
@@ -40,8 +39,8 @@ f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..20}
    for EC in $1; do
-      local _xcd; _xcd=$(printf "\x1b[91m[ERROR]\x1b[0m $_foo: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
-      local _xce; _xce=$(printf "\x1b[91m[ERROR]\x1b[0m $_fuu: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
+      local _xcd; _xcd=$(printf "\e[91m[ERROR]\e[0m $_foo: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
+      local _xce; _xce=$(printf "\e[91m[ERROR]\e[0m $_fuu: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
       case $EC in
           7) printf "\n%s\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; return 1;;
           8) printf "\n%s\n%s\n" "$_xcd" "require '$2' but it's not installed"; return 1;;
@@ -55,11 +54,11 @@ f_xcd() {   # exit code {7..20}
              printf "\n%s\n%s %s\n" "$_xcd" "$_lnn" "$_msg"; return 1;;
          13) _ref="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
              _unk="Check out [grab_urls]. if those url[s] are correct, please reffer to"
-             printf "\x1b[91m[ERROR]\x1b[0m %s:\n\t%s\n" "$_unk" "$_ref"; return 1;;
+             printf "\e[91m[ERROR]\e[0m %s:\n\t%s\n" "$_unk" "$_ref"; return 1;;
          14) printf "\n%s\n%s\n" "$_xcd" "download failed from '$2'"; return 1;;
          15) printf "\n%s\n%s\n" "$_xcd" "category: must equal 6"; return 1;;
          16) printf -v _lin "%s" "$(grep -En "(^HOST|#HOST)" "$CONFIG" | cut -d":" -f1)"
-             _ext=$(printf "\n\x1b[91m[ERROR]\x1b[0m $CONFIG : at line $_lin. Exit code: %s" "$EC")
+             _ext=$(printf "\n\e[91m[ERROR]\e[0m $CONFIG : at line $_lin. Exit code: %s" "$EC")
              printf "\n%s\n%s : if this address is correct, maybe isDOWN\n" "$_ext" "$2"; return 1;;
          17) printf "\n%s\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; return 1;;
          18) printf "\n%s\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; return 1;;
@@ -67,36 +66,36 @@ f_xcd() {   # exit code {7..20}
          20) printf "\n%s\nmissing file: %s\n" "$_xce" "$(basename "$2")"; return 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check:"
              printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d":" -f1)"
-             printf "\n\x1b[91m[ERROR]\x1b[0m %s\n%s\n" "$_ukn" "$_knw"; return 1;;
+             printf "\n\e[91m[ERROR]\e[0m %s\n%s\n" "$_ukn" "$_knw"; return 1;;
       esac
    done
    }
 
 f_sm0() {   # getting options display messages
-   printf "\n\x1b[93mCHOOSE one of the following options :\x1b[0m\n"
+   printf "\n\e[36mCHOOSE one of the following options :\e[0m\n"
    printf "%4s. eliminating duplicate entries between domain lists\n" "1"
    printf "%4s. option [1] and rewriting all domain lists to RPZ format [db.* files]\n" "2"
    printf "%4s. options [1,2] and incrementing serial at zone files [rpz.*]\n" "3"
    printf "%4s. options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
    printf "%4s. quit\n" "*"
-   printf "ENTER: \x1b[92m[1|2|3|4|*]\x1b[0m\t\t"
+   printf "ENTER: \e[36m[1|2|3|4|*]\e[0m\t\t"
    }
 
 f_sm1() {   # display messages when 1'st option chosen
-   printf "\n\x1b[91m[%s'st] TASK options chosen\x1b[0m\n" "$RETVAL"
-   printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
-   printf "\x1b[93mPerforming task based on %s'st options ...\x1b[0m\n" "$RETVAL"
+   printf "\n\e[91m[%s'st] TASK options chosen\e[0m\n" "$RETVAL"
+   printf "\e[36mCONTINUED to :\e[0m ~eliminating duplicate entries between domain lists\n"
+   printf "\e[36mPerforming task based on %s'st options ...\e[0m\n" "$RETVAL"
    }
 
 f_sm2() {   # display messages when 2'nd option chosen
    f_sm5
-   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
+   printf "\e[36mPerforming task based on %s'th options ...\e[0m\n" "$RETVAL"
    }
 
 f_sm3() {   # display messages when 3'th option chosen
    f_sm5
    printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
-   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
+   printf "\e[36mPerforming task based on %s'th options ...\e[0m\n" "$RETVAL"
    }
 
 f_sm4() {   # display messages when 4'th option chosen
@@ -104,31 +103,31 @@ f_sm4() {   # display messages when 4'th option chosen
    printf "%28s serial zone files [rpz.*]\n" "~incrementing"
    printf "%31s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
    if [[ "$RNDC_RELOAD" == no ]]; then
-       printf "\x1b[32m%13s:\x1b[0m host %s will REBOOT due to low memory\n" "WARNING" "$HOST"
-       printf "%18s \x1b[92m'shutdown -c'\x1b[0m at HOST: %s to abort\n" "use" "$HOST"
+       printf "\e[32m%13s:\e[0m host %s will REBOOT due to low memory\n" "WARNING" "$HOST"
+       printf "%18s \e[92m'shutdown -c'\e[0m at HOST: %s to abort\n" "use" "$HOST"
    fi
-   printf "\x1b[93mPerforming task based on %s'th options ...\x1b[0m\n" "$RETVAL"
+   printf "\e[36mPerforming task based on %s'th options ...\e[0m\n" "$RETVAL"
    }
 
 f_sm5() {   # nested in f_sm2 ... f_sm4
-   printf "\n\x1b[91m[%s'th] TASK options chosen\x1b[0m\n" "$RETVAL"
-   printf "\x1b[93mCONTINUED to :\x1b[0m ~eliminating duplicate entries between domain lists\n"
+   printf "\n\e[91m[%s'th] TASK options chosen\e[0m\n" "$RETVAL"
+   printf "\e[36mCONTINUED to :\e[0m ~eliminating duplicate entries between domain lists\n"
    printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
    }
 
 f_sm6() {   # display FINISH messages
-   printf "\n[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$1" "$2"
-   printf "\x1b[32mWARNING:\x1b[0m there are still remaining duplicate entries between domain lists.\n"
+   printf "\n\e[93m[INFO]\e[0m Completed \e[36mIN %s:%s\e[0m\n" "$1" "$2"
+   printf "\e[32mWARNING:\e[0m there are still remaining duplicate entries between domain lists.\n"
    printf "%17s continue to next TASKs.\n" "consider"
    }
 
 # display processing messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
-f_sm8() { printf "\nProcessing \x1b[93m%s CATEGORY\x1b[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
+f_sm8() { printf "\nProcessing \e[36m%s CATEGORY\e[0m with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
-f_sm10() { printf "\n\x1b[91mTASKs\x1b[0m based on %s'%s options: \x1b[32mDONE\x1b[0m\n" "$RETVAL" "$1"; }
-f_ok() { printf "\x1b[32m%s\x1b[0m\n" "isOK"; }         # display isOK
-f_do() { printf "\x1b[32m%s\x1b[0m\n" "DONE"; }         # display DONE
+f_sm10() { printf "\n\e[91mTASKs\e[0m based on %s'%s options: \e[32mDONE\e[0m\n" "$RETVAL" "$1"; }
+f_ok() { printf "\e[32m%s\e[0m\n" "isOK"; }         # display isOK
+f_do() { printf "\e[32m%s\e[0m\n" "DONE"; }         # display DONE
 f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }        # grabbing remote files
 
 # fixing false positive and bad entry
@@ -167,11 +166,11 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
 
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [ -d "$_remdir" ] || f_xcd 18 "$_remdir" "$HOST"
-      printf "\n[INFO] archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
+      printf "\n\e[93m[INFO]\e[0m archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
       _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
-      printf "[INFO] find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
+      printf "\e[93m[INFO]\e[0m find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
       _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-      printf "[INFO] syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
+      printf "\e[93m[INFO]\e[0m syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
       _rsync {rpz,db}.* root@"$HOST":"$_remdir"
 
       if [[ "$RNDC_RELOAD" == yes ]]; then
@@ -179,9 +178,9 @@ f_syn() {   # passwordless ssh for "backUP oldDB and rsync newDB"
          _ssh root@"$HOST" "rndc reload"
       else
          # $HOST" will reboot [after +@ minute] due to low memory
-         printf "[INFO] host: \x1b[92m%s\x1b[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
+         printf "\e[93m[INFO]\e[0m host: \e[92m%s\e[0m scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
          _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
-         printf "[INFO] use \x1b[92m'shutdown -c'\x1b[0m at host: %s to abort\n" "$HOST"
+         printf "\e[93m[INFO]\e[0m use \e[92m'shutdown -c'\e[0m at host: %s to abort\n" "$HOST"
       fi
    else
       f_xcd 16 "$HOST"
@@ -203,10 +202,10 @@ f_crawl() {   # verify "URLS" isUP
       local statusCode; statusCode=$(curl -C - -ks -o /dev/null -I -w "%{http_code}" "$line")
 
       if [[ "$statusCode" != 2* ]]; then
-         printf "\x1b[91m%s\x1b[0m\n" "Code: $statusCode"
+         printf "\e[91m%s\e[0m\n" "Code: $statusCode"
          isDOWN+=("[Respon Code:${statusCode}] ${line}")
       else
-         printf "\x1b[32m%s\x1b[0m\n" "isUP"
+         printf "\e[32m%s\e[0m\n" "isUP"
       fi
 
    done < "$1"
@@ -217,12 +216,12 @@ f_crawl() {   # verify "URLS" isUP
       printf "%s\n" "All URLS of remote files isUP."
    else
       printf "%84s\n" " " | tr " " -
-      printf "\x1b[91m%s\x1b[0m\n" "${isDOWN[@]}"
+      printf "\e[91m%s\e[0m\n" "${isDOWN[@]}"
       f_xcd 13
    fi
    }
 
-f_dupl() { printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\n" "${1^^}"; }
+f_dupl() { printf "eliminating duplicate entries based on \e[36m%s\e[0m\n" "${1^^}"; }
 f_ddup() {  # used by grab_dedup.sh
    printf "%11s = deduplicating %s entries \t\t" "STEP $6.$1" "$2"
    _sort "$3" "$4" | uniq -d | _sort -u > "$5"
@@ -243,15 +242,15 @@ f_g4c() {   # used by grab_cereal.sh
    fi
    }
 
-f_rpz() {   # used by grab_build.sh. change 'CNAME .' if you have other policy
+f_rpz() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
+   awk -v a="$RR_RH" '{print $0" IN "a"\n""*."$0" IN " a}' "$2" >> "$1"
    f_g4b "$@"
    }
 
-f_ip4() {   # used by grab_build.sh. change 'CNAME .' if you have other policy
+f_ip4() {   # used by grab_build.sh
    printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   _sed "s/\//\./" "$2" | awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' >> "$1"
+   _sed "s/\//\./" "$2" | awk -v a="$RR_RH" -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" "a}' >> "$1"
    f_g4b "$@"
    }
 
@@ -266,13 +265,13 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files by passwordless ssh-scp
             :      # do nothing
          else
             local origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/"
-            printf "\n[INFO] %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
+            printf "\n\e[93m[INFO]\e[0m %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
             printf "%s%s\n" "$origin" "$a"
             curl -C - -fs "$origin""$a" >> "$a" || f_xcd 14 "$origin"
-            printf "[INFO] successfully get %s from origin:\n%s%s\n" "$a" "$origin" "$a"
+            printf "\e[93m[INFO]\e[0m successfully get %s from origin:\n%s%s\n" "$a" "$origin" "$a"
          fi
       done
-      printf "\n[INFO] retrying TASK again"
+      printf "\n\e[93m[INFO]\e[0m retrying TASK again"
       exec "$0"
    else
       f_xcd 16 "$HOST"
@@ -281,6 +280,6 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files by passwordless ssh-scp
 
 f_rvu() {   # used by grab_http.sh
    tools="[grab_dedup.sh, grab_build.sh, grab_cereal.sh and grab_scp.sh]"
-   printf "\x1b[91mNothing choosen, just stop right now\x1b[0m\n"
-   printf "\x1b[91mYou can still run: %s anytime after this\x1b[0m\n" "$tools"
+   printf "Nothing choosen, just stop right now\n"
+   printf "You can still run:\n\e[91m%s\e[0m\nanytime after this\n" "$tools"
    }

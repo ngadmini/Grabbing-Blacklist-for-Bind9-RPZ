@@ -1,4 +1,4 @@
-; generate at [30-Apr-22 18:37:25 UTC] by grab_cereal.sh v6.3
+; generate at [13-Mei-22 18:43:06 UTC] by grab_cereal.sh v6.4
 ;   rpz.trust+
 $TTL 3600
 @   SOA   trust+.localhost. dummy.trust+.localhost. (2022050100 3600 300 86400 60)

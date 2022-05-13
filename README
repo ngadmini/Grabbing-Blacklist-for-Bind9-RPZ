@@ -1,9 +1,9 @@
 # version
 #   *) README
-#   *) v6.3
+#   *) v6.4
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
-#----------------------------------
+###########################################################
 
 author:
    ngadimin@warnet-ersa.net
@@ -12,12 +12,13 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v6.3:
-*) add grab_cnf as a configuration file
-*) fix grab_lib which results in an error generating timestamps at grab_cereal.sh
-*) change ipv4 raw-output in grab_http.sh to standard CIDR
+what's new in v6.4:
+*) compacting scripts
+*) adding new variable (RR_RH="CNAME .") in grab_cnf
 
 file parts of this version:
+   0. download script-pack from:
+        https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.4/gb4rpz-v6.4.tar.gz
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
         the same directory. IF no option is selected, it just generates a txt.*
@@ -61,20 +62,17 @@ prerequisites:
 
       # modify file grab_cnf to fit your BIND9-server environment
       #   there are three variables you have to change
-      #   do not leave one of the following variables undefined.
-      #   script will be terminated with error
+      #   do not leave one of the following variables undefined,
+      #   script will be terminating with error
       HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
       RNDC_RELOAD=no             # set 'yes' to run <rndc reload>  or 'no' to <reboot>
                                  # Remote Name Daemon Control (rndc)
       LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
-
-      # afterward, you can modify grab_lib if you have other RPZ local-data action
-      #   ie. local-data = explanation.example.com as your redirect page
-      $ grep -n '\sCNAME\s\.' grab_lib
-      248:   awk '{print $0" IN CNAME .""\n""*."$0" IN CNAME ."}' "$2" >> "$1"
-      254:   awk -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" CNAME ."}' "$2" >> "$1"
-      # ie. change to : explanation.example.com
-      ~$ sed -i "s/\sCNAME\s\./ CNAME explanation.example.com./g" grab_lib
+      RR_RH="CNAME ."            # change Resource Record <CNAME> and Right Hand Value <.>, if you have other policy
+                                 # RR and RH Value, example:
+                                 #   RR_RH="CNAME block.example.net."
+                                 # for more detail about rpz policy action, please see :
+                                 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
 
 *) on your BIND9-server
       # check required package

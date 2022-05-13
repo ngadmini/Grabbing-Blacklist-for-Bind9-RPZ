@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS;VERSION
 #   grab_scp.sh
-#   v6.3
+#   v6.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -21,7 +21,7 @@ source "$_DIR"/grab_lib
 trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-printf "\n\x1b[91m[3'th] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+printf "\n\e[91m[3'th] TASKs:\e[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
 
 find . -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640 -exec chmod -R 640 {} \;
@@ -29,5 +29,5 @@ f_syn   # start syncronizing
 
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
-printf "[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
+printf "\e[93m[INFO]\e[0m Completed \e[93mIN %s:%s\e[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0

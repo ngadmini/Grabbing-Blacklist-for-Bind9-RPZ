@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS;VERSION
 #   grab_http.sh
-#   v6.3
+#   v6.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -22,7 +22,7 @@ startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
-   printf "\n\x1b[93mPERFORMING TASKs:\x1b[0m Initiating CATEGORY of domains\n"
+   printf "\n\e[93mPERFORMING TASKs:\e[0m Initiating CATEGORY of domains\n"
    f_tmp                       # remove temporary dir-file if any
 
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initial category
@@ -40,7 +40,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    cat vpn/domains >> redirector/domains
    rm -r vpn
    mapfile -t ar_cat < <(find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort)
-   printf "%12s: \x1b[93m%s\x1b[0m\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
+   printf "%12s: \e[36m%s\e[0m\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    [ "${#ar_cat[@]}" -eq 6 ] || f_xcd 15
 
    # remove previously domain lists if any && define some arrays based on initial array (ar_cat)
@@ -64,19 +64,19 @@ trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
 printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check $(basename "$0") is execute by non-root privileges"
+printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check $(basename "$0") is execute by non-root privileges"
 [ ! "$UID" -eq 0 ] || f_xcd 10
-printf "\x1b[92m%s\x1b[0m\n" "isOK"
+printf "\e[92m%s\e[0m\n" "isOK"
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability bind9-server: '$HOST'"
+printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check availability bind9-server: '$HOST'"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    f_ok
 
-   printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check bind9-server: $HOST for passwordless ssh"
+   printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check bind9-server: $HOST for passwordless ssh"
    _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
    f_ok
 
-   printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on bind9-server: $HOST"
+   printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check required packages on bind9-server: $HOST"
    for C in {rsync,pigz}; do
       _ssh root@"$HOST" "hash $C >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$C"
    done
@@ -86,7 +86,7 @@ else
    f_xcd 16 "$HOST"
 fi
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check required packages on local host"
+printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check required packages on local host"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then
@@ -95,7 +95,7 @@ for D in $pkg; do
 done
 f_ok
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m %-63s" "Check availability and property of script-pack"
+printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check availability and property of script-pack"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [ -e "$E" ] || f_xcd 17 "$E"      # check grab_build.sh, grab_cereal.sh,
    [ -x "$E" ] || chmod +x "$E"      # grab_dedup.sh and grab_scp.sh
@@ -112,7 +112,7 @@ mapfile -t ar_reg < "$_REG"
 [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
 f_ok
 
-printf "\x1b[93mPREPARING TASKs:\x1b[0m Check the remote files isUP or isDOWN\n"
+printf "\e[93mPREPARING TASKs:\e[0m Check the remote files isUP or isDOWN\n"
 ar_sho=()                      # check urls isUP or isDOWN
 f_crawl "$_URL" || true        #
 
@@ -192,7 +192,7 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
 [ "${#ar_txt[@]}" -eq 6 ] || f_xcd 15
-printf "\nAcquired domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
+printf "\nAcquired domains (\e[93m%s CATEGORIES\e[0m) in summary:\n" "${#ar_txt[@]}"
 for J in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "$aqr_sum"
@@ -201,7 +201,7 @@ printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
 # finishing
-printf "\n\x1b[93mPRUNING:\x1b[0m sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n"
+printf "\n\e[93mPRUNING:\e[0m sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for K in {0..5}; do

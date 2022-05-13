@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS;VERSION
 #   grab_dedup.sh
-#   v6.3
+#   v6.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -21,7 +21,7 @@ source "$_DIR"/grab_lib
 trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-printf "\n\x1b[91m[1'st] TASKs:\x1b[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+printf "\n\e[91m[1'st] TASKs:\e[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
 
 # predefined array as a blanko to counter part 'others' array
@@ -45,8 +45,8 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
       ar_tmp+=(tmr."${ar_txt[B]/txt./}")
    done
 
-   printf "\n[INFO] Eliminating duplicate entries between domain lists\n"
-   printf "[INFO] FOUND %s domain lists: \x1b[93m%s\x1b[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
+   printf "\n\e[93m[INFO]\e[0m Eliminating duplicate entries between domain lists\n"
+   printf "\e[93m[INFO]\e[0m FOUND %s domain lists: \e[36m%s\e[0m\n" "${#ar_txt[@]}" "${ar_cat[*]}"
 
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
@@ -58,7 +58,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    done
 
    # based on ${ar_cat[1]}
-   printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
+   printf "eliminating duplicate entries based on \e[36m%s\e[0m\t\tdo nothing\n" "${ar_cat[1]^^}"
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
    for D in {3..5}; do
@@ -87,13 +87,13 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    f_do
 
    # based on ${ar_cat[5]}
-   printf "eliminating duplicate entries based on \x1b[93m%s\x1b[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
+   printf "eliminating duplicate entries based on \e[36m%s\e[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 else
    _miss="$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
    printf -v miss_v "%s" "$_miss"
-   printf "\n\x1b[91m[ERROR]\x1b[0m due to: FOUND %s of %s domain list:\nNOT require: %s\n" \
+   printf "\n\e[91m[ERROR]\e[0m due to: FOUND %s of %s domain list:\nNOT require: %s\n" \
       "${#ar_txt[@]}" "${#ar_raw[@]}" "$miss_v"
-   printf "[HINTS] remove or move to other direcory: %s" "$miss_v"
+   printf "\e[93m[HINTS]\e[0m remove or move to other direcory: %s" "$miss_v"
    exit 1
 fi
 
@@ -102,12 +102,12 @@ endTime=$(date +%s)
 DIF=$((endTime - startTime))
 unset -v ar_txt
 mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
-printf "[INFO] deduplicating domains (\x1b[93m%s CATEGORIES\x1b[0m) in summary:\n" "${#ar_txt[@]}"
+printf "\n\e[93m[INFO]\e[0m deduplicating domains (\e[36m%s CATEGORIES\e[0m) in summary:\n" "${#ar_txt[@]}"
 for P in {0..5}; do
    printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "$dpl"
 done
 printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$dpl_ttl"
-printf "[INFO] Completed \x1b[93mIN %s:%s\x1b[0m\n" "$((DIF/60))" "$((DIF%60))s"
+printf "\e[93m[INFO]\e[0m Completed \e[36mIN %s:%s\e[0m\n" "$((DIF/60))" "$((DIF%60))s"
 exit 0

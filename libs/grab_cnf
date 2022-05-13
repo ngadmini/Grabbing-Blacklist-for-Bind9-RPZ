@@ -1,13 +1,12 @@
 # TAGS;VERSION
 #   grab_cnf
-#   v6.3
+#   v6.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # NOTE
 #   all variables must be determined.
-#   do not leave one of the following variables undefined.
-#   script will be terminated with error, if one the 
-#   following variables are not determined
+#   do not leave one of the following variables undefined,
+#   script will be terminating with error.
 #   blank lines and lines starting with '#' will be ignored
 ###########################################################
  
@@ -16,23 +15,23 @@
 #   HOST="rpz.warnet-ersa.net"
 # or ip-address
 #   HOST="172.30.254.253"
-# default is
-#   HOST=rpz.warnet-ersa.net
-#HOST=rpz.warnet-ersa.net
+HOST=rpz.warnet-ersa.net
 
-# specifies locale country numeric
-# default is Indonesia [id]
-#   LC_NUMERIC=id_ID.UTF-8
-# change to your locale country
-#LC_NUMERIC=id_ID.UTF-8
+# specifies locale country numeric, change to your locale country
+LC_NUMERIC=id_ID.UTF-8
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some server with low_RAM
 #   will out off memory. in this case you could 'reboot' it's.
 # set 'no' to reboot bind9-server after syncronizing
 #   RNDC_RELOAD=no
-# OR set 'yes' to run <rndc reload> bind9-server after syncronizing
+# OR set 'yes' to run <rndc reload> in bind9-server after syncronizing
 #   RNDC_RELOAD=yes
-# default is
-#   RNDC_RELOAD=no
-#RNDC_RELOAD=no
+RNDC_RELOAD=no
+
+# change Resource Record <CNAME> and Right Hand Value <.>, if you have other policy
+# RR and RH Value, example:
+#   RR_RH="CNAME block.example.net."
+# for more detail about rpz policy action, please see :
+#   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
+RR_RH="CNAME ."
