@@ -14,6 +14,13 @@ PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
+_red="\e[91m"
+_ylw="\e[93m"
+_ncl="\e[0m"
+_inf="${_ylw}[INFO]${_ncl}"
+_err="${_red}[ERROR]${_ncl}"
+_hnt="${_ylw}[HINTS]${_ncl}"
+_tsk="${_red}[2'th] TASKs:${_ncl}"
 
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
@@ -22,7 +29,7 @@ source "$_DIR"/grab_lib
 trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-printf "\n\e[91m[2'nd] TASKs:\e[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
 
 # predefined array as a blanko to counter part 'others' array
@@ -43,7 +50,7 @@ done
 mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
 if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
    unset -v ar_RAW
-   printf "\n\e[93m[INFO]\e[0m Splitting adult category to 750.000 lines/sub-category\n"
+   printf "\n${_inf} splitting adult category to 750.000 lines/sub-category%s\n" ""
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp
    mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
@@ -57,7 +64,7 @@ if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
       done
 
       find . -maxdepth 1 -type f -name "db.*" -print0 | xargs -0 -r rm
-      printf "\e[93m[INFO]\e[0m Rewriting all domain lists to RPZ format :\n\e[36m%s\e[0m\n" "${ar_cat[*]}"
+      printf "${_inf} rewriting all domain lists to RPZ format :\n\e[96m%s\e[0m\n" "${ar_cat[*]}"
 
       for X in {0..11}; do
          if [ "$X" -eq 7 ]; then
@@ -70,26 +77,26 @@ if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
       done
 
       printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
-      printf "%41s : %10s entries\n" "TOTAL" "$ttl"
+      printf "%41s : %10s entries" "TOTAL" "$ttl"
 
    elif [ "${#ar_txt[@]}" -gt "${#ar_split[@]}" ]; then
-      printf "\e[91m[ERROR]\e[0m database growth, can produce db.* files: %s exceeds from %s\n" \
+      printf "${_err} database growth, can produce db.* files: %s exceeds from %s\n" \
          "${#ar_txt[@]}" "${#ar_split[@]}"
-      printf "\e[93m[HINTS]\e[0m please make adjustments to your rpz.* files and your bind9-server config\n"
+      printf "${_hnt} please make adjustments to your rpz.* files and your bind9-server config%s\n"
       exit 1
    else
       _add="database shrunk than expected. can only create"
-      printf "\e[91m[ERROR]\e[0m due to: %s %s of %s db.* files:\n" "$_add" \
+      printf "${_err} due to: %s %s of %s db.* files:\n" "$_add" \
          "${#ar_txt[@]}" "${#ar_split[@]}"
       exit 1
    fi
 else
-   printf "\n\e[91m[ERROR]\e[0m due to: FOUND %s domain list:\n\t%s\n" "${#ar_RAW[@]}" "${ar_RAW[*]}"
-   printf "\e[93m[HINTS]\e[0m expected %s domains list: \n\t%s\n" "${#ar_raw[@]}" "${ar_raw[*]}"
+   printf "\n${_err} due to: FOUND %s domain list:\n\t%s\n" "${#ar_RAW[@]}" "${ar_RAW[*]}"
+   printf "${_hnt} expected %s domains list: \n\t%s\n" "${#ar_raw[@]}" "${ar_raw[*]}"
    exit 1
 fi
 
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
-printf "\e[93m[INFO]\e[0m Completed \e[36mIN %s:%s\e[0m\n" "$((DIF/60))" "$((DIF%60))s"
+f_sm11 "$((DIF/60))" "$((DIF%60))s"
 exit 0

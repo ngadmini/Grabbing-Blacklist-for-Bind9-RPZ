@@ -13,6 +13,13 @@ PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
+_red="\e[91m"
+_ylw="\e[93m"
+_ncl="\e[0m"
+_inf="${_ylw}[INFO]${_ncl}"
+_err="${_red}[ERROR]${_ncl}"
+_hnt="${_ylw}[HINTS]${_ncl}"
+_tsk="${_red}[3'th] TASKs:${_ncl}"
 
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
@@ -21,7 +28,7 @@ source "$_DIR"/grab_lib
 trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-printf "\n\e[91m[3'th] TASKs:\e[0m\nStarting %s ... %s" "$(basename "$0")" "$start"
+printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
 
 # predefined array as a blanko to counter part 'ar_zon' array
@@ -30,9 +37,9 @@ ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
       rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(find . -maxdepth 1 -type f -name "rpz.*" | _sed -e "s/\.\///" | sort)
 
-printf "\n\e[93m[INFO]\e[0m Incrementing serial of zone files (rpz.* files)\n"
+printf "\n${_inf} incrementing serial of zone files (rpz.* files)%s\n" ""
 if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
-   printf "\e[93m[INFO]\e[0m FOUND:\t%s complete\n" "${#ar_zon[@]}"
+   printf "${_inf} FOUND:\t%s complete\n" "${#ar_zon[@]}"
    for Z in "${ar_zon[@]}"; do
       DATE=$(date +%Y%m%d)
       SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d" " -f1)
@@ -52,25 +59,25 @@ if [ "${#ar_zon[@]}" -eq "${#ar_rpz[@]}" ]; then
       f_g4c "$Z"
       find . -type f -name "$Z" -not -perm 640 -exec chmod -R 640 {} \;
    done
-   printf "\e[93m[INFO]\e[0m ALL serial zones incremented to \e[36m%s\e[0m\n" "$newSERIAL"
+   printf "${_inf} all serial zones incremented to \e[96m%s\e[0m" "$newSERIAL"
 
 elif [ "${#ar_zon[@]}" -gt "${#ar_rpz[@]}" ]; then
-     printf "\e[91m[ERROR]\e[0m rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_rpz[@]}"
-     printf "\e[93m[HINTS]\e[0m please double-check number of db.* files and rpz.* files\n"
+     printf "${_err} rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_rpz[@]}"
+     printf "${_hnt} please double-check number of db.* files and rpz.* files%s\n" ""
      exit 1
 
 else
-   printf "\e[91m[ERROR]\e[0m Failed due to: \"FOUND %s of %s zones\". %s\n" \
+   printf "${_err} failed due to: \"FOUND %s of %s zones\". %s\n" \
       "${#ar_zon[@]}" "${#ar_rpz[@]}" "Missing zone files:"
    _miss="$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
    printf -v miss_v "%s" "$_miss"
    printf "~ %s\n" "$miss_v"
    ar_miss+=("$miss_v")
-   printf "\e[93m[INFO]\e[0m Trying to get the missing file(s) from origin: %s\n" "$HOST"
+   printf "${_inf} trying to get the missing file(s) from origin: %s\n" "$HOST"
    f_cer "${ar_miss[@]}"
 fi
 
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
-printf "\e[93m[INFO]\e[0m Completed \e[36mIN %s:%s\e[0m\n" "$((DIF/60))" "$((DIF%60))s"
+f_sm11 "$((DIF/60))" "$((DIF%60))s"
 exit 0

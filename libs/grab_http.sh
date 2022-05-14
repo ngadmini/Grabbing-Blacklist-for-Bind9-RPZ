@@ -20,9 +20,14 @@ _SCP="$_DIR"/grab_scp.sh
 _URL="$_DIR"/grab_urls
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
+_ylw="\e[93m"
+_grn="\e[92m"
+_cyn="\e[96m"
+_ncl="\e[0m"
+_pre="${_ylw}PREPARING TASKs:${_ncl}"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
-   printf "\n\e[93mPERFORMING TASKs:\e[0m Initiating CATEGORY of domains\n"
+   printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n" ""
    f_tmp                       # remove temporary dir-file if any
 
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initial category
@@ -40,7 +45,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    cat vpn/domains >> redirector/domains
    rm -r vpn
    mapfile -t ar_cat < <(find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort)
-   printf "%12s: \e[36m%s\e[0m\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
+   printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    [ "${#ar_cat[@]}" -eq 6 ] || f_xcd 15
 
    # remove previously domain lists if any && define some arrays based on initial array (ar_cat)
@@ -63,20 +68,20 @@ source "$_DIR"/grab_lib
 trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-printf "\nStarting %s ... %s\n" "$(basename "$0")" "$start"
-printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check $(basename "$0") is execute by non-root privileges"
+printf "\nstarting %s ... %s\n" "$(basename "$0")" "$start"
+printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
 [ ! "$UID" -eq 0 ] || f_xcd 10
-printf "\e[92m%s\e[0m\n" "isOK"
+printf "${_grn}%s${_ncl}\n" "isOK"
 
-printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check availability bind9-server: '$HOST'"
+printf "${_pre} %-63s" "check availability bind9-server: '$HOST'"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    f_ok
 
-   printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check bind9-server: $HOST for passwordless ssh"
+   printf "${_pre} %-63s" "check bind9-server: $HOST for passwordless ssh"
    _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
    f_ok
 
-   printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check required packages on bind9-server: $HOST"
+   printf "${_pre} %-63s" "check required packages on bind9-server: $HOST"
    for C in {rsync,pigz}; do
       _ssh root@"$HOST" "hash $C >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$C"
    done
@@ -86,7 +91,7 @@ else
    f_xcd 16 "$HOST"
 fi
 
-printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check required packages on local host"
+printf "${_pre} %-63s" "check required packages on local host"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then
@@ -95,7 +100,7 @@ for D in $pkg; do
 done
 f_ok
 
-printf "\e[93mPREPARING TASKs:\e[0m %-63s" "Check availability and property of script-pack"
+printf "${_pre} %-63s" "check availability and property of script-pack"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [ -e "$E" ] || f_xcd 17 "$E"      # check grab_build.sh, grab_cereal.sh,
    [ -x "$E" ] || chmod +x "$E"      # grab_dedup.sh and grab_scp.sh
@@ -112,7 +117,7 @@ mapfile -t ar_reg < "$_REG"
 [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
 f_ok
 
-printf "\e[93mPREPARING TASKs:\e[0m Check the remote files isUP or isDOWN\n"
+printf "${_pre} check the remote files isUP or isDOWN%s\n" ""
 ar_sho=()                      # check urls isUP or isDOWN
 f_crawl "$_URL" || true        #
 
@@ -127,9 +132,11 @@ f_sm7 1 "${ar_sho[1]}"; f_do   # add gambling domain, done when initiating categ
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
+# throw ipv4 to ${ar_dmn[1]} && identifying porn domains, use it's to
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-f_ip "$porn" "${ar_dmn[1]}"    # throw ipv4 to ${ar_dmn[1]} && identifying porn domains, use it's to
-_sort "${untrust}" "${porn}" | uniq -d >> "${trust}"       #+ reduce porn domains in trust+ category
+f_ip "$porn" "${ar_dmn[1]}"
+# reduce porn domains in trust+ category
+_sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grep -E "${ar_reg[2]}" "${untrust}" >> "${trust}" && sort -u "${trust}" -o "${trust}"
 # delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
@@ -192,7 +199,7 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
 [ "${#ar_txt[@]}" -eq 6 ] || f_xcd 15
-printf "\nAcquired domains (\e[93m%s CATEGORIES\e[0m) in summary:\n" "${#ar_txt[@]}"
+printf "\nacquired domains (${_ylw}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
 for J in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "$aqr_sum"
@@ -201,7 +208,7 @@ printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
 # finishing
-printf "\n\e[93mPRUNING:\e[0m sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n"
+printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-nets into CIDR blocks if any%s\n" ""
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for K in {0..5}; do

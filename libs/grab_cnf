@@ -4,11 +4,11 @@
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # NOTE
-#   all variables must be determined.
-#   do not leave one of the following variables undefined,
-#   script will be terminating with error.
-#   blank lines and lines starting with '#' will be ignored
-###########################################################
+#   *) all variables must be determined.
+#   *) do not leave one of the following variables undefined,
+#      script will be terminating with error.
+#   *) blank lines and lines starting with '#' will be ignored
+##############################################################
  
 # specifies host-name in FQDN or ip-address of your bind9-server
 # use fqdn
@@ -17,7 +17,7 @@
 #   HOST="172.30.254.253"
 HOST=rpz.warnet-ersa.net
 
-# specifies locale country numeric, change to your locale country
+# specifies your locale country numeric
 LC_NUMERIC=id_ID.UTF-8
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
@@ -29,7 +29,7 @@ LC_NUMERIC=id_ID.UTF-8
 #   RNDC_RELOAD=yes
 RNDC_RELOAD=no
 
-# change Resource Record <CNAME> and Right Hand Value <.>, if you have other policy
+# change Resource Record <CNAME> and Right Hand Value <.> if you have other policy
 # RR and RH Value, example:
 #   RR_RH="CNAME block.example.net."
 # for more detail about rpz policy action, please see :
