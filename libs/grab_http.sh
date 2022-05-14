@@ -137,7 +137,7 @@ printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ip "$porn" "${ar_dmn[1]}"
 # reduce porn domains in trust+ category
 _sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
-_grep -E "${ar_reg[2]}" "${untrust}" >> "${trust}" && sort -u "${trust}" -o "${trust}"
+_grep -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 # delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
 cat "${trust}" >> "${ar_dmn[0]}"
