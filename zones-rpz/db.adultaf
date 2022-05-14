@@ -1,10 +1,10 @@
-; generate at [13-Mei-22 18:43:06 UTC] by grab_build.sh v6.4
+; generate at [14-Mei-22 06:34:17 UTC] by grab_build.sh v6.4
 ;
-sexlink-club.de IN CNAME .
-*.sexlink-club.de IN CNAME .
-sexlink-web.de IN CNAME .
-*.sexlink-web.de IN CNAME .
-sexlink.atw.hu IN CNAME .
-*.sexlink.atw.hu IN CNAME .
-sexlink.be IN CNAME .
-*.sexlink.be IN CNAME .
+sexchat.tv IN CNAME .
+*.sexchat.tv IN CNAME .
+sexchat.ua.tc IN CNAME .
+*.sexchat.ua.tc IN CNAME .
+sexchat.uwstart.nl IN CNAME .
+*.sexchat.uwstart.nl IN CNAME .
+sexchat.vg IN CNAME .
+*.sexchat.vg IN CNAME .

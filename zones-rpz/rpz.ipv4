@@ -1,7 +1,7 @@
-; generate at [13-Mei-22 18:43:06 UTC] by grab_cereal.sh v6.4
+; generate at [14-Mei-22 06:34:20 UTC] by grab_cereal.sh v6.4
 ;   rpz.ipv4
 $TTL 3600
-@   SOA   ipv4.localhost. dummy.ipv4.localhost. (2022050100 3600 300 86400 60)
+@   SOA   ipv4.localhost. dummy.ipv4.localhost. (2022051414 3600 300 86400 60)
 @    NS   ipv4.localhost.
 @    IN   A    127.0.9.1
 ;
