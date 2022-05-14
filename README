@@ -15,6 +15,7 @@ license:
 what's new in v6.4:
 *) compacting scripts
 *) adding new variable (RR_RH="CNAME .") in grab_cnf
+*) adding some adult-TLD and gambling-TLD to grab_regex, rpz.adultaa and rpz.trust+
 
 file parts of this version:
    0. download script-pack from:

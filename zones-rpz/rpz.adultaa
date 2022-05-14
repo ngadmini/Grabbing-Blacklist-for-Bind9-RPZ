@@ -6,11 +6,15 @@ $TTL 3600
 @    IN   A    127.0.3.1
 ;
 *.adult  CNAME .
+*.cam    CNAME .
+*.lgbt   CNAME .
 *.porn   CNAME .
 *.sex    CNAME .
 *.sexy   CNAME .
+*.tube   CNAME .
+*.webcam CNAME .
 *.xxx    CNAME .
-xn--videospornosenespaol-sva22ay2bwa.com   CNAME .   
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
+xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"
