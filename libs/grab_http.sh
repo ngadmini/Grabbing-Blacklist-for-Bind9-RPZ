@@ -21,7 +21,6 @@ _URL="$_DIR"/grab_urls
 startTime=$(date +%s)
 start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 _ylw="\e[93m"
-_grn="\e[92m"
 _cyn="\e[96m"
 _ncl="\e[0m"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
@@ -60,7 +59,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    done
 }
 
-# START TASKs <main script>
+# START <preparing>
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null disable=SC2029
@@ -71,17 +70,17 @@ trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 printf "\nstarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
 [ ! "$UID" -eq 0 ] || f_xcd 10
-printf "${_grn}%s${_ncl}\n" "isOK"
+f_ok
 
-printf "${_pre} %-63s" "check availability bind9-server: '$HOST'"
+printf "${_pre} %-63s" "check availability remote host: $HOST"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    f_ok
 
-   printf "${_pre} %-63s" "check bind9-server: $HOST for passwordless ssh"
-   _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
+   printf "${_pre} %-63s" "check remote host: $HOST for passwordless ssh"
+   _ssh -o BatchMode=yes "$HOST" /usr/bin/true >> /dev/null 2>&1 || f_xcd 7 "$HOST"
    f_ok
 
-   printf "${_pre} %-63s" "check required packages on bind9-server: $HOST"
+   printf "${_pre} %-63s" "check required packages on remote host: $HOST"
    for C in {rsync,pigz}; do
       _ssh root@"$HOST" "hash $C >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$C"
    done
@@ -91,7 +90,7 @@ else
    f_xcd 16 "$HOST"
 fi
 
-printf "${_pre} %-63s" "check required packages on local host"
+printf "${_pre} %-63s" "check required packages on locale host"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then
@@ -100,7 +99,7 @@ for D in $pkg; do
 done
 f_ok
 
-printf "${_pre} %-63s" "check availability and property of script-pack"
+printf "${_pre} %-63s" "check availability and property of script-pack on locale host"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [ -e "$E" ] || f_xcd 17 "$E"      # check grab_build.sh, grab_cereal.sh,
    [ -x "$E" ] || chmod +x "$E"      # grab_dedup.sh and grab_scp.sh
@@ -121,7 +120,8 @@ printf "${_pre} check the remote files isUP or isDOWN%s\n" ""
 ar_sho=()                      # check urls isUP or isDOWN
 f_crawl "$_URL" || true        #
 
-f_grab                         # start grabbing and processing domains
+# START <main script>
+f_grab                         # grabbing categories
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${urls[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
