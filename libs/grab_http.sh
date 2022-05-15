@@ -38,17 +38,17 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
       f_do
    done
 
-   mkdir ipv4                  # define directory to initialing category and marking as an array
+   mkdir ipv4                  # define directory as initial category
    mv phishing malware         # ie.
    mv gambling trust+          # adult ipv4 malware publicite redirector AND trust+
    cat vpn/domains >> redirector/domains
    rm -r vpn
-   mapfile -t ar_cat < <(find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort)
+
+   # declare initial array (ar_cat) AND define some arrays based on its
+   mapfile -t ar_cat < <(f_cat)
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    [ "${#ar_cat[@]}" -eq 6 ] || f_xcd 15
-
-   # remove previously domain lists if any && define some arrays based on initial array (ar_cat)
-   find . -maxdepth 1 -type f -name "txt.*" -print0 | xargs -0 -r rm
+   f_frm "txt.*"               # remove previously domain lists if any
    ar_dmn=()                   # ar_dmn as raw-domains container
    ar_tmp=()                   # ar_tmp as in-process-domains container (temporary)
    ar_txt=()                   # ar_txt as processed-domains container
@@ -72,15 +72,15 @@ printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges
 [ ! "$UID" -eq 0 ] || f_xcd 10
 f_ok
 
-printf "${_pre} %-63s" "check availability remote host: $HOST"
+printf "${_pre} %-63s" "check availability remote-host: $HOST"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    f_ok
 
-   printf "${_pre} %-63s" "check remote host: $HOST for passwordless ssh"
-   _ssh -o BatchMode=yes "$HOST" /usr/bin/true >> /dev/null 2>&1 || f_xcd 7 "$HOST"
+   printf "${_pre} %-63s" "check remote-host: $HOST for passwordless ssh"
+   _ssh -o BatchMode=yes "$HOST" true >> /dev/null 2>&1 || f_xcd 7 "$HOST"
    f_ok
 
-   printf "${_pre} %-63s" "check required packages on remote host: $HOST"
+   printf "${_pre} %-63s" "check required packages on remote-host: $HOST"
    for C in {rsync,pigz}; do
       _ssh root@"$HOST" "hash $C >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$C"
    done
@@ -90,7 +90,7 @@ else
    f_xcd 16 "$HOST"
 fi
 
-printf "${_pre} %-63s" "check required packages on locale host"
+printf "${_pre} %-63s" "check required packages on local-host"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then
@@ -99,10 +99,10 @@ for D in $pkg; do
 done
 f_ok
 
-printf "${_pre} %-63s" "check availability and property of script-pack on locale host"
+printf "${_pre} %-63s" "check availability and property of script-pack on local-host"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
-   [ -e "$E" ] || f_xcd 17 "$E"      # check grab_build.sh, grab_cereal.sh,
-   [ -x "$E" ] || chmod +x "$E"      # grab_dedup.sh and grab_scp.sh
+   [ -e "$E" ] || f_xcd 17 "$E"      # check property of grab_build.sh, grab_cereal.sh,
+   [ -x "$E" ] || chmod +x "$E"      # grab_dedup.sh AND grab_scp.sh
 done
 
 [ -e "$_URL" ] || f_xcd 17 "$_URL"   # check grap_urls property
@@ -116,11 +116,11 @@ mapfile -t ar_reg < "$_REG"
 [ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
 f_ok
 
-printf "${_pre} check the remote files isUP or isDOWN%s\n" ""
+printf "${_pre} check the remote-files isUP or isDOWN%s\n" ""
 ar_sho=()                      # check urls isUP or isDOWN
 f_crawl "$_URL" || true        #
 
-# START <main script>
+# <main script>
 f_grab                         # grabbing categories
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${urls[1,7,21]}
@@ -188,8 +188,8 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
-for I in {19,20}; do           # save ipv4 sub-nets into CIDR block
-   f_sm7 "$I" "${ar_sho[I]}"   # Classless Inter-Domain Routing
+for I in {19,20}; do           # save ipv4 into sub-nets
+   f_sm7 "$I" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grep -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
@@ -207,7 +207,7 @@ done
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "$_sum"
 
-# finishing
+# END <finishing>
 printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-nets into CIDR blocks if any%s\n" ""
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
@@ -231,15 +231,15 @@ for K in {0..5}; do
 done
 
 unset -v ar_txt
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
+mapfile -t ar_txt < <(f_fnd "txt.*")
 printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %s entries\n" "TOTAL" "$_tsp"
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
 f_sm6 "$((DIF/60))" "$((DIF%60))s"
 f_uset
-# TASKs completed. end of grabbing and processing
 
+# COMPLETED <new taks>
 f_sm0 "$HOST"      # offerring OPTIONs: continued to next stept OR stop here
 read -r RETVAL
 case $RETVAL in

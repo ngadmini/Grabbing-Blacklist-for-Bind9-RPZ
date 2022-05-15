@@ -27,8 +27,9 @@ trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
 [ ! "$UID" -eq 0 ] || f_xcd 10
 
-find . -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640 -exec chmod -R 640 {} \;
-f_syn   # start syncronizing
+f_pms   # start syncronizing
+f_syn
+f_uset
 
 endTime=$(date +%s)
 DIF=$((endTime - startTime))

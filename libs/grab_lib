@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # TAGS;VERSION
 #   grab_lib
 #   v6.4
@@ -31,7 +32,10 @@ _tks="${_red}TASKs${_ncl}"
 
 readonly CONFIG="grab_cnf"
 test -r "${CONFIG}" || chmod 644 "${CONFIG}"
-if [ "$(grep -Ecv "(#|^\s*$)" "${CONFIG}")" = 4 ]; then
+ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RR_RH)
+mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CONFIG}" | cut -d'=' -f1 | sort )
+
+if [ "${ar_CNF[*]}" == "${ar_cnf[*]}" ]; then
    # shellcheck source=/dev/null
    source "${CONFIG}" >> /dev/null 2>&1
 else
@@ -44,7 +48,7 @@ f_tmp() {   # remove temporary files, directories && arrays defined during the e
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
-f_uset() { unset -v ar_{cat,db,DB,dom,dmn,miss,raw,RAW,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
+f_uset() { unset -v ar_{cat,db,dbc,DBC,dom,dmn,miss,raw,RAW,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..20}
@@ -85,7 +89,7 @@ f_sm0() {   # getting options display messages
    printf "\n${_cyn}CHOOSE one of the following options :${_ncl}%s\n" ""
    printf "%4s. eliminating duplicate entries between domain lists\n" "1"
    printf "%4s. option [1] and rewriting all domain lists to RPZ format [db.* files]\n" "2"
-   printf "%4s. options [1,2] and incrementing serial at zone files [rpz.*]\n" "3"
+   printf "%4s. options [1,2] and incrementing serial at zone-files [rpz.*]\n" "3"
    printf "%4s. options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
    printf "%4s. quit\n" "*"
    printf "ENTER: ${_cyn}[1|2|3|4|*]${_ncl}\t\t%s" ""
@@ -104,13 +108,13 @@ f_sm2() {   # display messages when 2'nd option choosen
 
 f_sm3() {   # display messages when 3'th option choosen
    f_sm5
-   printf "%28s serial at zone files [rpz.*]\n" "~incrementing"
+   printf "%28s serial at zone-files [rpz.*]\n" "~incrementing"
    printf "${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"
    }
 
 f_sm4() {   # display messages when 4'th option choosen
    f_sm5
-   printf "%28s serial zone files [rpz.*]\n" "~incrementing"
+   printf "%28s serial zone-files [rpz.*]\n" "~incrementing"
    printf "%28s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
    if [[ "$RNDC_RELOAD" == no ]]; then
        printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
@@ -133,17 +137,17 @@ f_sm6() {   # display FINISH messages
 
 # display processing messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
-f_sm8() { printf "\nprocessing ${_cyn}%s CATEGORY${_ncl} with (%d) additional remote file(s)\n" "${1^^}" "$2"; }
+f_sm8() { printf "\nprocessing ${_cyn}%s CATEGORY${_ncl} with (%d) additional remote-files\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n${_tks} based on %s'%s options: \e[32mDONE\e[0m\n" "$RETVAL" "$1"; }
 f_sm11() { printf "\n${_inf} completed ${_cyn}IN %s:%s${_ncl}\n" "$1" "$2"; }
 f_ok() { printf "${_grn}%s${_ncl}\n" "isOK"; }         # display isOK
 f_do() { printf "${_grn}%s${_ncl}\n" "DONE"; }         # display DONE
-f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }    # grabbing remote files
+f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }    # grabbing remote-files
 
 # fixing false positive and bad entry
 f_fix() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
-f_ip() { # capture and throw ip-address entry to ipv4 CATEGORY, save into CIDR block
+f_ip() { # capture and throw ip-address entry to ipv4 CATEGORY, save into sub-net
    _grep -P "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$" \
       "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2" || true
    _sed -i -E "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"
@@ -157,19 +161,20 @@ f_fip() {
 
 f_syn() {   # passwordless ssh for backUP oldDB and rsync newDB
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then   # check existance of db-files and rpz-files
-      ar_DB=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
+      ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
          db.ipv4 db.malware db.publicite db.redirector db.trust+)
       ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
          rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
-      mapfile -t ar_db < <(find . -maxdepth 1 -type f -name "db.*" | _sed -e "s/\.\///" | sort)
-      mapfile -t ar_rpz < <(find . -maxdepth 1 -type f -name "rpz.*" | _sed -e "s/\.\///" | sort)
-      printf -v miss_DB "%s" "$(echo "${ar_DB[@]}" "${ar_db[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
-      printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
 
-      for DB in ${ar_DB[*]}; do [ -e "$DB" ] || f_xcd 20 "$miss_DB"; done
+      mapfile -t ar_dbc < <(f_fnd "db.*")
+      mapfile -t ar_rpz < <(f_fnd "rpz.*")
+      printf -v miss_DBC "%s" "$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)"
+      printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)"
+
+      for DBC in ${ar_DBC[*]}; do [ -e "$DBC" ] || f_xcd 20 "$miss_DBC"; done
       for RPZ in ${ar_RPZ[*]}; do [ -e "$RPZ" ] || f_xcd 20 "$miss_RPZ"; done
-      [ "${#ar_db[@]}" -eq "${#ar_DB[@]}" ] || f_xcd 19 "$miss_DB"
-      [ "${#ar_rpz[@]}" -eq "${#ar_RPZ[@]}" ] || f_xcd 19 "$miss_RPZ"
+      [ "${ar_dbc[*]}" == "${ar_DBC[*]}" ] || f_xcd 19 "$miss_DBC"
+      [ "${ar_rpz[*]}" == "${ar_RPZ[*]}" ] || f_xcd 19 "$miss_RPZ"
 
       local _remdir="/etc/bind/zones-rpz/"
       local _ts; _ts=$(date "+%Y-%m-%d");
@@ -177,11 +182,11 @@ f_syn() {   # passwordless ssh for backUP oldDB and rsync newDB
 
       _ssh -o BatchMode=yes "$HOST" /bin/true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
       _ssh root@"$HOST" [ -d "$_remdir" ] || f_xcd 18 "$_remdir" "$HOST"
-      printf "\n${_inf} archiving oldDB, save in root@%s:%s\n" "$HOST" "$_ID"
+      printf "\n${_inf} archiving current RPZ-dBase, save in %s:%s\n" "$HOST" "$_ID"
       _ssh root@"$HOST" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
-      printf "${_inf} find and remove old RPZ dBase archive in %s:/home\n" "$HOST"
+      printf "${_inf} find and remove old RPZ-dBase archive in %s:/home\n" "$HOST"
       _ssh root@"$HOST" "find /home -regextype posix-extended -regex '^.*(tar.gz)$' -mmin +1430 -print0 | xargs -0 -r rm"
-      printf "${_inf} syncronizing the latest RPZ dBase to %s:%s\n" "$HOST" "$_remdir"
+      printf "${_inf} syncronizing the latest RPZ-dBase to %s:%s\n" "$HOST" "$_remdir"
       _rsync {rpz,db}.* root@"$HOST":"$_remdir"
 
       if [[ "$RNDC_RELOAD" == yes ]]; then
@@ -224,7 +229,7 @@ f_crawl() {   # verify "URLS" isUP
    local isDOWNCount=${#isDOWN[@]}
    if [ "$isDOWNCount" -eq 0 ]; then
       printf "%30s\n" " " | tr " " -
-      printf "%s\n" "All URLS of remote files isUP."
+      printf "%s\n" "All URLS of remote-files isUP."
    else
       printf "%84s\n" " " | tr " " -
       printf "\e[91m%s\e[0m\n" "${isDOWN[@]}"
@@ -294,3 +299,9 @@ f_rvu() {   # used by grab_http.sh
    printf "Nothing choosen, just stop right now\n"
    printf "You can still run:\n${_red}%s${_ncl}\nanytime after this\n" "$tools"
    }
+
+f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
+f_pms() { find . -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640 -exec chmod -R 640 {} \;; }
+f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -e "s/\.\///" | sort; }
+f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm;}
+f_cat() { find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort; }

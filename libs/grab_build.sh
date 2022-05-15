@@ -40,30 +40,30 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
 
 for y in ${ar_raw[*]}; do
    if ! [ -e "$y" ]; then
-      mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
-      _miss="$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      mapfile -t ar_RAW < <(f_fnd "txt.*")
+      _miss="$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | f_sed)"
       printf -v miss_v "%s" "$_miss"
       f_xcd 17 "$miss_v"
    fi
 done
 
-mapfile -t ar_RAW < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
-if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
+mapfile -t ar_RAW < <(f_fnd "txt.*")
+if [ "${ar_raw[*]}" == "${ar_RAW[*]}" ]; then
    unset -v ar_RAW
    printf "\n${_inf} splitting adult category to 750.000 lines/sub-category%s\n" ""
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp
-   mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
+   mapfile -t ar_txt < <(f_fnd "txt.*")
 
    if [ "${#ar_txt[@]}" -eq "${#ar_split[@]}" ]; then
-      ar_cat=()   # declare temporary files as array
-      ar_dom=()   #
+      ar_cat=()      # declare temporary files as array
+      ar_dom=()      #
       for Y in {0..11}; do
          ar_cat+=("${ar_txt[Y]/txt./}")
          ar_dom+=("${ar_txt[Y]/txt./db.}")
       done
 
-      find . -maxdepth 1 -type f -name "db.*" -print0 | xargs -0 -r rm
+      f_frm "db.*"   # remove previously db.* if any
       printf "${_inf} rewriting all domain lists to RPZ format :\n\e[96m%s\e[0m\n" "${ar_cat[*]}"
 
       for X in {0..11}; do
@@ -80,9 +80,13 @@ if [ "${#ar_raw[@]}" -eq "${#ar_RAW[@]}" ]; then
       printf "%41s : %10s entries" "TOTAL" "$ttl"
 
    elif [ "${#ar_txt[@]}" -gt "${#ar_split[@]}" ]; then
-      printf "${_err} database growth, can produce db.* files: %s exceeds from %s\n" \
+      printf "${_err} database grows than expected. can produce: %s db.* files exceeds from %s\n" \
          "${#ar_txt[@]}" "${#ar_split[@]}"
-      printf "${_hnt} please make adjustments to your rpz.* files and your bind9-server config%s\n"
+      printf "${_hnt} please make adjustments on your:%s\n" ""
+      printf "\t- $(basename "$0") at line %s\n" "$(grep -n "^ar_split" "$0" | cut -d':' -f1)"
+      printf "\t- grab_cereal.sh at line %s\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
+      printf "\t- zone-files [rpz.*]\n"
+      printf "\t- bind9-server configurations\n"
       exit 1
    else
       _add="database shrunk than expected. can only create"

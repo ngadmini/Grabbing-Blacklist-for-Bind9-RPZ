@@ -35,14 +35,14 @@ printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
 ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 for y in ${ar_raw[*]}; do
    if ! [ -e "$y" ]; then
-      mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
-      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+      mapfile -t ar_txt < <(f_fnd "txt.*")
+      printf -v miss_v "%s" "$(echo "${ar_raw[@]}" "${ar_txt[@]}" | f_sed)"
       f_xcd 17 "$miss_v"
    fi
 done
 
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
-if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
+mapfile -t ar_txt < <(f_fnd "txt.*")
+if [ "${ar_txt[*]}" == "${ar_raw[*]}" ]; then
    ar_cat=()    # declare temporary files as array
    ar_dmn=()    #
    ar_tmp=()    #
@@ -96,7 +96,7 @@ if [ "${#ar_txt[@]}" -eq "${#ar_raw[@]}" ]; then
    # based on ${ar_cat[5]}
    printf "eliminating duplicate entries based on \e[96m%s\e[0m\t\tdo nothing\n" "${ar_cat[5]^^}"
 else
-   _miss="$(echo "${ar_raw[@]}" "${ar_txt[@]}" | _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " ")"
+   _miss="$(echo "${ar_raw[@]}" "${ar_txt[@]}" | f_sed)"
    printf -v miss_v "%s" "$_miss"
    printf "\n${_err} due to: FOUND %s of %s domain list:\nNOT require: %s\n" \
       "${#ar_txt[@]}" "${#ar_raw[@]}" "$miss_v"
@@ -108,7 +108,7 @@ fi
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
 unset -v ar_txt
-mapfile -t ar_txt < <(find . -maxdepth 1 -type f -name "txt.*" | _sed -e "s/\.\///" | sort)
+mapfile -t ar_txt < <(f_fnd "txt.*")
 printf "\n${_inf} deduplicating domains (\e[96m%s CATEGORIES\e[0m) in summary:\n" "${#ar_txt[@]}"
 for P in {0..5}; do
    printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"
