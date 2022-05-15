@@ -29,7 +29,6 @@ printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
 
 f_pms   # start syncronizing
 f_syn
-f_uset
 
 endTime=$(date +%s)
 DIF=$((endTime - startTime))
