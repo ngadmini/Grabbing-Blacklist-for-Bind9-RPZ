@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TAGS;VERSION
+# TAGS
 #   grab_http.sh
 #   v6.4
 # AUTHOR
@@ -8,9 +8,9 @@
 #   see README and LICENSE
 
 umask 027
-SOURCED=false && [ "$0" = "${BASH_SOURCE[0]}" ] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
+if ! $SOURCED; then set -Eeuo pipefail; fi
 _DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 _BLD="$_DIR"/grab_build.sh
 _CRL="$_DIR"/grab_cereal.sh
@@ -18,12 +18,12 @@ _DPL="$_DIR"/grab_dedup.sh
 _REG="$_DIR"/grab_regex;
 _SCP="$_DIR"/grab_scp.sh
 _URL="$_DIR"/grab_urls
-startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 _ylw="\e[93m"
 _cyn="\e[96m"
 _ncl="\e[0m"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
+startTime=$(date +%s)
+start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n" ""
@@ -47,7 +47,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    # declare initial array (ar_cat) AND define some arrays based on its
    mapfile -t ar_cat < <(f_cat)
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   [ "${#ar_cat[@]}" -eq 6 ] || f_xcd 15
+   [[ ${#ar_cat[@]} -eq 6 ]] || f_xcd 15
    f_frm "txt.*"               # remove previously domain lists if any
    ar_dmn=()                   # ar_dmn as raw-domains container
    ar_tmp=()                   # ar_tmp as in-process-domains container (temporary)
@@ -60,6 +60,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 }
 
 # START <preparing>
+printf "\nstarting %s ... %s\n" "$(basename "$0")" "$start"
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null disable=SC2029
@@ -67,9 +68,8 @@ source "$_DIR"/grab_lib
 trap f_trap EXIT TERM
 trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 
-printf "\nstarting %s ... %s\n" "$(basename "$0")" "$start"
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
-[ ! "$UID" -eq 0 ] || f_xcd 10
+[[ ! $UID -eq 0 ]] || f_xcd 10
 f_ok
 
 printf "${_pre} %-63s" "check availability remote-host: $HOST"
@@ -101,19 +101,19 @@ f_ok
 
 printf "${_pre} %-63s" "check availability and property of script-pack on local-host"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
-   [ -e "$E" ] || f_xcd 17 "$E"      # check property of grab_build.sh, grab_cereal.sh,
-   [ -x "$E" ] || chmod +x "$E"      # grab_dedup.sh AND grab_scp.sh
+   [[ -e $E ]] || f_xcd 17 "$E"      # check property of grab_build.sh, grab_cereal.sh,
+   [[ -x $E ]] || chmod +x "$E"      # grab_dedup.sh AND grab_scp.sh
 done
 
-[ -e "$_URL" ] || f_xcd 17 "$_URL"   # check grap_urls property
+[[ -e $_URL ]] || f_xcd 17 "$_URL"   # check grap_urls property
 _sed -i "/^$/d" "$_URL"
 mapfile -t ar_url < "$_URL"
-[ "${#ar_url[@]}" -eq 22 ] || f_xcd 11 "$_URL"
+[[ ${#ar_url[@]} -eq 22 ]] || f_xcd 11 "$_URL"
 
-[ -e "$_REG" ] || f_xcd 17 "$_REG"   # check grab_reg property
+[[ -e $_REG ]] || f_xcd 17 "$_REG"   # check grab_reg property
 _sed -i "/^$/d" "$_REG"
 mapfile -t ar_reg < "$_REG"
-[ "${#ar_reg[@]}" -eq 3 ] || f_xcd 12 "$_REG"
+[[ ${#ar_reg[@]} -eq 3 ]] || f_xcd 12 "$_REG"
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n" ""
@@ -198,7 +198,7 @@ awk '!x[$0]++' "${ar_dmn[1]}" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_t
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
-[ "${#ar_txt[@]}" -eq 6 ] || f_xcd 15
+[[ ${#ar_txt[@]} -eq 6 ]] || f_xcd 15
 printf "\nacquired domains (${_ylw}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
 for J in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
@@ -212,7 +212,7 @@ printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-n
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for K in {0..5}; do
-   if [ "$K" -eq 1 ]; then   # turn ipv4 sub-nets into Classless Inter-Domain Routing (CIDR) blocks if any
+   if [[ $K -eq 1 ]]; then   # turn ipv4 sub-nets into Classless Inter-Domain Routing (CIDR) blocks if any
       while read -r; do      # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b=Net::Netmask->new($h); $b->storeNetblock();

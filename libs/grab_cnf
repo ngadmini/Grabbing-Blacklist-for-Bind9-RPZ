@@ -1,4 +1,4 @@
-# TAGS;VERSION
+# TAGS
 #   grab_cnf
 #   v6.4
 # AUTHOR
@@ -22,15 +22,16 @@ LC_NUMERIC=id_ID.UTF-8
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some server with low_RAM
-#   will out off memory. in this case you could 'reboot' it's.
+#   will out off memory. in this case you could 'reboot' its.
 # set 'no' to reboot bind9-server after syncronizing
 #   RNDC_RELOAD=no
-# OR set 'yes' to run <rndc reload> in bind9-server after syncronizing
+# OR set 'yes' to run <rndc reload> if you have sufficient RAM
 #   RNDC_RELOAD=yes
 RNDC_RELOAD=no
 
 # change Resource Record <CNAME> and Right Hand Value <.> if you have other policy
-# RR and RH Value, example:
+# RR and RH Value.
+# ie. change Right Hand Value with <block.example.net.> :
 #   RR_RH="CNAME block.example.net."
 # for more detail about rpz policy action, please see :
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
