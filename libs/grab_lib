@@ -303,5 +303,5 @@ f_rvu() {   # used by grab_http.sh
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
 f_pms() { find . -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640 -exec chmod -R 640 {} \;; }
 f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -e "s/\.\///" | sort; }
-f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm;}
+f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort; }
