@@ -29,8 +29,8 @@ LC_NUMERIC=id_ID.UTF-8
 #   RNDC_RELOAD=yes
 RNDC_RELOAD=no
 
-# change Resource Record <CNAME> and Right Hand Value <.> if you have other policy
-# RR and RH Value.
+# change Resource Record <CNAME> and Right Hand Value <.> if you have other
+# policy of RR and RH Value.
 # ie. change Right Hand Value with <block.example.net.> :
 #   RR_RH="CNAME block.example.net."
 # for more detail about rpz policy action, please see :

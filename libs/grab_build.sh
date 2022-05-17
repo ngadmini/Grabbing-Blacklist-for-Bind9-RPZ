@@ -7,23 +7,24 @@
 # TL;DR
 #   see README and LICENSE
 
+startTime=$SECONDS
 umask 027
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 
-_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _red="\e[91m"
 _ylw="\e[93m"
+_cyn="\e[96m"
 _ncl="\e[0m"
 _inf="${_ylw}[INFO]${_ncl}"
 _err="${_red}[ERROR]${_ncl}"
 _hnt="${_ylw}[HINTS]${_ncl}"
 _tsk="${_red}[2'th] TASKs:${_ncl}"
-startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
-printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
+# START <main script>
+printf "\n${_tsk}\nstarting %s at %s" "$(basename "$0")" "$(date)"
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
@@ -33,51 +34,51 @@ trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 # predefined array as a blanko to counter part 'others' array
-ar_raw=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
+ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 # split txt.adult into sub-categories to reduce server-load when initiating rndc
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 
-for y in ${ar_raw[*]}; do
+for y in ${ar_cat[*]}; do
    if ! [[ -e $y ]]; then
-      mapfile -t ar_RAW < <(f_fnd "txt.*")
-      _miss="$(echo "${ar_raw[@]}" "${ar_RAW[@]}" | f_sed)"
+      mapfile -t ar_CAT < <(f_fnd "txt.*")
+      _miss="$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
       printf -v miss_v "%s" "$_miss"
       f_xcd 17 "$miss_v"
    fi
 done
 
-mapfile -t ar_RAW < <(f_fnd "txt.*")
-if [[ ${ar_raw[*]} == "${ar_RAW[*]}" ]]; then
-   unset -v ar_RAW
-   printf "\n${_inf} splitting adult category to 750.000 lines/sub-category%s\n" ""
+mapfile -t ar_CAT < <(f_fnd "txt.*")
+if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
+   unset -v ar_CAT
+   printf "\n${_inf} splitting ${_cyn}%s${_ncl} to 750.000 lines/sub-category %s\n" "${ar_cat[0]}" ":"
    split -l 750000 txt.adult txt.adult
    mv txt.adult /tmp
    mapfile -t ar_txt < <(f_fnd "txt.*")
+   printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:0:7}"
 
    if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
-      ar_cat=()      # declare temporary files as array
-      ar_dom=()      #
+      unset ar_cat
+      ar_dom=()      # declare temporary files as array
       for Y in {0..11}; do
-         ar_cat+=("${ar_txt[Y]/txt./}")
          ar_dom+=("${ar_txt[Y]/txt./db.}")
       done
 
       f_frm "db.*"   # remove previously db.* if any
-      printf "${_inf} rewriting all domain lists to RPZ format :\n\e[96m%s\e[0m\n" "${ar_cat[*]}"
+      printf "${_inf} rewriting all CATEGORIES to RPZ format %s\n" ":"
 
       for X in {0..11}; do
          if [[ $X -eq 7 ]]; then
             # policy: NS-IP Trigger NXDOMAIN Action
-            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
+            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
          else
             # policy: QNAME Trigger NXDOMAIN Action
-            f_rpz "${ar_dom[X]}" "${ar_txt[X]}" "${ar_cat[X]}"
+            f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
          fi
       done
 
       printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
-      printf "%41s : %10s entries" "TOTAL" "$ttl"
+      printf "%45s : %10s entries" "TOTAL" "$ttl"
 
    elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
       printf "${_err} database grows than expected. can produce: %s db.* files exceeds from %s\n" \
@@ -95,12 +96,12 @@ if [[ ${ar_raw[*]} == "${ar_RAW[*]}" ]]; then
       exit 1
    fi
 else
-   printf "\n${_err} due to: FOUND %s domain list:\n\t%s\n" "${#ar_RAW[@]}" "${ar_RAW[*]}"
-   printf "${_hnt} expected %s domains list: \n\t%s\n" "${#ar_raw[@]}" "${ar_raw[*]}"
+   printf "\n${_err} due to: FOUND %s domain list:\n\t%s\n" "${#ar_CAT[@]}" "${ar_CAT[*]}"
+   printf "${_hnt} expected %s domains list: \n\t%s\n" "${#ar_cat[@]}" "${ar_cat[*]}"
    exit 1
 fi
 
-endTime=$(date +%s)
-DIF=$((endTime - startTime))
-f_sm11 "$((DIF/60))" "$((DIF%60))s"
+endTime=$SECONDS
+runTime=$((endTime - startTime))
+f_sm11 "$((runTime/60))m" "$((runTime%60))s"
 exit 0

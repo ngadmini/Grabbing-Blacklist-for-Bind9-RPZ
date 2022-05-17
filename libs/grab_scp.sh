@@ -7,18 +7,18 @@
 # TL;DR
 #   see README and LICENSE
 
+startTime=$SECONDS
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 
-_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _red="\e[91m"
 _ncl="\e[0m"
 _tsk="${_red}[4'th] TASKs:${_ncl}"
-startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d% TIME: %H:%M:%S")
 
-printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
+# START <main script>
+printf "\n${_tsk}\nstarting %s at %s" "$(basename "$0")" "$(date)"
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
@@ -28,9 +28,9 @@ trap 'printf "\ninterrupted\n"; f_trap; exit' INT
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 f_pms   # start syncronizing
-f_syn
+f_syn   #
 
-endTime=$(date +%s)
-DIF=$((endTime - startTime))
-f_sm11 "$((DIF/60))" "$((DIF%60))s"
+endTime=$SECONDS
+runTime=$((endTime - startTime))
+f_sm11 "$((runTime/60))m" "$((runTime%60))s"
 exit 0

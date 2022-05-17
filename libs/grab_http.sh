@@ -7,11 +7,13 @@
 # TL;DR
 #   see README and LICENSE
 
+startTime=$SECONDS
 umask 027
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
-_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+
+_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
 _CRL="$_DIR"/grab_cereal.sh
 _DPL="$_DIR"/grab_dedup.sh
@@ -22,8 +24,6 @@ _ylw="\e[93m"
 _cyn="\e[96m"
 _ncl="\e[0m"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
-startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n" ""
@@ -48,7 +48,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
    mapfile -t ar_cat < <(f_cat)
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    [[ ${#ar_cat[@]} -eq 6 ]] || f_xcd 15
-   f_frm "txt.*"               # remove previously domain lists if any
+   f_frm "txt.*"               # remove previously CATEGORY if any
    ar_dmn=()                   # ar_dmn as raw-domains container
    ar_tmp=()                   # ar_tmp as in-process-domains container (temporary)
    ar_txt=()                   # ar_txt as processed-domains container
@@ -60,7 +60,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 }
 
 # START <preparing>
-printf "\nstarting %s ... %s\n" "$(basename "$0")" "$start"
+printf "\nstarting %s at %s\n" "$(basename "$0")" "$(date)"
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null disable=SC2029
@@ -199,7 +199,7 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
 [[ ${#ar_txt[@]} -eq 6 ]] || f_xcd 15
-printf "\nacquired domains (${_ylw}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
+printf "\nacquired domains (${_cyn}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
 for J in {0..5}; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "$aqr_sum"
@@ -234,14 +234,14 @@ unset -v ar_txt
 mapfile -t ar_txt < <(f_fnd "txt.*")
 printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %s entries\n" "TOTAL" "$_tsp"
-endTime=$(date +%s)
-DIF=$((endTime - startTime))
-f_sm6 "$((DIF/60))" "$((DIF%60))s"
+endTime=$SECONDS
+runTime=$((endTime - startTime))
+f_sm6 "$((runTime/60))m" "$((runTime%60))s"
 f_uset
 
 # COMPLETED <new taks>
-f_sm0 "$HOST"      # offerring OPTIONs: continued to next stept OR stop here
-read -r RETVAL
+f_sm0 "$HOST"      # offerring OPTIONs:
+read -r RETVAL     # continued to next stept OR stop here
 case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;

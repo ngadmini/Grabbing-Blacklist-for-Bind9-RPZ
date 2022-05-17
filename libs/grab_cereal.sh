@@ -7,22 +7,23 @@
 # TL;DR
 #   see README and LICENSE
 
+startTime=$(date +%s%N)
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 
-_DIR=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
+_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _red="\e[91m"
 _ylw="\e[93m"
+_cyn="\e[96m"
 _ncl="\e[0m"
 _inf="${_ylw}[INFO]${_ncl}"
 _err="${_red}[ERROR]${_ncl}"
 _hnt="${_ylw}[HINTS]${_ncl}"
 _tsk="${_red}[3'th] TASKs:${_ncl}"
-startTime=$(date +%s)
-start=$(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")
 
-printf "\n${_tsk}\nstarting %s ... %s" "$(basename "$0")" "$start"
+# START <main script>
+printf "\n${_tsk}\nstarting %s at %s" "$(basename "$0")" "$(date)"
 cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
@@ -40,7 +41,7 @@ mapfile -t ar_zon < <(f_fnd "rpz.*")
 printf "\n${_inf} incrementing serial of zone-files (rpz.* files)%s\n" ""
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
-      printf "${_inf} FOUND:\t%s complete\n" "${#ar_zon[@]}"
+      printf "${_inf} FOUND:\t%s zone-files (complete)\n" "${#ar_zon[@]}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
          SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d" " -f1)
@@ -48,7 +49,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
             newSERIAL="${DATE}00"
          else
             SERIAL_date=${SERIAL::-2}                   # slice to [20190104]
-            if [[ $DATE -eq $SERIAL_date ]]; then   # same day
+            if [[ $DATE -eq $SERIAL_date ]]; then       # same day
                SERIAL_num=${SERIAL: -2}                 # give [00-99] times to change
                SERIAL_num=$((10#$SERIAL_num + 1))       # force decimal increment
                newSERIAL="${DATE}$(printf "%02d" $SERIAL_num)"
@@ -83,7 +84,7 @@ else
    f_cer "${ar_miss[@]}"
 fi
 
-endTime=$(date +%s)
-DIF=$((endTime - startTime))
-f_sm11 "$((DIF/60))" "$((DIF%60))"
+endTime=$(date +%s%N)
+runTime=$(($((endTime - startTime))/1000000))
+printf "\n${_inf} completed ${_cyn}IN %.2f ms${_ncl}\n" "$runTime";
 exit 0

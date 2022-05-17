@@ -47,7 +47,7 @@ f_tmp() {   # remove temporary files, directories && arrays defined during the e
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
-f_uset() { unset -v ar_{cat,db,dbc,DBC,dom,dmn,miss,raw,RAW,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
+f_uset() { unset -v ar_{cat,CAT,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; }
 
 f_xcd() {   # exit code {7..20}
@@ -84,10 +84,10 @@ f_xcd() {   # exit code {7..20}
    done
    }
 
-f_sm0() {   # getting options display messages
+f_sm0() {   # display messages when getting options
    printf "\n${_cyn}CHOOSE one of the following options :${_ncl}%s\n" ""
-   printf "%4s. eliminating duplicate entries between domain lists\n" "1"
-   printf "%4s. option [1] and rewriting all domain lists to RPZ format [db.* files]\n" "2"
+   printf "%4s. eliminating duplicate entries between CATEGORY\n" "1"
+   printf "%4s. option [1] and rewriting all CATEGORIES to RPZ format [db.* files]\n" "2"
    printf "%4s. options [1,2] and incrementing serial at zone-files [rpz.*]\n" "3"
    printf "%4s. options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
    printf "%4s. quit\n" "*"
@@ -96,7 +96,7 @@ f_sm0() {   # getting options display messages
 
 f_sm1() {   # display messages when 1'st option choosen
    printf "\n${_red}[%s'st] TASK options choosen${_ncl}\n" "$RETVAL"
-   printf "${_cyn}CONTINUED to :${_ncl} ~eliminating duplicate entries between domain lists%s\n" ""
+   printf "${_cyn}CONTINUED to :${_ncl} ~eliminating duplicate entries between CATEGORY%s\n" ""
    printf "${_cyn}Performing tasks based on %s'st options ...${_ncl}\n" "$RETVAL"
    }
 
@@ -122,15 +122,15 @@ f_sm4() {   # display messages when 4'th option choosen
    printf "\n${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"
    }
 
-f_sm5() {   # nested in f_sm2 ... f_sm4
+f_sm5() {   # nested in f_sm2 to f_sm4
    printf "\n${_red}[%s'th] TASK options choosen${_ncl}\n" "$RETVAL"
-   printf "${_cyn}CONTINUED to :${_ncl} ~eliminating duplicate entries between domain lists%s\n" ""
-   printf "%25s all domain lists to RPZ format [db.* files]\n" "~rewriting"
+   printf "${_cyn}CONTINUED to :${_ncl} ~eliminating duplicate entries between CATEGORY%s\n" ""
+   printf "%25s all CATEGORIES to RPZ format [db.* files]\n" "~rewriting"
    }
 
 f_sm6() {   # display FINISH messages
    f_sm11 "$@"
-   printf "${_wrn} there are still remaining duplicate entries between domain lists.%s\n" ""
+   printf "${_wrn} there are still remaining duplicate entries between %s.\n" "CATEGORIES"
    printf "%17s continue to next TASKs.\n" "consider"
    }
 
@@ -138,7 +138,7 @@ f_sm6() {   # display FINISH messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nprocessing ${_cyn}%s CATEGORY${_ncl} with (%d) additional remote-files\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
-f_sm10() { printf "\n${_tks} based on %s'%s options: \e[32mDONE\e[0m\n" "$RETVAL" "$1"; }
+f_sm10() { printf "\n${_tks} based on %s'%s options: ${_grn}%sDONE${_ncl}\n" "$RETVAL" "$1"; }
 f_sm11() { printf "\n${_inf} completed ${_cyn}IN %s:%s${_ncl}\n" "$1" "$2"; }
 f_ok() { printf "${_grn}%s${_ncl}\n" "isOK"; }         # display isOK
 f_do() { printf "${_grn}%s${_ncl}\n" "DONE"; }         # display DONE
@@ -218,10 +218,10 @@ f_crawl() {   # verify "URLS" isUP
       local statusCode; statusCode=$(curl -C - -ks -o /dev/null -I -w "%{http_code}" "$line")
 
       if [[ $statusCode != 2* ]]; then
-         printf "\e[91m%s\e[0m\n" "Code: $statusCode"
+         printf "${_red}%s${_ncl}\n" "Code: $statusCode"
          isDOWN+=("[Respon Code:${statusCode}] ${line}")
       else
-         printf "\e[32m%s\e[0m\n" "isUP"
+         printf "${_grn}%s${_ncl}\n" "isUP"
       fi
 
    done < "$1"
@@ -232,7 +232,7 @@ f_crawl() {   # verify "URLS" isUP
       printf "%s\n" "All URLS of remote-files isUP."
    else
       printf "%84s\n" " " | tr " " -
-      printf "\e[91m%s\e[0m\n" "${isDOWN[@]}"
+      printf "${_red}%s${_ncl}\n" "${isDOWN[@]}"
       f_xcd 13
    fi
    }
@@ -245,28 +245,30 @@ f_ddup() {  # used by grab_dedup.sh
 
 f_g4b() {   # nested in f_rpz and f_ip4
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
-   _sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag\n;" "$1"
-   printf -v acq_al "%'d" "$(wc -l < "$1")"; printf "%10s entries\n" "$acq_al"
+   _sed -i -e "1i ; generate at \[$(date)\] by $_foo $_tag\n;" "$1"
+   printf -v acq_al "%'d" "$(wc -l < "$1")"
+   printf "%10s entries\n" "$acq_al"
    }
 
 f_g4c() {   # used by grab_cereal.sh
    local _tag; _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
    if [[ $(grep -n "^; generate at" "$1" | cut -d':' -f1) = 1 ]]; then
-      _sed -i "1s/^.*$/; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag/" "$1"
+      _sed -i "1s/^.*$/; generate at \[$(date)\] by $_foo $_tag/" "$1"
    else
-      _sed -i -e "1i ; generate at \[$(date -u "+%d-%b-%y %T") UTC\] by $_foo $_tag" "$1"
+      _sed -i -e "1i ; generate at \[$(date)\] by $_foo $_tag" "$1"
    fi
    }
 
 f_rpz() {   # used by grab_build.sh
-   printf "%13s %-27s : " "rewriting" "${3^^} to $1"
+   printf "%13s %-31s : " "rewriting" "$2 to $1"
    awk -v a="$RR_RH" '{print $0" IN "a"\n""*."$0" IN " a}' "$2" >> "$1"
    f_g4b "$@"
    }
 
 f_ip4() {   # used by grab_build.sh
-   printf "%13s %-27s : " "rewriting" "${3^^} to $1"
-   _sed "s/\//\./" "$2" | awk -v a="$RR_RH" -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" "a}' >> "$1"
+   printf "%13s %-31s : " "rewriting" "$2 to $1"
+   _sed "s/\//\./" "$2" |\
+      awk -v a="$RR_RH" -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" "a}' >> "$1"
    f_g4b "$@"
    }
 
