@@ -25,7 +25,7 @@ _ylw="\e[93m"
 _cyn="\e[96m"
 _ncl="\e[0m"
 _inf="${_ylw}[INFO]${_ncl}"
-_err="${_red}[ERROR]${_ncl}"
+_err="${_red}[FAIL]${_ncl}"
 _wrn="${_grn}WARNING:${_ncl}"
 _tks="${_red}TASKs${_ncl}"
 
@@ -48,12 +48,12 @@ f_tmp() {   # remove temporary files, directories && arrays defined during the e
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
 f_uset() { unset -v ar_{cat,CAT,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
-f_trap() { printf "\n"; f_tmp; f_uset; }
+f_trap() { printf "\n"; f_tmp; f_uset; exit 255; }
 
 f_xcd() {   # exit code {7..20}
    for EC in $1; do
-      local _xcd; _xcd=$(printf "${_err} $_foo: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
-      local _xce; _xce=$(printf "${_err} $_fuu: at line ${BASH_LINENO[0]}. Exit code: %s" "$EC")
+      local _xcd; _xcd=$(printf "${_err} $_foo: at line ${BASH_LINENO[0]}. exit code %s" "$EC")
+      local _xce; _xce=$(printf "${_err} $_fuu: at line ${BASH_LINENO[0]}. exit code %s" "$EC")
       case $EC in
           7) printf "\n%s\n%s\n" "$_xcd" "require passwordless ssh to remote host: '$2'"; return 1;;
           8) printf "\n%s\n%s\n" "$_xcd" "require '$2' but it's not installed"; return 1;;

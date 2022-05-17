@@ -65,8 +65,7 @@ cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null disable=SC2029
 source "$_DIR"/grab_lib
-trap f_trap EXIT TERM
-trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
 
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10

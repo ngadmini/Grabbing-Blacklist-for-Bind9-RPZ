@@ -23,8 +23,7 @@ cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
-trap f_trap EXIT TERM
-trap 'printf "\ninterrupted\n"; f_trap; exit' INT
+trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 f_pms   # start syncronizing
