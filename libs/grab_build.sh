@@ -58,7 +58,7 @@ if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
    printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:0:7}"
 
    if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
-      unset ar_cat
+      unset -v ar_cat
       ar_dom=()      # declare temporary files as array
       for Y in {0..11}; do
          ar_dom+=("${ar_txt[Y]/txt./db.}")

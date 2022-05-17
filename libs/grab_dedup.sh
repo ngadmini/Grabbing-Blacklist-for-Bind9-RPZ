@@ -44,9 +44,9 @@ done
 
 mapfile -t ar_txt < <(f_fnd "txt.*")
 if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
-   ar_cat=()    # declare temporary files as array
-   ar_dmn=()    #
-   ar_tmp=()    #
+   ar_cat=()               # declare temporary files as array
+   ar_dmn=()               #
+   ar_tmp=()               #
    for B in {0..5}; do
       ar_cat+=("${ar_txt[B]/txt./}")
       ar_dmn+=(dmn."${ar_txt[B]/txt./}")
@@ -65,7 +65,7 @@ if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
       f_do
    done
 
-   # based on ${ar_cat[1]}
+                           # based on ${ar_cat[1]}
    printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[1]^^}"
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
@@ -94,7 +94,7 @@ if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
    cp "${ar_dmn[5]}" "${ar_txt[5]}"
    f_do
 
-   # based on ${ar_cat[5]}
+                           # based on ${ar_cat[5]}
    printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[5]^^}"
 
 else
