@@ -59,21 +59,19 @@ if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
 
    if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
       unset -v ar_cat
-      ar_dom=()      # declare temporary files as array
+      ar_dom=()                                   # declare temporary files as array
       for Y in {0..11}; do
          ar_dom+=("${ar_txt[Y]/txt./db.}")
       done
 
-      f_frm "db.*"   # remove previously db.* if any
+      f_frm "db.*"                                # remove previously db.* if any
       printf "${_inf} rewriting all CATEGORIES to RPZ format %s\n" ":"
 
       for X in {0..11}; do
          if [[ $X -eq 7 ]]; then
-            # policy: NS-IP Trigger NXDOMAIN Action
-            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
+            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"   # policy: NS-IP Trigger NXDOMAIN Action
          else
-            # policy: QNAME Trigger NXDOMAIN Action
-            f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
+            f_rpz "${ar_dom[X]}" "${ar_txt[X]}"   # policy: QNAME Trigger NXDOMAIN Action
          fi
       done
 
