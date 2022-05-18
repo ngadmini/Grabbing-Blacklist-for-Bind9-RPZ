@@ -26,13 +26,14 @@ _grn="\e[92m"
 _ylw="\e[93m"
 _cyn="\e[96m"
 _ncl="\e[0m"
-_inf="${_ylw}[INFO]${_ncl}"
-_err="${_red}[FAIL]${_ncl}"
-_wrn="${_grn}WARNING:${_ncl}"
-_tks="${_red}TASKs${_ncl}"
+_ccl="${_grn}'Ctrl C'${_ncl}"
 _cnt="${_cyn}CONTINUED to :${_ncl}"
+_err="${_red}[FAIL]${_ncl}"
+_inf="${_ylw}[INFO]${_ncl}"
+_rnr="${_cyn}'rndc reload'${_ncl}"
 _shd="${_grn}'shutdown -c'${_ncl}"
-_rnr="{_cyn}rndc reload${_ncl}"
+_tks="${_red}TASKs${_ncl}"
+_wrn="${_grn}WARNING:${_ncl}"
 
 readonly CONFIG="grab_cnf"
 test -r "${CONFIG}" || chmod 644 "${CONFIG}"
@@ -92,11 +93,19 @@ f_xcd() {   # exit code {7..20}
 
 f_sm0() {   # display messages when getting options
    printf "\n${_cyn}CHOOSE one of the following options :${_ncl}%s\n" ""
-   printf "%4s. eliminating duplicate entries between CATEGORY\n" "1"
-   printf "%4s. option [1] and rewriting all CATEGORIES to RPZ format [db.* files]\n" "2"
-   printf "%4s. options [1,2] and incrementing serial at zone-files [rpz.*]\n" "3"
-   printf "%4s. options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
-   printf "%4s. quit\n" "*"
+   printf "%4s) eliminating duplicate entries between CATEGORY\n" "1"
+   printf "%4s) option [1] and rewriting all CATEGORIES to RPZ format [db.* files]\n" "2"
+   printf "%4s) options [1,2] and incrementing serial at zone-files [rpz.*]\n" "3"
+   printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
+
+      if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
+         printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
+         printf "%18s ${_shd} at HOST: %s to abort\n" "use" "$HOST"
+      else
+         printf "%6salso,${_rnr} will be executed too\n" " "
+      fi
+
+   printf "%4s) quit\n" "*"
    printf "ENTER: ${_cyn}[1|2|3|4|*]${_ncl}\t\t%s" ""
    }
 
@@ -123,10 +132,10 @@ f_sm4() {   # display messages when 4'th option chosen
    printf "%28s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
 
    if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
-       printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
-       printf "%18s ${_shd} at HOST: %s to abort" "use" "$HOST"
+      printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
+      printf "%18s ${_shd} at HOST: %s to abort" "use" "$HOST"
    else
-       printf "execute ${_rnr} at BIND9-server:%s\n" "$HOST"
+      printf "%6s${_wrn} ${_rnr} will be executed too. press ${_ccl} to abort" " "
    fi
 
    printf "\n${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"

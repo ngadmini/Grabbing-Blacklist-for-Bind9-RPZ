@@ -67,23 +67,19 @@ source "$_DIR"/grab_lib
 f_trap                 # cleanUP on exit, interrupt & terminate
 
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
-[[ ! $UID -eq 0 ]] || f_xcd 10
-f_ok
+[[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 
 printf "${_pre} %-63s" "check availability remote-host: $HOST"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    f_ok
-
    printf "${_pre} %-63s" "check remote-host: $HOST for passwordless ssh"
    _ssh -o BatchMode=yes "$HOST" true >> /dev/null 2>&1 || f_xcd 7 "$HOST"
    f_ok
-
    printf "${_pre} %-63s" "check required packages on remote-host: $HOST"
    for C in {rsync,pigz}; do
       _ssh root@"$HOST" "hash $C >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$C"
    done
    f_ok
-
 else
    f_xcd 16 "$HOST"
 fi
@@ -109,15 +105,12 @@ for e in {"$_REG","$_URL"}; do       # check grap_urls AND grap_reg property
    _sed -i "/^$/d" "$e"
 done
 
-mapfile -t ar_url < "$_URL"
-mapfile -t ar_reg < "$_REG"
-[[ ${#ar_url[@]} -eq 22 ]] || f_xcd 11 "$_URL"
-[[ ${#ar_reg[@]} -eq 3 ]] || f_xcd 12 "$_REG"
+mapfile -t ar_url < "$_URL"; [[ ${#ar_url[@]} -eq 22 ]] || f_xcd 11 "$_URL"
+mapfile -t ar_reg < "$_REG"; [[ ${#ar_reg[@]} -eq 3 ]] || f_xcd 12 "$_REG"
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n" ""
-ar_sho=()                      # check urls isUP or isDOWN
-f_crawl "$_URL" || true        #
+ar_sho=(); f_crawl "$_URL" || true     # check remote-urls isUP or isDOWN
 
 # <main script>
 f_grab                         # grabbing categories

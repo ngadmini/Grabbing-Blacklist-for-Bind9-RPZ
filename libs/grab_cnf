@@ -27,7 +27,7 @@ LC_NUMERIC=id_ID.UTF-8
 #   RNDC_RELOAD=no
 # OR set 'yes' to run <rndc reload> if you have sufficient RAM
 #   RNDC_RELOAD=yes
-RNDC_RELOAD=no
+RNDC_RELOAD=yes
 
 # change Resource Record <CNAME> and Right Hand Value <.> if you have other
 # policy of RR and RH Value.
