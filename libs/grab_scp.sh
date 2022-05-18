@@ -11,7 +11,7 @@ startTime=$SECONDS
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _red="\e[91m"
 _ncl="\e[0m"
@@ -23,13 +23,12 @@ cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
-trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
+f_trap                      # cleanUP on exit, interrupt & terminate
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 f_pms   # start syncronizing
 f_syn   #
 
-endTime=$SECONDS
-runTime=$((endTime - startTime))
+runTime=$((SECONDS - startTime))
 f_sm11 "$((runTime/60))m" "$((runTime%60))s"
 exit 0

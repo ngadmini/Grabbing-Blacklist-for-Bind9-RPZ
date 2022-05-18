@@ -11,7 +11,7 @@ startTime=$SECONDS
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _red="\e[91m"
 _ylw="\e[93m"
@@ -28,7 +28,7 @@ cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
-trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
+f_trap                      # cleanUP on exit, interrupt & terminate
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 # predefined array as a blanko to counter part 'others' array
@@ -116,7 +116,6 @@ done
 printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries" "TOTAL" "$dpl_ttl"
 
-endTime=$SECONDS
-runTime=$((endTime - startTime))
+runTime=$((SECONDS - startTime))
 f_sm11 "$((runTime/60))m" "$((runTime%60))s"
 exit 0

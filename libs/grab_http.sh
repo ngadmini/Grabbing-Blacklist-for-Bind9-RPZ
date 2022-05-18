@@ -11,7 +11,7 @@ startTime=$SECONDS
 umask 027
 set -Eeuo pipefail
 
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
 _CRL="$_DIR"/grab_cereal.sh
@@ -64,7 +64,7 @@ cd "$_DIR"
 test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null disable=SC2029
 source "$_DIR"/grab_lib
-trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
+f_trap                 # cleanUP on exit, interrupt & terminate
 
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10
@@ -233,10 +233,9 @@ unset -v ar_txt
 mapfile -t ar_txt < <(f_fnd "txt.*")
 printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %s entries\n" "TOTAL" "$_tsp"
-endTime=$SECONDS
-runTime=$((endTime - startTime))
-f_sm6 "$((runTime/60))m" "$((runTime%60))s"
 f_uset
+runTime=$((SECONDS - startTime))
+f_sm6 "$((runTime/60))m" "$((runTime%60))s"
 
 # COMPLETED <new taks>
 f_sm0 "$HOST"      # offerring OPTIONs:
