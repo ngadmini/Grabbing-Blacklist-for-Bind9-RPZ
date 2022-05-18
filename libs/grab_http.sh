@@ -67,7 +67,8 @@ source "$_DIR"/grab_lib
 trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
 
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
-[[ ! $UID -eq 0 ]] && f_ok || f_xcd 10
+[[ ! $UID -eq 0 ]] || f_xcd 10
+f_ok
 
 printf "${_pre} %-63s" "check availability remote-host: $HOST"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
