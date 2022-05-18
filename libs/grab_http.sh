@@ -10,8 +10,7 @@
 startTime=$SECONDS
 umask 027
 PATH=/bin:/usr/bin:/usr/local/bin:$PATH
-SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
+set -Eeuo pipefail
 
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
@@ -89,7 +88,7 @@ else
    f_xcd 16 "$HOST"
 fi
 
-printf "${_pre} %-63s" "check required packages on local-host"
+printf "${_pre} %-63s" "check required packages on local-host: $(hostname)"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then
@@ -98,20 +97,21 @@ for D in $pkg; do
 done
 f_ok
 
-printf "${_pre} %-63s" "check availability and property of script-pack on local-host"
+printf "${_pre} %-63s" "check properties of script-pack on local-host: $(hostname)"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [[ -e $E ]] || f_xcd 17 "$E"      # check property of grab_build.sh, grab_cereal.sh,
    [[ -x $E ]] || chmod +x "$E"      # grab_dedup.sh AND grab_scp.sh
 done
 
-[[ -e $_URL ]] || f_xcd 17 "$_URL"   # check grap_urls property
-_sed -i "/^$/d" "$_URL"
-mapfile -t ar_url < "$_URL"
-[[ ${#ar_url[@]} -eq 22 ]] || f_xcd 11 "$_URL"
+for e in {"$_REG","$_URL"}; do
+   [[ -e $e ]] || f_xcd 17 "$e"      # check grap_urls property
+   [[ -r $e ]] || chmod 644 "$e"
+   _sed -i "/^$/d" "$e"
+done
 
-[[ -e $_REG ]] || f_xcd 17 "$_REG"   # check grab_reg property
-_sed -i "/^$/d" "$_REG"
+mapfile -t ar_url < "$_URL"
 mapfile -t ar_reg < "$_REG"
+[[ ${#ar_url[@]} -eq 22 ]] || f_xcd 11 "$_URL"
 [[ ${#ar_reg[@]} -eq 3 ]] || f_xcd 12 "$_REG"
 f_ok
 
