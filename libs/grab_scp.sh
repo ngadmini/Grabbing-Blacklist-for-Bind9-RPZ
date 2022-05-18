@@ -8,10 +8,10 @@
 #   see README and LICENSE
 
 startTime=$SECONDS
-PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! $SOURCED; then set -Eeuo pipefail; fi
 
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _red="\e[91m"
 _ncl="\e[0m"

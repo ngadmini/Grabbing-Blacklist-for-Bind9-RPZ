@@ -10,6 +10,7 @@
 set -a
 CI="${CI:=false}"
 [[ $CI == "false" ]] || CI='true'
+
 shopt -s expand_aliases
 alias _sort="LC_ALL=C sort --buffer-size=80% --parallel=3"
 alias _sed="LC_ALL=C sed"
@@ -28,6 +29,7 @@ _inf="${_ylw}[INFO]${_ncl}"
 _err="${_red}[FAIL]${_ncl}"
 _wrn="${_grn}WARNING:${_ncl}"
 _tks="${_red}TASKs${_ncl}"
+_cnt="${_cyn}CONTINUED to :${_ncl}"
 
 readonly CONFIG="grab_cnf"
 test -r "${CONFIG}" || chmod 644 "${CONFIG}"
@@ -47,6 +49,7 @@ f_tmp() {   # remove temporary files, directories && arrays defined during the e
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
    }
+
 f_uset() { unset -v ar_{cat,CAT,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sho,split,tmp,txt,url,zon} isDOWN; }
 f_trap() { printf "\n"; f_tmp; f_uset; exit 255; }
 
@@ -96,7 +99,7 @@ f_sm0() {   # display messages when getting options
 
 f_sm1() {   # display messages when 1'st option choosen
    printf "\n${_red}[%s'st] TASK options choosen${_ncl}\n" "$RETVAL"
-   printf "${_cyn}CONTINUED to :${_ncl} ~eliminating duplicate entries between CATEGORY%s\n" ""
+   printf "${_cnt} ~eliminating duplicate entries between CATEGORY%s\n" ""
    printf "${_cyn}Performing tasks based on %s'st options ...${_ncl}\n" "$RETVAL"
    }
 
@@ -115,16 +118,18 @@ f_sm4() {   # display messages when 4'th option choosen
    f_sm5
    printf "%28s serial zone-files [rpz.*]\n" "~incrementing"
    printf "%28s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
+
    if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
        printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
        printf "%18s ${_grn}'shutdown -c'${_ncl} at HOST: %s to abort" "use" "$HOST"
    fi
+
    printf "\n${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"
    }
 
 f_sm5() {   # nested in f_sm2 to f_sm4
    printf "\n${_red}[%s'th] TASK options choosen${_ncl}\n" "$RETVAL"
-   printf "${_cyn}CONTINUED to :${_ncl} ~eliminating duplicate entries between CATEGORY%s\n" ""
+   printf "${_cnt} ~eliminating duplicate entries between CATEGORY%s\n" ""
    printf "%25s all CATEGORIES to RPZ format [db.* files]\n" "~rewriting"
    }
 
@@ -146,7 +151,8 @@ f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }       # grabbing remote-files
 
 # fixing false positive and bad entry
 f_fix() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
-f_ip() { # capture and throw ip-address entry to ipv4 CATEGORY, save into sub-net
+
+f_ip() { # capture and throw ip-address entry to ipv4 CATEGORY. save its into sub-net
    _grep -P "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$" \
       "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2" || true
    _sed -i -E "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"

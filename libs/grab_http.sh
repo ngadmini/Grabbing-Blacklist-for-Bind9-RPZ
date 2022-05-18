@@ -9,9 +9,9 @@
 
 startTime=$SECONDS
 umask 027
-PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 set -Eeuo pipefail
 
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
 _CRL="$_DIR"/grab_cereal.sh
@@ -67,8 +67,7 @@ source "$_DIR"/grab_lib
 trap f_trap 0 1 2 3 6 15   # exit, clean tidy-up, interrupt, quit, abort and terminate
 
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
-[[ ! $UID -eq 0 ]] || f_xcd 10
-f_ok
+[[ ! $UID -eq 0 ]] && f_ok || f_xcd 10
 
 printf "${_pre} %-63s" "check availability remote-host: $HOST"
 if ping -w 1 "$HOST" >> /dev/null 2>&1; then
@@ -103,8 +102,8 @@ for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [[ -x $E ]] || chmod +x "$E"      # grab_dedup.sh AND grab_scp.sh
 done
 
-for e in {"$_REG","$_URL"}; do
-   [[ -e $e ]] || f_xcd 17 "$e"      # check grap_urls property
+for e in {"$_REG","$_URL"}; do       # check grap_urls AND grap_reg property
+   [[ -e $e ]] || f_xcd 17 "$e"
    [[ -r $e ]] || chmod 644 "$e"
    _sed -i "/^$/d" "$e"
 done
