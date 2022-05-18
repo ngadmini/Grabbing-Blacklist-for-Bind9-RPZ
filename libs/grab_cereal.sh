@@ -85,5 +85,5 @@ fi
 
 endTime=$(date +%s%N)
 runTime=$(($((endTime - startTime))/1000000))
-printf "\n${_inf} completed ${_cyn}IN %.2f ms${_ncl}\n" "$runTime";
+printf "\n${_inf} completed ${_cyn}IN %.2f ms${_ncl}\n" "$runTime"
 exit 0
