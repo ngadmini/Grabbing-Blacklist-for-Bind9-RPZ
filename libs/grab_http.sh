@@ -24,7 +24,7 @@ _cyn='\e[96m'
 _ncl='\e[0m'
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
 
-f_grab() {   # initialize CATEGORY, many categories are obtained but it's the main one is adult
+f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n" ""
    f_tmp                       # remove temporary dir-file if any
 
@@ -59,7 +59,6 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but it's the ma
 }
 
 # START <preparing>
-#printf "\nstarting %s at %s\n" "$(basename "$0")" "$(date)"
 printf "\nstarting %s at %s\n" "${0##*/}" "$(date)"
 cd "$_DIR" || exit
 [[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib

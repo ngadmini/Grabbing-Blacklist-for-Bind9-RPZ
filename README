@@ -66,8 +66,8 @@ prerequisites:
       #   do not leave one of the following variables undefined,
       #   script will be terminating with error
       HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
-      RNDC_RELOAD=no             # set 'yes' to run <rndc reload>  or 'no' to <reboot>
-                                 # Remote Name Daemon Control (rndc)
+      RNDC_RELOAD=yes            # Remote Name Daemon Control (rndc)
+                                 # set 'yes' to run <rndc reload>  or 'no' to <reboot>
       LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
       RR_RH="CNAME ."            # change Resource Record <CNAME> and Right Hand Value <.>, if you have other policy
                                  # RR and RH Value, example:
