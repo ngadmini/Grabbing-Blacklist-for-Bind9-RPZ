@@ -107,12 +107,12 @@ f_sm0() {   # display messages when getting options
    printf "%4s) options [1,2] and incrementing serial at zone-files [rpz.*]\n" "3"
    printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
 
-      if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
-         printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
-         printf "%18s ${_shd} at HOST: %s to abort\n" "use" "$HOST"
-      else
-         printf "%6salso,${_rnr} will be executed too\n" " "
-      fi
+   if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
+      printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
+      printf "%18s ${_shd} at HOST: %s to abort\n" "use" "$HOST"
+   else
+      printf "%6salso,${_rnr} will be executed too\n" " "
+   fi
 
    printf "%4s) quit\n" "*"
    printf "ENTER: ${_cyn}[1|2|3|4|*]${_ncl}\t\t%s" ""
