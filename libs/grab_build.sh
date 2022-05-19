@@ -10,23 +10,23 @@
 startTime=$SECONDS
 umask 027
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
+[[ ! $SOURCED ]] || set -Euo pipefail
 
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-_red="\e[91m"
-_ylw="\e[93m"
-_cyn="\e[96m"
-_ncl="\e[0m"
+_red='\e[91m'
+_ylw='\e[93m'
+_cyn='\e[96m'
+_ncl='\e[0m'
 _inf="${_ylw}[INFO]${_ncl}"
 _err="${_red}[FAIL]${_ncl}"
 _hnt="${_ylw}[HINTS]${_ncl}"
 _tsk="${_red}[2'th] TASKs:${_ncl}"
 
 # START <main script>
-printf "\n${_tsk}\nstarting %s at %s" "$(basename "$0")" "$(date)"
-cd "$_DIR"
-test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
+printf "\n${_tsk}\nstarting %s at %s" "${0##*/}" "$(date)"
+cd "$_DIR" || exit
+[[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
 f_trap                      # cleanUP on exit, interrupt & terminate
@@ -41,8 +41,7 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
 for y in ${ar_cat[*]}; do
    if ! [[ -e $y ]]; then
       mapfile -t ar_CAT < <(f_fnd "txt.*")
-      _miss="$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
-      printf -v miss_v "%s" "$_miss"
+      printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
       f_xcd 17 "$miss_v"
    fi
 done

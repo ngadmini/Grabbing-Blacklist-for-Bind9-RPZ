@@ -9,23 +9,23 @@
 
 startTime=$SECONDS
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
+[[ ! $SOURCED ]] || set -Euo pipefail
 
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-_red="\e[91m"
-_ylw="\e[93m"
-_cyn="\e[96m"
-_ncl="\e[0m"
+_red='\e[91m'
+_ylw='\e[93m'
+_cyn='\e[96m'
+_ncl='\e[0m'
 _inf="${_ylw}[INFO]${_ncl}"
 _err="${_red}[FAIL]${_ncl}"
 _hnt="${_ylw}[HINTS]${_ncl}"
 _tsk="${_red}[1'st] TASKs:${_ncl}"
 
 # START <main script>
-printf "\n${_tsk}\nstarting %s at %s" "$(basename "$0")" "$(date)"
-cd "$_DIR"
-test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
+printf "\n${_tsk}\nstarting %s at %s" "${0##*/}" "$(date)"
+cd "$_DIR" || exit
+[[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
 f_trap                      # cleanUP on exit, interrupt & terminate
@@ -97,8 +97,7 @@ if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
    printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[5]^^}"
 
 else
-   _miss="$(echo "${ar_cat[@]}" "${ar_txt[@]}" | f_sed)"
-   printf -v miss_v "%s" "$_miss"
+   printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_txt[@]}" | f_sed)"
    printf "\n${_err} due to: FOUND %s of %s domain list:\nNOT require: %s\n" \
       "${#ar_txt[@]}" "${#ar_cat[@]}" "$miss_v"
    printf "${_hnt} remove or move to other direcory: %s" "$miss_v"

@@ -9,23 +9,23 @@
 
 startTime=$(date +%s%N)
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! $SOURCED; then set -Eeuo pipefail; fi
+[[ ! $SOURCED ]] || set -Euo pipefail
 
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-_red="\e[91m"
-_ylw="\e[93m"
-_cyn="\e[96m"
-_ncl="\e[0m"
+_red='\e[91m'
+_ylw='\e[93m'
+_cyn='\e[96m'
+_ncl='\e[0m'
 _inf="${_ylw}[INFO]${_ncl}"
 _err="${_red}[FAIL]${_ncl}"
 _hnt="${_ylw}[HINTS]${_ncl}"
 _tsk="${_red}[3'th] TASKs:${_ncl}"
 
 # START <main script>
-printf "\n${_tsk}\nstarting %s at %s" "$(basename "$0")" "$(date)"
-cd "$_DIR"
-test -r "$_DIR"/grab_lib || chmod 644 "$_DIR"/grab_lib
+printf "\n${_tsk}\nstarting %s at %s" "${0##*/}" "$(date)"
+cd "$_DIR" || exit
+[[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
 # shellcheck source=/dev/null
 source "$_DIR"/grab_lib
 f_trap                      # cleanUP on exit, interrupt & terminate
@@ -73,10 +73,9 @@ elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
      exit 1
 
 else
-   printf "${_err} failed due to: \"FOUND %s of %s zone-files\". %s\n" \
+   printf "${_err} due to: \"FOUND %s of %s zone-files\". %s\n" \
       "${#ar_zon[@]}" "${#ar_rpz[@]}" "missing zone-files:"
-   _miss="$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
-   printf -v miss_v "%s" "$_miss"
+   printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
    printf "~ %s\n" "$miss_v"
    ar_miss+=("$miss_v")
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "$HOST"
@@ -85,5 +84,5 @@ fi
 
 endTime=$(date +%s%N)
 runTime=$(($((endTime - startTime))/1000000))
-printf "\n${_inf} completed ${_cyn}IN %dms${_ncl}\n" "$runTime"
+printf "\n${_inf} completed ${_cyn}IN %'dms${_ncl}\n" "$runTime"
 exit 0
