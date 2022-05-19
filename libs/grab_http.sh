@@ -124,7 +124,7 @@ trust=$(mktemp --tmpdir="$_DIR")
 untrust=$(mktemp --tmpdir="$_DIR")
 porn=$(mktemp --tmpdir="$_DIR")
 
-f_sm7 1 "${ar_sho[1]}"   # add gambling domain, done when initiating category
+f_sm7 1 "${ar_sho[1]}"   # done when initiating category
 f_do
 
 f_sm7 7 "${ar_sho[7]}"
@@ -135,15 +135,13 @@ f_sm7 21 "${ar_sho[21]}"
 f_add "${ar_url[21]}" >> "${porn}"
 f_do
 
-# throw ipv4 to ${ar_dmn[1]} && identifying porn domains, use it's to
+# identifying porn domains, use it's to reduce porn domains in trust+ category
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ip "$porn" "${ar_dmn[1]}"
-
-# reduce porn domains in trust+ category
 _sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grep -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 
-# delete the porn domains in ${untrust}, save the rest in ${ar_dmn[5]}
+# throw the porn domains ${untrust} into ${ar_dmn[0]}, save the rest in ${ar_dmn[5]}
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
 cat "${trust}" >> "${ar_dmn[0]}"
 f_do
@@ -169,7 +167,7 @@ f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
 f_sm8 "${ar_cat[4]}" 2
 
-for F in {4,5}; do             # done when initiating category
+for F in {4,5}; do       # done when initiating category
    f_sm7 "$F" "${ar_sho[F]}"
    f_do
 done
@@ -215,13 +213,13 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
 
-for I in {19,20}; do           # save ipv4 into sub-nets
+for I in {19,20}; do     # save ipv4 into sub-nets
    f_sm7 "$I" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grep -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
 
-f_sm9 "${ar_cat[1]}"           # remove duplicate entry then sort
+f_sm9 "${ar_cat[1]}"     # remove duplicate entry then sort the rest
 awk '!x[$0]++' "${ar_dmn[1]}" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
 f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"

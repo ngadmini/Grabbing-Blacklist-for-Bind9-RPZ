@@ -319,14 +319,14 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
    if ping -w 1 "$HOST" >> /dev/null 2>&1; then
       f_ssh
       for a in $1; do
-         if scp -qr root@"$HOST":"$_tgt"/"$a" "$_DIR"; then
+         if scp root@"$HOST":"$_tgt"/"$a" "$_DIR" >> /dev/null 2>&1; then
             :
          else
-            local origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/"
-            printf "\n${_inf} %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
+            local origin='https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/'
+            printf "${_err} %s not found in %s. %s\n" "$a" "$HOST" "try to get from origin:"
             printf "%s%s\n" "$origin" "$a"
             curl -C - -fs "$origin""$a" >> "$a" || f_xcd 14 "$origin"
-            printf "${_inf} successfully get %s from origin:\n%s%s\n" "$a" "$origin" "$a"
+            printf "${_inf} successfully get %s from origin\n" "$a"
          fi
       done
       printf "\n${_inf} retry to running TASK again%s" ""
@@ -344,9 +344,9 @@ f_rvu() {   # used by grab_http.sh
 
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
 f_pms() { find . -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640 -exec chmod -R 640 {} \;; }
-f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -e "s/\.\///" | sort; }
-f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
-f_cat() { find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort; }
+f_fnd() { find . -type f -name "$1" | _sed -e "s/\.\///" | sort; }
+f_frm() { find . -type f -name "$1" -print0 | xargs -0 -r rm; }
+f_cat() { find . -type d | _sed -e "1d;s/\.\///" | sort; }
 
 f_ssh() { # nested in f_syn and f_cer
    _ssh -o BatchMode=yes "$HOST" true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
