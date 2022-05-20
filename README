@@ -14,6 +14,7 @@ license:
 
 what's new in v6.5:
 *) major update
+*) add new variable: DIR_TARGET in grab_cnf
 
 file parts of this version:
    0. download script-pack from:
@@ -72,6 +73,8 @@ prerequisites:
                                  #   RR_RH="CNAME block.example.net."
                                  # for more detail about rpz policy action, please see :
                                  #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
+      ZONE_DIR=/etc/bind/zones-rpz
+                                 # change to directory where zone-files (rpz.* and db.*) are located  
 
 *) on your BIND9-server
       # check required package

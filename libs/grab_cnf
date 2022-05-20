@@ -27,7 +27,7 @@ LC_NUMERIC=id_ID.UTF-8
 #   RNDC_RELOAD=no
 # OR set 'yes' to run <rndc reload> if you have sufficient RAM
 #   RNDC_RELOAD=yes
-RNDC_RELOAD=yes
+RNDC_RELOAD=no
 
 # change Resource Record <CNAME> and Right Hand Value <.> if you have other
 # policy of RR and RH Value.
@@ -36,3 +36,6 @@ RNDC_RELOAD=yes
 # for more detail about rpz policy action, please see :
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
 RR_RH="CNAME ."
+
+# change to directory where zone-files (rpz.* and db.*) are located  
+ZONE_DIR=/etc/bind/zones-rpz
