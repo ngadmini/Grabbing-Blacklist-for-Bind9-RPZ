@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v6.4
+#   v6.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
+# shellcheck source=/dev/null disable=SC2029 disable=SC2154
 
 startTime=$SECONDS
 umask 027
 set -Euo pipefail
-
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
@@ -19,10 +19,6 @@ _DPL="$_DIR"/grab_dedup.sh
 _REG="$_DIR"/grab_regex
 _SCP="$_DIR"/grab_scp.sh
 _URL="$_DIR"/grab_urls
-_ylw='\e[93m'
-_cyn='\e[96m'
-_ncl='\e[0m'
-_pre="${_ylw}PREPARING TASKs:${_ncl}"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n" ""
@@ -61,9 +57,9 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 # START <preparing>
 printf "\nstarting %s at %s\n" "${0##*/}" "$(date)"
 cd "$_DIR" || exit
+
 [[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
-# shellcheck source=/dev/null disable=SC2029
-source "$_DIR"/grab_lib
+source "$_DIR"/grab_lib >> /dev/null 2>&1
 f_trap                 # cleanUP on exit, interrupt & terminate
 
 printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
@@ -95,11 +91,11 @@ f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack on local-host: $(hostname -f)"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
-   [[ -e $E ]] || f_xcd 17 "$E"      # check property of grab_build.sh, grab_cereal.sh,
-   [[ -x $E ]] || chmod +x "$E"      # grab_dedup.sh AND grab_scp.sh
+   [[ -e $E ]] || f_xcd 17 "$E"
+   [[ -x $E ]] || chmod +x "$E"
 done
 
-for e in {"$_REG","$_URL"}; do       # check grap_urls AND grap_reg property
+for e in {"$_REG","$_URL"}; do
    [[ -e $e ]] || f_xcd 17 "$e"
    [[ -r $e ]] || chmod 644 "$e"
    _sed -i "/^$/d" "$e"
@@ -113,7 +109,7 @@ f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n" ""
 ar_sho=()
-f_crawl "$_URL"     # check remote-urls isUP or isDOWN
+f_crawl "$_URL"
 
 # <main script>
 f_grab                         # grabbing categories
@@ -141,7 +137,7 @@ f_ip "$porn" "${ar_dmn[1]}"
 _sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grep -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 
-# throw the porn domains ${untrust} into ${ar_dmn[0]}, save the rest in ${ar_dmn[5]}
+# throw the porn domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
 cat "${trust}" >> "${ar_dmn[0]}"
 f_do

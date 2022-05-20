@@ -1,10 +1,10 @@
+# shellcheck source=/dev/null disable=SC2034
 # TAGS
 #   grab_lib
-#   v6.4
+#   v6.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # NOTE
-#   a library of functions and fundamental values
 #   intended for use by other scripts, not to be executed directly.
 
 set -a
@@ -21,11 +21,12 @@ alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 _foo="${0##*/}"
 _fuu=$(basename "${BASH_SOURCE[0]}")
 _tgt='/etc/bind/zones-rpz'
-_red='\e[91m'   # light red
-_grn='\e[92m'   #       green
-_ylw='\e[93m'   #       yellow
-_cyn='\e[96m'   #       cyan
-_ncl='\e[0m'    # end of coloring
+# coloring
+_red='\e[91m'
+_grn='\e[92m'
+_ylw='\e[93m'
+_cyn='\e[96m'
+_ncl='\e[0m'
 _ccl="${_grn}'Ctrl C'${_ncl}"
 _cnt="${_cyn}CONTINUED to :${_ncl}"
 _err="${_red}[FAIL]${_ncl}"
@@ -34,6 +35,12 @@ _rnr="${_cyn}'rndc reload'${_ncl}"
 _shd="${_grn}'shutdown -c'${_ncl}"
 _tks="${_red}TASKs${_ncl}"
 _wrn="${_grn}WARNING:${_ncl}"
+_pre="${_ylw}PREPARING TASKs:${_ncl}"
+_hnt="${_ylw}[HINTS]${_ncl}"
+_ts1="${_red}[1'st] TASKs:${_ncl}"
+_ts2="${_red}[2'th] TASKs:${_ncl}"
+_ts3="${_red}[3'th] TASKs:${_ncl}"
+_ts4="${_red}[4'th] TASKs:${_ncl}"
 
 readonly CONFIG="grab_cnf"
 [[ -r ${CONFIG} ]] || chmod 644 "${CONFIG}"
@@ -41,7 +48,6 @@ ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RR_RH)
 mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CONFIG}" | cut -d'=' -f1 | sort )
 
 if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-   # shellcheck source=/dev/null
    source "${CONFIG}" >> /dev/null 2>&1
 else
    printf "${_err} cannot read config from %s\nall variables must be determined\n" "${CONFIG}"
@@ -87,7 +93,7 @@ f_xcd() {   # exit code {7..20}
          14) printf "\n%s\n%s\n" "$_xcd" "download failed from '$2'"; exit;;
          15) printf "\n%s\n%s\n" "$_xcd" "category: must equal 6"; exit;;
          16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "$CONFIG" | cut -d":" -f1)"
-             _ext=$(printf "\n${_err} $CONFIG : at line $_lin. Exit code: %s" "$EC")
+             _ext=$(printf "${_err} $CONFIG : at line $_lin. Exit code: %s" "$EC")
              printf "\n%s\n%s : if this address is correct, maybe isDOWN\n" "$_ext" "$2"; exit;;
          17) printf "\n%s\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; exit;;
          18) printf "\n%s\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; exit;;

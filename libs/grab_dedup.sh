@@ -1,34 +1,25 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_dedup.sh
-#   v6.4
+#   v6.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
+# shellcheck source=/dev/null disable=SC2154
 
 startTime=$SECONDS
-SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-[[ ! $SOURCED ]] || set -Euo pipefail
-
+set -Euo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-_red='\e[91m'
-_ylw='\e[93m'
-_cyn='\e[96m'
-_ncl='\e[0m'
-_inf="${_ylw}[INFO]${_ncl}"
-_err="${_red}[FAIL]${_ncl}"
-_hnt="${_ylw}[HINTS]${_ncl}"
-_tsk="${_red}[1'st] TASKs:${_ncl}"
 
 # START <main script>
-printf "\n${_tsk}\nstarting %s at %s" "${0##*/}" "$(date)"
-cd "$_DIR" || exit
 [[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
-# shellcheck source=/dev/null
-source "$_DIR"/grab_lib
+source "$_DIR"/grab_lib  >> /dev/null 2>&1
 f_trap                      # cleanUP on exit, interrupt & terminate
+
+printf "\n${_ts1}\nstarting %s at %s" "${0##*/}" "$(date)"
+cd "$_DIR" || exit
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 # predefined array as a blanko to counter part 'others' array
@@ -57,14 +48,13 @@ if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
 
    f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
    for C in {2..5}; do
-      f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}" 1
+      f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}" 0
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_txt[C]}" \
          | _sort > "${ar_dmn[C]}"
       cp "${ar_dmn[C]}" "${ar_txt[C]}"
       f_do
    done
 
-                           # based on ${ar_cat[1]}
    printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[1]^^}"
 
    f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
@@ -93,7 +83,6 @@ if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
    cp "${ar_dmn[5]}" "${ar_txt[5]}"
    f_do
 
-                           # based on ${ar_cat[5]}
    printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[5]^^}"
 
 else
