@@ -34,6 +34,7 @@ done
 
 mapfile -t ar_txt < <(f_fnd "txt.*")
 if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
+   unset -v ar_cat
    ar_cat=()               # declare temporary files as array
    ar_dmn=()               #
    ar_tmp=()               #
