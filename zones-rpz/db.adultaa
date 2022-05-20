@@ -1,10 +1,10 @@
 ; generate at [Sel 17 Mei 2022 11:25:06  WIB] by grab_build.sh v6.4
 ;
-0----q.tumblr.com IN CNAME .
-*.0----q.tumblr.com IN CNAME .
-0--ass-cinema-newsp.da.ru IN CNAME .
-*.0--ass-cinema-newsp.da.ru IN CNAME .
-0--bondage.dk IN CNAME .
-*.0--bondage.dk IN CNAME .
-0--fightingshaving.da.ru IN CNAME .
-*.0--fightingshaving.da.ru IN CNAME .
+0----q.tumblr.com CNAME .
+*.0----q.tumblr.com CNAME .
+0--ass-cinema-newsp.da.ru CNAME .
+*.0--ass-cinema-newsp.da.ru CNAME .
+0--bondage.dk CNAME .
+*.0--bondage.dk CNAME .
+0--fightingshaving.da.ru CNAME .
+*.0--fightingshaving.da.ru CNAME .

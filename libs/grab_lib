@@ -304,7 +304,7 @@ f_g4c() {   # used by grab_cereal.sh
 
 f_rpz() {   # used by grab_build.sh
    printf "%13s %-31s : " "rewriting" "$2 to $1"
-   awk -v a="$RR_RH" '{print $0" IN "a"\n""*."$0" IN " a}' "$2" >> "$1"
+   awk -v a="$RR_RH" '{print $0" "a"\n""*."$0" " a}' "$2" >> "$1"
    f_g4b "$@"
    }
 

@@ -1,10 +1,10 @@
 ; generate at [Sel 17 Mei 2022 11:25:12  WIB] by grab_build.sh v6.4
 ;
-00-gov.cn IN CNAME .
-*.00-gov.cn IN CNAME .
-0001.best IN CNAME .
-*.0001.best IN CNAME .
-000123456789.online IN CNAME .
-*.000123456789.online IN CNAME .
-000123456789.site IN CNAME .
-*.000123456789.site IN CNAME .
+00-gov.cn CNAME .
+*.00-gov.cn CNAME .
+0001.best CNAME .
+*.0001.best CNAME .
+000123456789.online CNAME .
+*.000123456789.online CNAME .
+000123456789.site CNAME .
+*.000123456789.site CNAME .
