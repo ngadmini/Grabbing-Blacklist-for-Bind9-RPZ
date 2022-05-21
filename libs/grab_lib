@@ -7,10 +7,8 @@
 # NOTE
 #   intended for use by other scripts, not to be executed directly.
 
-set -a
 CI="${CI:=false}"
 [[ $CI == "false" ]] || CI=true
-
 shopt -s expand_aliases
 alias _sort="LC_ALL=C sort --buffer-size=80% --parallel=3"
 alias _sed="LC_ALL=C sed"
