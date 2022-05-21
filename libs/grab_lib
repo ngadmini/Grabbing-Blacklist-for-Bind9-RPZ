@@ -44,7 +44,7 @@ if [[ -e ${CNF} ]]; then
    mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
 else
    printf "%s not FOUND\n" "${CNF##*/}"
-   exit 1
+   exit
 fi
 
 if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
@@ -52,7 +52,7 @@ if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
 else
    printf "${_err} missing configuration in %s\n" "${CNF##*/}"
    printf "${_hnt} all variables in %s must be determined\n" "${CNF##*/}"
-   exit 1
+   exit
 fi
 
 f_tmp() {   # remove temporary files, directories && arrays. generated during script execution
