@@ -43,7 +43,7 @@ _ts4="${_red}[4'th] TASKs:${_ncl}"
 
 readonly CNF="$_DIR"/grab_cnf   # check variables in configuration file
 [[ -r ${CNF} ]] || chmod 644 "${CNF}"
-ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RR_RH ZONE_DIR)
+ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
 mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
 
 if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
@@ -283,14 +283,14 @@ f_g4c() {   # used by grab_cereal.sh
 
 f_rpz() {   # f_rpz && f_ip4 : used by grab_build.sh
    printf "%13s %-31s : " "rewriting" "$2 to $1"
-   awk -v a="$RR_RH" '{print $0" "a"\n""*."$0" " a}' "$2" >> "$1"
+   awk -v DOM="$RPZ_DOM" '{print $0" "DOM"\n""*."$0" "DOM}' "$2" >> "$1"
    f_g4b "$@"
    }
 
 f_ip4() {  # f_rpz && f_ip4 : configurable in grab_cnf
    printf "%13s %-31s : " "rewriting" "$2 to $1"
-   _sed "s/\//\./" "$2" |\
-      awk -v a="$RR_RH" -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" "a}' >> "$1"
+   _sed "s/\//\./" "$2" \
+      | awk -v IPV="$RPZ_IPV" -F. '{print $5"."$4"."$3"."$2"."$1"."IPV}' >> "$1"
    f_g4b "$@"
    }
 

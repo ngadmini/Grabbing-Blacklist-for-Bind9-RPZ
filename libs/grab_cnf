@@ -32,13 +32,19 @@ RNDC_RELOAD=no
 # change Resource Record <CNAME> and Right Hand Value <.> if you have other
 # policy of RR and RH Value, applied to domains and ip-address.
 # for example, change Right Hand Value with <block.example.net.>:
-#   RR_RH="CNAME block.example.net."
+#   RPZ_DOM="CNAME block.example.net."
+#   or
+#   RPZ_DOM="IN CNAME block.example.net."
+#   RPZ_IPV=".rpz-nsip CNAME block.example.net."
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
 # this below value <RR_RH="CNAME ."> are define for:
 #   QNAME Trigger with NXDOMAIN Action, for domains
 #   NS-IP Trigger with NXDOMAIN Action, for ip-address
-RR_RH="CNAME ."
+# domains
+RPZ_DOM="CNAME ."
+# ip-address
+RPZ_IPV="rpz-nsip CNAME ."
 
 # change to directory where zone-files (rpz.* and db.*) are located  
 ZONE_DIR=/etc/bind/zones-rpz

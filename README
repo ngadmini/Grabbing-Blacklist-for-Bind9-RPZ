@@ -14,7 +14,7 @@ license:
 
 what's new in v6.5:
 *) major update
-*) add new variable: DIR_TARGET in grab_cnf
+*) adding new variable <DIR_TARGET, RPZ_DOM and RPZ_IPV> in grab_cnf
 
 file parts of this version:
    0. download script-pack from:
@@ -61,18 +61,25 @@ prerequisites:
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
       # modify file grab_cnf to fit your BIND9-server environment
-      #   there are 4 variables you have to change
+      #   there are 6 variables you have to change.
       #   do not leave one of the following variables undefined,
-      #   script will be terminating with error
+      #   it's will be terminating script with error.
       HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
-      RNDC_RELOAD=yes            # Remote Name Daemon Control (rndc)
+      RNDC_RELOAD=yes            # reload Remote Name Daemon Control (rndc)
                                  # set 'yes' to run <rndc reload>  or 'no' to <reboot>
       LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
-      RR_RH="CNAME ."            # change Resource Record <CNAME> and Right Hand Value <.>, if you have other policy
-                                 # RR and RH Value, example:
-                                 #   RR_RH="CNAME block.example.net."
-                                 # for more detail about rpz policy action, please see :
+      RPZ_DOM="CNAME ."          # QNAME Trigger with NXDOMAIN Action for domains
+      RPZ_IPV="rpz-nsip CNAME ." # NS-IP Trigger with NXDOMAIN Action for ip-address
+                                 # change Resource Record <CNAME> and Right Hand Value <.>
+                                 # if you have other policy RR and RH Value.
+                                 # for example, change Right Hand Value with <block.example.net.>:
+                                 #   RPZ_DOM="CNAME block.example.net."
+                                 #   or
+                                 #   RPZ_DOM="IN CNAME block.example.net."
+                                 #   RPZ_IPV="rpz-nsip CNAME block.example.net."
+                                 # for more detail about rpz policy action, please see:
                                  #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
+                                 # this below value <RR_RH="CNAME ."> are define for:
       ZONE_DIR=/etc/bind/zones-rpz
                                  # change to directory where zone-files (rpz.* and db.*) are located  
 
