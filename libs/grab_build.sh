@@ -16,7 +16,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # START <main script>
 [[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
-source "$_DIR"/grab_lib  >> /dev/null 2>&1
+source "$_DIR"/grab_lib
 f_trap                      # cleanUP on exit, interrupt & terminate
 
 printf "\n${_ts2}\nstarting %s at %s" "${0##*/}" "$(date)"
@@ -56,11 +56,11 @@ if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
       f_frm "db.*"                                # remove previously db.* if any
       printf "${_inf} rewriting all CATEGORIES to RPZ format%s\n" " "
 
-      for X in {0..11}; do
+      for X in {0..11}; do                        # build dBASE in rpz format
          if [[ $X -eq 7 ]]; then
-            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"   # policy: NS-IP Trigger NXDOMAIN Action
+            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
          else
-            f_rpz "${ar_dom[X]}" "${ar_txt[X]}"   # policy: QNAME Trigger NXDOMAIN Action
+            f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
          fi
       done
 

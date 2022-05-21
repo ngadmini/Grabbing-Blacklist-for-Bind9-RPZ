@@ -59,10 +59,10 @@ printf "\nstarting %s at %s\n" "${0##*/}" "$(date)"
 cd "$_DIR" || exit
 
 [[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
-source "$_DIR"/grab_lib >> /dev/null 2>&1
+source "$_DIR"/grab_lib
 f_trap                 # cleanUP on exit, interrupt & terminate
 
-printf "${_pre} %-63s" "check $(basename "$0") is execute by non-root privileges"
+printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 
 printf "${_pre} %-63s" "check availability remote-host: $HOST"
@@ -77,7 +77,7 @@ if ping -w 1 "$HOST" >> /dev/null 2>&1; then
    done
    f_ok
 else
-   f_xcd 16 "$HOST"
+   f_xcd 16
 fi
 
 printf "${_pre} %-63s" "check required packages on local-host: $(hostname -f)"
@@ -108,7 +108,6 @@ mapfile -t ar_reg < "$_REG"
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n" ""
-ar_sho=()
 f_crawl "$_URL"
 
 # <main script>
@@ -131,7 +130,7 @@ f_sm7 21 "${ar_sho[21]}"
 f_add "${ar_url[21]}" >> "${porn}"
 f_do
 
-# identifying porn domains, use it's to reduce porn domains in trust+ category
+# identifying porn domains, use its to reduce porn domains in trust+ category
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ip "$porn" "${ar_dmn[1]}"
 _sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
@@ -264,13 +263,13 @@ unset -v ar_txt
 mapfile -t ar_txt < <(f_fnd "txt.*")
 printf -v _tsp "%'d" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %s entries\n" "TOTAL" "$_tsp"
-f_uset
 runTime=$((SECONDS - startTime))
 f_sm6 "$((runTime/60))m" "$((runTime%60))s"
+f_klin
 
 # COMPLETED <new taks>
-f_sm0 "$HOST"      # offerring OPTIONs:
-read -r RETVAL     # continued to next stept OR stop here
+f_sm0 "$HOST"      # offerring OPTIONs: continued to next tasks OR stop here
+read -r RETVAL
 case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;

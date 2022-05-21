@@ -15,7 +15,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # START <main script>
 [[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
-source "$_DIR"/grab_lib  >> /dev/null 2>&1
+source "$_DIR"/grab_lib
 f_trap                      # cleanUP on exit, interrupt & terminate
 
 printf "\n${_ts1}\nstarting %s at %s" "${0##*/}" "$(date)"

@@ -3,7 +3,7 @@
 #   v6.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
-# NOTE
+# PLEASE PAY ATTENTIONS
 #   *) all variables must be determined.
 #   *) do not leave one of the following variables undefined,
 #      script will be terminating with error.
@@ -30,11 +30,14 @@ LC_NUMERIC=id_ID.UTF-8
 RNDC_RELOAD=no
 
 # change Resource Record <CNAME> and Right Hand Value <.> if you have other
-# policy of RR and RH Value.
-# for example, change Right Hand Value with <block.example.net.> :
+# policy of RR and RH Value, applied to domains and ip-address.
+# for example, change Right Hand Value with <block.example.net.>:
 #   RR_RH="CNAME block.example.net."
-# for more detail about rpz policy action, please see :
+# for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
+# this below value <RR_RH="CNAME ."> are define for:
+#   QNAME Trigger with NXDOMAIN Action, for domains
+#   NS-IP Trigger with NXDOMAIN Action, for ip-address
 RR_RH="CNAME ."
 
 # change to directory where zone-files (rpz.* and db.*) are located  

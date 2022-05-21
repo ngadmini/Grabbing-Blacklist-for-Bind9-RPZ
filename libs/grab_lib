@@ -35,25 +35,26 @@ _shd="${_grn}'shutdown -c'${_ncl}"
 _tks="${_red}TASKs${_ncl}"
 _wrn="${_grn}WARNING:${_ncl}"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
-_hnt="${_ylw}[HINTS]${_ncl}"
+_hnt="${_ylw}[HINT]${_ncl}"
 _ts1="${_red}[1'st] TASKs:${_ncl}"
 _ts2="${_red}[2'th] TASKs:${_ncl}"
 _ts3="${_red}[3'th] TASKs:${_ncl}"
 _ts4="${_red}[4'th] TASKs:${_ncl}"
 
-readonly CONFIG="grab_cnf"
-[[ -r ${CONFIG} ]] || chmod 644 "${CONFIG}"
+readonly CNF="$_DIR"/grab_cnf   # check variables in configuration file
+[[ -r ${CNF} ]] || chmod 644 "${CNF}"
 ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RR_RH ZONE_DIR)
-mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CONFIG}" | cut -d'=' -f1 | sort )
+mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
 
 if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-   source "${CONFIG}" >> /dev/null 2>&1
+   source "${CNF}"
 else
-   printf "${_err} cannot read config from %s\nall variables must be determined\n" "${CONFIG}"
+   printf "${_err} missing configuration in %s\n" "${CNF##*/}"
+   printf "${_hnt} all variables in %s must be determined\n" "${CNF##*/}"
    exit 1
 fi
 
-f_tmp() {   # remove temporary files, directories && arrays defined during execution of the script
+f_tmp() {   # remove temporary files, directories && arrays. generated during script execution
    find . -regextype posix-extended -regex "^.*(dmn|tmr|tm[pq]|txt.adulta).*|.*gz$" -print0 | xargs -0 -r rm
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
@@ -82,9 +83,9 @@ f_xcd() {   # exit code {7..20}
              printf "${_err} %s:\n%s\n" "$_unk" "$_ref"; exit;;
          14) printf "\n%s\n%s\n" "$_xcd" "download failed from '$2'"; exit;;
          15) printf "\n%s\n%s\n" "$_xcd" "category: must equal 6"; exit;;
-         16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "$CONFIG" | cut -d":" -f1)"
-             _ext=$(printf "${_err} $CONFIG : at line $_lin. Exit code: %s" "$EC")
-             printf "\n%s\n%s : if this address is correct, maybe isDOWN\n" "$_ext" "$2"; exit;;
+         16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "$CNF" | cut -d":" -f1)"
+             _ext=$(printf "${_err} $CNF : at line $_lin. Exit code: %s" "$EC")
+             printf "\n%s\n%s : if this address is correct, maybe isDOWN\n" "$_ext" "$HOST"; exit;;
          17) printf "\n%s\nmissing file: %s\n" "$_xcd" "$(basename "$2")"; exit;;
          18) printf "\n%s\n%s\n" "$_xce" """$2"" doesn't exist in ""$3"""; exit;;
          19) printf "\n%s\n%s\n" "$_xcd" "unexpected, please remove: ""$2"""; exit;;
@@ -97,7 +98,7 @@ f_xcd() {   # exit code {7..20}
    }
 
 f_sm0() {   # display messages when getting options
-   printf "\n${_cyn}CHOOSE one of the following options :${_ncl}%s\n" ""
+   printf "${_cyn}CHOOSE one of the following options :${_ncl}%s\n" ""
    printf "%4s) eliminating duplicate entries between CATEGORY\n" "1"
    printf "%4s) option [1] and rewriting all CATEGORIES to RPZ format [db.* files]\n" "2"
    printf "%4s) options [1,2] and incrementing serial at zone-files [rpz.*]\n" "3"
@@ -114,25 +115,17 @@ f_sm0() {   # display messages when getting options
    printf "ENTER: ${_cyn}[1|2|3|4|*]${_ncl}\t\t%s" ""
    }
 
-f_sm1() {   # display messages when 1'st option chosen
+f_sm1() {   # f_sm[1...4] = display messages when chosing option
    printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "$RETVAL"
    printf "${_cnt} ~eliminating duplicate entries between CATEGORY%s\n" ""
-   printf "${_cyn}Performing tasks based on %s'st options ...${_ncl}\n" "$RETVAL"
+   f_sm12 "st"
    }
 
-f_sm2() {   # display messages when 2'nd option chosen
-   f_sm5
-   printf "${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"
-   }
+f_sm2() { f_sm5 "nd"; f_sm12 "nd"; }
+f_sm3() { f_sm5 "th"; printf "%28s serial at zone-files [rpz.*]\n" "~incrementing"; f_sm12 "th"; }
 
-f_sm3() {   # display messages when 3'th option chosen
-   f_sm5
-   printf "%28s serial at zone-files [rpz.*]\n" "~incrementing"
-   printf "${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"
-   }
-
-f_sm4() {   # display messages when 4'th option chosen
-   f_sm5
+f_sm4() {
+   f_sm5 "th"
    printf "%28s serial zone-files [rpz.*]\n" "~incrementing"
    printf "%28s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
 
@@ -142,12 +135,11 @@ f_sm4() {   # display messages when 4'th option chosen
    else
       printf "%6s${_wrn} ${_rnr} will be executed too. press ${_ccl} to abort" " "
    fi
-
-   printf "\n${_cyn}Performing tasks based on %s'th options ...${_ncl}\n" "$RETVAL"
+   f_sm12 "th"
    }
 
-f_sm5() {   # nested in f_sm2 to f_sm4
-   printf "\n${_red}[%s'th] TASK options chosen${_ncl}\n" "$RETVAL"
+f_sm5() {   # nested in f_sm[2...4]
+   printf "\n${_red}[%s'%s] TASK options chosen${_ncl}\n" "$RETVAL" "$1"
    printf "${_cnt} ~eliminating duplicate entries between CATEGORY%s\n" ""
    printf "%25s all CATEGORIES to RPZ format [db.* files]\n" "~rewriting"
    }
@@ -158,17 +150,18 @@ f_sm6() {   # display FINISH messages
    printf "%17s continue to next TASKs.\n" "consider"
    }
 
-# display processing messages
+# f_sm[7...12] = display processing messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nprocessing ${_cyn}%s CATEGORY${_ncl} with (%d) additional remote-files\n" "${1^^}" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm10() { printf "\n${_tks} based on %s'%s options: ${_grn}%sDONE${_ncl}\n" "$RETVAL" "$1"; }
 f_sm11() { printf "\n${_inf} completed ${_cyn}IN %s:%s${_ncl}\n" "$1" "$2"; }
+f_sm12() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "$RETVAL" "$1"; }
 f_ok() { printf "${_grn}%s${_ncl}\n" "isOK"; }         # display isOK
 f_do() { printf "${_grn}%s${_ncl}\n" "DONE"; }         # display DONE
 f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }       # grabbing remote-files
 
-# fixing false positive and bad entry
+# fixing false and bad entry
 f_fix() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
 f_ip() {   # capture and throw ip-address entry to ipv4 CATEGORY. save its into sub-net
    _grep -P "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$" \
@@ -183,8 +176,14 @@ f_fip() {
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
    }
 
+f_ssh() {   # nested in f_syn && f_cer
+   _ssh -o BatchMode=yes "$HOST" true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
+   _ssh root@"$HOST" [[ -d "$ZONE_DIR" ]] || f_xcd 18 "$ZONE_DIR" "$HOST"
+   }
+
 f_syn() {   # passwordless ssh for backUP oldDB and rsync newDB
-   if ping -w 1 "$HOST" >> /dev/null 2>&1; then   # check existance of db-files and rpz-files
+   if ping -w 1 "$HOST" >> /dev/null 2>&1; then
+      # check existance of db-files and zone-files
       ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
          db.ipv4 db.malware db.publicite db.redirector db.trust+)
       ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
@@ -212,33 +211,34 @@ f_syn() {   # passwordless ssh for backUP oldDB and rsync newDB
       _rsync {rpz,db}.* root@"$HOST":"$ZONE_DIR"
 
       if [[ $RNDC_RELOAD =~ [yY][eE][sS] ]]; then
-         # sufficient RAM is required by $HOST"
+         # sufficient RAM is required by remote-host to execute "rndc reload"
          printf "execute ${_rnr} at BIND9-server:%s\n" "$HOST"
          _ssh root@"$HOST" "rndc reload"
       else
-         # $HOST" will reboot [after +@ minute] due to low memory
+         # remote-host will reboot [after +@ minute] due to low memory
          printf "${_inf} host: ${_grn}%s${_ncl} scheduled for reboot at %s\n" "$HOST" "$(faketime -f "+5m" date +%H:%M:%S)"
          _ssh root@"$HOST" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
          printf "${_inf} use ${_shd} at host: %s to abort" "$HOST"
       fi
    else
-      f_xcd 16 "$HOST"
+      f_xcd 16
    fi
    }
 
-f_crawl() {   # verify "URLS" isUP
+f_crawl() {   # verify remote-urls isUP
+   ar_sho=()
    isDOWN=()
    local i=-1
    while IFS= read -r line || [[ -n $line ]]; do
-      # slicing urls && add element to ${ar_sho[@]}
+      # slicing remote-urls && add as an element to ${ar_sho[@]}
       local lll; lll="${line##htt*\/\/}"
       local ll; ll="$(basename "$line")"
       local l; l="${lll/\/*/}"
       local p_url; p_url="$l/..?../$ll"
       local statusCode; statusCode=$(curl -C - -ks -o /dev/null -I -w "%{http_code}" "$line")
 
-      ar_sho+=("${p_url}")
       ((i++))
+      ar_sho+=("${p_url}")
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
 
       if [[ $statusCode != 2* ]]; then
@@ -281,13 +281,13 @@ f_g4c() {   # used by grab_cereal.sh
    fi
    }
 
-f_rpz() {   # used by grab_build.sh
+f_rpz() {   # f_rpz && f_ip4 : used by grab_build.sh
    printf "%13s %-31s : " "rewriting" "$2 to $1"
    awk -v a="$RR_RH" '{print $0" "a"\n""*."$0" " a}' "$2" >> "$1"
    f_g4b "$@"
    }
 
-f_ip4() {   # used by grab_build.sh
+f_ip4() {  # f_rpz && f_ip4 : configurable in grab_cnf
    printf "%13s %-31s : " "rewriting" "$2 to $1"
    _sed "s/\//\./" "$2" |\
       awk -v a="$RR_RH" -F. '{print $5"."$4"."$3"."$2"."$1".rpz-nsip"" "a}' >> "$1"
@@ -311,7 +311,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
       printf "\n${_inf} retry to running TASK again%s" ""
       exec "$0"
    else
-      f_xcd 16 "$HOST"
+      f_xcd 16
    fi
    }
 
@@ -326,8 +326,3 @@ f_pms() { find . -regextype posix-extended -regex "^.*(db|rpz).*" -not -perm 640
 f_fnd() { find . -type f -name "$1" | _sed -e "s/\.\///" | sort; }
 f_frm() { find . -type f -name "$1" -print0 | xargs -0 -r rm; }
 f_cat() { find . -type d | _sed -e "1d;s/\.\///" | sort; }
-
-f_ssh() { # nested in f_syn and f_cer
-   _ssh -o BatchMode=yes "$HOST" true  >> /dev/null 2>&1 || f_xcd 7 "$HOST"
-   _ssh root@"$HOST" [[ -d "$ZONE_DIR" ]] || f_xcd 18 "$ZONE_DIR" "$HOST"
-   }
