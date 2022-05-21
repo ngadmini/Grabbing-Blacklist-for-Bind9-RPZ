@@ -1,6 +1,4 @@
-# version
-#   *) README
-#   *) v6.5
+# README version v6.5
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
 ###########################################################
@@ -79,7 +77,6 @@ prerequisites:
                                  #   RPZ_IPV="rpz-nsip CNAME block.example.net."
                                  # for more detail about rpz policy action, please see:
                                  #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-                                 # this below value <RR_RH="CNAME ."> are define for:
       ZONE_DIR=/etc/bind/zones-rpz
                                  # change to directory where zone-files (rpz.* and db.*) are located  
 
