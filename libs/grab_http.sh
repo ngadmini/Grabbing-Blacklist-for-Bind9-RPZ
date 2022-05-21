@@ -54,14 +54,22 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    done
 }
 
+f_src() {
+   readonly _LIB="$_DIR"/grab_lib
+   if [[ -e ${_LIB} ]]; then
+      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
+      source "${_LIB}"
+      f_trap                 # cleanUP on exit, interrupt & terminate
+   else
+      printf "%s noFOUND\n" "${_LIB##*/}"
+      exit
+   fi
+}
+
 # START <preparing>
 printf "\nstarting %s at %s\n" "${0##*/}" "$(date)"
 cd "$_DIR" || exit
-
-[[ -r $_DIR/grab_lib ]] || chmod 644 "$_DIR"/grab_lib
-source "$_DIR"/grab_lib
-f_trap                 # cleanUP on exit, interrupt & terminate
-
+f_src
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 

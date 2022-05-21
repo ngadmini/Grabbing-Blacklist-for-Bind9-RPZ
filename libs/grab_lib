@@ -38,9 +38,14 @@ _pre="${_ylw}PREPARING TASKs:${_ncl}"
 _hnt="${_ylw}[HINT]${_ncl}"
 
 readonly CNF="$_DIR"/grab_cnf   # check variables in configuration file
-[[ -r ${CNF} ]] || chmod 644 "${CNF}"
-ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
+if [[ -e ${CNF} ]]; then
+   [[ -r ${CNF} ]] || chmod 644 "${CNF}"
+   ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
+   mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
+else
+   printf "%s not FOUND\n" "${CNF##*/}"
+   exit 1
+fi
 
 if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
    source "${CNF}"
