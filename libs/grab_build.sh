@@ -19,7 +19,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source "$_DIR"/grab_lib
 f_trap                      # cleanUP on exit, interrupt & terminate
 
-printf "\n${_ts2}\nstarting %s at %s" "${0##*/}" "$(date)"
+printf "\n${_red}[2'nd] TASKs:${_ncl}\nstarting %s at %s" "${0##*/}" "$(date)"
 cd "$_DIR" || exit
 [[ ! $UID -eq 0 ]] || f_xcd 10
 

@@ -36,10 +36,6 @@ _tks="${_red}TASKs${_ncl}"
 _wrn="${_grn}WARNING:${_ncl}"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
 _hnt="${_ylw}[HINT]${_ncl}"
-_ts1="${_red}[1'st] TASKs:${_ncl}"
-_ts2="${_red}[2'th] TASKs:${_ncl}"
-_ts3="${_red}[3'th] TASKs:${_ncl}"
-_ts4="${_red}[4'th] TASKs:${_ncl}"
 
 readonly CNF="$_DIR"/grab_cnf   # check variables in configuration file
 [[ -r ${CNF} ]] || chmod 644 "${CNF}"
