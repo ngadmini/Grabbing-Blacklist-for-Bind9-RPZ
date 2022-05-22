@@ -51,16 +51,16 @@ fi
 if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
    source "${CNF}"
 else
-   # completely ignore "${CNF}" when misconfigurations happen
+   # completely ignore "${CNF}" when misconfigurations occurs
    printf "\n${_wrn} misconfigurations in %s. variable are not define:\n" "${CNF##*/}"
    printf "%9s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
-   printf "%9s$_foo will continued with default configurations\n" ""
-   : "${HOST:-rpz.warnet-ersa.net}"
-   : "${RNDC_RELOAD:-no}"
-   : "${LC_NUMERIC:-id_ID.UTF-8}"
-   : "${RPZ_DOM:-"CNAME ."}"
-   : "${RPZ_IPV:-"rpz-nsip CNAME ."}"
-   : "${ZONE_DIR:-/etc/bind/zones-rpz}"
+   printf "%9s$_fuu will continued with default configurations\n" ""
+   : "${HOST:=rpz.warnet-ersa.net}"
+   : "${RNDC_RELOAD:=no}"
+   : "${LC_NUMERIC:=id_ID.UTF-8}"
+   : "${RPZ_DOM:="CNAME ."}"
+   : "${RPZ_IPV:="rpz-nsip CNAME ."}"
+   : "${ZONE_DIR:=/etc/bind/zones-rpz}"
 fi
 
 f_tmp() {   # remove temporary files, directories && arrays. generated during script execution
@@ -114,10 +114,10 @@ f_sm0() {   # display messages when getting options
    printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "$1"
 
    if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
-      printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
+      printf "%6s${_wrn} host %s will REBOOT due to low memory\n" "" "$HOST"
       printf "%18s ${_shd} at HOST: %s to abort\n" "use" "$HOST"
    else
-      printf "%6salso, ${_rnr} will be executed too\n" " "
+      printf "%6salso, ${_rnr} will be executed too\n" ""
    fi
 
    printf "%4s) quit\n" "*"
@@ -139,10 +139,10 @@ f_sm4() {
    printf "%28s latest [rpz.* and db.*] files to %s\n" "~syncronizing" "$HOST"
 
    if [[ $RNDC_RELOAD =~ [nN][oO] ]]; then
-      printf "%6s${_wrn} host %s will REBOOT due to low memory\n" " " "$HOST"
+      printf "%6s${_wrn} host %s will REBOOT due to low memory\n" "" "$HOST"
       printf "%18s ${_shd} at HOST: %s to abort\n" "use" "$HOST"
    else
-      printf "%6s${_wrn} ${_rnr} will be executed too. press ${_ccl} to abort\n" " "
+      printf "%6s${_wrn} ${_rnr} will be executed too. press ${_ccl} to abort\n" ""
    fi
    f_sm12 "th"
 }
