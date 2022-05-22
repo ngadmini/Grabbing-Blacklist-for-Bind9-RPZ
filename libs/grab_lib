@@ -37,30 +37,36 @@ _wrn="${_grn}WARNING:${_ncl}"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
 _hnt="${_ylw}[HINT]${_ncl}"
 
-readonly CNF="$_DIR"/grab_cnf   # check variables in configuration file
-if [[ -e ${CNF} ]]; then
-   [[ -r ${CNF} ]] || chmod 644 "${CNF}"
-   ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-   mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
-   f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
-else
-   printf "${_err} %s noFOUND\n" "${CNF##*/}"
-   exit
-fi
-
-if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-   source "${CNF}"
-else
-   # completely ignore "${CNF}" when misconfigurations occurs
-   printf "\n${_wrn} misconfigurations in %s. variable are not define:\n" "${CNF##*/}"
-   printf "%9s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
-   printf "%9s$_fuu will continued with default configurations\n" ""
+f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
+f_dft() {
+   printf "%9s$_foo will continued with default configurations\n" ""
    : "${HOST:=rpz.warnet-ersa.net}"
    : "${RNDC_RELOAD:=no}"
    : "${LC_NUMERIC:=id_ID.UTF-8}"
    : "${RPZ_DOM:="CNAME ."}"
    : "${RPZ_IPV:="rpz-nsip CNAME ."}"
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"
+}
+
+readonly CNF="$_DIR"/grab_cnf   # check variables in configuration file
+if [[ -e ${CNF} ]]; then
+   [[ -r ${CNF} ]] || chmod 644 "${CNF}"
+   ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
+   mapfile -t ar_CNF < <(grep -Ev "(#|^\s*$)" "${CNF}" | cut -d'=' -f1 | sort)
+
+   if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
+      source "${CNF}"
+   else
+      # completely ignore "${CNF}" when misconfigurations occurs
+      printf "\n${_wrn} misconfigurations in %s. variable are not define:\n" "${CNF##*/}"
+      printf "%9s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
+      f_dft
+   fi
+
+   else
+      # completely ignore "${CNF}" when it missing
+      printf "\n${_wrn} %s noFOUND\n" "${CNF##*/}"
+      f_dft
 fi
 
 f_tmp() {   # remove temporary files, directories && arrays. generated during script execution
@@ -330,7 +336,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
             printf "${_inf} successfully get %s from origin\n" "$a"
          fi
       done
-      printf "\n${_inf} retry to running TASK again%s" ""
+      printf "${_inf} retry to running TASK again%s\n" ""
       exec "$0"
    else
       f_xcd 16
