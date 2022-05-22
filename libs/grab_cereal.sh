@@ -9,7 +9,7 @@
 # shellcheck source=/dev/null disable=SC2154
 
 startTime=$(date +%s%N)
-set -Euo pipefail
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -20,15 +20,15 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "%s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s noFOUND\n" "${_LIB##*/}"
       exit
    fi
 }
 
 # START <main script>
 f_src
-printf "\n${_red}[3'th] TASKs:${_ncl}\nstarting %s at %s" "${0##*/}" "$(date)"
-cd "$_DIR" || exit
+printf "\n${_red}[3'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "$(date)"
+cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
 # predefined array as a blanko to counter part 'ar_zon' array

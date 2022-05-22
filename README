@@ -12,15 +12,19 @@ license:
 
 what's new in v6.5:
 *) major update
-*) adding new variable <DIR_TARGET, RPZ_DOM and RPZ_IPV> in grab_cnf
+*) adding new variable in grab_cnf : DIR_TARGET, RPZ_DOM and RPZ_IPV
+*) completely ignore grab_cnf when misconfiguration occurs
+*) compatible with shellcheck
 
 file parts of this version:
-   0. download script-pack from:
-        https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.5/gb4rpz-v6.5.tar.gz
+   download script-pack from:
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.5/gb4rpz-v6.5.tar.gz
+
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
         the same directory. IF no option is selected, it just generates a txt.*
         which is not free from duplication
+
    2. grab_dedup.sh --removing duplicate entries between domain lists.
         you can run this scipt separately, only if txt.* are available in the same directory.
 
@@ -30,17 +34,21 @@ file parts of this version:
    3. grab_build.sh --rewriting to BIND9-rpz format.
         you can run this scipt separately, only if txt.* are available in the same directory.
         it generated db.* files
+
    4. grab_cereal.sh --incrementing serial zones.
         you can run this scipt separately, only if rpz.* are available in the same directory.
         if not, it try to get from bind9-server. it generated new serial at zone-files
+
    5. grab_cnf --configuration file.
    6. grab_lib --a library of functions and fundamental values
         NO need modify, except you want change RPZ-policy triggers and actions.
         please SEE prerequisites section in this README
+
    7. grab_urls --contain urls list of remote raw-files.
         case sensitive, strict order, line count and no blank lines
    8. grab_regex --contain reguler expressions.
         case sensitive, strict order, line count and no blank lines
+
    9. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
         old db.* and rpz.* files in BIND9-server. use below to decompress

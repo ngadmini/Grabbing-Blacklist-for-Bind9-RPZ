@@ -10,7 +10,7 @@
 
 startTime=$SECONDS
 umask 027
-set -Euo pipefail
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
@@ -61,34 +61,19 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "%s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s noFOUND\n" "${_LIB##*/}"
       exit
    fi
 }
 
 # START <preparing>
-printf "\nstarting %s at %s\n" "${0##*/}" "$(date)"
-cd "$_DIR" || exit
 f_src
+printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "$(date)"
+cd "$_DIR"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 
-printf "${_pre} %-63s" "check availability remote-host: $HOST"
-if ping -w 1 "$HOST" >> /dev/null 2>&1; then
-   f_ok
-   printf "${_pre} %-63s" "check remote-host: $HOST for passwordless ssh"
-   _ssh -o BatchMode=yes "$HOST" true >> /dev/null 2>&1 || f_xcd 7 "$HOST"
-   f_ok
-   printf "${_pre} %-63s" "check required packages on remote-host: $HOST"
-   for C in {rsync,pigz}; do
-      _ssh root@"$HOST" "hash $C >> /dev/null 2>&1" || f_xcd 9 "$HOST" "$C"
-   done
-   f_ok
-else
-   f_xcd 16
-fi
-
-printf "${_pre} %-63s" "check required packages on local-host: $(hostname -f)"
+printf "${_pre} %-63s" "check required packages on local-host: $(hostname -I)"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then
@@ -97,7 +82,7 @@ for D in $pkg; do
 done
 f_ok
 
-printf "${_pre} %-63s" "check properties of script-pack on local-host: $(hostname -f)"
+printf "${_pre} %-63s" "check properties of script-pack on local-host: $(hostname -I)"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [[ -e $E ]] || f_xcd 17 "$E"
    [[ -x $E ]] || chmod +x "$E"

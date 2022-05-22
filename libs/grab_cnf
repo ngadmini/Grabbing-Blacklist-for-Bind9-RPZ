@@ -9,7 +9,7 @@
 #      script will be terminating with error.
 #   *) blank lines and lines starting with '#' will be ignored
 ##############################################################
- 
+
 # specifies host-name in FQDN or ip-address of your bind9-server
 # use fqdn
 #   HOST="rpz.warnet-ersa.net"
@@ -41,9 +41,7 @@ RNDC_RELOAD=no
 # this below value <RR_RH="CNAME ."> are define for:
 #   QNAME Trigger with NXDOMAIN Action, for domains
 #   NS-IP Trigger with NXDOMAIN Action, for ip-address
-# domains
 RPZ_DOM="CNAME ."
-# ip-address
 RPZ_IPV="rpz-nsip CNAME ."
 
 # change to directory where zone-files (rpz.* and db.*) are located  
