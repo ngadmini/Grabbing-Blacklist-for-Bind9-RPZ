@@ -58,7 +58,7 @@ file parts of this version:
         ~$ tar -xvf rpz-2022-04-09.tar
 
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
-        rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+         rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
   11. all of them must present in the same directory
 
 prerequisites:
@@ -72,23 +72,30 @@ prerequisites:
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) do not leave any of the following variables undefined.
       #      it will return all variables to their default values
-      HOST=rpz.warnet-ersa.net   # specify in fqdn or ip-address
-      RNDC_RELOAD=yes            # reload Remote Name Daemon Control (rndc)
-                                 # set 'yes' to run <rndc reload>  or 'no' to <reboot>
-      LC_NUMERIC=id_ID.UTF-8     # set to your locale country numeric
-      RPZ_DOM=CNAME .            # QNAME Trigger with NXDOMAIN Action for domains
-      RPZ_IPV=rpz-nsip CNAME .   # NS-IP Trigger with NXDOMAIN Action for ip-address
-                                 # change Resource Record <CNAME> and Right Hand Value <.>
-                                 # if you have other policy RR and RH Value.
-                                 # for example, change Right Hand Value with <block.example.net.>:
-                                 #   RPZ_DOM=CNAME block.example.net.
-                                 #   or
-                                 #   RPZ_DOM=IN CNAME block.example.net.
-                                 #   RPZ_IPV=rpz-nsip CNAME block.example.net.
-                                 # for more detail about rpz policy action, please see:
-                                 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
+
+      # specify in fqdn or ip-address
+      HOST=rpz.warnet-ersa.net
+      # reload Remote Name Daemon Control (rndc)
+      # set 'yes' to run <rndc reload>  or 'no' to <reboot>
+      RNDC_RELOAD=yes
+      # set to your locale country numeric
+      LC_NUMERIC=id_ID.UTF-8
+      # change Resource Record <CNAME> and Right Hand Value <.>
+      # if you have other policy RR and RH Value.
+      # for example, change Right Hand Value with <block.example.net.>:
+      #   RPZ_DOM=CNAME block.example.net.
+      #   or
+      #   RPZ_DOM=IN CNAME block.example.net.
+      #   RPZ_IPV=rpz-nsip CNAME block.example.net.
+      # for more detail about rpz policy action, please see:
+      #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
+      # QNAME Trigger with NXDOMAIN Action for domains
+      RPZ_DOM=CNAME .
+      # NS-IP Trigger with NXDOMAIN Action for ip-address
+      RPZ_IPV=rpz-nsip CNAME .
+      # change to directory where zone-files (rpz.* and db.*) are located
+      # in bind9-server
       ZONE_DIR=/etc/bind/zones-rpz
-                                 # change to directory where zone-files (rpz.* and db.*) are located  
 
 *) on your BIND9-server
       # check required package
