@@ -20,13 +20,14 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "[FAIL] %s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
       exit
    fi
 }
 
 # START <main script>
 f_src
+f_cnf
 printf "\n${_red}[3'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "$(date)"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
@@ -78,7 +79,7 @@ else
    printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
    printf "~ %s\n" "$miss_v"
    ar_miss+=("$miss_v")
-   printf "${_inf} trying to get the missing zone-files from origin: %s\n" "$HOST"
+   printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
    f_cer "${ar_miss[@]}"
 fi
 

@@ -20,7 +20,7 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "[FAIL] %s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
       exit
    fi
 }

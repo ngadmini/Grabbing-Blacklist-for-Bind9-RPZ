@@ -20,13 +20,14 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "[FAIL] %s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
       exit
    fi
 }
 
 # START <main script>
 f_src
+f_cnf
 printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "$(date)"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10

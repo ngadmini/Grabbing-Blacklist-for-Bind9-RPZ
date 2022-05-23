@@ -6,7 +6,7 @@
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2029 disable=SC2154
+# shellcheck source=/dev/null disable=SC2154
 
 startTime=$SECONDS
 umask 027
@@ -61,17 +61,19 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "[FAIL] %s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
       exit
    fi
 }
 
 # START <preparing>
 f_src
+f_cnf
 printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "$(date)"
 cd "$_DIR"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-[[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
+[[ ! $UID -eq 0 ]] || f_xcd 10
+f_ok
 
 printf "${_pre} %-63s" "check required packages on local-host: $(hostname -I)"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
@@ -261,7 +263,7 @@ f_sm6 "$((runTime/60))m" "$((runTime%60))s"
 f_klin
 
 # COMPLETED <new taks>
-f_sm0 "$HOST"      # offerring OPTIONs: continued to next tasks OR stop here
+f_sm0 "${HOST}"      # offerring OPTIONs: continued to next tasks OR stop here
 read -r RETVAL
 case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;

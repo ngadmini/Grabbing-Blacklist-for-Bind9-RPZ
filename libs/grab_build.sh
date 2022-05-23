@@ -21,13 +21,14 @@ f_src() {
       source "${_LIB}"
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
-      printf "%s noFOUND\n" "${_LIB##*/}"
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
       exit
    fi
 }
 
 # START <main script>
 f_src
+f_cnf
 printf "\n${_red}[2'nd] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "$(date)"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
@@ -77,8 +78,8 @@ if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
       printf "%45s : %10s entries" "TOTAL" "$ttl"
 
    elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
-      printf "${_err} database grows than expected. can produce: %s db.* files exceeds from %s\n" \
-         "${#ar_txt[@]}" "${#ar_split[@]}"
+      _add='database grows than expected. can produce:'
+      printf "${_err} %s %s db.* files exceeds from %s\n" "$_add" "${#ar_txt[@]}" "${#ar_split[@]}"
       printf "${_hnt} please make adjustments on your:%s\n" ""
       printf "\t- $(basename "$0") at line %s\n" "$(grep -n "^ar_split" "$0" | cut -d':' -f1)"
       printf "\t- grab_cereal.sh at line %s\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
@@ -86,9 +87,8 @@ if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
       printf "\t- bind9-server configurations\n"
       exit 1
    else
-      _add="database shrunk than expected. can only create"
-      printf "${_err} due to: %s %s of %s db.* files:\n" "$_add" \
-         "${#ar_txt[@]}" "${#ar_split[@]}"
+      _add='database shrunk than expected. can only create'
+      printf "${_err} due to: %s %s of %s db.* files:\n" "$_add" "${#ar_txt[@]}" "${#ar_split[@]}"
       exit 1
    fi
 else

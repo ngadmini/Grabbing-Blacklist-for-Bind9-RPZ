@@ -4,17 +4,19 @@
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # PLEASE PAY ATTENTIONS
+#   you may want to change all variables to default values
+#   like in grab_lib, instead of changing them here directly.
+#   *) blank lines and lines starting with '#' will be ignored.
 #   *) all variables must be determined.
-#   *) do not leave one of the following variables undefined,
-#      script will be terminating with error.
-#   *) blank lines and lines starting with '#' will be ignored
+#   *) do not leave any of the following variables undefined,
+#      it will return all variables to their default values.
 ##############################################################
 
 # specifies host-name in FQDN or ip-address of your bind9-server
 # use fqdn
-#   HOST="rpz.warnet-ersa.net"
+#   HOST=rpz.warnet-ersa.net
 # or ip-address
-#   HOST="172.30.254.253"
+#   HOST=172.30.254.253
 HOST=rpz.warnet-ersa.net
 
 # specifies your locale country numeric
@@ -32,17 +34,17 @@ RNDC_RELOAD=no
 # change Resource Record <CNAME> and Right Hand Value <.> if you have other
 # policy of RR and RH Value, applied to domains and ip-address.
 # for example, change Right Hand Value with <block.example.net.>:
-#   RPZ_DOM="CNAME block.example.net."
+#   RPZ_DOM=CNAME block.example.net.
 #   or
-#   RPZ_DOM="IN CNAME block.example.net."
-#   RPZ_IPV=".rpz-nsip CNAME block.example.net."
+#   RPZ_DOM=IN CNAME block.example.net.
+#   RPZ_IPV=.rpz-nsip CNAME block.example.net.
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
 # this below value <RR_RH="CNAME ."> are define for:
 #   QNAME Trigger with NXDOMAIN Action, for domains
 #   NS-IP Trigger with NXDOMAIN Action, for ip-address
-RPZ_DOM="CNAME ."
-RPZ_IPV="rpz-nsip CNAME ."
+RPZ_DOM=CNAME .
+RPZ_IPV=rpz-nsip CNAME .
 
 # change to directory where zone-files (rpz.* and db.*) are located  
 ZONE_DIR=/etc/bind/zones-rpz
