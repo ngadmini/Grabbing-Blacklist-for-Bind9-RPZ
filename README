@@ -81,10 +81,10 @@ prerequisites:
                                  # change Resource Record <CNAME> and Right Hand Value <.>
                                  # if you have other policy RR and RH Value.
                                  # for example, change Right Hand Value with <block.example.net.>:
-                                 #   RPZ_DOM="CNAME block.example.net."
+                                 #   RPZ_DOM=CNAME block.example.net.
                                  #   or
-                                 #   RPZ_DOM="IN CNAME block.example.net."
-                                 #   RPZ_IPV="rpz-nsip CNAME block.example.net."
+                                 #   RPZ_DOM=IN CNAME block.example.net.
+                                 #   RPZ_IPV=rpz-nsip CNAME block.example.net.
                                  # for more detail about rpz policy action, please see:
                                  #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
       ZONE_DIR=/etc/bind/zones-rpz
