@@ -11,11 +11,8 @@ license:
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 what's new in v6.5:
-*) major update
-*) adding new variable in grab_cnf : DIR_TARGET, RPZ_DOM and RPZ_IPV
-*) completely ignore grab_cnf when misconfiguration occurs
-*) compatible with shellcheck
-*) adjustments to url-address changes
+*) splitting trust+ category to 2 sub-category
+*) regex adjustment to fixing TLD typos coming from remote files
 
 file parts of this version:
    download script-pack from:
@@ -57,8 +54,8 @@ file parts of this version:
         ~$ unpigz -v rpz-2022-04-09.tar.gz
         ~$ tar -xvf rpz-2022-04-09.tar
 
-  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
-         rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
+         rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
   11. all of them must present in the same directory
 
 prerequisites:
@@ -75,11 +72,14 @@ prerequisites:
 
       # specify in fqdn or ip-address
       HOST=rpz.warnet-ersa.net
+
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>
       RNDC_RELOAD=yes
+
       # set to your locale country numeric
       LC_NUMERIC=id_ID.UTF-8
+
       # change Resource Record <CNAME> and Right Hand Value <.>
       # if you have other policy RR and RH Value.
       # for example, change Right Hand Value with <block.example.net.>:
@@ -93,6 +93,7 @@ prerequisites:
       RPZ_DOM=CNAME .
       # NS-IP Trigger with NXDOMAIN Action for ip-address
       RPZ_IPV=rpz-nsip CNAME .
+
       # change to directory where zone-files (rpz.* and db.*) are located
       # in bind9-server
       ZONE_DIR=/etc/bind/zones-rpz
