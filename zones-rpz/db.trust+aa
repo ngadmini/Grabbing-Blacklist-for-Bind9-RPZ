@@ -1,0 +1,10 @@
+; generate at [Sel 24 Mei 2022 10:51:29  WIB] by grab_build.sh v6.6
+;
+0-0.binance.com CNAME .
+*.0-0.binance.com CNAME .
+0-1-2.binance.com CNAME .
+*.0-1-2.binance.com CNAME .
+0-1-5.binance.com CNAME .
+*.0-1-5.binance.com CNAME .
+0-1.binance.com CNAME .
+*.0-1.binance.com CNAME .

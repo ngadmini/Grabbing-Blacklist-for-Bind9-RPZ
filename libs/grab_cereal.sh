@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v6.5
+#   v6.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -35,8 +35,9 @@ cd "$_DIR"
 # predefined array as a blanko to counter part 'ar_zon' array
 ar_miss=()
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-      rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
+      rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab )
 mapfile -t ar_zon < <(f_fnd "rpz.*")
+printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
 
 printf "\n${_inf} incrementing serial of zone-files (rpz.* files)%s\n" ""
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
@@ -61,7 +62,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
          f_g4c "$Z"
       done
       f_pms
-      printf "${_inf} all serial zones incremented to \e[96m%s\e[0m" "$newSERIAL"
+      printf "${_inf} all serial zones incremented to ${_cyn}%s${_ncl}" "$newSERIAL"
    else
       printf "${_err} problem with file name. please check name of zone-files, it's must be:%s\n" ""
       printf "${ar_rpz[*]}%s\n" ""
@@ -69,14 +70,12 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    fi
 
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-     printf "${_err} rpz.* files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_rpz[@]}"
+     printf "${_err} zone-files files: %s exceeds from %s\n" "${#ar_zon[@]}" "${#ar_rpz[@]}"
      printf "${_hnt} please double-check number of zone-files%s\n" ""
-     exit 1
-
+     f_xcd 19 "$miss_v"
 else
    printf "${_err} due to: \"FOUND %s of %s zone-files\". %s\n" \
       "${#ar_zon[@]}" "${#ar_rpz[@]}" "missing zone-files:"
-   printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
    printf "~ %s\n" "$miss_v"
    ar_miss+=("$miss_v")
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"

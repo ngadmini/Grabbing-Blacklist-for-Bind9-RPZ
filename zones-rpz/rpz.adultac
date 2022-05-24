@@ -1,8 +1,8 @@
-; generate at [Sel 17 Mei 2022 11:25:13  WIB] by grab_cereal.sh v6.5
+; generate at [Sel 24 Mei 2022 10:51:30  WIB] by grab_cereal.sh v6.6
 ;   rpz.adultac
 $TTL 3600
-@   SOA   adultac.localhost. dummy.adultac.localhost. (2022051734 3600 300 86400 60)
+@   SOA   adultac.localhost. dummy.adultac.localhost. (2022052405 3600 300 86400 60)
 @    NS   adultac.localhost.
-@    IN   A    127.0.5.1
+@    IN   A    127.0.0.19
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultac"

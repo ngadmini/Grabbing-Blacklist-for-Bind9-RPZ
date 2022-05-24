@@ -1,0 +1,15 @@
+; generate at [Sel 24 Mei 2022 10:51:31  WIB] by grab_cereal.sh v6.6
+;   rpz.trust+aa
+$TTL 3600
+@   SOA   trust+aa.localhost. dummy.trust+aa.localhost. (2022052417 3600 300 86400 60)
+@    NS   trust+aa.localhost.
+@    IN   A    127.0.0.24
+;
+*.bet     CNAME .
+*.casino  CNAME .
+*.lotto   CNAME .
+*.poker   CNAME .
+*.xn--t14rkecasinositeleri-txa92kea2093q.site   CNAME .
+xn--t14rkecasinositeleri-txa92kea2093q.site     CNAME .
+;
+$INCLUDE "/etc/bind/zones-rpz/db.trust+aa"

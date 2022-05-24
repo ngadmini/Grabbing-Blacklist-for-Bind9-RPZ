@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_scp.sh
-#   v6.5
+#   v6.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -32,8 +32,8 @@ printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
-f_pms      # start syncronizing
-f_syn      #
+f_pms
+f_syn      # syncronizing
 
 runTime=$((SECONDS - startTime))
 f_sm11 "$((runTime/60))m" "$((runTime%60))s"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_build.sh
-#   v6.5
+#   v6.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -37,7 +37,7 @@ cd "$_DIR"
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 # split txt.adult into sub-categories to reduce server-load when initiating rndc
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
-   txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
+   txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+aa txt.trust+ab)
 
 for y in ${ar_cat[*]}; do
    if ! [[ -e $y ]]; then
@@ -50,23 +50,26 @@ done
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
    unset -v ar_CAT
-   printf "\n${_inf} splitting ${_cyn}%s${_ncl} to 750.000 lines/sub-category %s\n" "${ar_cat[0]}" ":"
-   split -l 750000 txt.adult txt.adult
-   mv txt.adult /tmp
+   printf "\n${_inf} splitting ${_cyn}%s${_ncl} to 749.999 lines/sub-category %s\n" "${ar_cat[0]}" ":"
+   split -l 749999 txt.adult txt.adult
+   split -l 499999 txt.trust+ txt.trust+
+   mv txt.{adult,trust+} /tmp
    mapfile -t ar_txt < <(f_fnd "txt.*")
    printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:0:7}"
+   printf "${_inf} splitting ${_cyn}%s${_ncl} to 499.999 lines/sub-category %s\n" "${ar_cat[5]}" ":"
+   printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:11:12}"
 
    if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
       unset -v ar_cat
-      ar_dom=()                                   # declare temporary files as array
-      for Y in {0..11}; do
+      ar_dom=()               # declare temporary files as array
+      for Y in {0..12}; do
          ar_dom+=("${ar_txt[Y]/txt./db.}")
       done
 
-      f_frm "db.*"                                # remove previously db.* if any
+      f_frm "db.*"            # remove previously db.* if any
       printf "${_inf} rewriting all CATEGORIES to RPZ format%s\n" " "
 
-      for X in {0..11}; do                        # build dBASE in rpz format
+      for X in {0..12}; do    # build dBASE in rpz format
          if [[ $X -eq 7 ]]; then
             f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
          else

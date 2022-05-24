@@ -21,7 +21,7 @@
  7. [grab_regex][grab-regex] --list of reguler expressions. case sensitive, strict order, line count and no blank lines
  8. [grab_scp.sh][grab-scp] --intended for syncronize latest dBASE to Bind9 host
  9. [grab_cnf][grab-cnf] --configurations file
-10. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+}][zone-file] --pack of zone-files, targeted by [grab_cereal.sh][grab-cereal]
+10. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+aa, trust+ab}][zone-file] --pack of zone-files, targeted by [grab_cereal.sh][grab-cereal]
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
 - [x] please see [these wiki][wik-i] and [README][read-me]
