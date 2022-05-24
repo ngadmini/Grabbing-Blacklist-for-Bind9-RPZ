@@ -118,9 +118,9 @@ usage:
 
 output:
 *) db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
-      db.ipv4 db.malware db.publicite db.redirector db.trust+
+      db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
 *) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
 
 please use our discussion for questions, feedback and bug fixes:
