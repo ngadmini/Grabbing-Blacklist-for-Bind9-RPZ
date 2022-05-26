@@ -64,7 +64,7 @@ f_xcd() {   # exit code {7..20}
              printf "\n%s\n%s %s\n" "$_xcd" "$_lnn" "$_msg"; return 1;;
          13) _ref='https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
              _unk='Check out [grab_urls]. if those url[s] are correct, please reffer to'
-             printf "${_err} %s:\n%s\n" "$_unk" "$_ref"; return 1;;
+             printf "${_err} %s:\n%s\n" "$_unk" "$_ref"; exit;;
          14) printf "\n%s\n%s\n" "$_xcd" "download failed from '$2'"; return 1;;
          15) printf "\n%s\n%s\n" "$_xcd" "category: must equal 6"; return 1;;
          16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "$CNF" | cut -d: -f1)"
