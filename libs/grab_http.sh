@@ -71,20 +71,16 @@ f_src() {
 }
 
 # START <preparing>
-f_src
-f_cnf
+f_src; f_cnf
 printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 cd "$_DIR"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-[[ ! $UID -eq 0 ]] || f_xcd 10
-f_ok
+[[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 
 printf "${_pre} %-63s" "check required packages on local-host: $(hostname -I)"
 pkg='curl dos2unix faketime libnet-netmask-perl rsync'
 for D in $pkg; do
-   if ! dpkg -s "$D" >> /dev/null 2>&1; then
-      f_xcd 8 "$D"
-   fi
+   if ! dpkg -s "$D" >> /dev/null 2>&1; then f_xcd 8 "$D"; fi
 done
 f_ok
 
@@ -100,10 +96,8 @@ for e in {"$_REG","$_URL"}; do
    _sed -i "/^$/d" "$e"
 done
 
-mapfile -t ar_url < "$_URL"
-[[ ${#ar_url[@]} -eq ${wc_url} ]] || f_xcd 11 "$_URL"
-mapfile -t ar_reg < "$_REG"
-[[ ${#ar_reg[@]} -eq ${wc_reg} ]] || f_xcd 12 "$_REG"
+mapfile -t ar_url < "$_URL"; [[ ${#ar_url[@]} -eq ${wc_url} ]] || f_xcd 11 "$_URL"
+mapfile -t ar_reg < "$_REG"; [[ ${#ar_reg[@]} -eq ${wc_reg} ]] || f_xcd 12 "$_REG"
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n"
@@ -146,13 +140,8 @@ f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
-f_sm8 "${ar_cat[4]}" 2
-
-for F in {4,5}; do              # done when initiating category
-   f_sm7 "$F" "${ar_sho[F]}"
-   f_do
-done
-
+f_sm8 "${ar_cat[4]}" 2          # done when initiating category
+for F in {4,5}; do f_sm7 "$F" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -251,9 +240,14 @@ runTime=$((SECONDS - startTime))
 f_sm6 "$((runTime/60))m" "$((runTime%60))s"
 f_klin
 
-# COMPLETED <new taks>
-f_sm0 "${HOST}"      # offerring OPTIONs: continued to next tasks OR stop here
+# completing the task. offerring OPTIONs: continued to next tasks OR stop here
+f_sm0 "${HOST}"
 read -r RETVAL
+until [[ ${RETVAL} =~ ^[1-4]{1}$ ]]
+do
+   printf "please enter: ${_cyn}[1|2|3|4]${_ncl} or Ctrl+c to quit%s\n"
+   read -r RETVAL
+done
 case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2
