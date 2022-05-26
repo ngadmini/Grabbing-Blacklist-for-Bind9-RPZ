@@ -1,8 +1,9 @@
-; generate at [Sel 24 Mei 2022 10:51:31  WIB] by grab_cereal.sh v6.6
+; generate at 20220526_23:12:26 WIB by grab_cereal.sh v6.6
 ;   rpz.adultad
 $TTL 3600
-@   SOA   adultad.localhost. dummy.adultad.localhost. (2022052405 3600 300 86400 60)
-@    NS   adultad.localhost.
-@    IN   A    127.0.0.20
+$ORIGIN adultad.domain.
+@   SOA   adultad.domain. rpz.adultad.domain. (2022052614 3600 3600 86400 3600)
+@         NS   adultad.domain.
+@   IN    A    127.0.0.20
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultad"

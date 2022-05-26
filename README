@@ -13,6 +13,7 @@ license:
 what's new in v6.6:
 *) splitting trust+ category to 2 sub-category
 *) regex adjustment to fixing TLD typos coming from remote files
+*) rename some script files and modifying zone-files
 
 file parts of this version:
    download script-pack from:
@@ -23,7 +24,7 @@ file parts of this version:
         the same directory. IF no option is selected, it just generates a txt.*
         which is not free from duplication
 
-   2. grab_dedup.sh --removing duplicate entries between domain lists.
+   2. grab_duplic.sh --removing duplicate entries between domain lists.
         you can run this scipt separately, only if txt.* are available in the same directory.
 
          ~ ls | grep txt | tr "\n" " "
@@ -37,8 +38,8 @@ file parts of this version:
         you can run this scipt separately, only if rpz.* are available in the same directory.
         if not, it try to get from bind9-server. it generated new serial at zone-files
 
-   5. grab_cnf --configuration file.
-   6. grab_lib --a library of functions and fundamental values
+   5. grab_config --configuration file.
+   6. grab_library --a library of functions and fundamental values
         NO need modify, except you want change RPZ-policy triggers and actions.
         please SEE prerequisites section in this README
 
@@ -47,7 +48,7 @@ file parts of this version:
    8. grab_regex --contain reguler expressions.
         case sensitive, strict order, line count and no blank lines
 
-   9. grab_scp.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
+   9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
         old db.* and rpz.* files in BIND9-server. use below to decompress
 
@@ -64,7 +65,7 @@ prerequisites:
       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
-      # modify file grab_cnf to fit your BIND9-server environment
+      # modify file grab_config to fit your BIND9-server environment
       #   *) there are 6 variables you have to change.
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) do not leave any of the following variables undefined.

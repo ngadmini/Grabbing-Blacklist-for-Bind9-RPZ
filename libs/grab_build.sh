@@ -13,9 +13,11 @@ umask 027
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+l_adult=749999               # number of split lines
+l_trust=399999               #
 
 f_src() {
-   readonly _LIB="$_DIR"/grab_lib
+   readonly _LIB="$_DIR"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
@@ -29,75 +31,77 @@ f_src() {
 # START <main script>
 f_src
 f_cnf
-printf "\n${_red}[2'nd] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "$(date)"
+printf "\n${_red}[2'nd] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
 
-# predefined array as a blanko to counter part 'others' array
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-# split txt.adult into sub-categories to reduce server-load when initiating rndc
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+aa txt.trust+ab)
-
-for y in ${ar_cat[*]}; do
-   if ! [[ -e $y ]]; then
-      mapfile -t ar_CAT < <(f_fnd "txt.*")
-      printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
-      f_xcd 17 "$miss_v"
-   fi
-done
-
 mapfile -t ar_CAT < <(f_fnd "txt.*")
-if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
-   unset -v ar_CAT
-   printf "\n${_inf} splitting ${_cyn}%s${_ncl} to 749.999 lines/sub-category %s\n" "${ar_cat[0]}" ":"
-   split -l 749999 txt.adult txt.adult
-   split -l 499999 txt.trust+ txt.trust+
-   mv txt.{adult,trust+} /tmp
-   mapfile -t ar_txt < <(f_fnd "txt.*")
-   printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:0:7}"
-   printf "${_inf} splitting ${_cyn}%s${_ncl} to 499.999 lines/sub-category %s\n" "${ar_cat[5]}" ":"
-   printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:11:12}"
+printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
-   if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
-      unset -v ar_cat
-      ar_dom=()               # declare temporary files as array
-      for Y in {0..12}; do
-         ar_dom+=("${ar_txt[Y]/txt./db.}")
-      done
-
-      f_frm "db.*"            # remove previously db.* if any
-      printf "${_inf} rewriting all CATEGORIES to RPZ format%s\n" " "
-
-      for X in {0..12}; do    # build dBASE in rpz format
-         if [[ $X -eq 7 ]]; then
-            f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
-         else
-            f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
-         fi
-      done
-
-      printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
-      printf "%45s : %10s entries" "TOTAL" "$ttl"
-
-   elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
-      _add='database grows than expected. can produce:'
-      printf "${_err} %s %s db.* files exceeds from %s\n" "$_add" "${#ar_txt[@]}" "${#ar_split[@]}"
-      printf "${_hnt} please make adjustments on your:%s\n" ""
-      printf "\t- $(basename "$0") at line %s\n" "$(grep -n "^ar_split" "$0" | cut -d':' -f1)"
-      printf "\t- grab_cereal.sh at line %s\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
-      printf "\t- zone-files [rpz.*]\n"
-      printf "\t- bind9-server configurations\n"
-      exit 1
+# check CATEGORY files && split txt.adult & txt.trust+
+if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" ]]; then
+   if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
+      unset -v ar_CAT
+      printf "\n${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${l_adult}"
+      split -l "${l_adult}" "${ar_cat[0]}" "${ar_cat[0]}"
+      split -l "${l_trust}" "${ar_cat[5]}" "${ar_cat[5]}"
+      mv txt.{adult,trust+} /tmp
+      mapfile -t ar_txt < <(f_fnd "txt.*")
+      printf -v mr_p "%s" "$(echo "${ar_split[@]}" "${ar_txt[@]}" | f_sed)"
+      printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:0:7}"
+      printf "${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:" "${ar_cat[5]}" "${l_trust}"
+      printf "\n${_cyn}%s${_ncl}\n" "${ar_txt[*]:11:2}"
    else
-      _add='database shrunk than expected. can only create'
-      printf "${_err} due to: %s %s of %s db.* files:\n" "$_add" "${#ar_txt[@]}" "${#ar_split[@]}"
-      exit 1
+      printf "\n${_err} file name notMATCH: %s\n" "$miss_v"
+      f_xcd 19 "${ar_cat[*]}"
    fi
+elif [[ ${#ar_CAT[@]} -gt ${#ar_cat[@]} ]]; then
+      printf "\n${_err} files exceeds from %s to %s\n" "${#ar_cat[@]}" "${#ar_CAT[@]}"
+      f_xcd 19 "$miss_v"
 else
-   printf "\n${_err} due to: FOUND %s domain list:\n\t%s\n" "${#ar_CAT[@]}" "${ar_CAT[*]}"
-   printf "${_hnt} expected %s domains list: \n\t%s\n" "${#ar_cat[@]}" "${ar_cat[*]}"
+   f_xcd 17 "$miss_v"
+fi
+
+# rebuild to rpz-format
+if ! [[ ${ar_txt[*]} == "${ar_split[*]}" ]]; then
+   printf "${_err} file name notMATCH: %s\n" "$mr_p"
+   f_xcd 19 "${ar_split[*]}"
+fi
+if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
+   f_frm "db.*"
+   ar_dom=()
+   for Y in "${!ar_txt[@]}"; do
+      ar_dom+=("${ar_txt[Y]/txt./db.}")
+   done
+
+   printf "${_inf} rewriting all CATEGORIES to RPZ format%s\n"
+
+   for X in "${!ar_txt[@]}"; do
+      if [[ $X -eq 7 ]]; then
+         f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
+      else
+         f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
+         fi
+   done
+
+   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
+   printf "%45s : %10s entries" "TOTAL" "${ttl}"
+
+elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
+   _add='database grows than expected'
+   printf "${_err} %s. exceeds from %s files to %s files\n" "$_add" "${#ar_split[@]}" "${#ar_txt[@]}"
+   printf "${_hnt} please make adjustments on your:%s\n"
+   printf "\t- ${0##*/} at line %s\n" "$(grep -n "^ar_split" "${0##*/}" | cut -d':' -f1)"
+   printf "\t- grab_cereal.sh at line %s\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
+   printf "\t- zone-files [rpz.*]\n"
+   printf "\t- bind9-server configurations\n"
    exit 1
+else
+   printf "${_err} missing file:\n\t%s" "$mr_p"
+   f_xcd 17 "$mr_p"
 fi
 
 runTime=$((SECONDS - startTime))

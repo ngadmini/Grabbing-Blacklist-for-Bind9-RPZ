@@ -1,9 +1,10 @@
-; generate at [Sel 24 Mei 2022 10:51:31  WIB] by grab_cereal.sh v6.6
+; generate at 20220526_23:12:26 WIB by grab_cereal.sh v6.6
 ;   rpz.ipv4
 $TTL 3600
-@   SOA   ipv4.localhost. dummy.ipv4.localhost. (2022052405 3600 300 86400 60)
-@    NS   ipv4.localhost.
-@    IN   A    127.0.0.13
+$ORIGIN ipv4.domain.
+@   SOA   ipv4.domain. rpz.ipv4.domain. (2022052614 3600 3600 86400 3600)
+@         NS   ipv4.domain.
+@   IN    A    127.0.0.13
 ;
 ; bappebti_ipv4
 32.244.107.77.103.rpz-nsip  CNAME .

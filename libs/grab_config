@@ -1,16 +1,17 @@
 # TAGS
-#   grab_cnf
+#   grab_config
 #   v6.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # PLEASE PAY ATTENTIONS
+#   *) type in format VARIABLE=VALUE
 #   *) blank lines and lines starting with '#' will be ignored.
 #   *) all variables must be determined.
 #   *) do not leave any of the following variables undefined,
 #      it will return all variables to their default values.
 #   OR
 #   *) you may want to change all variables to default values
-#      like in grab_lib, instead of changing them here directly.
+#      like in grab_library, instead of changing them here directly.
 ##############################################################
 
 # identify clearly and with certainty host-name in FQDN 
@@ -43,9 +44,7 @@ RNDC_RELOAD=no
 #   RPZ_IPV=.rpz-nsip CNAME block.example.net.
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-# this below value <RR_RH="CNAME ."> are define for:
-#   QNAME Trigger with NXDOMAIN Action, for domains
-#   NS-IP Trigger with NXDOMAIN Action, for ip-address
+# this below value <RR_RH=CNAME .> are define for:
 RPZ_DOM=CNAME .
 RPZ_IPV=rpz-nsip CNAME .
 

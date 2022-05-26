@@ -15,13 +15,16 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _BLD="$_DIR"/grab_build.sh
 _CRL="$_DIR"/grab_cereal.sh
-_DPL="$_DIR"/grab_dedup.sh
+_DPL="$_DIR"/grab_duplic.sh
 _REG="$_DIR"/grab_regex
-_SCP="$_DIR"/grab_scp.sh
+_SCP="$_DIR"/grab_rsync.sh
 _URL="$_DIR"/grab_urls
+wc_cat=6       # number of category
+wc_url=22      # number of lines ${_URL}
+wc_reg=3       # number of lines $(_REG}
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
-   printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n" ""
+   printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n"
    f_tmp                       # remove temporary dir-file if any
 
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initial category
@@ -29,25 +32,26 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
       ext_dsi=${tar_dsi/.tar.gz/}
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -C - -ksfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
-      tar -xzf "$tar_dsi" "$ext_dsi/domains"
+      find . -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
+      tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
       f_do
    done
 
-   mkdir ipv4                  # define directory as initial category
-   mv phishing malware         # ie.
+   mkdir ipv4                  # make adjusment for initial category
+   mv phishing malware         #
    mv gambling trust+          # adult ipv4 malware publicite redirector AND trust+
    cat vpn/domains >> redirector/domains
-   rm -r vpn
+   rm -rf vpn
 
-   # declare initial array (ar_cat) AND define some arrays based on its
+   # initial array (ar_cat) AND define some new arrays based on its
    mapfile -t ar_cat < <(f_cat)
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   [[ ${#ar_cat[@]} -eq 6 ]] || f_xcd 15
-   f_frm "txt.*"               # remove previously CATEGORY if any
+   [[ ${#ar_cat[@]} -eq ${wc_cat} ]] || f_xcd 15
+   f_frm "txt.*"               # remove previously CATEGORY-files if any
    ar_dmn=()                   # ar_dmn as raw-domains container
    ar_tmp=()                   # ar_tmp as in-process-domains container (temporary)
    ar_txt=()                   # ar_txt as processed-domains container
-   for B in {0..5}; do
+   for B in "${!ar_cat[@]}"; do
       ar_dmn+=("${ar_cat[B]}"/domains)
       ar_tmp+=(tmq."${ar_cat[B]}")
       ar_txt+=(txt."${ar_cat[B]}")
@@ -55,7 +59,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 }
 
 f_src() {
-   readonly _LIB="$_DIR"/grab_lib
+   readonly _LIB="$_DIR"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
@@ -69,7 +73,7 @@ f_src() {
 # START <preparing>
 f_src
 f_cnf
-printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "$(date)"
+printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 cd "$_DIR"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10
@@ -97,18 +101,18 @@ for e in {"$_REG","$_URL"}; do
 done
 
 mapfile -t ar_url < "$_URL"
-[[ ${#ar_url[@]} -eq 22 ]] || f_xcd 11 "$_URL"
+[[ ${#ar_url[@]} -eq ${wc_url} ]] || f_xcd 11 "$_URL"
 mapfile -t ar_reg < "$_REG"
-[[ ${#ar_reg[@]} -eq 3 ]] || f_xcd 12 "$_REG"
+[[ ${#ar_reg[@]} -eq ${wc_reg} ]] || f_xcd 12 "$_REG"
 f_ok
 
-printf "${_pre} check the remote-files isUP or isDOWN%s\n" ""
+printf "${_pre} check the remote-files isUP or isDOWN%s\n"
 f_crawl "$_URL"
 
 # <main script>
 f_grab                         # grabbing categories
 
-# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${urls[1,7,21]}
+# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="$_DIR")
 untrust=$(mktemp --tmpdir="$_DIR")
@@ -120,7 +124,7 @@ f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 # identifying porn domains, use its to reduce porn domains in trust+ category
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-f_ip "$porn" "${ar_dmn[1]}"
+f_ip "${porn}" "${ar_dmn[1]}"
 _sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grep -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 
@@ -141,7 +145,7 @@ f_sm7 7 "${ar_sho[7]}"; f_do    # done when processing trust+ category
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${urls[4,5]}
+# category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 f_sm8 "${ar_cat[4]}" 2
 
 for F in {4,5}; do              # done when initiating category
@@ -152,7 +156,7 @@ done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${urls[3,8..11]}
+# category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm8 "${ar_cat[3]}" 5
 f_sm7 3 "${ar_sho[3]}";f_do     # done when initiating category
 
@@ -201,20 +205,20 @@ f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
-[[ ${#ar_txt[@]} -eq 6 ]] || f_xcd 15
+[[ ${#ar_txt[@]} -eq ${#ar_cat[@]} ]] || f_xcd 15
 printf "\nacquired domains (${_cyn}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
-for J in {0..5}; do
+for J in "${!ar_cat[@]}"; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
-   printf "%12s: %9s entries\n" "${ar_cat[J]}" "$aqr_sum"
+   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${aqr_sum}"
 done
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
-printf "%12s: %9s entries\n" "TOTAL" "$_sum"
+printf "%12s: %9s entries\n" "TOTAL" "${_sum}"
 
 # END <finishing>
-printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-nets into CIDR blocks if any%s\n" ""
+printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-nets into CIDR blocks if any%s\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
-for K in {0..5}; do
+for K in "${!ar_txt[@]}"; do
    if [[ $K -eq 1 ]]; then   # turn ipv4 sub-nets into Classless Inter-Domain Routing (CIDR) blocks if any
       while read -r; do      # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
@@ -225,7 +229,7 @@ for K in {0..5}; do
          END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
       done < "${ar_txt[K]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
-      printf "%12s: %9s entries\n" "${ar_cat[K]}" "$_ip4"
+      printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
    else                      # prune sub-domains if parent domain present
       _sed 's/^/\./' "${ar_txt[K]}" \
          | rev \
@@ -235,7 +239,7 @@ for K in {0..5}; do
          | _sed "s/^\.//" \
          | _sort > "${ar_tmp[K]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
-      printf "%12s: %9s entries\n" "${ar_cat[K]}" "$_snp"
+      printf "%12s: %9s entries\n" "${ar_cat[K]}" "{$_snp}"
    fi
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
@@ -252,9 +256,39 @@ f_sm0 "${HOST}"      # offerring OPTIONs: continued to next tasks OR stop here
 read -r RETVAL
 case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
-   2) f_sm2; "$_DPL"; "$_BLD"; f_sm10 nd;;
-   3) f_sm3; "$_DPL"; "$_BLD"; "$_CRL"; f_sm10 th;;
-   4) f_sm4; "$_DPL"; "$_BLD"; "$_CRL"; "$_SCP"; f_sm10 th;;
+   2) f_sm2
+      if "$_DPL"; then
+         if "$_BLD"; then; f_sm10 nd; fi
+      else
+         exit 1
+      fi
+      ;;
+   3) f_sm3
+      if "$_DPL"; then
+         if "$_BLD"; then
+            if "$_CRL"; then; f_sm10 th; fi
+         else
+            exit 1
+         fi
+      else
+         exit 1
+      fi
+      ;;
+   4) f_sm4
+      if "$_DPL"; then
+         if "$_BLD"; then
+            if "$_CRL"; then
+               if "$_SCP"; then; f_sm10 th; fi
+            else
+               exit 1
+            fi
+         else
+            exit 1
+         fi
+      else
+         exit 1
+      fi
+      ;;
    *) f_rvu;;
 esac
 printf "bye!\n"

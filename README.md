@@ -13,14 +13,14 @@
 
 ### script-pack
  1. [grab_http.sh][grab-http]  --grabbing and proccessing raw domains
- 2. [grab_dedup.sh][grab-dedup] --removing duplicate entries between domain lists
+ 2. [grab_duplic.sh][grab-dedup] --removing duplicate entries between domain lists
  3. [grab_build.sh][grab-build] --rewriting to Bind9-RPZ format
  4. [grab_cereal.sh][grab-cereal] --incrementing serial zones
- 5. [grab_lib][grab-lib] --a library of functions. intended for use by other scripts, not to be executed directly
+ 5. [grab_library][grab-lib] --a library of functions. intended for use by other scripts, not to be executed directly
  6. [grab_urls][grab-urls] --urls list of remote files. case sensitive, strict order, line count and no blank lines
  7. [grab_regex][grab-regex] --list of reguler expressions. case sensitive, strict order, line count and no blank lines
- 8. [grab_scp.sh][grab-scp] --intended for syncronize latest dBASE to Bind9 host
- 9. [grab_cnf][grab-cnf] --configurations file
+ 8. [grab_rsync.sh][grab-scp] --intended for syncronize latest dBASE to Bind9 host
+ 9. [grab_config][grab-cnf] --configurations file
 10. [rpz.{adulta*,ipv4,malware,publicite,redirector,trust+aa, trust+ab}][zone-file] --pack of zone-files, targeted by [grab_cereal.sh][grab-cereal]
 > <b>NOTE</b><br>Place theme all under the same directory
 ### requirements:
@@ -49,14 +49,14 @@ the partial output of this script-pack, can be found at [Partial Output][part-ou
 [usage-wiki-badge]: https://img.shields.io/badge/USAGE:-Wiki-lightgrey?style=flat&logo=github
 
 [grab-http]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_http.sh
-[grab-dedup]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_dedup.sh
+[grab-dedup]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_duplic.sh
 [grab-build]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_build.sh
 [grab-cereal]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cereal.sh
-[grab-lib]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_lib
+[grab-lib]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_library
 [grab-urls]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_urls
 [grab-regex]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_regex
-[grab-scp]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_scp.sh
-[grab-cnf]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_cnf
+[grab-scp]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_rsync.sh
+[grab-cnf]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/blob/master/libs/grab_config
 [zone-file]: https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/tree/master/zones-rpz
 [kominfo-nkri]: https://trustpositif.kominfo.go.id/assets/db/domains
 [part-output]: https://github.com/ngadmini/partial-output

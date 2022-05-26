@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_scp.sh
+#   grab_rsync.sh
 #   v6.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -14,7 +14,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 f_src() {
-   readonly _LIB="$_DIR"/grab_lib
+   readonly _LIB="$_DIR"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
@@ -28,7 +28,7 @@ f_src() {
 # START <main script>
 f_src
 f_cnf
-printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "$(date)"
+printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
 

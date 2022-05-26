@@ -1,9 +1,10 @@
-; generate at [Sel 24 Mei 2022 10:51:31  WIB] by grab_cereal.sh v6.6
+; generate at 20220526_23:12:26 WIB by grab_cereal.sh v6.6
 ;   rpz.publicite
 $TTL 3600
-@   SOA   publicite.localhost. dummy.publicite.localhost. (2022052405 3600 300 86400 60)
-@    NS   publicite.localhost.
-@    IN   A    127.0.0.15
+$ORIGIN publicite.domain.
+@   SOA   publicite.domain. rpz.publicite.domain. (2022052614 3600 3600 86400 3600)
+@         NS   publicite.domain.
+@   IN    A    127.0.0.15
 ;
 ; indiehome
 d01.notifa.info IN CNAME .
