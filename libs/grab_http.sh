@@ -217,7 +217,7 @@ for K in "${!ar_txt[@]}"; do
          $b->storeNetblock();
          END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
       done < "${ar_txt[K]}"
-      printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}"
+      printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
    else                      # prune sub-domains if parent domain present
       _sed 's/^/\./' "${ar_txt[K]}" \
@@ -227,8 +227,8 @@ for K in "${!ar_txt[@]}"; do
          | rev \
          | _sed "s/^\.//" \
          | _sort > "${ar_tmp[K]}"
-      printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}"
-      printf "%12s: %9s entries\n" "${ar_cat[K]}" "{$_snp}"
+      printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
+      printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_snp}"
    fi
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
