@@ -5,7 +5,7 @@
 #   ngadimin@warnet-ersa.net
 # NOTE
 #   intended for use by other scripts, not to be executed directly.
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 disable=SC2148
 
 shopt -s expand_aliases
 alias _sort="LC_ALL=C sort --buffer-size=80% --parallel=3"

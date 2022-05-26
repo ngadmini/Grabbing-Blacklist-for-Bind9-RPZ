@@ -258,7 +258,7 @@ case $RETVAL in
    1) f_sm1; "$_DPL"; f_sm10 st;;
    2) f_sm2
       if "$_DPL"; then
-         if "$_BLD"; then; f_sm10 nd; fi
+         if "$_BLD"; then f_sm10 nd; fi
       else
          exit 1
       fi
@@ -266,7 +266,7 @@ case $RETVAL in
    3) f_sm3
       if "$_DPL"; then
          if "$_BLD"; then
-            if "$_CRL"; then; f_sm10 th; fi
+            if "$_CRL"; then f_sm10 th; fi
          else
             exit 1
          fi
@@ -278,7 +278,7 @@ case $RETVAL in
       if "$_DPL"; then
          if "$_BLD"; then
             if "$_CRL"; then
-               if "$_SCP"; then; f_sm10 th; fi
+               if "$_SCP"; then f_sm10 th; fi
             else
                exit 1
             fi
