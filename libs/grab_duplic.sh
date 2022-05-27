@@ -21,15 +21,14 @@ f_src() {
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-      exit
+      exit 1
    fi
 }
 
 # START <main script>
 f_src
 printf "\n${_red}[1'st] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
-cd "$_DIR"
-[[ ! $UID -eq 0 ]] || f_xcd 10
+cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
 
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_txt < <(f_fnd "txt.*")
@@ -81,8 +80,7 @@ if [[ ${#ar_txt[@]} -eq "${#ar_cat[@]}" ]]; then
       done
 
       f_dupl "${ar_cat[4]}"   # based on ${ar_cat[4]}
-      printf "%11s = deduplicating %s entries\t\t" "STEP 4.5" "${ar_cat[5]}"
-       _sort "${ar_txt[5]}" "${ar_txt[4]}" | uniq -d | _sort -u > "${ar_tmp[5]}"
+      f_ddup 5 "${ar_cat[5]}" "${ar_txt[5]}" "${ar_txt[4]}" "${ar_tmp[5]}" 4
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[5]}" "${ar_txt[5]}" \
          | _sort > "${ar_dmn[5]}"
       cp "${ar_dmn[5]}" "${ar_txt[5]}"

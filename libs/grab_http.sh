@@ -19,9 +19,12 @@ _DPL="$_DIR"/grab_duplic.sh
 _REG="$_DIR"/grab_regex
 _SCP="$_DIR"/grab_rsync.sh
 _URL="$_DIR"/grab_urls
-wc_cat=6       # number of category
-wc_url=22      # number of lines ${_URL}
-wc_reg=3       # number of lines $(_REG}
+
+declare -A index
+index[ar_txt]=1                # index's position ipv4 at ar_(txt|cat)
+index[ar_cat]=6                # elements number of ar_cat
+index[ar_url]=22               #                    ar_url
+index[ar_reg]=3                #                    ar_reg
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n"
@@ -43,10 +46,10 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    cat vpn/domains >> redirector/domains
    rm -rf vpn
 
-   # initial array (ar_cat) AND define some new arrays based on its
+   # initiating arrays
    mapfile -t ar_cat < <(f_cat)
+   [[ ${#ar_cat[@]} -eq ${index[ar_cat]} ]] || f_xcd 15
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   [[ ${#ar_cat[@]} -eq ${wc_cat} ]] || f_xcd 15
    f_frm "txt.*"               # remove previously CATEGORY-files if any
    ar_dmn=()                   # ar_dmn as raw-domains container
    ar_tmp=()                   # ar_tmp as in-process-domains container (temporary)
@@ -63,10 +66,10 @@ f_src() {
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
-      f_trap                 # cleanUP on exit, interrupt & terminate
+      f_trap                   # cleanUP on exit, interrupt & terminate
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-      exit
+      exit 1
    fi
 }
 
@@ -78,8 +81,7 @@ printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 
 printf "${_pre} %-63s" "check required packages on local-host: $(hostname -I)"
-pkg='curl dos2unix faketime libnet-netmask-perl rsync'
-for D in $pkg; do
+for D in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then f_xcd 8 "$D"; fi
 done
 f_ok
@@ -96,8 +98,8 @@ for e in {"$_REG","$_URL"}; do
    _sed -i "/^$/d" "$e"
 done
 
-mapfile -t ar_url < "$_URL"; [[ ${#ar_url[@]} -eq ${wc_url} ]] || f_xcd 11 "$_URL"
-mapfile -t ar_reg < "$_REG"; [[ ${#ar_reg[@]} -eq ${wc_reg} ]] || f_xcd 12 "$_REG"
+mapfile -t ar_url < "$_URL"; [[ ${#ar_url[@]} -eq ${index[ar_url]} ]] || f_xcd 11 "$_URL"
+mapfile -t ar_reg < "$_REG"; [[ ${#ar_reg[@]} -eq ${index[ar_reg]} ]] || f_xcd 12 "$_REG"
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n"
@@ -208,8 +210,8 @@ printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-n
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
 for K in "${!ar_txt[@]}"; do
-   if [[ $K -eq 1 ]]; then   # turn ipv4 sub-nets into Classless Inter-Domain Routing (CIDR) blocks if any
-      while read -r; do      # require 'libnet-netmask-perl'
+   if [[ $K -eq ${index[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
+      while read -r; do                     # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1;
          $h =~ s/(\.0)+$//;
@@ -243,47 +245,28 @@ f_klin
 # completing the task. offerring OPTIONs: continued to next tasks OR stop here
 f_sm0 "${HOST}"
 read -r RETVAL
+
 until [[ ${RETVAL} =~ ^[1-4]{1}$ ]]
 do
    printf "please enter: ${_cyn}[1|2|3|4]${_ncl} or Ctrl+c to quit%s\n"
    read -r RETVAL
 done
+
 case $RETVAL in
-   1) f_sm1; "$_DPL"; f_sm10 st;;
+   1) f_sm1; "${_DPL}"; f_sm10 st;;
    2) f_sm2
-      if "$_DPL"; then
-         if "$_BLD"; then f_sm10 nd; fi
-      else
-         exit 1
-      fi
-      ;;
+      if "$_DPL"; then if "$_BLD"; then f_sm10 nd; fi
+         else exit 1
+      fi;;
    3) f_sm3
-      if "$_DPL"; then
-         if "$_BLD"; then
-            if "$_CRL"; then f_sm10 th; fi
-         else
-            exit 1
-         fi
-      else
-         exit 1
-      fi
-      ;;
+      if "$_DPL"; then if "$_BLD"; then if "$_CRL"; then f_sm10 th; fi
+         else exit 1; fi; else exit 1
+      fi;;
    4) f_sm4
-      if "$_DPL"; then
-         if "$_BLD"; then
-            if "$_CRL"; then
-               if "$_SCP"; then f_sm10 th; fi
-            else
-               exit 1
-            fi
-         else
-            exit 1
-         fi
-      else
-         exit 1
-      fi
-      ;;
-   *) f_rvu;;
+      if "$_DPL"; then if "$_BLD"; then if "$_CRL"; then if "$_SCP"; then f_sm10 th; fi
+         else exit 1; fi; else exit 1; fi; else exit 1
+      fi;;
 esac
+
 printf "bye!\n"
 exit 0

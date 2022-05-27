@@ -13,8 +13,11 @@ umask 027
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-l_adult=749999               # number of split lines
-l_trust=399999               #
+
+declare -A index
+index[l_adult]=749999        # number of lines splitting adult domains
+index[l_trust]=399999        #                           trust+ domains
+index[db_ipv4]=7             # index's position ipv4 at ar_(txt|split)
 
 f_src() {
    readonly _LIB="$_DIR"/grab_library
@@ -24,16 +27,14 @@ f_src() {
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-      exit
+      exit 1
    fi
 }
 
 # START <main script>
-f_src
-f_cnf
+f_src; f_cnf
 printf "\n${_red}[2'nd] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
-cd "$_DIR"
-[[ ! $UID -eq 0 ]] || f_xcd 10
+cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
 
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
@@ -45,14 +46,14 @@ printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" ]]; then
    if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
       unset -v ar_CAT
-      printf "\n${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${l_adult}"
-      split -l "${l_adult}" "${ar_cat[0]}" "${ar_cat[0]}"
-      split -l "${l_trust}" "${ar_cat[5]}" "${ar_cat[5]}"
+      printf "\n${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${index[l_adult]}"
+      split -l "${index[l_adult]}" "${ar_cat[0]}" "${ar_cat[0]}"
+      split -l "${index[l_trust]}" "${ar_cat[5]}" "${ar_cat[5]}"
       mv txt.{adult,trust+} /tmp
       mapfile -t ar_txt < <(f_fnd "txt.*")
       printf -v mr_p "%s" "$(echo "${ar_split[@]}" "${ar_txt[@]}" | f_sed)"
       printf "${_cyn}%s${_ncl}\n" "${ar_txt[*]:0:7}"
-      printf "${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:" "${ar_cat[5]}" "${l_trust}"
+      printf "${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:" "${ar_cat[5]}" "${index[l_trust]}"
       printf "\n${_cyn}%s${_ncl}\n" "${ar_txt[*]:11:2}"
    else
       printf "\n${_err} file name notMATCH: %s\n" "$miss_v"
@@ -78,13 +79,12 @@ if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
    done
 
    printf "${_inf} rewriting all CATEGORIES to RPZ format%s\n"
-
    for X in "${!ar_txt[@]}"; do
-      if [[ $X -eq 7 ]]; then
+      if [[ $X -eq ${index[db_ipv4]} ]]; then
          f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
       else
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
-         fi
+      fi
    done
 
    printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
@@ -94,8 +94,8 @@ elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
    _add='database grows than expected'
    printf "${_err} %s. exceeds from %s files to %s files\n" "$_add" "${#ar_split[@]}" "${#ar_txt[@]}"
    printf "${_hnt} please make adjustments on your:%s\n"
-   printf "\t- ${0##*/} at line %s\n" "$(grep -n "^ar_split" "${0##*/}" | cut -d':' -f1)"
-   printf "\t- grab_cereal.sh at line %s\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
+   printf "\t- ${0##*/} at line %'d\n" "$(grep -n "^ar_split" "${0##*/}" | cut -d':' -f1)"
+   printf "\t- grab_cereal.sh at line %'ds\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
    printf "\t- zone-files [rpz.*]\n"
    printf "\t- bind9-server configurations\n"
    exit 1

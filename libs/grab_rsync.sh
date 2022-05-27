@@ -21,7 +21,7 @@ f_src() {
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-      exit
+      exit 1
    fi
 }
 
@@ -31,10 +31,8 @@ f_cnf
 printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
-
 f_pms
 f_syn      # syncronizing
-
 runTime=$((SECONDS - startTime))
 f_sm11 "$((runTime/60))m" "$((runTime%60))s"
 exit 0

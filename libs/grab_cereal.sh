@@ -21,19 +21,18 @@ f_src() {
       f_trap                 # cleanUP on exit, interrupt & terminate
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-      exit
+      exit 1
    fi
 }
 
 # START <main script>
-f_src
-f_cnf
+f_src; f_cnf
 printf "\n${_red}[3'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
-cd "$_DIR"
-[[ ! $UID -eq 0 ]] || f_xcd 10
+cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
+
 ar_miss=()
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-      rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab )
+   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab )
 mapfile -t ar_zon < <(f_fnd "rpz.*")
 printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
 
@@ -65,10 +64,9 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
       printf "${_err} file name notMATCH: %s\n" "$miss_v"
       f_xcd 19 "${ar_rpz[*]}"
    fi
-
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-     printf "${_err} zone-files exceeds from %s to %s\n" "${#ar_rpz[@]}" "${#ar_zon[@]}"
-     f_xcd 19 "$miss_v"
+   printf "${_err} zone-files exceeds from %s to %s\n" "${#ar_rpz[@]}" "${#ar_zon[@]}"
+   f_xcd 19 "$miss_v"
 else
    printf "${_err} missing zone-files:\n\t%s\n" "$miss_v"
    ar_miss+=("$miss_v")

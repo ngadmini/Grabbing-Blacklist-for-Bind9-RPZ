@@ -1,10 +1,10 @@
-; generate at 20220526_23:12:18 WIB by grab_build.sh v6.6
+; generate at 20220528_02:39:13 WIB by grab_build.sh v6.6
 ;
-vahrisdreams.blogspot.rs CNAME .
-*.vahrisdreams.blogspot.rs CNAME .
-vahrisdreams.blogspot.ru CNAME .
-*.vahrisdreams.blogspot.ru CNAME .
-vahrisdreams.blogspot.se CNAME .
-*.vahrisdreams.blogspot.se CNAME .
-vahrisdreams.blogspot.sg CNAME .
-*.vahrisdreams.blogspot.sg CNAME .
+valhallagate.blogspot.is CNAME .
+*.valhallagate.blogspot.is CNAME .
+valhallagate.blogspot.it CNAME .
+*.valhallagate.blogspot.it CNAME .
+valhallagate.blogspot.jp CNAME .
+*.valhallagate.blogspot.jp CNAME .
+valhallagate.blogspot.kr CNAME .
+*.valhallagate.blogspot.kr CNAME .
