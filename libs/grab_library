@@ -329,7 +329,7 @@ f_cnf() {   # variables in file configuration
       mapfile -t ar_CNF < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
          # get values supplied by "${CNF}", instead of "source ${CNF}"
-         _pattern="s/=[ ^ ]/=/g;s/['\";s/\(\)\|]//g;s/\(  \|\t\).*//g;s/\. [a0-z9].*/\./g"
+         _pattern="s/=[ ^ ]/=/g;s/['\";#$\(\)\|]//g;s/\(  \|\t\).*//g;s/\. [a0-z9].*/\./g"
          mapfile -t ar_VAR < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "${_pattern}" | sort | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
