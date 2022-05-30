@@ -39,7 +39,7 @@ _pre="${_ylw}PREPARING TASKs:${_ncl}"
 _hnt="${_ylw}[HINT]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories && arrays. generated during script execution
-   find . -regex "^.*\(dmn\|tmr\|tm[pq]\|txt.adulta\|txt.trust\+a\).*\|.*gz$" -print0 | xargs -0 -r rm
+   find . -regex "^.*\(sed\|dmn\|tmr\|tm[pq]\|txt.adulta\|txt.trust\+a\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
@@ -47,7 +47,7 @@ f_klin() { printf "\n"; f_tmp; f_uset; }
 f_trap() { trap f_klin EXIT TERM; trap 'f_klin; printf "bye!\n"; exit 255' INT; }
 f_uset() { unset -v ar_{cat,CAT,cnf,CNF,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sho,split,tmp,txt,url,VAR,zon} isDOWN index; }
 
-f_xcd() {   # exit code {7..21}
+f_xcd() {   # exit code {6..21}
    for EC in $1; do
       local _xcd; _xcd=$(printf "${_err} $_foo: at line ${BASH_LINENO[0]}. exit code %s" "${EC}")
       local _xce; _xce=$(printf "${_err} $_fuu: at line ${BASH_LINENO[0]}. exit code %s" "${EC}")
@@ -71,9 +71,9 @@ f_xcd() {   # exit code {7..21}
          16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "$CNF" | cut -d: -f1)"
              _ext=$(printf "${_err} ${CNF##*/} : at line ${_lin}. exit code: %s" "${EC}")
              printf "\n%s\n%s : if this address is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
-         17) printf "\n%s\nmissing file: %s\n" "${_xcd}" "$(basename "$2")"; return 1;;
-         18) printf "\n%s\n%s\n" "${_xce}" """$2"" doesn't exist in ""$3"""; return 1;;
-         19) printf "%s\n%s\n" "${_xcd}" "MATCH file name: ""$2"""; return 1;;
+         17) printf "\n${_inf} misMATCH file(s): ${_cyn}%s${_ncl}\n%s\n" """$2""" "${_xcd}"; return 1;;
+         18) printf "\n%s: ${_cyn}%s${_ncl} doesn't exis\n" "${_xcd}" "$(basename "$2")"; return 1;;
+         19) printf "\n%s: file(s) must consist of,\n${_cyn}%s${_ncl}\n%s" "${_xcd}" """$2"""; return 1;;
          20) printf "%s\nmissing file: %s\n" "${_xce}" "$(basename "$2")"; return 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check:"
              printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d: -f1)"
@@ -329,8 +329,8 @@ f_cnf() {   # variables in file configuration
       mapfile -t ar_CNF < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
          # get values supplied by "${CNF}", instead of "source ${CNF}"
-         _pattern="s/=[ ^ ]/=/g;s/['\";#$\(\)\|]//g;s/\(  \|\t\).*//g;s/\. [a0-z9].*/\./g"
-         mapfile -t ar_VAR < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "${_pattern}" | sort | cut -d= -f2)
+         _ptr="s/=[ ^ ]/=/g;s/CNAME\(\t\|\s.*\)\./CNAME ./g;s/['\";#$\(\)\|]//g;s/\( \|\t\)\{2,\}.*//g;s/\. [a0-z9].*/\./g"
+         mapfile -t ar_VAR < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "${_ptr}" | sort | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done

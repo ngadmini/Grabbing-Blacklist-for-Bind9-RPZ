@@ -77,6 +77,7 @@ f_src() {
 f_src; f_cnf
 printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 cd "$_DIR"
+
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 
@@ -88,12 +89,12 @@ f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack on local-host: $(hostname -I)"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
-   [[ -e $E ]] || f_xcd 17 "$E"
+   [[ -e $E ]] || f_xcd 18 "$E"
    [[ -x $E ]] || chmod +x "$E"
 done
 
 for e in {"$_REG","$_URL"}; do
-   [[ -e $e ]] || f_xcd 17 "$e"
+   [[ -e $e ]] || f_xcd 18 "$e"
    [[ -r $e ]] || chmod 644 "$e"
    _sed -i "/^$/d" "$e"
 done

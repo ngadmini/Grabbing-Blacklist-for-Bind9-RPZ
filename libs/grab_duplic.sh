@@ -34,6 +34,7 @@ ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_txt < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_txt[@]}" | f_sed)"
 
+# inspecting file consistency && remove duplicate domains
 if [[ ${#ar_txt[@]} -eq "${#ar_cat[@]}" ]]; then
    if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
       unset -v ar_cat
@@ -89,14 +90,14 @@ if [[ ${#ar_txt[@]} -eq "${#ar_cat[@]}" ]]; then
       # based on ${ar_cat[5]} nothing to do
       printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[5]^^}"
    else
-      printf "${_err} file name notMATCH: %s\n" "$miss_v"
+      printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
    fi
-elif [[ ${#ar_cat[@]} -gt ${#ar_txt[@]} ]]; then
-      printf "${_err} files exceeds from %s to %s\n" "${#ar_cat[@]}" "${#ar_txt[@]}"
+elif [[ ${#ar_txt[@]} -gt ${#ar_cat[@]} ]]; then
+      printf "\n${_err} misMATCH category: ${_cyn}%s${_ncl}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
 else
-   printf "\n${_err} missing file:\n\t%s\n" "$miss_v"
+   printf "\n${_err} missing file(s): ${_cyn}%s${_ncl}" "$miss_v"
    f_xcd 19 "${ar_cat[*]}"
 fi
 

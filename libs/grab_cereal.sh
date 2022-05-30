@@ -36,10 +36,11 @@ ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
 mapfile -t ar_zon < <(f_fnd "rpz.*")
 printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
 
-printf "\n${_inf} incrementing serial of zone-files%s\n"
+printf "\n${_inf} incrementing serial of zone-files%s"
+# inspecting file consistency && update serial zones
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
-      printf "${_inf} FOUND:\t%s zone-files (complete)\n" "${#ar_zon[@]}"
+      printf "\n${_inf} FOUND:\t%s zone-files (complete)" "${#ar_zon[@]}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
          SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d" " -f1)
@@ -59,14 +60,14 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
          f_g4c "$Z"
       done
       f_pms
-      printf "${_inf} all serial zone-files incremented to ${_cyn}%s${_ncl}" "$newSERIAL"
+      printf "\n${_inf} all serial zone-files incremented to ${_cyn}%s${_ncl}" "$newSERIAL"
    else
-      printf "${_err} file name notMATCH: %s\n" "$miss_v"
-      f_xcd 19 "${ar_rpz[*]}"
+      printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
+      f_xcd 19 "${ar_zon[*]}"
    fi
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-   printf "${_err} zone-files exceeds from %s to %s\n" "${#ar_rpz[@]}" "${#ar_zon[@]}"
-   f_xcd 19 "$miss_v"
+   printf "${_err} zone-files exceeds from %s to %s" "${#ar_rpz[@]}" "${#ar_zon[@]}"
+   f_xcd 17 "$miss_v"
 else
    printf "${_err} missing zone-files:\n\t%s\n" "$miss_v"
    ar_miss+=("$miss_v")
