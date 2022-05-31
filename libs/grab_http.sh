@@ -20,11 +20,10 @@ _REG="$_DIR"/grab_regex
 _SCP="$_DIR"/grab_rsync.sh
 _URL="$_DIR"/grab_urls
 
-declare -A index
-index[ar_txt]=1                # index's position ipv4 at ar_(txt|cat)
-index[ar_cat]=6                # elements number of ar_cat
-index[ar_url]=22               #                    ar_url
-index[ar_reg]=3                #                    ar_reg
+declare -A index               # don't change unless you know what you're doing
+index[ar_txt]=1                # ipv4 category at at number 1 based on 0..5
+index[ar_url]=22               # number of lines: grab_urls
+index[ar_reg]=3                #                  grab_regex
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n"
@@ -48,7 +47,6 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 
    # initiating arrays
    mapfile -t ar_cat < <(f_cat)
-   [[ ${#ar_cat[@]} -eq ${index[ar_cat]} ]] || f_xcd 15
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"               # remove previously CATEGORY-files if any
    ar_dmn=()                   # ar_dmn as raw-domains container
@@ -80,6 +78,7 @@ cd "$_DIR"
 
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
+if echo "${index[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 
 printf "${_pre} %-63s" "check required packages on local-host: $(hostname -I)"
 for D in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
@@ -197,7 +196,6 @@ f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # display of ACQUIRED DOMAINS
-[[ ${#ar_txt[@]} -eq ${#ar_cat[@]} ]] || f_xcd 15
 printf "\nacquired domains (${_cyn}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
 for J in "${!ar_cat[@]}"; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"

@@ -14,10 +14,10 @@ set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-declare -A index
-index[l_adult]=749999        # number of lines splitting adult domains
-index[l_trust]=399999        #                           trust+ domains
-index[db_ipv4]=7             # index's position ipv4 at ar_(txt|split)
+declare -A index             # # don't change unless you know what you're doing
+index[l_adult]=749999        # the adult category will be divided into this number of lines
+index[l_trust]=399999        # trust+
+index[db_ipv4]=7             # index's position ipv4 at at aray: ar_(txt|split)
 
 f_src() {
    readonly _LIB="$_DIR"/grab_library
@@ -35,6 +35,7 @@ f_src() {
 f_src; f_cnf
 printf "\n${_red}[2'nd] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
+if echo "${index[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \

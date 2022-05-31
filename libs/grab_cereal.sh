@@ -69,7 +69,7 @@ elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
    printf "${_err} zone-files exceeds from %s to %s" "${#ar_rpz[@]}" "${#ar_zon[@]}"
    f_xcd 17 "$miss_v"
 else
-   printf "${_err} missing zone-files:\n\t%s\n" "$miss_v"
+   printf "\n${_err} missing zone-files:\n\t%s\n" "$miss_v"
    ar_miss+=("$miss_v")
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
    f_cer "${ar_miss[@]}"
