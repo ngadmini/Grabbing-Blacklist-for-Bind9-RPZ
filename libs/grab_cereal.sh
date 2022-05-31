@@ -63,11 +63,11 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
       printf "\n${_inf} all serial zone-files incremented to ${_cyn}%s${_ncl}" "$newSERIAL"
    else
       printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
-      f_xcd 19 "${ar_zon[*]}"
+      f_xcd 19 "${ar_rpz[*]}"
    fi
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-   printf "${_err} zone-files exceeds from %s to %s" "${#ar_rpz[@]}" "${#ar_zon[@]}"
-   f_xcd 17 "$miss_v"
+   printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
+   f_xcd 19 "${ar_rpz[*]}"
 else
    printf "\n${_err} missing zone-files:\n\t%s\n" "$miss_v"
    ar_miss+=("$miss_v")

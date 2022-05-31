@@ -31,31 +31,31 @@ printf "\n${_red}[1'st] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/
 cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
 
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-mapfile -t ar_txt < <(f_fnd "txt.*")
-printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_txt[@]}" | f_sed)"
+mapfile -t ar_CAT < <(f_fnd "txt.*")
+printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
 # inspecting file consistency && remove duplicate domains
-if [[ ${#ar_txt[@]} -eq "${#ar_cat[@]}" ]]; then
-   if [[ ${ar_txt[*]} == "${ar_cat[*]}" ]]; then
+if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
+   if [[ ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
       unset -v ar_cat
       ar_cat=()               # declare temporary files as array
       ar_dmn=()               #
       ar_tmp=()               #
-      for B in "${!ar_txt[@]}"; do
-         ar_cat+=("${ar_txt[B]/txt./}")
-         ar_dmn+=(dmn."${ar_txt[B]/txt./}")
-         ar_tmp+=(tmr."${ar_txt[B]/txt./}")
+      for B in "${!ar_CAT[@]}"; do
+         ar_cat+=("${ar_CAT[B]/txt./}")
+         ar_dmn+=(dmn."${ar_CAT[B]/txt./}")
+         ar_tmp+=(tmr."${ar_CAT[B]/txt./}")
       done
 
       printf "\n${_inf} eliminating duplicate entries between CATEGORY%s\n"
-      printf "${_inf} FOUND %s CATEGORIES: ${_cyn}%s${_ncl}\n" "${#ar_txt[@]}" "${ar_cat[*]}"
+      printf "${_inf} FOUND %s CATEGORIES: ${_cyn}%s${_ncl}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
 
       f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
       for C in {2..5}; do
-         f_ddup "$C" "${ar_cat[C]}" "${ar_txt[C]}" "${ar_txt[0]}" "${ar_tmp[C]}" 0
-            awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_txt[C]}" \
+         f_ddup "$C" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
+            awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_CAT[C]}" \
             | _sort > "${ar_dmn[C]}"
-         cp "${ar_dmn[C]}" "${ar_txt[C]}"
+         cp "${ar_dmn[C]}" "${ar_CAT[C]}"
          f_do
       done
 
@@ -64,27 +64,27 @@ if [[ ${#ar_txt[@]} -eq "${#ar_cat[@]}" ]]; then
 
       f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
       for D in {3..5}; do
-         f_ddup "$D" "${ar_cat[D]}" "${ar_txt[D]}" "${ar_txt[2]}" "${ar_tmp[D]}" 2
-         awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_txt[D]}" \
+         f_ddup "$D" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
+         awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_CAT[D]}" \
             | _sort > "${ar_dmn[D]}"
-         cp "${ar_dmn[D]}" "${ar_txt[D]}"
+         cp "${ar_dmn[D]}" "${ar_CAT[D]}"
          f_do
       done
 
       f_dupl "${ar_cat[3]}"   # based on ${ar_cat[3]}
       for E in 4 5; do
-         f_ddup "$E" "${ar_cat[E]}" "${ar_txt[E]}" "${ar_txt[3]}" "${ar_tmp[E]}" 3
-         awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_txt[E]}" \
+         f_ddup "$E" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
+         awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_CAT[E]}" \
             | _sort > "${ar_dmn[E]}"
-         cp "${ar_dmn[E]}" "${ar_txt[E]}"
+         cp "${ar_dmn[E]}" "${ar_CAT[E]}"
          f_do
       done
 
       f_dupl "${ar_cat[4]}"   # based on ${ar_cat[4]}
-      f_ddup 5 "${ar_cat[5]}" "${ar_txt[5]}" "${ar_txt[4]}" "${ar_tmp[5]}" 4
-      awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[5]}" "${ar_txt[5]}" \
+      f_ddup 5 "${ar_cat[5]}" "${ar_CAT[5]}" "${ar_CAT[4]}" "${ar_tmp[5]}" 4
+      awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[5]}" "${ar_CAT[5]}" \
          | _sort > "${ar_dmn[5]}"
-      cp "${ar_dmn[5]}" "${ar_txt[5]}"
+      cp "${ar_dmn[5]}" "${ar_CAT[5]}"
       f_do
 
       # based on ${ar_cat[5]} nothing to do
@@ -93,23 +93,24 @@ if [[ ${#ar_txt[@]} -eq "${#ar_cat[@]}" ]]; then
       printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
    fi
-elif [[ ${#ar_txt[@]} -gt ${#ar_cat[@]} ]]; then
+elif [[ ${#ar_CAT[@]} -gt ${#ar_cat[@]} ]]; then
       printf "\n${_err} misMATCH category: ${_cyn}%s${_ncl}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
 else
-   printf "\n${_err} missing file(s): ${_cyn}%s${_ncl}" "$miss_v"
+   printf "\n${_inf} missing file(s): ${_cyn}%s${_ncl}" "$miss_v"
+   printf "\n${_hnt} run first: ${_cyn}grab_http.sh${_ncl}%s"
    f_xcd 19 "${ar_cat[*]}"
 fi
 
 # display result
-unset -v ar_txt
-mapfile -t ar_txt < <(f_fnd "txt.*")
-printf "\n${_inf} deduplicating domains (${_cyn}%s all CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
-for P in "${!ar_txt[@]}"; do
-   printf -v dpl "%'d" "$(wc -l < "${ar_txt[P]}")"
+unset -v ar_CAT
+mapfile -t ar_CAT < <(f_fnd "txt.*")
+printf "\n${_inf} deduplicating domains (${_cyn}%s all CATEGORIES${_ncl}) in summary:\n" "${#ar_CAT[@]}"
+for P in "${!ar_CAT[@]}"; do
+   printf -v dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${dpl}"
 done
-printf -v dpl_ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
+printf -v dpl_ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | cut -d" " -f3)"
 printf "%12s: %9s entries" "TOTAL" "$dpl_ttl"
 
 runTime=$((SECONDS - startTime))

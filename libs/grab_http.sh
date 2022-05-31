@@ -80,13 +80,13 @@ printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 if echo "${index[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 
-printf "${_pre} %-63s" "check required packages on local-host: $(hostname -I)"
+printf "${_pre} %-63s" "check required packages in local-host: $(hostname -I)"
 for D in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "$D" >> /dev/null 2>&1; then f_xcd 8 "$D"; fi
 done
 f_ok
 
-printf "${_pre} %-63s" "check properties of script-pack on local-host: $(hostname -I)"
+printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
    [[ -e $E ]] || f_xcd 18 "$E"
    [[ -x $E ]] || chmod +x "$E"
@@ -118,7 +118,7 @@ f_sm7 1 "${ar_sho[1]}";f_do    # done when initiating category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
-# identifying porn domains, use its to reduce porn domains in trust+ category
+# identifying porn domains, use it to reduce porn domains in trust+ category
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ip "${porn}" "${ar_dmn[1]}"
 _sort "${untrust}" "${porn}" | uniq -d >> "${trust}"
@@ -255,16 +255,13 @@ case $RETVAL in
    1) f_sm1; "${_DPL}"; f_sm10 st;;
    2) f_sm2
       if "$_DPL"; then if "$_BLD"; then f_sm10 nd; fi
-         else exit 1
-      fi;;
+         else exit 1; fi;;
    3) f_sm3
       if "$_DPL"; then if "$_BLD"; then if "$_CRL"; then f_sm10 th; fi
-         else exit 1; fi; else exit 1
-      fi;;
+         else exit 1; fi; else exit 1; fi;;
    4) f_sm4
       if "$_DPL"; then if "$_BLD"; then if "$_CRL"; then if "$_SCP"; then f_sm10 th; fi
-         else exit 1; fi; else exit 1; fi; else exit 1
-      fi;;
+         else exit 1; fi; else exit 1; fi; else exit 1; fi;;
 esac
 
 printf "bye!\n"

@@ -15,7 +15,6 @@ alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 
 _foo="${0##*/}"
-_fuu=$(basename "${BASH_SOURCE[0]}")
 _tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d" " -f4)
 _fkt=$(faketime -f "+5m" date +%H:%M:%S)
 _prl='^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
@@ -47,7 +46,7 @@ f_klin() { printf "\n"; f_tmp; f_uset; }
 f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 255' INT; }
 f_uset() { unset -v ar_{cat,CAT,cnf,CNF,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sho,split,tmp,txt,url,VAR,zon} isDOWN index; }
 
-f_xcd() {   # exit code {6..21}
+f_xcd() {   # exit code {7..19}
    for EC in $1; do
       local _xcd; _xcd=$(printf "${_err} $_foo: at line ${BASH_LINENO[0]}. exit code %s" "${EC}")
       case $EC in
@@ -74,8 +73,7 @@ f_xcd() {   # exit code {6..21}
              printf "%s\n%s : if this address is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
          17) printf "\n${_inf} misMATCH file(s): ${_cyn}%s${_ncl}\n%s\n" "$2" "${_xcd}"; return 1;;
          18) printf "\n%s: ${_cyn}%s${_ncl} doesn't exis\n" "${_xcd}" "$(basename "$2")"; return 1;;
-         19) printf "\n%s: file(s) must consist of,\n${_cyn}%s${_ncl}\n%s" "${_xcd}" "$2"; return 1;;
-         20) printf "%s\nmissing file: ${_cyn}%s${_ncl}\n" "${_xcd}" "$2"; return 1;;
+         19) printf "\n%s: required file(s):\n${_cyn}%s${_ncl}\n" "${_xcd}" "$2"; return 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check:"
              printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d: -f1)"
              printf "\n${_err} %s\n%s\n" "${_ukn}" "${_knw}"; return 1;;
@@ -95,14 +93,8 @@ f_sm0() {   # display messages when getting options
    else
       printf "%6salso, ${_rnr} will be executed too\n" ""
    fi
-   printf "%4s) use Ctrl+C to quit\n" "^C"
+   printf "%4s) use ${_grn}Ctrl+C${_ncl} to quit\n" "^C"
    printf "ENTER: ${_cyn}[1|2|3|4]${_ncl} or Ctrl+C to quit%s\n"
-}
-
-f_sm1() {   # f_sm[1...4] = display messages when chosing option
-   printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "$RETVAL"
-   printf "${_cnt} ~eliminating duplicate entries between CATEGORY%s\n"
-   f_sm12 "st"
 }
 
 f_sm1() {   # f_sm[1...4] = display messages when chosing option
@@ -165,13 +157,13 @@ f_fip() {
 }
 
 f_ssh() {   # nested in f_syn && f_cer
-   printf "${_inf} %s\t" "check compatibility: ${HOST} with passwordless ssh"
+   printf "${_inf} %-83s" "check compatibility: ${HOST} with passwordless ssh"
    _ssh -o BatchMode=yes "${HOST}" true  >> /dev/null 2>&1 || f_xcd 7 "${HOST}"
    f_ok
-   printf "${_inf} %s\t" "check availability: ${ZONE_DIR} in ${HOST}"
+   printf "${_inf} %-83s" "check availability: ${ZONE_DIR} in ${HOST}"
    _ssh root@"${HOST}" [[ -d "${ZONE_DIR}" ]] || f_xcd 18 "${ZONE_DIR}" "${HOST}"
    f_ok
-   printf "${_inf} %s\t" "check required packages in ${HOST}"
+   printf "${_inf} %-83s" "check required packages in ${HOST}"
    for C in {rsync,pigz}; do
       _ssh root@"${HOST}" "hash $C >> /dev/null 2>&1" || f_xcd 9 "${HOST}" "$C"
    done

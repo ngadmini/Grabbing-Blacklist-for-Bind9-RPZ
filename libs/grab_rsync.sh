@@ -27,35 +27,40 @@ f_src() {
 
 # START <main script>
 f_src; f_cnf
-printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
+printf "\n${_red}[4'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
 cd "$_DIR"
 [[ ! $UID -eq 0 ]] || f_xcd 10
-
 f_pms   # check file permission: db.* && rpz.*
 if ! ping -w 1 "${HOST}" >> /dev/null 2>&1; then f_xcd 16; fi
 
-# check existance of db-files and zone-files
+printf "\n${_inf} check availability: RPZ-dBase and zone-files in local-host: %-23s" "$(hostname -I)"
+# check existance: db-files
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
-   db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+aa)
-ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
-   rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+aa)
-
+   db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab)
 mapfile -t ar_dbc < <(f_fnd "db.*")
-mapfile -t ar_rpz < <(f_fnd "rpz.*")
 printf -v miss_DBC "%s" "$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)"
+if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then
+   printf "\n${_inf} misMATCH file: ${_cyn}%s${_ncl}" "$miss_DBC"
+   f_xcd 19 "${ar_DBC[*]}"
+fi
+
+# check existance: zone-files
+ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
+   rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab)
+mapfile -t ar_rpz < <(f_fnd "rpz.*")
 printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)"
-
-for DBC in ${ar_DBC[*]}; do [[ -e $DBC ]] || f_xcd 20 "$miss_DBC"; done
-for RPZ in ${ar_RPZ[*]}; do [[ -e $RPZ ]] || f_xcd 20 "$miss_RPZ"; done
-[[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]] || f_xcd 19 "$miss_DBC"
-[[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]] || f_xcd 19 "$miss_RPZ"
-
-_ts=$(date "+%Y-%m-%d")
-_ID="/home/rpz-${_ts}.tar.gz"
+if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then
+   printf "\n${_inf} misMATCH file: ${_cyn}%s${_ncl}" "$miss_RPZ"
+   f_xcd 19 "${ar_RPZ[*]}"
+fi
+f_ok
 f_ssh   # check check compatibility: ${HOST} with passwordless ssh
         # check availability: ${ZONE_DIR} in ${HOST}
         # check required packages in ${HOST}
 # end of check
+
+_ts=$(date "+%Y-%m-%d")
+_ID="/home/rpz-${_ts}.tar.gz"
 printf "${_inf} archiving current RPZ-dBase, save in %s:%s\n" "${HOST}" "$_ID"
 _ssh root@"${HOST}" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
 printf "${_inf} find and remove old RPZ-dBase archive in %s:/home\n" "${HOST}"

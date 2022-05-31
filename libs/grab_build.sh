@@ -47,7 +47,7 @@ printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" ]]; then
    if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
       unset -v ar_CAT
-      printf "\n${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${index[l_adult]}"
+      printf "${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${index[l_adult]}"
       split -l "${index[l_adult]}" "${ar_cat[0]}" "${ar_cat[0]}"
       split -l "${index[l_trust]}" "${ar_cat[5]}" "${ar_cat[5]}"
       mv txt.{adult,trust+} /tmp
@@ -57,15 +57,15 @@ if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" ]]; then
       printf "${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[5]}" "${index[l_trust]}"
       printf "${_cyn}%s${_ncl}\n" "$(f_fnd "txt.trust*" | tr '\n' ' ')"
    else
-      printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
+      printf "${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
    fi
 elif [[ ${#ar_CAT[@]} -gt ${#ar_cat[@]} ]]; then
-      printf "\n${_err} misMATCH category: ${_cyn}%s${_ncl}" "$miss_v"
-      f_xcd 19 "${ar_cat[*]}"
+   printf "${_err} misMATCH category: ${_cyn}%s${_ncl}" "$miss_v"
+   f_xcd 19 "${ar_cat[*]}"
 else
-      printf "\n${_err} missing file(s): ${_cyn}%s${_ncl}" "$miss_v"
-      f_xcd 19 "${ar_cat[*]}"
+   printf "${_err} missing file(s): ${_cyn}%s${_ncl}" "$miss_v"
+   f_xcd 19 "${ar_cat[*]}"
 fi
 
 # rebuild to rpz-format
