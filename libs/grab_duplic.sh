@@ -110,7 +110,7 @@ for P in "${!ar_CAT[@]}"; do
    printf -v dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${dpl}"
 done
-printf -v dpl_ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | cut -d" " -f3)"
+printf -v dpl_ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries" "TOTAL" "$dpl_ttl"
 
 runTime=$((SECONDS - startTime))

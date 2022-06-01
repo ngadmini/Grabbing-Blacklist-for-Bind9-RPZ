@@ -85,21 +85,21 @@ if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
       fi
    done
 
-   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d" " -f2)"
+   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
    printf "%45s : %10s entries" "TOTAL" "${ttl}"
 elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
    _add='database increasing than before'
    printf "${_err} %s. exceeds from %s files to %s files\n" "$_add" "${#ar_split[@]}" "${#ar_txt[@]}"
    printf "${_hnt} please make adjustments on your:%s\n"
-   printf "\t- ${0##*/} at line %'d\n" "$(grep -n "^ar_split" "${0##*/}" | cut -d':' -f1)"
-   printf "\t- grab_cereal.sh at line %'d\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d':' -f1)"
+   printf "\t- ${0##*/} at line %'d\n" "$(grep -n "^ar_split" "${0##*/}" | cut -d: -f1)"
+   printf "\t- grab_cereal.sh at line %'d\n" "$(grep -n "^ar_rpz" grab_cereal.sh | cut -d: -f1)"
    printf "\t- zone-files [rpz.*]\n"
    printf "\t- bind9-server configurations\n"
    exit 1
 else
    printf "${_inf} data base decreasing than before%s\n"
    printf "${_hnt} modify or remove misMATCH file(s) from: ${0##*/} at line %'d" \
-      "$(grep -n "^ar_split" "${0##*/}" | cut -d':' -f1)"
+      "$(grep -n "^ar_split" "${0##*/}" | cut -d: -f1)"
    f_xcd 17 "$mr_p"
 fi
 

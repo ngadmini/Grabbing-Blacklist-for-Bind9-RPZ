@@ -88,14 +88,11 @@ f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
 for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
-   [[ -e $E ]] || f_xcd 18 "$E"
-   [[ -x $E ]] || chmod +x "$E"
+   [[ -e $E ]] || f_xcd 18 "$E"; [[ -x $E ]] || chmod +x "$E"
 done
 
 for e in {"$_REG","$_URL"}; do
-   [[ -e $e ]] || f_xcd 18 "$e"
-   [[ -r $e ]] || chmod 644 "$e"
-   _sed -i "/^$/d" "$e"
+   [[ -e $e ]] || f_xcd 18 "$e"; [[ -r $e ]] || chmod 644 "$e"; _sed -i "/^$/d" "$e"
 done
 
 mapfile -t ar_url < "$_URL"; [[ ${#ar_url[@]} -eq ${index[ar_url]} ]] || f_xcd 11 "$_URL"
@@ -165,11 +162,11 @@ f_sm8 "${ar_cat[2]}" 8
 f_sm7 2 "${ar_sho[2]}"; f_do    # done when initiating category
 
 f_sm7 12 "${ar_sho[12]}"
-f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d" " -f2 >> "${ar_dmn[2]}"
+f_add "${ar_url[12]}" | _grep -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"
 f_do
 
 f_sm7 13 "${ar_sho[13]}"
-f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d" " -f1 >> "${ar_dmn[2]}"
+f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"
 f_do
 
 for H in {14..18}; do
@@ -201,7 +198,7 @@ for J in "${!ar_cat[@]}"; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${aqr_sum}"
 done
-printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d" " -f3)"
+printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "${_sum}"
 
 # END <finishing>
@@ -236,7 +233,7 @@ done
 
 unset -v ar_txt
 mapfile -t ar_txt < <(f_fnd "txt.*")
-printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d" " -f3)"
+printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d' ' -f3)"
 runTime=$((SECONDS - startTime))
 f_sm6 "$((runTime/60))m" "$((runTime%60))s"
 f_klin

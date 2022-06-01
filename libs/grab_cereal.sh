@@ -43,7 +43,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
       printf "\n${_inf} FOUND:\t%s zone-files (complete)" "${#ar_zon[@]}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
-         SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d" " -f1)
+         SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d' ' -f1)
          if [[ ${#SERIAL} -lt ${#DATE} ]]; then
             newSERIAL="${DATE}00"
          else
