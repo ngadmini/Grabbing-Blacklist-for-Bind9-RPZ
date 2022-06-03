@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_duplic.sh
-#   v6.6
+#   v6.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -14,7 +14,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 f_src() {
-   readonly _LIB="$_DIR"/grab_library
+   readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
@@ -28,13 +28,13 @@ f_src() {
 # START <main script>
 f_src
 printf "\n${_red}[1'st] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
-cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
+cd "${_DIR}"; [[ ! $UID -eq 0 ]] || f_xcd 10
 
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
-# inspecting raw-domain files
+# inspecting required files
 if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
    if [[ ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
       unset -v ar_cat
@@ -107,11 +107,11 @@ unset -v ar_CAT
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf "\n${_inf} deduplicating domains (${_cyn}%s all CATEGORIES${_ncl}) in summary:\n" "${#ar_CAT[@]}"
 for P in "${!ar_CAT[@]}"; do
-   printf -v dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
-   printf "%12s: %9s entries\n" "${ar_cat[P]}" "${dpl}"
+   printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
+   printf "%12s: %9s entries\n" "${ar_cat[P]}" "${_dpl}"
 done
-printf -v dpl_ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | cut -d' ' -f3)"
-printf "%12s: %9s entries" "TOTAL" "$dpl_ttl"
+printf -v _ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | cut -d' ' -f3)"
+printf "%12s: %9s entries" "TOTAL" "${_ttl}"
 
 runTime=$((SECONDS - startTime))
 f_sm11 "$((runTime/60))m" "$((runTime%60))s"

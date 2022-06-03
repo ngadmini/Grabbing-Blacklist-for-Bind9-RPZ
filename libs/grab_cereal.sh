@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v6.6
+#   v6.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -14,7 +14,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 f_src() {
-   readonly _LIB="$_DIR"/grab_library
+   readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
@@ -28,17 +28,17 @@ f_src() {
 # START <main script>
 f_src; f_cnf
 printf "\n${_red}[3'th] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
-cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10
+cd "${_DIR}"; [[ ! $UID -eq 0 ]] || f_xcd 10
 
 ar_miss=()
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab )
+   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
 mapfile -t ar_zon < <(f_fnd "rpz.*")
 printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
 
 printf "\n${_inf} incrementing serial of zone-files%s"
-if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then        # inspecting required files
-   if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then        # update serial zones
+if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then      # inspecting required files
+   if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then      # update serial zones
       printf "\n${_inf} FOUND:\t%s zone-files (complete)" "${#ar_zon[@]}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
@@ -68,7 +68,7 @@ elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
    printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
    f_xcd 19 "${ar_rpz[*]}"
 else
-   printf "\n${_err} missing zone-files:\n\t%s\n" "$miss_v"
+   printf "\n${_err} missing zone-files: ${_cyn}%s${_ncl}\n" "$miss_v"
    ar_miss+=("$miss_v")
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
    f_cer "${ar_miss[@]}"

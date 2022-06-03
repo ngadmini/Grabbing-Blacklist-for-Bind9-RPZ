@@ -1,4 +1,4 @@
-; generate at 20220528_02:39:13 WIB by grab_build.sh v6.6
+; generate at 20220603_23:17:35 WIB by grab_build.sh v6.7
 ;
 00-gov.cn CNAME .
 *.00-gov.cn CNAME .

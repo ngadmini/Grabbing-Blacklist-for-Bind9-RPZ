@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v6.6
+#   v6.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -18,10 +18,10 @@ ar_sh=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_zh=(grab_regex grab_urls)
 
 declare -A index               # don't change unless you know what you're doing
-index[ar_txt]=1                # ipv4 category is number 1 at ar_txt
+index[ar_txt]=1                # ipv4 category is no. 1 at ar_txt
 index[ar_url]=22               # number of lines: grab_urls
 index[ar_reg]=3                #                  grab_regex
-index[ar_zh]=0                 # grab_regex is number 0 at ar_zh
+index[ar_zh]=0                 # grab_regex is no. 0 at ar_zh
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n"
@@ -43,7 +43,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    cat vpn/domains >> redirector/domains
    rm -rf vpn
 
-   # initiating arrays
+   # initiating category
    mapfile -t ar_cat < <(f_cat)
    printf "%12s: ${_cyn}%s${_ncl}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"               # remove previously CATEGORY-files if any
@@ -58,7 +58,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 }
 
 f_src() {
-   readonly _LIB="$_DIR"/grab_library
+   readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
       source "${_LIB}"
@@ -73,7 +73,7 @@ f_src() {
 f_src
 printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
+cd "${_DIR}"; [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 if echo "${index[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 
 printf "${_pre} %-63s" "check required packages in local-host: $(hostname -I)"

@@ -1,0 +1,18 @@
+; generate at 20220603_23:17:44 WIB by grab_cereal.sh v6.7
+;   rpz.trust+
+$TTL 3600
+$ORIGIN trust+.domain.
+@   SOA   trust+.domain. rpz.trust+.domain. (2022060301 3600 3600 86400 3600)
+@         NS   trust+.domain.
+@   IN    A    127.0.0.24
+;
+; TLDs for gambling content
+*.bet     CNAME .
+*.casino  CNAME .
+*.lotto   CNAME .
+*.poker   CNAME .
+;
+*.xn--t14rkecasinositeleri-txa92kea2093q.site   CNAME .
+xn--t14rkecasinositeleri-txa92kea2093q.site     CNAME .
+;
+$INCLUDE "/etc/bind/zones-rpz/db.trust+"

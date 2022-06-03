@@ -1,8 +1,8 @@
-; generate at 20220528_02:39:22 WIB by grab_cereal.sh v6.6
+; generate at 20220603_23:17:44 WIB by grab_cereal.sh v6.7
 ;   rpz.redirector
 $TTL 3600
 $ORIGIN redirector.domain.
-@   SOA   redirector.domain. rpz.redirector.domain. (2022052802 3600 3600 86400 3600)
+@   SOA   redirector.domain. rpz.redirector.domain. (2022060301 3600 3600 86400 3600)
 @         NS   redirector.domain.
 @    IN   A    127.0.0.16
 ;

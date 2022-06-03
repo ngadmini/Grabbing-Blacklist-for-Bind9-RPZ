@@ -1,10 +1,10 @@
-; generate at 20220528_02:39:13 WIB by grab_build.sh v6.6
+; generate at 20220603_23:17:35 WIB by grab_build.sh v6.7
 ;
-32.230.218.0.1.rpz-nip CNAME .
-32.12.227.0.1.rpz-nip CNAME .
-32.140.241.0.1.rpz-nip CNAME .
-32.159.255.0.1.rpz-nip CNAME .
-32.23.188.1.1.rpz-nip CNAME .
-32.219.134.2.1.rpz-nip CNAME .
-32.149.239.2.1.rpz-nip CNAME .
-32.80.150.4.1.rpz-nip CNAME .
+32.230.218.0.1.rpz-nsip CNAME .
+32.12.227.0.1.rpz-nsip CNAME .
+32.140.241.0.1.rpz-nsip CNAME .
+32.159.255.0.1.rpz-nsip CNAME .
+32.23.188.1.1.rpz-nsip CNAME .
+32.219.134.2.1.rpz-nsip CNAME .
+32.149.239.2.1.rpz-nsip CNAME .
+32.80.150.4.1.rpz-nsip CNAME .

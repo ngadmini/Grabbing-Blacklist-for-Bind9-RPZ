@@ -1,9 +1,0 @@
-; generate at 20220528_02:39:22 WIB by grab_cereal.sh v6.6
-;   rpz.trust+ab
-$TTL 3600
-$ORIGIN trust+ab.domain.
-@   SOA   trust+ab.domain. rpz.trust+ab.domain. (2022052802 3600 3600 86400 3600)
-@         NS   trust+ab.domain.
-@   IN    A    127.0.0.25
-;
-$INCLUDE "/etc/bind/zones-rpz/db.trust+ab"

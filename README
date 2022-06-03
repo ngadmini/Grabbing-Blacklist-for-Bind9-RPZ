@@ -1,4 +1,4 @@
-# README version v6.6
+# README version v6.7
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
 ###########################################################
@@ -10,14 +10,15 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v6.6:
-*) splitting trust+ category to 2 sub-category
-*) regex adjustment to fixing TLD typos coming from remote files
-*) rename some script files and modifying zone-files
+what's new in v6.7:
+*) turn back to 12 db-files and 12 zone-files, due to the significant decrease in the raw domain list
+   of trust+ category after dramatically increasing
+*) versions v6.6 with v6.7 are similar. the difference is in version v6.7 turn back to 12 dbase-files
+   and 12 zone-files by no longer splitting the txt.trust+ file into txt.trust+aa and txt.trust+ab
 
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.6/gb4rpz-v6.6.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.7/gb4rpz-v6.7.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
@@ -55,8 +56,8 @@ file parts of this version:
         ~$ unpigz -v rpz-2022-04-09.tar.gz
         ~$ tar -xvf rpz-2022-04-09.tar
 
-  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-         rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
+  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
+        rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
   11. all of them must present in the same directory
 
 prerequisites:
@@ -71,7 +72,7 @@ prerequisites:
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) do not leave any of the following variables undefined.
       #      it will return all variables to their default values
-      # OR
+      #   OR
       #   *) you may want to change all variables to default values
       #      like in grab_library, instead of changing them in grab_config
       #      go to grab_library line:
@@ -104,7 +105,7 @@ prerequisites:
 
       # change to directory where zone-files (rpz.* and db.*) are located
       # in bind9-server
-      ZONE_DIR=/etc/bind/zones-rpz
+      ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz
 
 *) on your BIND9-server
       # check required package
@@ -125,9 +126,9 @@ usage:
 
 output:
 *) db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
-      db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab
+      db.ipv4 db.malware db.publicite db.redirector db.trust+
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
+      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
 *) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
 
 please use our discussion for questions, feedback and bug fixes:

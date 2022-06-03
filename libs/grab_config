@@ -1,6 +1,6 @@
 # TAGS
 #   grab_config
-#   v6.6
+#   v6.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # PLEASE PAY ATTENTIONS
@@ -30,7 +30,7 @@ LC_NUMERIC=id_ID.UTF-8
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some server with low_RAM
-#   will out off memory. in this case you could 'reboot' its.
+#   will out off memory. in this case you could 'reboot' it.
 # set 'no' to reboot bind9-server after syncronizing
 #   RNDC_RELOAD=no
 # OR set 'yes' to run <rndc reload> if you have sufficient RAM

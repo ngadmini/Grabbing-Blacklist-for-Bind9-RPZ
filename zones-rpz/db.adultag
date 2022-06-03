@@ -1,10 +1,10 @@
-; generate at 20220528_02:39:13 WIB by grab_build.sh v6.6
+; generate at 20220603_23:17:35 WIB by grab_build.sh v6.7
 ;
-valhallagate.blogspot.is CNAME .
-*.valhallagate.blogspot.is CNAME .
-valhallagate.blogspot.it CNAME .
-*.valhallagate.blogspot.it CNAME .
-valhallagate.blogspot.jp CNAME .
-*.valhallagate.blogspot.jp CNAME .
-valhallagate.blogspot.kr CNAME .
-*.valhallagate.blogspot.kr CNAME .
+uploadsx.blogspot.nl CNAME .
+*.uploadsx.blogspot.nl CNAME .
+uploadsx.blogspot.no CNAME .
+*.uploadsx.blogspot.no CNAME .
+uploadsx.blogspot.pe CNAME .
+*.uploadsx.blogspot.pe CNAME .
+uploadsx.blogspot.pt CNAME .
+*.uploadsx.blogspot.pt CNAME .

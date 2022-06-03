@@ -1,6 +1,6 @@
 # TAGS
 #   grab_library
-#   v6.6
+#   v6.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # NOTE
@@ -36,10 +36,10 @@ _shd="${_grn}'shutdown -c'${_ncl}"
 _tks="${_red}TASKs${_ncl}"
 _wrn="${_grn}WARNING:${_ncl}"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
-_hnt="${_ylw}[HINT]${_ncl}"
+_hnt="${_cyn}[HINT]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated during script execution
-   find . -regex "^.*\(sed\|dmn\|tmr\|tm[pq]\|txt.adulta\|txt.trust\+a\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
+   find . -regex "^.*\(sed\|dmn\|tmr\|tm[pq]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
@@ -122,7 +122,7 @@ f_sm4() {
    f_sm12 "th"
 }
 
-f_sm5() {   # nested in f_sm[2...4]
+f_sm5() {   # nested in f_sm[2..4]
    printf "\n${_red}[%s'%s] TASK options chosen${_ncl}\n" "$RETVAL" "$1"
    printf "${_cnt} 1) eliminating duplicate entries between CATEGORY%s\n"
    printf "%27s all CATEGORIES to RPZ format [db.* files]\n" "2) rewriting"
@@ -143,10 +143,10 @@ f_sm11() { printf "\n${_inf} completed ${_cyn}IN %s:%s${_ncl}\n" "$1" "$2"; }
 f_sm12() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "$RETVAL" "$1"; }
 f_ok() { printf "${_grn}%s${_ncl}\n" "isOK"; }            # display isOK
 f_do() { printf "${_grn}%s${_ncl}\n" "DONE"; }            # display DONE
-f_no() { printf "${_red}notFOUND: %s${_ncl}\n" "$1"; }    # display notFOUND
-f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }          # grabbing remote-files
+f_no() { printf "${_red}%s notFOUND${_ncl}\n" "$1"; }     # display notFOUND
 
-# fixing false and bad entry
+# grabbing raw-domains && fixing false and bad entry
+f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }          # grabbing raw-domains
 f_fix() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
 f_ip() {   # capture and throw ip-address entry to ipv4 CATEGORY. save it into sub-net
    _grep -P "${_prl}" "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
@@ -279,11 +279,11 @@ f_cnf() {   # variables in file configuration
    if [[ -e ${CNF} ]]; then
       [[ -r ${CNF} ]] || chmod 644 "${CNF}"
       ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-      mapfile -t ar_CNF < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
+      mapfile -t ar_CNF < <(_grep -Ev "^(#|*$)" "${CNF}" | _sed -e "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
          # get values supplied by "${CNF}", instead of "source ${CNF}"
          _ptr="s/=[ ^ ]/=/g;s/CNAME\(\t\|\s.*\)\./CNAME ./g;s/['\"#]//g;s/\( \|\t\)\{2,\}.*//g;s/\. [a0-z9].*/\./g"
-         mapfile -t ar_VAR < <(_grep -Ev "^(#|*$|\s|\t)" "${CNF}" | _sed -e "${_ptr}" | sort | cut -d= -f2)
+         mapfile -t ar_VAR < <(_grep -Ev "^(#|*$)" "${CNF}" | _sed -e "${_ptr}"| sort | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
@@ -294,7 +294,7 @@ f_cnf() {   # variables in file configuration
          f_dft
       fi
    else
-      # fallback to default values when "${CNF}" missing
+      # fallback to default values when missing "${CNF}"
       printf "\n${_wrn} %s notFOUND\n" "${CNF##*/}"
       f_dft
    fi
