@@ -13,17 +13,15 @@ umask 027
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-_BLD="$_DIR"/grab_build.sh
-_CRL="$_DIR"/grab_cereal.sh
-_DPL="$_DIR"/grab_duplic.sh
-_REG="$_DIR"/grab_regex
-_SCP="$_DIR"/grab_rsync.sh
-_URL="$_DIR"/grab_urls
+
+ar_sh=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
+ar_zh=(grab_regex grab_urls)
 
 declare -A index               # don't change unless you know what you're doing
-index[ar_txt]=1                # ipv4 category at at number 1 based on 0..5
+index[ar_txt]=1                # ipv4 category is number 1 at ar_txt
 index[ar_url]=22               # number of lines: grab_urls
 index[ar_reg]=3                #                  grab_regex
+index[ar_zh]=0                 # grab_regex is number 0 at ar_zh
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains%s\n"
@@ -39,8 +37,8 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
       f_do
    done
 
-   mkdir ipv4                  # make adjusment for initial category
-   mv phishing malware         #
+   mkdir ipv4                  # make some adjusment for
+   mv phishing malware         # initial category:
    mv gambling trust+          # adult ipv4 malware publicite redirector AND trust+
    cat vpn/domains >> redirector/domains
    rm -rf vpn
@@ -71,13 +69,11 @@ f_src() {
    fi
 }
 
-# START <preparing>
-f_src; f_cnf
+# <preparing>
+f_src
 printf "\nstarting %s at ${_cyn}%s${_ncl}\n" "${0##*/}" "${_lct}"
-cd "$_DIR"
-
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-[[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
+cd "$_DIR"; [[ ! $UID -eq 0 ]] || f_xcd 10; f_ok
 if echo "${index[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 
 printf "${_pre} %-63s" "check required packages in local-host: $(hostname -I)"
@@ -87,29 +83,48 @@ done
 f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
-for E in {"$_DPL","$_BLD","$_CRL","$_SCP"}; do
-   [[ -e $E ]] || f_xcd 18 "$E"; [[ -x $E ]] || chmod +x "$E"
+for E in "${!ar_sh[@]}"; do
+   if ! [[ -e ${ar_sh[E]} ]]; then
+      f_no "${ar_sh[E]}"
+      printf "${_inf} try get ${_cyn}%s${_ncl} from origin" "${ar_sh[E]}"
+      curl -C - -fs "${origin}/libs/""${ar_sh[E]}" >> "${ar_sh[E]}" || f_xcd 14
+      printf "\n${_inf} %-73s" "successfully get ${ar_sh[E]} from origin"
+   fi
+   [[ -x ${ar_sh[E]} ]] || chmod +x "${ar_sh[E]}"
 done
 
-for e in {"$_REG","$_URL"}; do
-   [[ -e $e ]] || f_xcd 18 "$e"; [[ -r $e ]] || chmod 644 "$e"; _sed -i "/^$/d" "$e"
-done
+for e in "${!ar_zh[@]}"; do
+   if ! [[ -e ${ar_zh[e]} ]]; then
+      f_no "${ar_zh[e]}"
+      printf "${_inf} try get ${_cyn}%s${_ncl} from origin" "${ar_zh[e]}"
+      curl -C - -fs "${origin}/libs/""${ar_zh[e]}" >> "${ar_zh[e]}" || f_xcd 14
+      printf "\n${_inf} %-73s" "successfully get ${ar_zh[e]} from origin"
+   fi
 
-mapfile -t ar_url < "$_URL"; [[ ${#ar_url[@]} -eq ${index[ar_url]} ]] || f_xcd 11 "$_URL"
-mapfile -t ar_reg < "$_REG"; [[ ${#ar_reg[@]} -eq ${index[ar_reg]} ]] || f_xcd 12 "$_REG"
+   [[ -r ${ar_zh[e]} ]] || chmod 644 "${ar_zh[e]}"
+   _sed -i "/^$/d" "${ar_zh[e]}"
+
+   if [[ ${e} -eq ${index[ar_zh]} ]]; then
+      mapfile -t ar_reg < "${ar_zh[e]}"
+      [[ ${#ar_reg[@]} -eq ${index[ar_reg]} ]] || f_xcd 12 "${ar_zh[e]}"
+   else
+      mapfile -t ar_url < "${ar_zh[e]}"
+      [[ ${#ar_url[@]} -eq ${index[ar_url]} ]] || f_xcd 11 "${ar_zh[e]}"
+   fi
+done
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN%s\n"
-f_crawl "$_URL"
+f_crawl "${ar_zh[1]}"
 
 # <main script>
 f_grab                         # grabbing categories
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
-trust=$(mktemp --tmpdir="$_DIR")
-untrust=$(mktemp --tmpdir="$_DIR")
-porn=$(mktemp --tmpdir="$_DIR")
+trust=$(mktemp --tmpdir="${_DIR}")
+untrust=$(mktemp --tmpdir="${_DIR}")
+porn=$(mktemp --tmpdir="${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do    # done when initiating category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
@@ -192,7 +207,7 @@ awk '!x[$0]++' "${ar_dmn[1]}" | _sort -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_t
 f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
-# display of ACQUIRED DOMAINS
+# <finishing>
 printf "\nacquired domains (${_cyn}%s CATEGORIES${_ncl}) in summary:\n" "${#ar_txt[@]}"
 for J in "${!ar_cat[@]}"; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
@@ -201,7 +216,6 @@ done
 printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "${_sum}"
 
-# END <finishing>
 printf "\n${_ylw}PRUNING:${_ncl} sub-domains if parent-domains present and sub-nets into CIDR blocks if any%s\n"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 
@@ -236,29 +250,35 @@ mapfile -t ar_txt < <(f_fnd "txt.*")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d' ' -f3)"
 runTime=$((SECONDS - startTime))
 f_sm6 "$((runTime/60))m" "$((runTime%60))s"
-f_klin
 
-# completing the task. offerring OPTIONs: continued to next tasks OR stop here
-f_sm0 "${HOST}"
-read -r RETVAL
+# <completing> offerring OPTIONs: continued to next tasks OR stop here
+f_cnf; f_sm0 "${HOST}"; read -r RETVAL
 
-until [[ ${RETVAL} =~ ^[1-4]{1}$ ]]
-do
-   printf "please enter: ${_cyn}[1|2|3|4]${_ncl} or Ctrl+c to quit%s\n"
+until [[ ${RETVAL} =~ ^[1-4]{1}$ ]]; do
+   printf "please enter: ${_cyn}[1|2|3|4]${_ncl} or Ctrl+C to quit%s\n"
    read -r RETVAL
 done
 
 case $RETVAL in
-   1) f_sm1; "${_DPL}"; f_sm10 st;;
+   1) f_sm1; ./"${ar_sh[2]}"; f_sm10 st;;
    2) f_sm2
-      if "$_DPL"; then if "$_BLD"; then f_sm10 nd; fi
-         else exit 1; fi;;
+      if ./"${ar_sh[2]}"; then
+         if ./"${ar_sh[0]}"; then f_sm10 nd; fi
+      else exit 1; fi;;
    3) f_sm3
-      if "$_DPL"; then if "$_BLD"; then if "$_CRL"; then f_sm10 th; fi
-         else exit 1; fi; else exit 1; fi;;
+      if ./"${ar_sh[2]}"; then
+         if ./"${ar_sh[0]}"; then
+            if ./"${ar_sh[1]}"; then f_sm10 th; fi
+         else exit 1; fi
+      else exit 1; fi;;
    4) f_sm4
-      if "$_DPL"; then if "$_BLD"; then if "$_CRL"; then if "$_SCP"; then f_sm10 th; fi
-         else exit 1; fi; else exit 1; fi; else exit 1; fi;;
+      if ./"${ar_sh[2]}"; then
+         if ./"${ar_sh[0]}"; then
+            if ./"${ar_sh[1]}"; then
+               if ./"${ar_sh[3]}"; then f_sm10 th; fi
+            else exit 1; fi
+         else exit 1; fi
+      else exit 1; fi;;
 esac
 
 printf "bye!\n"

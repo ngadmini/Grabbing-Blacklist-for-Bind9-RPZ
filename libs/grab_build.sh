@@ -43,10 +43,9 @@ ar_split=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adulta
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
-# inspecting file consistency && split txt.adult & txt.trust+
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" ]]; then
-   if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
-      unset -v ar_CAT
+   if [[ ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then        # inspecting required files
+      unset -v ar_CAT                                   # split txt.adult & txt.trust+
       printf "${_inf} splitting ${_cyn}%s${_ncl} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${index[l_adult]}"
       split -l "${index[l_adult]}" "${ar_cat[0]}" "${ar_cat[0]}"
       split -l "${index[l_trust]}" "${ar_cat[5]}" "${ar_cat[5]}"
@@ -68,8 +67,7 @@ else
    f_xcd 19 "${ar_cat[*]}"
 fi
 
-# rebuild to rpz-format
-if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
+if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then        # rebuild to rpz-format
    f_frm "db.*"
    ar_dom=()
    for Y in "${!ar_txt[@]}"; do
@@ -87,6 +85,7 @@ if [[ ${#ar_txt[@]} -eq ${#ar_split[@]} ]]; then
 
    printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
    printf "%45s : %10s entries" "TOTAL" "${ttl}"
+
 elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
    _add='database increasing than before'
    printf "${_err} %s. exceeds from %s files to %s files\n" "$_add" "${#ar_split[@]}" "${#ar_txt[@]}"
@@ -96,6 +95,7 @@ elif [[ ${#ar_txt[@]} -gt ${#ar_split[@]} ]]; then
    printf "\t- zone-files [rpz.*]\n"
    printf "\t- bind9-server configurations\n"
    exit 1
+
 else
    printf "${_inf} data base decreasing than before%s\n"
    printf "${_hnt} modify or remove misMATCH file(s) from: ${0##*/} at line %'d" \

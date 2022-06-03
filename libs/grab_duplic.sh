@@ -34,7 +34,7 @@ ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
-# inspecting file consistency && remove duplicate domains
+# inspecting raw-domain files
 if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
    if [[ ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
       unset -v ar_cat
@@ -50,7 +50,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       printf "\n${_inf} eliminating duplicate entries between CATEGORY%s\n"
       printf "${_inf} FOUND %s CATEGORIES: ${_cyn}%s${_ncl}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
 
-      f_dupl "${ar_cat[0]}"   # based on ${ar_cat[0]}
+      f_dupl "${ar_cat[0]}"   # remove duplicate domains based on ${ar_cat[0]}
       for C in {2..5}; do
          f_ddup "$C" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
             awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_CAT[C]}" \
@@ -59,10 +59,10 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
          f_do
       done
 
-      # based on ${ar_cat[1]} nothing to do
+      # remove duplicate domains based on ${ar_cat[1]}. do nothing
       printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[1]^^}"
 
-      f_dupl "${ar_cat[2]}"   # based on ${ar_cat[2]}
+      f_dupl "${ar_cat[2]}"   # remove duplicate domains based on ${ar_cat[2]}
       for D in {3..5}; do
          f_ddup "$D" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
          awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_CAT[D]}" \
@@ -71,7 +71,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
          f_do
       done
 
-      f_dupl "${ar_cat[3]}"   # based on ${ar_cat[3]}
+      f_dupl "${ar_cat[3]}"   # remove duplicate domains based on ${ar_cat[3]}
       for E in 4 5; do
          f_ddup "$E" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
          awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_CAT[E]}" \
@@ -80,14 +80,14 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
          f_do
       done
 
-      f_dupl "${ar_cat[4]}"   # based on ${ar_cat[4]}
+      f_dupl "${ar_cat[4]}"   # remove duplicate domains based on ${ar_cat[4]}
       f_ddup 5 "${ar_cat[5]}" "${ar_CAT[5]}" "${ar_CAT[4]}" "${ar_tmp[5]}" 4
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[5]}" "${ar_CAT[5]}" \
          | _sort > "${ar_dmn[5]}"
       cp "${ar_dmn[5]}" "${ar_CAT[5]}"
       f_do
 
-      # based on ${ar_cat[5]} nothing to do
+      # remove duplicate domains based on ${ar_cat[5]}. do nothing
       printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[5]^^}"
    else
       printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"

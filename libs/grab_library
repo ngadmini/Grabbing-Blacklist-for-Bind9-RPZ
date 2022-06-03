@@ -15,10 +15,11 @@ alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 alias _rsync="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 
 _foo="${0##*/}"
-_tag=$(grep -P "^#\s{2,}v.*" "$_foo" | cut -d' ' -f4)
+_ver=$(grep -P "^#\s{2,}v.*" "${_foo}" | cut -d' ' -f4)
 _fkt=$(faketime -f "+5m" date +%H:%M:%S)
 _prl='^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
 printf -v _lct "%s %s" "$(date +%Y%m%d_%T)" "$(date | awk -F' ' '{print $6}')"
+origin="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/${_ver}"
 
 # colorizing
 _red='\e[91m'
@@ -37,18 +38,20 @@ _wrn="${_grn}WARNING:${_ncl}"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
 _hnt="${_ylw}[HINT]${_ncl}"
 
-f_tmp() {   # remove temporary files, directories && arrays. generated during script execution
+f_tmp() {   # remove temporary files, directories & arrays, generated during script execution
    find . -regex "^.*\(sed\|dmn\|tmr\|tm[pq]\|txt.adulta\|txt.trust\+a\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
    find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 f_klin() { printf "\n"; f_tmp; f_uset; }
 f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 255' INT; }
-f_uset() { unset -v ar_{cat,CAT,cnf,CNF,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sho,split,tmp,txt,url,VAR,zon} isDOWN index; }
+f_uset() {
+   unset -v ar_{cat,CAT,cnf,CNF,db,dbc,DBC,dom,dmn,miss,reg,rpz,RPZ,sh,sho,split,tmp,txt,url,VAR,zh,zon} isDOWN index
+}
 
 f_xcd() {   # exit code {7..19}
    for EC in $1; do
-      local _xcd; _xcd=$(printf "${_err} $_foo: at line ${BASH_LINENO[0]}. exit code %s" "${EC}")
+      local _xcd; _xcd=$(printf "${_err} ${_foo}: at line ${BASH_LINENO[0]}. exit code %s" "${EC}")
       case $EC in
           7) printf "\n%s\n%s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"; return 1;;
           8) printf "\n%s\n%s\n" "${_xcd}" "required '$2' but it's not installed"; return 1;;
@@ -62,20 +65,20 @@ f_xcd() {   # exit code {7..19}
              printf "\n%s\n%s %s\n" "${_xcd}" "${_lnn}" "${_msg}"; return 1;;
          13) _re0='[Exit Codes section] https://curl.se/docs/manpage.html'
              _re1='[Status Codes section] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
-             _unk='check out [grab_urls]. if url[s] are correct, please see'
+             _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
              printf "${_err} %s:\n%s\n%s\n" "${_unk}" "${_re0}" "${_re1}"; exit 1;;
-         14) printf "\n%s\n%s\n" "${_xcd}" "download failed from '$2'"; return 1;;
+         14) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin"; return 1;;
          15) printf -v _ind "${_cyn}%s${_ncl}" "$(echo "${index[*]}" | grep "[\.,]")"
              printf "%s\ninvalid index's values: %s\n" "${_xcd}" "${_ind}"
              printf "${_hnt} use numeric in index's values%s\n"; return 1;;
          16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "$CNF" | cut -d: -f1)"
              _ext=$(printf "${_err} ${CNF##*/} : at line ${_lin}. exit code: %s" "${EC}")
-             printf "%s\n%s : if this address is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
+             printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
          17) printf "\n${_inf} misMATCH file(s): ${_cyn}%s${_ncl}\n%s\n" "$2" "${_xcd}"; return 1;;
          18) printf "\n%s: ${_cyn}%s${_ncl} doesn't exis\n" "${_xcd}" "$(basename "$2")"; return 1;;
          19) printf "\n%s: required file(s):\n${_cyn}%s${_ncl}\n" "${_xcd}" "$2"; return 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check:"
-             printf -v _knw "%s" "$_foo at line $(grep -n "f_xcd $1" "$_foo" | cut -d: -f1)"
+             printf -v _knw "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
              printf "\n${_err} %s\n%s\n" "${_ukn}" "${_knw}"; return 1;;
       esac
    done
@@ -97,7 +100,7 @@ f_sm0() {   # display messages when getting options
    printf "ENTER: ${_cyn}[1|2|3|4]${_ncl} or Ctrl+C to quit%s\n"
 }
 
-f_sm1() {   # f_sm[1...4] = display messages when chosing option
+f_sm1() {   # f_sm[1..4] = display messages when chosing option
    printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "$RETVAL"
    printf "${_cnt} 1) eliminating duplicate entries between CATEGORY%s\n"
    f_sm12 "st"
@@ -138,14 +141,15 @@ f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at
 f_sm10() { printf "\n${_tks} based on %s'%s options: ${_grn}%sDONE${_ncl}\n" "$RETVAL" "$1"; }
 f_sm11() { printf "\n${_inf} completed ${_cyn}IN %s:%s${_ncl}\n" "$1" "$2"; }
 f_sm12() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "$RETVAL" "$1"; }
-f_ok() { printf "${_grn}%s${_ncl}\n" "isOK"; }         # display isOK
-f_do() { printf "${_grn}%s${_ncl}\n" "DONE"; }         # display DONE
-f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }       # grabbing remote-files
+f_ok() { printf "${_grn}%s${_ncl}\n" "isOK"; }            # display isOK
+f_do() { printf "${_grn}%s${_ncl}\n" "DONE"; }            # display DONE
+f_no() { printf "${_red}notFOUND: %s${_ncl}\n" "$1"; }    # display notFOUND
+f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }          # grabbing remote-files
 
 # fixing false and bad entry
 f_fix() { f_sm9 "$1"; _sort -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
 f_ip() {   # capture and throw ip-address entry to ipv4 CATEGORY. save it into sub-net
-   _grep -P "$_prl" "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
+   _grep -P "${_prl}" "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
    _sed -i -E "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"
 }
 
@@ -156,7 +160,7 @@ f_fip() {
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
 }
 
-f_ssh() {   # nested in f_syn && f_cer
+f_ssh() {   # nested in f_cer and needed by grab_rsync
    printf "${_inf} %-83s" "check compatibility: ${HOST} with passwordless ssh"
    _ssh -o BatchMode=yes "${HOST}" true  >> /dev/null 2>&1 || f_xcd 7 "${HOST}"
    f_ok
@@ -212,16 +216,16 @@ f_ddup() {  # used by grab_duplic.sh
 }
 
 f_g4b() {   # nested in f_rpz and f_ip4
-   _sed -i -e "1i ; generate at $_lct by $_foo $_tag\n;" "$1"
+   _sed -i -e "1i ; generate at $_lct by $_foo $_ver\n;" "$1"
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
 }
 
 f_g4c() {   # used by grab_cereal.sh
    if [[ $(grep -n "^; generate at" "$1" | cut -d: -f1) = 1 ]]; then
-      _sed -i "1s/^.*$/; generate at $_lct by $_foo $_tag/" "$1"
+      _sed -i "1s/^.*$/; generate at $_lct by $_foo $_ver/" "$1"
    else
-      _sed -i -e "1i ; generate at $_lct by $_foo $_tag" "$1"
+      _sed -i -e "1i ; generate at $_lct by $_foo $_ver" "$1"
    fi
 }
 
@@ -233,23 +237,21 @@ f_rpz() {   # f_rpz && f_ip4 : both used by grab_build.sh
 
 f_ip4() {   # f_rpz && f_ip4 : both configurable in grab_config
    printf "%13s %-31s : " "rewriting" "$2 to $1"
-   _sed "s/\//\./" "$2" \
-      | awk -v IPV="${RPZ_IPV}" -F. '{print $5"."$4"."$3"."$2"."$1"."IPV}' >> "$1"
+   _sed "s/\//\./" "$2" | awk -v IPV="${RPZ_IPV}" -F. '{print $5"."$4"."$3"."$2"."$1"."IPV}' >> "$1"
    f_g4b "$@"
 }
 
 f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & scp
-   if ! ping -w 1 "$HOST" >> /dev/null 2>&1; then f_xcd 16; fi
+   if ! ping -w 1 "${HOST}" >> /dev/null 2>&1; then f_xcd 16; fi
    f_ssh
    for a in $1; do
-      if scp root@"${HOST}":"${ZONE_DIR}"/"$a" "$_DIR" >> /dev/null 2>&1; then
-         printf "${_inf} successfully get %s from %s\n" "$a" "${HOST}"
+      if scp root@"${HOST}":"${ZONE_DIR}"/"${a}" "${_DIR}" >> /dev/null 2>&1; then
+         printf "${_inf} successfully get %s from %s\n" "${a}" "${HOST}"
       else
-         local origin='https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/zones-rpz/'
-         printf "${_err} %s not found in %s. %s\n" "$a" "${HOST}" "try to get from origin:"
-         printf "%s%s\n" "$origin" "$a"
-         curl -C - -fs "$origin""$a" >> "$a" || f_xcd 14 "$origin"
-         printf "${_inf} successfully get %s from origin\n" "$a"
+         printf "${_err} %s not found in %s. %s\n" "${a}" "${HOST}" "try to get from origin:"
+         printf "%s\n" "${origin}/zones-rpz/${a}"
+         curl -C - -fs "${origin}/zones-rpz/""${a}" >> "${a}" || f_xcd 14
+         printf "${_inf} successfully get %s from origin\n" "${a}"
       fi
    done
    printf "${_inf} retry to running TASK again%s\n"
@@ -263,7 +265,7 @@ f_frm() { find . -type f -name "$1" -print0 | xargs -0 -r rm; }
 f_cat() { find . -type d | _sed -e "1d;s/\.\///" | sort; }
 
 f_dft() {   # define default variables
-   printf "%9s$_foo will continued with default configurations\n" ""
+   printf "%9s${_foo} will continued with default configurations\n" ""
    : "${HOST:=rpz.warnet-ersa.net}"
    : "${LC_NUMERIC:=id_ID.UTF-8}"
    : "${RNDC_RELOAD:=no}"
@@ -273,7 +275,7 @@ f_dft() {   # define default variables
 }
 
 f_cnf() {   # variables in file configuration
-   readonly CNF="$_DIR"/grab_config
+   readonly CNF="${_DIR}"/grab_config
    if [[ -e ${CNF} ]]; then
       [[ -r ${CNF} ]] || chmod 644 "${CNF}"
       ar_cnf=(HOST LC_NUMERIC RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)

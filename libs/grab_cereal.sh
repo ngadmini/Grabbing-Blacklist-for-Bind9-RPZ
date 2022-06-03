@@ -37,9 +37,8 @@ mapfile -t ar_zon < <(f_fnd "rpz.*")
 printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
 
 printf "\n${_inf} incrementing serial of zone-files%s"
-# inspecting file consistency && update serial zones
-if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
-   if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
+if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then        # inspecting required files
+   if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then        # update serial zones
       printf "\n${_inf} FOUND:\t%s zone-files (complete)" "${#ar_zon[@]}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)

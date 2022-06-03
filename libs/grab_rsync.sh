@@ -34,7 +34,7 @@ f_pms   # check file permission: db.* && rpz.*
 if ! ping -w 1 "${HOST}" >> /dev/null 2>&1; then f_xcd 16; fi
 
 printf "\n${_inf} check availability: RPZ-dBase and zone-files in local-host: %-23s" "$(hostname -I)"
-# check existance: db-files
+# check required: db-files
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
    db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab)
 mapfile -t ar_dbc < <(f_fnd "db.*")
@@ -44,7 +44,7 @@ if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then
    f_xcd 19 "${ar_DBC[*]}"
 fi
 
-# check existance: zone-files
+# check required: zone-files
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
    rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab)
 mapfile -t ar_rpz < <(f_fnd "rpz.*")
@@ -54,13 +54,12 @@ if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then
    f_xcd 19 "${ar_RPZ[*]}"
 fi
 f_ok
-f_ssh   # check check compatibility: ${HOST} with passwordless ssh
+f_ssh   # check compatibility: ${HOST} with passwordless ssh
         # check availability: ${ZONE_DIR} in ${HOST}
-        # check required packages in ${HOST}
+        # check required debian packages in ${HOST}
 # end of check
 
-_ts=$(date "+%Y-%m-%d")
-_ID="/home/rpz-${_ts}.tar.gz"
+printf -v _ID "/home/rpz-%s.tar.gz" "$(date +%Y%m%d-%H%M%S)"
 printf "${_inf} archiving current RPZ-dBase, save in %s:%s\n" "${HOST}" "$_ID"
 _ssh root@"${HOST}" "cd /etc/bind; tar -I pigz -cf $_ID zones-rpz"
 printf "${_inf} find and remove old RPZ-dBase archive in %s:/home\n" "${HOST}"
@@ -73,7 +72,7 @@ if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then
    printf "execute ${_rnr} at BIND9-server:%s\n" "${HOST}"
    _ssh root@"${HOST}" "rndc reload"
 else
-   # remote-host will reboot [after +@ minute] due to low memor
+   # remote-host will reboot [after +@ minute] due to low memory
    printf "${_inf} host: %s scheduled for reboot at ${_grn}%s${_ncl}\n" "${HOST}" "$_fkt"
    _ssh root@"${HOST}" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
    printf "${_inf} use ${_shd} at host: %s to abort" "${HOST}"

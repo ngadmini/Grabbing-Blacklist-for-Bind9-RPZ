@@ -66,10 +66,16 @@ prerequisites:
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
       # modify file grab_config to fit your BIND9-server environment
+      #   *) type in format VARIABLE=VALUE
       #   *) there are 6 variables you have to change.
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) do not leave any of the following variables undefined.
       #      it will return all variables to their default values
+      # OR
+      #   *) you may want to change all variables to default values
+      #      like in grab_library, instead of changing them in grab_config
+      #      go to grab_library line:
+      #      ~ nano +$(grep -n 'f_dft()' grab_library | cut -d: -f1) grab_library
 
       # specify in fqdn or ip-address
       HOST=rpz.warnet-ersa.net
@@ -91,9 +97,9 @@ prerequisites:
       #   RPZ_IPV=rpz-nsip CNAME block.example.net.
       # for more detail about rpz policy action, please see:
       #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-      # QNAME Trigger with NXDOMAIN Action for domains
+      # QNAME Trigger with NXDOMAIN Action for domains-list
       RPZ_DOM=CNAME .
-      # NS-IP Trigger with NXDOMAIN Action for ip-address
+      # NS-IP Trigger with NXDOMAIN Action for ip-address-list
       RPZ_IPV=rpz-nsip CNAME .
 
       # change to directory where zone-files (rpz.* and db.*) are located
