@@ -69,7 +69,7 @@ f_xcd() {   # exit code {7..19}
              printf "%s\ninvalid index's values: %s\n" "${_xcd}" "${_ind}"
              printf "${_hnt} use numeric in index's values%s\n"; return 1;;
          16) printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)"
-             _ext=$(printf "${_err} ${CNF##*/} : at line ${_lin}. exit code: %s" "${EC}")
+             _ext=$(printf "\n${_err} ${CNF##*/} : at line ${_lin}. exit code: %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
          17) printf "\n${_inf} misMATCH file(s): ${_CYN}\n%s\n" "$2" "${_xcd}"; return 1;;
          18) printf "\n%s: ${_CYN} doesn't exis\n" "${_xcd}" "$(basename "$2")"; return 1;;
