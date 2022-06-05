@@ -1,36 +1,34 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_duplic.sh
-#   v6.7
+#   v6.8
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
+#   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2154
+# shellcheck source=/dev/null disable=SC2154 disable=SC2059
 
 startTime=$SECONDS
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 
-f_src() {
+f_src() {   # sourced, cleanUP on exit, interrupt & terminate
    readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
       [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
-      source "${_LIB}"
-      f_trap                 # cleanUP on exit, interrupt & terminate
+      source "${_LIB}"; f_trap
    else
-      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-      exit 1
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
    fi
 }
 
-# START <main script>
+# <main script>
 f_src
-printf "\n${_red}[1'st] TASKs:${_ncl}\nstarting %s at ${_cyn}%s${_ncl}" "${0##*/}" "${_lct}"
+printf "\n${_RED}\nstarting %s at ${_CYN}" "[1'st] TASKs:" "${0##*/} (${_ver})" "${_lct}"
 cd "${_DIR}"; [[ ! $UID -eq 0 ]] || f_xcd 10
-
-ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
@@ -47,8 +45,8 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
          ar_tmp+=(tmr."${ar_CAT[B]/txt./}")
       done
 
-      printf "\n${_inf} eliminating duplicate entries between CATEGORY%s\n"
-      printf "${_inf} FOUND %s CATEGORIES: ${_cyn}%s${_ncl}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
+      printf "\n${_inf} eliminating duplicate entries between CATEGORY\n"
+      printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
 
       f_dupl "${ar_cat[0]}"   # remove duplicate domains based on ${ar_cat[0]}
       for C in {2..5}; do
@@ -60,7 +58,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       done
 
       # remove duplicate domains based on ${ar_cat[1]}. do nothing
-      printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[1]^^}"
+      printf "eliminating duplicate entries based on ${_CYN}\t\tdo nothing\n" "${ar_cat[1]^^}"
 
       f_dupl "${ar_cat[2]}"   # remove duplicate domains based on ${ar_cat[2]}
       for D in {3..5}; do
@@ -88,24 +86,24 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       f_do
 
       # remove duplicate domains based on ${ar_cat[5]}. do nothing
-      printf "eliminating duplicate entries based on ${_cyn}%s${_ncl}\t\tdo nothing\n" "${ar_cat[5]^^}"
+      printf "eliminating duplicate entries based on ${_CYN}\t\tdo nothing\n" "${ar_cat[5]^^}"
    else
-      printf "\n${_err} misMATCH file: ${_cyn}%s${_ncl}" "$miss_v"
+      printf "\n${_err} misMATCH file: ${_CYN}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
    fi
 elif [[ ${#ar_CAT[@]} -gt ${#ar_cat[@]} ]]; then
-      printf "\n${_err} misMATCH category: ${_cyn}%s${_ncl}" "$miss_v"
+      printf "\n${_err} misMATCH category: ${_CYN}" "$miss_v"
       f_xcd 19 "${ar_cat[*]}"
 else
-   printf "\n${_inf} missing file(s): ${_cyn}%s${_ncl}" "$miss_v"
-   printf "\n${_hnt} run first: ${_cyn}grab_http.sh${_ncl}%s"
+   printf "\n${_inf} missing file(s): ${_CYN}" "$miss_v"
+   printf "\n${_hnt} run first: ${_CYN}" "grab_http.sh"
    f_xcd 19 "${ar_cat[*]}"
 fi
 
 # display result
 unset -v ar_CAT
 mapfile -t ar_CAT < <(f_fnd "txt.*")
-printf "\n${_inf} deduplicating domains (${_cyn}%s all CATEGORIES${_ncl}) in summary:\n" "${#ar_CAT[@]}"
+printf "\n${_inf} deduplicating domains (${_CYN}) in summary:\n" "${#ar_CAT[@]} all CATEGORIES"
 for P in "${!ar_CAT[@]}"; do
    printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${_dpl}"

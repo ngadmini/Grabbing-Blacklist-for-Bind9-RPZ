@@ -1,10 +1,10 @@
-; generate at 20220603_23:17:35 WIB by grab_build.sh v6.7
+; generate at 20220605_20:16:45 WIB by grab_build.sh v6.8
 ;
-services.runescape.com-hj.xyz CNAME .
-*.services.runescape.com-hj.xyz CNAME .
-services.runescape.com-hk.top CNAME .
-*.services.runescape.com-hk.top CNAME .
-services.runescape.com-log.top CNAME .
-*.services.runescape.com-log.top CNAME .
-services.runescape.com-m.cc CNAME .
-*.services.runescape.com-m.cc CNAME .
+service-paypal.terjumilowe.com CNAME .
+*.service-paypal.terjumilowe.com CNAME .
+service-paypal.webredirect.org CNAME .
+*.service-paypal.webredirect.org CNAME .
+service-paypal.zynxcv52.tk CNAME .
+*.service-paypal.zynxcv52.tk CNAME .
+service-paypal07b.duckdns.org CNAME .
+*.service-paypal07b.duckdns.org CNAME .

@@ -1,8 +1,8 @@
-; generate at 20220603_23:17:44 WIB by grab_cereal.sh v6.7
+; generate at 20220605_20:16:54 WIB by grab_cereal.sh v6.8
 ;   rpz.publicite
 $TTL 3600
 $ORIGIN publicite.domain.
-@   SOA   publicite.domain. rpz.publicite.domain. (2022060301 3600 3600 86400 3600)
+@   SOA   publicite.domain. rpz.publicite.domain. (2022060503 3600 3600 86400 3600)
 @         NS   publicite.domain.
 @   IN    A    127.0.0.15
 ;

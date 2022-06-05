@@ -1,4 +1,4 @@
-; generate at 20220603_23:17:35 WIB by grab_build.sh v6.7
+; generate at 20220605_20:16:45 WIB by grab_build.sh v6.8
 ;
 32.230.218.0.1.rpz-nsip CNAME .
 32.12.227.0.1.rpz-nsip CNAME .

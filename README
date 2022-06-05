@@ -1,4 +1,4 @@
-# README version v6.7
+# README version v6.8
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
 ###########################################################
@@ -10,15 +10,12 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v6.7:
-*) turn back to 12 db-files and 12 zone-files, due to the significant decrease in the raw domain list
-   of trust+ category after dramatically increasing
-*) versions v6.6 with v6.7 are similar. the difference is in version v6.7 turn back to 12 dbase-files
-   and 12 zone-files by no longer splitting the txt.trust+ file into txt.trust+aa and txt.trust+ab
+what's new in v6.8:
+*) minor update in grab_http.sh and grab_library
 
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.7/gb4rpz-v6.7.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v6.8/gb4rpz-v6.8.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in

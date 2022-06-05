@@ -1,10 +1,10 @@
-; generate at 20220603_23:17:35 WIB by grab_build.sh v6.7
+; generate at 20220605_20:16:45 WIB by grab_build.sh v6.8
 ;
-uploadsx.blogspot.nl CNAME .
-*.uploadsx.blogspot.nl CNAME .
-uploadsx.blogspot.no CNAME .
-*.uploadsx.blogspot.no CNAME .
-uploadsx.blogspot.pe CNAME .
-*.uploadsx.blogspot.pe CNAME .
-uploadsx.blogspot.pt CNAME .
-*.uploadsx.blogspot.pt CNAME .
+updates-jp.digital CNAME .
+*.updates-jp.digital CNAME .
+updates-jp.life CNAME .
+*.updates-jp.life CNAME .
+updates-pay-co-jpstar.xyz CNAME .
+*.updates-pay-co-jpstar.xyz CNAME .
+updates-rakuten-co-jppro.xyz CNAME .
+*.updates-rakuten-co-jppro.xyz CNAME .
