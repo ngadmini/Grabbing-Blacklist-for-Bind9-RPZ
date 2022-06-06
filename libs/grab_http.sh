@@ -29,7 +29,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
       local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
-      printf "%12s: %-66s" "${ext_dsi^^}" "${ar_shyo[A]}"
+      printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -C - -ksfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
       find . -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
@@ -116,9 +116,9 @@ trust=$(mktemp --tmpdir="${_DIR}")
 untrust=$(mktemp --tmpdir="${_DIR}")
 porn=$(mktemp --tmpdir="${_DIR}")
 
-f_sm7 1 "${ar_shyo[1]}";f_do    # done when initiating category
-f_sm7 7 "${ar_shyo[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
-f_sm7 21 "${ar_shyo[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
+f_sm7 1 "${ar_sho[1]}";f_do    # done when initiating category
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
+f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 # identifying porn domains, use it to reduce porn domains in trust+ category
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
@@ -136,24 +136,24 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-f_sm7 0 "${ar_shyo[0]}"; f_do    # done when initiating category
-f_sm7 6 "${ar_shyo[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_sm7 7 "${ar_shyo[7]}"; f_do    # done when processing trust+ category
+f_sm7 0 "${ar_sho[0]}"; f_do    # done when initiating category
+f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_do    # done when processing trust+ category
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 f_sm8 "${ar_cat[4]}" 2          # done when initiating category
-for F in {4,5}; do f_sm7 "$F" "${ar_shyo[F]}"; f_do; done
+for F in {4,5}; do f_sm7 "$F" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm8 "${ar_cat[3]}" 5
-f_sm7 3 "${ar_shyo[3]}";f_do     # done when initiating category
+f_sm7 3 "${ar_sho[3]}";f_do     # done when initiating category
 
 for G in {8..11}; do
-   f_sm7 "$G" "${ar_shyo[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
+   f_sm7 "$G" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
@@ -161,15 +161,15 @@ f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 f_sm8 "${ar_cat[2]}" 8
-f_sm7 2 "${ar_shyo[2]}"; f_do    # done when initiating category
+f_sm7 2 "${ar_sho[2]}"; f_do    # done when initiating category
 
-f_sm7 12 "${ar_shyo[12]}"
+f_sm7 12 "${ar_sho[12]}"
 f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
-f_sm7 13 "${ar_shyo[13]}"
+f_sm7 13 "${ar_sho[13]}"
 f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 
 for H in {14..18}; do
-   f_sm7 "$H" "${ar_shyo[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
+   f_sm7 "$H" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
 
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
@@ -179,7 +179,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm8 "${ar_cat[1]}" 2
 
 for I in {19,20}; do     # save ipv4 into sub-nets
-   f_sm7 "$I" "${ar_shyo[I]}"
+   f_sm7 "$I" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
