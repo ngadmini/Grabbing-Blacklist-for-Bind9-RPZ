@@ -35,10 +35,7 @@ printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 # inspecting required files
 if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
    if [[ ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
-      unset -v ar_cat
-      ar_cat=()               # declare temporary files as array
-      ar_dmn=()               #
-      ar_tmp=()               #
+      unset -v ar_cat; ar_cat=(); ar_dmn=(); ar_tmp=()
       for B in "${!ar_CAT[@]}"; do
          ar_cat+=("${ar_CAT[B]/txt./}")
          ar_dmn+=(dmn."${ar_CAT[B]/txt./}")
@@ -52,7 +49,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       for C in {2..5}; do
          f_ddup "$C" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
             awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_CAT[C]}" \
-            | _sort > "${ar_dmn[C]}"
+            | _srt > "${ar_dmn[C]}"
          cp "${ar_dmn[C]}" "${ar_CAT[C]}"
          f_do
       done
@@ -64,7 +61,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       for D in {3..5}; do
          f_ddup "$D" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
          awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_CAT[D]}" \
-            | _sort > "${ar_dmn[D]}"
+            | _srt > "${ar_dmn[D]}"
          cp "${ar_dmn[D]}" "${ar_CAT[D]}"
          f_do
       done
@@ -73,7 +70,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       for E in 4 5; do
          f_ddup "$E" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
          awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_CAT[E]}" \
-            | _sort > "${ar_dmn[E]}"
+            | _srt > "${ar_dmn[E]}"
          cp "${ar_dmn[E]}" "${ar_CAT[E]}"
          f_do
       done
@@ -81,7 +78,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}" ]]; then
       f_dupl "${ar_cat[4]}"   # remove duplicate domains based on ${ar_cat[4]}
       f_ddup 5 "${ar_cat[5]}" "${ar_CAT[5]}" "${ar_CAT[4]}" "${ar_tmp[5]}" 4
       awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[5]}" "${ar_CAT[5]}" \
-         | _sort > "${ar_dmn[5]}"
+         | _srt > "${ar_dmn[5]}"
       cp "${ar_dmn[5]}" "${ar_CAT[5]}"
       f_do
 

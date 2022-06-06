@@ -64,7 +64,7 @@ printf "${_hnt} use 'unpigz -v ${_ID}' following 'tar -xvf ${_ID/.gz/}' to extra
 printf "${_inf} find and remove old RPZ-dBase archive in %s:/home\n" "${HOST}"
 _ssh root@"${HOST}" "find /home -regex '^.*\(tar.gz\)$' -mmin +1430 -print0 | xargs -0 -r rm"
 printf "${_inf} syncronizing the latest RPZ-dBase to %s\n" "${HOST}:${ZONE_DIR}"
-_rsync {rpz,db}.* root@"${HOST}":"${ZONE_DIR}"
+_snc {rpz,db}.* root@"${HOST}":"${ZONE_DIR}"
 
 if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then
    # required sufficient RAM to execute "rndc reload"

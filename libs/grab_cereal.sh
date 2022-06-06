@@ -46,9 +46,9 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then      # inspecting required file
          else
             SERIAL_date=${SERIAL::-2}                   # slice to [20190104]
             if [[ $DATE -eq $SERIAL_date ]]; then       # it same day
-               SERIAL_num=${SERIAL: -2}                 # give [00-99] times to change
-               SERIAL_num=$((10#$SERIAL_num + 1))       # force decimal increment
-               newSERIAL="${DATE}$(printf "%02d" $SERIAL_num)"
+               SERIALar_num=${SERIAL: -2}                 # give [00-99] times to change
+               SERIALar_num=$((10#$SERIALar_num + 1))       # force decimal increment
+               newSERIAL="${DATE}$(printf "%02d" $SERIALar_num)"
             else
                newSERIAL="${DATE}00"
             fi
