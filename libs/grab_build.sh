@@ -7,7 +7,7 @@
 # TL;DR
 #   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2154 disable=SC2059
+# shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 startTime=$SECONDS
 umask 027
@@ -25,8 +25,7 @@ ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf 
 f_src() {   # source, cleanUP on exit, interrupt & terminate
    readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
-      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
-      source "${_LIB}"; f_trap
+      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
    fi
@@ -50,23 +49,17 @@ if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" ]]; then      # inspecting required file
       printf -v mr_p "%s" "$(echo "${ar_spl[@]}" "${ar_txt[@]}" | f_sed)"
       printf "${_CYN}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
    else
-      printf "${_err} misMATCH file: ${_CYN}" "$miss_v"
-      f_xcd 19 "${ar_cat[*]}"
+      printf "${_err} misMATCH file: ${_CYN}" "$miss_v"; f_xcd 19 "${ar_cat[*]}"
    fi
 elif [[ ${#ar_CAT[@]} -gt ${#ar_cat[@]} ]]; then
-   printf "${_err} misMATCH category: ${_CYN}" "$miss_v"
-   f_xcd 19 "${ar_cat[*]}"
+   printf "${_err} misMATCH category: ${_CYN}" "$miss_v"; f_xcd 19 "${ar_cat[*]}"
 else
-   printf "${_err} missing file(s): ${_CYN}" "$miss_v"
-   f_xcd 19 "${ar_cat[*]}"
+   printf "${_err} missing file(s): ${_CYN}" "$miss_v"; f_xcd 19 "${ar_cat[*]}"
 fi
 
 if [[ ${#ar_txt[@]} -eq ${#ar_spl[@]} ]]; then
-   f_frm "db.*"
-   ar_dom=()
-   for Y in "${!ar_txt[@]}"; do
-      ar_dom+=("${ar_txt[Y]/txt./db.}")
-   done
+   f_frm "db.*"; ar_dom=()
+   for Y in "${!ar_txt[@]}"; do ar_dom+=("${ar_txt[Y]/txt./db.}"); done
 
    printf "${_inf} rewriting all CATEGORIES to RPZ format\n"
    for X in "${!ar_txt[@]}"; do      # rebuild to rpz-format

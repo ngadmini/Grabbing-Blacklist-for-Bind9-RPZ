@@ -7,7 +7,7 @@
 # TL;DR
 #   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2154 disable=SC2059
+# shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 startTime=$SECONDS
 umask 027
@@ -53,8 +53,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 f_src() {   # sourced, cleanUP on exit, interrupt & terminate
    readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
-      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
-      source "${_LIB}"; f_trap
+      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
    fi

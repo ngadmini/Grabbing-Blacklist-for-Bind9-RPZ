@@ -7,7 +7,7 @@
 # TL;DR
 #   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2154 disable=SC2059
+# shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 startTime=$SECONDS
 set -Eeuo pipefail
@@ -21,8 +21,7 @@ ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
 f_src() {   # source, cleanUP on exit, interrupt & terminate
    readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
-      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
-      source "${_LIB}"; f_trap
+      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
    fi
@@ -40,16 +39,14 @@ printf "\n${_inf} check availability: RPZ-dBase and zone-files in local-host: %-
 mapfile -t ar_dbc < <(f_fnd "db.*")
 printf -v miss_DBC "%s" "$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)"
 if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then
-   printf "\n${_inf} misMATCH file: ${_CYN}" "$miss_DBC"
-   f_xcd 19 "${ar_DBC[*]}"
+   printf "\n${_inf} misMATCH file: ${_CYN}" "$miss_DBC"; f_xcd 19 "${ar_DBC[*]}"
 fi
 
 # check required: zone-files
 mapfile -t ar_rpz < <(f_fnd "rpz.*")
 printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)"
 if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then
-   printf "\n${_inf} misMATCH file: ${_CYN}" "$miss_RPZ"
-   f_xcd 19 "${ar_RPZ[*]}"
+   printf "\n${_inf} misMATCH file: ${_CYN}" "$miss_RPZ"; f_xcd 19 "${ar_RPZ[*]}"
 fi
 f_ok
 f_ssh   # check compatibility: ${HOST} with passwordless ssh
@@ -68,8 +65,7 @@ _snc {rpz,db}.* root@"${HOST}":"${ZONE_DIR}"
 
 if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then
    # required sufficient RAM to execute "rndc reload"
-   printf "execute ${_rnr} at BIND9-server:%s\n" "${HOST}"
-   _ssh root@"${HOST}" "rndc reload"
+   printf "execute ${_rnr} at BIND9-server:%s\n" "${HOST}"; _ssh root@"${HOST}" "rndc reload"
 else
    # remote-host will reboot [after +@ minute] due to low memory
    printf "${_inf} host: %s scheduled for reboot at ${_GRN}\n" "${HOST}" "${_fkt}"

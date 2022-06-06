@@ -7,7 +7,7 @@
 # TL;DR
 #   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2154 disable=SC2059
+# shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 startTime=$(date +%s%N)
 set -Eeuo pipefail
@@ -20,8 +20,7 @@ ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
 f_src() {   # source, cleanUP on exit, interrupt & terminate
    readonly _LIB="${_DIR}"/grab_library
    if [[ -e ${_LIB} ]]; then
-      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"
-      source "${_LIB}"; f_trap
+      [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap
    else
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
    fi
@@ -46,25 +45,22 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then      # inspecting required file
          else
             SERIAL_date=${SERIAL::-2}                   # slice to [20190104]
             if [[ $DATE -eq $SERIAL_date ]]; then       # it same day
-               SERIALar_num=${SERIAL: -2}                 # give [00-99] times to change
-               SERIALar_num=$((10#$SERIALar_num + 1))       # force decimal increment
-               newSERIAL="${DATE}$(printf "%02d" $SERIALar_num)"
+               SERIAL_num=${SERIAL: -2}                 # give [00-99] times to change
+               SERIAL_num=$((10#$SERIAL_num + 1))       # force decimal increment
+               newSERIAL="${DATE}$(printf "%02d" $SERIAL_num)"
             else
                newSERIAL="${DATE}00"
             fi
          fi
-         _sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$Z"
-         f_g4c "$Z"
+         _sed -i -e 's/'"$SERIAL"'/'"$newSERIAL"'/g' "$Z"; f_g4c "$Z"
       done
       f_pms
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}" "$newSERIAL"
    else
-      printf "\n${_err} misMATCH file: ${_CYN}" "$miss_v"
-      f_xcd 19 "${ar_rpz[*]}"
+      printf "\n${_err} misMATCH file: ${_CYN}" "$miss_v"; f_xcd 19 "${ar_rpz[*]}"
    fi
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-   printf "\n${_err} misMATCH file: ${_CYN}" "$miss_v"
-   f_xcd 19 "${ar_rpz[*]}"
+   printf "\n${_err} misMATCH file: ${_CYN}" "$miss_v"; f_xcd 19 "${ar_rpz[*]}"
 else
    printf "\n${_err} missing zone-files: ${_CYN}\n" "$miss_v"
    ar_miss+=("$miss_v")
