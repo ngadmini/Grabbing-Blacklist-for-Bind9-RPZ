@@ -171,9 +171,9 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
 }
 
 f_crawl() {   # verify remote-urls isUP
-   set +e; ar_shyo=(); ar_dwn=(); local i=-1
+   set +e; ar_shy=(); ar_dwn=(); local i=-1
    while IFS='' read -r line; do
-      # slicing remote-urls && add as an element to ${ar_shyo[@]}
+      # slicing remote-urls && add as an element to ${ar_shy[@]}
       local lll; lll="${line##htt*\/\/}"
       local ll; ll="$(basename "$line")"
       local l; l="${lll/\/*/}"
@@ -181,8 +181,8 @@ f_crawl() {   # verify remote-urls isUP
       local statusCode
       statusCode=$(curl -C - -kso /dev/null -I -w "%{http_code}" "${line}"; echo " exit code: $?")
       ((i++))
-      ar_shyo+=("${p_url}")
-      printf "%12s: %-64s\t" "urls_${i}" "${ar_shyo[i]}"
+      ar_shy+=("${p_url}")
+      printf "%12s: %-64s\t" "urls_${i}" "${ar_shy[i]}"
       if [[ $statusCode != 2* ]]; then
          printf "${_RED}\n" "$statusCode"
          ar_dwn+=("[status code:${statusCode}] ${line}")
