@@ -171,7 +171,7 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
 }
 
 f_crawl() {   # verify remote-urls isUP
-   set +e; ar_sho=(); ar_dwn=(); local i=-1
+   ar_sho=(); ar_dwn=(); local i=-1
    while IFS='' read -r line; do
       # slicing remote-urls && add as an element to ${ar_sho[@]}
       local lll; lll="${line##htt*\/\/}"
@@ -196,7 +196,6 @@ f_crawl() {   # verify remote-urls isUP
    else
       printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 13
    fi
-   set -e
 }
 
 f_dupl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }

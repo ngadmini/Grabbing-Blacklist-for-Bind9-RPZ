@@ -105,7 +105,7 @@ done
 f_ok
 
 printf "${_pre} check the remote-files isUP or isDOWN\n"
-f_crawl "${ar_shn[1]}"
+f_crawl "${ar_shn[1]}" || true
 
 # <main script>
 f_grab
