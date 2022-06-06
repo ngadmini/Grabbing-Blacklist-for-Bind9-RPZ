@@ -196,7 +196,7 @@ f_crawl() {   # verify remote-urls isUP
    else
       printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 13
    fi
-   set -u
+   set -e
 }
 
 f_dupl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
