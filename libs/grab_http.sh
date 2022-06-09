@@ -102,7 +102,7 @@ for e in "${!ar_shn[@]}"; do
       fi
    fi
 
-   if [[ $(stat -L -c "%A" "${ar_shn[e]}") != 644 ]]; then chmod 644 "${ar_shn[e]}"; fi
+   if [[ $(stat -L -c "%a" "${ar_shn[e]}") != 644 ]]; then chmod 644 "${ar_shn[e]}"; fi
    _sed -i "/^$/d" "${ar_shn[e]}"
 
    if [[ ${e} -eq ${ar_num[ar_shn]} ]]; then
