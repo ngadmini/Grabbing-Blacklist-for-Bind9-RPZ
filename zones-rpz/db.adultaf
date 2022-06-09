@@ -1,10 +1,10 @@
-; generate at 20220605_20:16:45 WIB by grab_build.sh v6.8
+; generate at 20220609_10:47:33 WIB by grab_build.sh v6.9
 ;
-service-paypal.terjumilowe.com CNAME .
-*.service-paypal.terjumilowe.com CNAME .
-service-paypal.webredirect.org CNAME .
-*.service-paypal.webredirect.org CNAME .
-service-paypal.zynxcv52.tk CNAME .
-*.service-paypal.zynxcv52.tk CNAME .
-service-paypal07b.duckdns.org CNAME .
-*.service-paypal07b.duckdns.org CNAME .
+seminews.co.kr CNAME .
+*.seminews.co.kr CNAME .
+seminoc.com CNAME .
+*.seminoc.com CNAME .
+seminole23.tumblr.com CNAME .
+*.seminole23.tumblr.com CNAME .
+seminonton.com CNAME .
+*.seminonton.com CNAME .

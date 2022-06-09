@@ -1,8 +1,8 @@
-; generate at 20220605_20:16:54 WIB by grab_cereal.sh v6.8
+; generate at 20220609_10:47:41 WIB by grab_cereal.sh v6.9
 ;   rpz.ipv4
 $TTL 3600
 $ORIGIN ipv4.domain.
-@   SOA   ipv4.domain. rpz.ipv4.domain. (2022060503 3600 3600 86400 3600)
+@   SOA   ipv4.domain. rpz.ipv4.domain. (2022060901 3600 3600 86400 3600)
 @         NS   ipv4.domain.
 @   IN    A    127.0.0.13
 ;
