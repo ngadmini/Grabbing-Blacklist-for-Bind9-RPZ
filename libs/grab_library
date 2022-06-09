@@ -262,7 +262,6 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
 }
 
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
-f_pms() { find . -regex "^.*\(db\|rpz\).*" -not -perm 640 -exec chmod -R 640 {} \;; }
 f_fnd() { find . -type f -name "$1" | _sed -e "s/\.\///" | sort; }
 f_frm() { find . -type f -name "$1" -print0 | xargs -0 -r rm; }
 f_cat() { find . -type d | _sed -e "1d;s/\.\///" | sort; }

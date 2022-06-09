@@ -15,7 +15,8 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap; f_cnf
+   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   f_trap; f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -25,7 +26,7 @@ cd "${_DIR}"
 SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
 if ! ${SOURCED}; then set -Eeuo pipefail; [[ ! ${UID} -eq 0 ]] || f_xcd 10; fi
 
-f_pms   # check file permission: db.* & rpz.*
+if [[ $(stat -L -c "%a" {rpz,db}.*) != 640 ]]; then chmod 640 {rpz,db}.*; fi
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
    db.ipv4 db.malware db.publicite db.redirector db.trust+)
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \

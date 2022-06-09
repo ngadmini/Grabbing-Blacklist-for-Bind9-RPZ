@@ -12,6 +12,7 @@ license:
 
 what's new in v6.9:
 *) the time it takes to run the script in m:s.ms format <minute:second.milisecond>
+*) fix permission check
 
 file parts of this version:
    download script-pack from:

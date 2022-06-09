@@ -44,7 +44,8 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap; f_cnf
+   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   source "${_LIB}"; f_trap; f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -101,7 +102,7 @@ for e in "${!ar_shn[@]}"; do
       fi
    fi
 
-   [[ -r ${ar_shn[e]} ]] || chmod 644 "${ar_shn[e]}"
+   if [[ $(stat -L -c "%A" "${ar_shn[e]}") != 644 ]]; then chmod 644 "${ar_shn[e]}"; fi
    _sed -i "/^$/d" "${ar_shn[e]}"
 
    if [[ ${e} -eq ${ar_num[ar_shn]} ]]; then

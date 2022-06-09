@@ -15,7 +15,8 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   [[ -r ${_LIB} ]] || chmod 644 "${_LIB}"; source "${_LIB}"; f_trap
+   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   source "${_LIB}"; f_trap
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -51,9 +52,9 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
             fi
          fi
          _sed -i -e "s/${SERIAL}/${newSERIAL}/g" "$Z"
+         if [[ $(stat -L -c "%a" "$Z") != 640 ]]; then chmod 640 "$Z"; fi
          f_g4c "$Z"
       done
-      f_pms
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}\n" "${newSERIAL}"
    else
       printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 19 "${ar_rpz[*]}"
