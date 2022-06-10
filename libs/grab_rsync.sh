@@ -16,7 +16,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   f_trap; f_cnf
+   source "${_LIB}"; f_trap; f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
