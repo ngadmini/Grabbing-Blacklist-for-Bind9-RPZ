@@ -1,10 +1,10 @@
-; generate at 20220609_10:47:33 WIB by grab_build.sh v6.9
+; generate at 20220611_02:22:42 WIB by grab_build.sh v7.0
 ;
-seminews.co.kr CNAME .
-*.seminews.co.kr CNAME .
-seminoc.com CNAME .
-*.seminoc.com CNAME .
-seminole23.tumblr.com CNAME .
-*.seminole23.tumblr.com CNAME .
-seminonton.com CNAME .
-*.seminonton.com CNAME .
+semanadescontoblack.com CNAME .
+*.semanadescontoblack.com CNAME .
+semanadodescontocerto.com CNAME .
+*.semanadodescontocerto.com CNAME .
+semanadodescontodo.parceiromaga.com CNAME .
+*.semanadodescontodo.parceiromaga.com CNAME .
+semanadopaizao.com CNAME .
+*.semanadopaizao.com CNAME .

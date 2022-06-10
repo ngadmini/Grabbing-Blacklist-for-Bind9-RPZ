@@ -1,6 +1,6 @@
 # TAGS
 #   grab_library
-#   v6.9
+#   v7.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -60,10 +60,10 @@ f_xcd() {   # exit code {7..19}
          12) local _msg; _msg="lines. it should consist of ${ar_num[ar_reg]} lines"
              local _lnn; printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lnn} ${_msg}"; return 1;;
-         13) local _re0='[Exit Codes section] https://curl.se/docs/manpage.html'
-             local _re1='[Status Codes section] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
+         13) local _re0='[curl-code section] https://curl.se/docs/manpage.html'
+             local _re1='[status-code section] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
              local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
-             printf "${_err} %s:\n%s\n%s\n" "${_unk}" "${_re0}" "${_re1}"; exit 1;;
+             printf "${_err} %s:\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}"; exit 1;;
          14) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin"; return 1;;
          15) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | grep "[\.,]")"
              printf "%s\ninvalid ar_num's values: %s\n" "${_xcd}" "${_ind}"
@@ -148,7 +148,7 @@ f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "${_red}%s notFOUND${_ncl}\n" "$1"; }
 
 # grabbing raw-domains && fixing false and bad entries
-f_add() { curl -C - -fs "$1" || f_xcd 14 "$1"; }
+f_add() { curl -fs "$1" || f_xcd 14 "$1"; }
 f_fix() { f_sm9 "$1"; _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
 f_ipv() {   # capture and throw ip-address entry to ipv4 CATEGORY. save it into sub-net
    _grp -P "${_prl}" "$1" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
@@ -185,16 +185,15 @@ f_crawl() {   # verify remote-urls isUP
       local lll; lll="${line##htt*\/\/}"
       local ll; ll="$(basename "$line")"
       local l; l="${lll/\/*/}"
-      local p_url; p_url="$l/..?../$ll"
-      local statusCode
-      statusCode=$(curl -C - -so /dev/null -I -w "%{http_code}" "${line}"; echo " exit code: $?")
+      local _url; _url="$l/..?../$ll"
+      local _stc; _stc=$(curl -so /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
       ((i++))
-      ar_sho+=("${p_url}")
+      ar_sho+=("${_url}")
       printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
 
-     if [[ $statusCode != 2* ]]; then
-         printf "${_RED}\n" "$statusCode"
-         ar_dwn+=("[status code:${statusCode}] ${line}")
+     if ! [[ $_stc = 2* ]]; then
+         printf "${_RED}\n" "$_stc"
+         ar_dwn+=("[status-code:${_stc}] ${line}")
       else
          f_up
       fi
@@ -211,6 +210,7 @@ f_ddup() {  # used by grab_duplic.sh
    printf "%11s = deduplicating %s entries \t\t" "STEP $6.$1" "$2"
    _srt "$3" "$4" | uniq -d | _srt -u > "$5"
 }
+f_dawk() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt > "$3"; }
 
 f_g4b() {   # nested in f_rpz and f_ip4
    _sed -i -e "1i ; generate at ${_lct} by ${_foo} ${_ver}\n;" "$1"
@@ -246,13 +246,12 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
       else
          printf "${_err} ${_CYN} not found in %s\n" "${a}" "${HOST}. try to get from origin:"
          printf "%s\n" "${_ori}/zones-rpz/${a}"
-         local _stat; _stat=$(curl -C - -so  /dev/null -I -w "%{http_code}" "${_ori}/zones-rpz/${a}")
-         if [[ ${_stat} = 2* ]]; then
-            curl -C - -fs "${_ori}/zones-rpz/${a}" >> "${a}" || f_xcd 14
+         if [[ $(f_stc "${_ori}/zones-rpz/${a}") -eq 200 ]]; then
+            curl -fs "${_ori}/zones-rpz/${a}" >> "${a}" || f_xcd 14
             printf "${_inf} succeed get ${_CYN} from origin\n" "${a}"
          else
             printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/zones-rpz/${a}" "${_ori/$_ver/}"
-            printf "${_err} download failed with status= %d\n" "${_stat}"
+            printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/zones-rpz/${a}")"
             return 1
          fi
       fi
@@ -261,6 +260,7 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
    exec "$0"
 }
 
+f_stc() { curl -so /dev/null -I -w "%{http_code}" "$1"; }
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
 f_fnd() { find . -type f -name "$1" | _sed -e "s/\.\///" | sort; }
 f_frm() { find . -type f -name "$1" -print0 | xargs -0 -r rm; }
@@ -301,3 +301,4 @@ f_cnf() {   # variables in file configuration
       f_dft
    fi
 }
+

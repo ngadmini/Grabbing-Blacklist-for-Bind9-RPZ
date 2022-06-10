@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_build.sh
-#   v6.9
+#   v7.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -11,6 +11,7 @@
 
 T=$(date +%s%N)
 umask 027
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -22,10 +23,9 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting ${0##*/} (${_ver}) at ${_CYN}\n" "[2'nd] TASKs:" "${_lct}"
+printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "[2'nd] TASKs:" "${_lct}"
+[[ ! ${UID} -eq 0 ]] || f_xcd 10
 cd "${_DIR}"
-SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! ${SOURCED}; then set -Eeuo pipefail; [[ ! ${UID} -eq 0 ]] || f_xcd 10; fi
 
 # inspecting required files <categories> first then split txt.adult
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
@@ -38,9 +38,9 @@ if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
+printf "${_inf} splitting ${_CYN} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${ar_num[l_adult]}"
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
    unset -v ar_CAT
-   printf "${_inf} splitting ${_CYN} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${ar_num[l_adult]}"
    split -l "${ar_num[l_adult]}" "${ar_cat[0]}" "${ar_cat[0]}"
    mv txt.adult /tmp
    mapfile -t ar_txt < <(f_fnd "txt.*")
@@ -50,12 +50,12 @@ else
    printf "${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 19 "${ar_cat[*]}"
 fi
 
-# inspecting splitted txt.adult first & rebuild to rpz-format
+# inspecting splitted txt.adult & rebuild to rpz-format
+printf "${_inf} rewriting all CATEGORIES to RPZ format\n"
 if [[ ${#ar_txt[@]} -eq ${#ar_spl[@]} && ${ar_txt[*]} == "${ar_spl[*]}" ]]; then
    f_frm "db.*"; ar_dom=()
-   printf "${_inf} rewriting all CATEGORIES to RPZ format\n"
-   for Y in "${!ar_txt[@]}"; do ar_dom+=("${ar_txt[Y]/txt./db.}"); done
    for X in "${!ar_txt[@]}"; do
+      ar_dom+=("${ar_txt[X]/txt./db.}")
       if [[ $X -eq ${ar_num[db_ipv4]} ]]; then
          f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
       else

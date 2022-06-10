@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v6.9
+#   v7.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -10,6 +10,7 @@
 # shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 T=$(date +%s%N)
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -21,10 +22,9 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting ${0##*/} (${_ver}) at ${_CYN}" "[3'th] TASKs:" "${_lct}"
+printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[3'th] TASKs:" "${_lct}"
+[[ ! ${UID} -eq 0 ]] || f_xcd 10
 cd "${_DIR}"
-SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! ${SOURCED}; then set -Eeuo pipefail; [[ ! ${UID} -eq 0 ]] || f_xcd 10; fi
 
 # inspecting zone-files then update it's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \

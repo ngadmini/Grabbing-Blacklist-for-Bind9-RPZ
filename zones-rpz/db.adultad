@@ -1,10 +1,10 @@
-; generate at 20220609_10:47:33 WIB by grab_build.sh v6.9
+; generate at 20220611_02:22:42 WIB by grab_build.sh v7.0
 ;
-hsboys.com CNAME .
-*.hsboys.com CNAME .
-hsbsoupxnxwcpqf.su CNAME .
-*.hsbsoupxnxwcpqf.su CNAME .
-hsbtqsprnroinlr.ru CNAME .
-*.hsbtqsprnroinlr.ru CNAME .
-hsbucmp.goruli.com CNAME .
-*.hsbucmp.goruli.com CNAME .
+hsbc.mypayee-manage.co.uk CNAME .
+*.hsbc.mypayee-manage.co.uk CNAME .
+hsbc.mysecurity-instruction.co.uk CNAME .
+*.hsbc.mysecurity-instruction.co.uk CNAME .
+hsbc.newpayee-alertscheck.com CNAME .
+*.hsbc.newpayee-alertscheck.com CNAME .
+hsbc.newpayee-request.co.uk CNAME .
+*.hsbc.newpayee-request.co.uk CNAME .

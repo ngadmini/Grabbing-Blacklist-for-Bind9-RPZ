@@ -1,9 +1,9 @@
-http://dsi.ut-capitole.fr/blacklists/download/adult.tar.gz
-http://dsi.ut-capitole.fr/blacklists/download/gambling.tar.gz
-http://dsi.ut-capitole.fr/blacklists/download/phishing.tar.gz
-http://dsi.ut-capitole.fr/blacklists/download/publicite.tar.gz
-http://dsi.ut-capitole.fr/blacklists/download/redirector.tar.gz
-http://dsi.ut-capitole.fr/blacklists/download/vpn.tar.gz
+https://dsi.ut-capitole.fr/blacklists/download/adult.tar.gz
+https://dsi.ut-capitole.fr/blacklists/download/gambling.tar.gz
+https://dsi.ut-capitole.fr/blacklists/download/phishing.tar.gz
+https://dsi.ut-capitole.fr/blacklists/download/publicite.tar.gz
+https://dsi.ut-capitole.fr/blacklists/download/redirector.tar.gz
+https://dsi.ut-capitole.fr/blacklists/download/vpn.tar.gz
 https://blocklistproject.github.io/Lists/alt-version/porn-nl.txt
 https://raw.githubusercontent.com/alsyundawy/dnstrust-apjii/main/raw/db_trustpositif.txt
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml

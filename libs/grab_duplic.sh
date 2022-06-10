@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_duplic.sh
-#   v6.9
+#   v7.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -10,6 +10,7 @@
 # shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 T=$(date +%s%N)
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -21,10 +22,9 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting %s at ${_CYN}" "[1'st] TASKs:" "${0##*/} (${_ver})" "${_lct}"
+printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[1'th] TASKs:" "${_lct}"
+[[ ! ${UID} -eq 0 ]] || f_xcd 10
 cd "${_DIR}"
-SOURCED=false && [[ $0 = "${BASH_SOURCE[0]}" ]] || SOURCED=true
-if ! ${SOURCED}; then set -Eeuo pipefail; [[ ! ${UID} -eq 0 ]] || f_xcd 10; fi
 
 # inspecting required files <categories> first
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
@@ -46,8 +46,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    f_dupl "${ar_cat[0]}"   # remove duplicate domains based on ${ar_cat[0]}
    for C in {2..5}; do
       f_ddup "$C" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
-      awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[C]}" "${ar_CAT[C]}" \
-         | _srt > "${ar_dmn[C]}"
+      f_dawk "${ar_tmp[C]}" "${ar_CAT[C]}" "${ar_dmn[C]}"
       cp "${ar_dmn[C]}" "${ar_CAT[C]}"; f_do
    done
 
@@ -57,23 +56,20 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    f_dupl "${ar_cat[2]}"   # remove duplicate domains based on ${ar_cat[2]}
    for D in {3..5}; do
       f_ddup "$D" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
-      awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[D]}" "${ar_CAT[D]}" \
-         | _srt > "${ar_dmn[D]}"
+      f_dawk "${ar_tmp[D]}" "${ar_CAT[D]}" "${ar_dmn[D]}"
       cp "${ar_dmn[D]}" "${ar_CAT[D]}"; f_do
    done
 
    f_dupl "${ar_cat[3]}"   # remove duplicate domains based on ${ar_cat[3]}
    for E in 4 5; do
       f_ddup "$E" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
-      awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[E]}" "${ar_CAT[E]}" \
-         | _srt > "${ar_dmn[E]}"
+      f_dawk "${ar_tmp[E]}" "${ar_CAT[E]}" "${ar_dmn[E]}"
       cp "${ar_dmn[E]}" "${ar_CAT[E]}"; f_do
    done
 
    f_dupl "${ar_cat[4]}"   # remove duplicate domains based on ${ar_cat[4]}
    f_ddup 5 "${ar_cat[5]}" "${ar_CAT[5]}" "${ar_CAT[4]}" "${ar_tmp[5]}" 4
-   awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${ar_tmp[5]}" "${ar_CAT[5]}" \
-      | _srt > "${ar_dmn[5]}"
+   f_dawk "${ar_tmp[5]}" "${ar_CAT[5]}" "${ar_dmn[5]}"
    cp "${ar_dmn[5]}" "${ar_CAT[5]}"; f_do
 
    # remove duplicate domains based on ${ar_cat[5]}. do nothing

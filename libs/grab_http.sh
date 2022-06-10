@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v6.9
+#   v7.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -10,8 +10,7 @@
 # shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 T=$(date +%s%N)
-umask 027
-set -Eeuo pipefail
+umask 027; set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -22,14 +21,14 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
       local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
-      curl -C - -sfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
+      curl -sfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
       find . -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
       f_do
    done
 
    # make some adjusment for initialize category
-   mkdir ipv4; mv phishing malware;  mv gambling trust+
+   mkdir ipv4; mv phishing malware; mv gambling trust+
    cat vpn/domains >> redirector/domains; rm -rf vpn
    mapfile -t ar_cat < <(f_cat)          # initialize category
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
@@ -50,9 +49,10 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\nstarting %s at ${_CYN}\n" "${0##*/} (${_ver})" "${_lct}"
+printf "\nstarting %s at ${_CYN}\n" "${0##*/} ${_ver}" "${_lct}"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-cd "${_DIR}"; [[ ! ${UID} -eq 0 ]] || f_xcd 10; f_ok
+[[ ! ${UID} -eq 0 ]] || f_xcd 10; f_ok
+cd "${_DIR}"
 
 ar_shy=(./grab_build.sh ./grab_cereal.sh ./grab_duplic.sh ./grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
@@ -74,13 +74,12 @@ for E in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[E]/.\/} ]]; then
       f_no "${ar_shy[E]/.\/}"
       printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[E]/.\/}" "${_ori}/libs/${ar_shy[E]/.\/}"
-      _stat=$(curl -C - -so  /dev/null -I -w "%{http_code}" "${_ori}/libs/${ar_shy[E]/.\/}")
-      if [[ ${_stat} = 2* ]]; then
-         curl -C - -fs "${_ori}/libs/${ar_shy[E]/.\/}" >> "${ar_shy[E]/.\/}" || f_xcd 14
+      if [[ $(f_stc "${_ori}/libs/${ar_shy[E]/.\/}") -eq 200 ]]; then
+         curl -fs "${_ori}/libs/${ar_shy[E]/.\/}" >> "${ar_shy[E]/.\/}" || f_xcd 14
          printf "${_inf} %-73s" "succeed get ${ar_shy[E]/.\/} from origin"
       else
          printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shy[E]/.\/}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "${_stat}"
+         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shy[E]/.\/}")"
          exit 1
       fi
    fi
@@ -91,13 +90,12 @@ for e in "${!ar_shn[@]}"; do
    if ! [[ -e ${ar_shn[e]} ]]; then
       f_no "${ar_shn[e]}"
       printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shn[e]}" "${_ori}/libs/${ar_shn[e]}"
-      _stat=$(curl -C - -so  /dev/null -I -w "%{http_code}" "${_ori}/libs/${ar_shn[e]}")
-      if [[ ${_stat} = 2* ]]; then
-         curl -C - -fs "${_ori}/libs/${ar_shn[e]}" >> "${ar_shn[e]}" || f_xcd 14
+      if [[ $(f_stc "${_ori}/libs/${ar_shn[e]}") -eq 200 ]]; then
+         curl -fs "${_ori}/libs/${ar_shn[e]}" >> "${ar_shn[e]}" || f_xcd 14
          printf "${_inf} %-73s" "succeed get ${ar_shn[e]} from origin"
       else
          printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shn[e]}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "${_stat}"
+         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shn[e]}")"
          exit 1
       fi
    fi
@@ -222,7 +220,6 @@ done
 unset -v ar_txt
 mapfile -t ar_txt < <(f_fnd "txt.*")
 printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d' ' -f3)"
-
 T="$(($(date +%s%N)-T))"; f_time
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
