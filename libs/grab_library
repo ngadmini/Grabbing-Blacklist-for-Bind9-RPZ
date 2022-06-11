@@ -9,7 +9,7 @@
 #   see README and LICENSE
 # shellcheck disable=SC2034 disable=SC2059 disable=SC2148 disable=SC2154
 
-shopt -s expand_aliases
+shopt -s expand_aliases lastpipe
 alias _grp="LC_ALL=C grep"
 alias _snc="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 alias _sed="LC_ALL=C sed"
@@ -44,6 +44,7 @@ f_klin() { printf "\n"; f_tmp; f_uset; }
 f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 255' INT; }
 f_uset() {
    unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,num,miss,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
+   set +Eeuo pipefail; shopt -u expand_aliases lastpipe
 }
 
 f_xcd() {   # exit code {7..19}
@@ -238,7 +239,7 @@ f_ip4() {   # used by grab_build.sh & configurable in grab_config
    f_g4b "$@"
 }
 
-f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & scp
+f_cer() {   # used by grab_cereal.sh to copying zone-files with passwordless ssh & scp
    f_ssh
    for a in $1; do
       if scp root@"${HOST}":"${ZONE_DIR}"/"${a}" "${_DIR}" >> /dev/null 2>&1; then
@@ -290,15 +291,14 @@ f_cnf() {   # variables in file configuration
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
       else
-         # fallback to default values when misconfigurations occurs
+         # misconfigurations occurs: fallback to default values
          printf "\n${_wn0} misconfigurations occurs in %s. undefine value :\n" "${CNF##*/}"
          printf "%9s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
          f_dft
       fi
    else
-      # fallback to default values when missing "${CNF}"
+      # missing "${CNF}": fallback to default values
       printf "\n${_wn0} %s notFOUND\n" "${CNF##*/}"
       f_dft
    fi
 }
-
