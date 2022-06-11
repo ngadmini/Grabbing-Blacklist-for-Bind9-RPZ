@@ -13,6 +13,7 @@ T=$(date +%s%N)
 umask 027; set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "${_DIR}"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
@@ -20,9 +21,9 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
       local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
+      find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -sfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
-      find . -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
       f_do
    done
@@ -52,7 +53,6 @@ fi
 printf "\nstarting %s at ${_CYN}\n" "${0##*/} ${_ver}" "${_lct}"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 10; f_ok
-cd "${_DIR}"
 
 ar_shy=(./grab_build.sh ./grab_cereal.sh ./grab_duplic.sh ./grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
@@ -71,7 +71,9 @@ f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
 for E in "${!ar_shy[@]}"; do
-   if ! [[ -e ${ar_shy[E]/.\/} ]]; then
+   if [[ -e ${ar_shy[E]/.\/} ]]; then
+      [[ -x ${ar_shy[E]/.\/} ]] || chmod +x "${ar_shy[E]/.\/}"
+   else
       f_no "${ar_shy[E]/.\/}"
       printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[E]/.\/}" "${_ori}/libs/${ar_shy[E]/.\/}"
       if [[ $(f_stc "${_ori}/libs/${ar_shy[E]/.\/}") -eq 200 ]]; then
@@ -83,11 +85,13 @@ for E in "${!ar_shy[@]}"; do
          exit 1
       fi
    fi
-   [[ -x ${ar_shy[E]/.\/} ]] || chmod +x "${ar_shy[E]/.\/}"
 done
 
 for e in "${!ar_shn[@]}"; do
-   if ! [[ -e ${ar_shn[e]} ]]; then
+   if [[ -e ${ar_shn[e]} ]]; then
+      if [[ $(stat -L -c "%a" "${ar_shn[e]}") != 644 ]]; then chmod 644 "${ar_shn[e]}"; fi
+      _sed -i "/^$/d" "${ar_shn[e]}"
+   else
       f_no "${ar_shn[e]}"
       printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shn[e]}" "${_ori}/libs/${ar_shn[e]}"
       if [[ $(f_stc "${_ori}/libs/${ar_shn[e]}") -eq 200 ]]; then
@@ -99,9 +103,6 @@ for e in "${!ar_shn[@]}"; do
          exit 1
       fi
    fi
-
-   if [[ $(stat -L -c "%a" "${ar_shn[e]}") != 644 ]]; then chmod 644 "${ar_shn[e]}"; fi
-   _sed -i "/^$/d" "${ar_shn[e]}"
 
    if [[ ${e} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[e]}"

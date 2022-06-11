@@ -13,6 +13,7 @@ T=$(date +%s%N)
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "${_DIR}"
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
@@ -24,7 +25,6 @@ fi
 
 printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[4'th] TASKs:" "${_lct}"
 [[ ! ${UID} -eq 0 ]] || f_xcd 10
-cd "${_DIR}"
 
 if [[ $(stat -L -c "%a" {rpz,db}.*) != 640 ]]; then chmod 640 {rpz,db}.*; fi
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \

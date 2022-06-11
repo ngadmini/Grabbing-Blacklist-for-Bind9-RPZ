@@ -13,18 +13,19 @@ T=$(date +%s%N)
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "${_DIR}"
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trap; f_cnf
+   source "${_LIB}"; f_trap
+#; f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
 printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[1'th] TASKs:" "${_lct}"
 [[ ! ${UID} -eq 0 ]] || f_xcd 10
-cd "${_DIR}"
 
 # inspecting required files <categories> first
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)

@@ -10,10 +10,10 @@
 # shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 T=$(date +%s%N)
-umask 027
-set -Eeuo pipefail
+umask 027; set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "${_DIR}"
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
@@ -25,7 +25,6 @@ fi
 
 printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "[2'nd] TASKs:" "${_lct}"
 [[ ! ${UID} -eq 0 ]] || f_xcd 10
-cd "${_DIR}"
 
 # inspecting required files <categories> first then split txt.adult
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)

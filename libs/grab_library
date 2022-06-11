@@ -36,8 +36,8 @@ _tks="${_red}TASKs${_ncl}"
 _wn0="${_grn}WARNING:${_ncl}"; _wn1="${_red}[WARN]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated during script execution
-   find . -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
-   find . -type d ! -name "." -print0 | xargs -0 -r rm -rf
+   find . -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
+   find . -maxdepth 1 -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 f_klin() { printf "\n"; f_tmp; f_uset; }
@@ -262,9 +262,9 @@ f_cer() {   # used by grab_cereal.sh to copy zone-files with passwordless ssh & 
 
 f_stc() { curl -so /dev/null -I -w "%{http_code}" "$1"; }
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " "; }
-f_fnd() { find . -type f -name "$1" | _sed -e "s/\.\///" | sort; }
-f_frm() { find . -type f -name "$1" -print0 | xargs -0 -r rm; }
-f_cat() { find . -type d | _sed -e "1d;s/\.\///" | sort; }
+f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -e "s/\.\///" | sort; }
+f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
+f_cat() { find . -maxdepth 1 -type d | _sed -e "1d;s/\.\///" | sort; }
 
 f_dft() {   # define default variables
    printf "%9s${_foo} will continued with default configurations\n" ""

@@ -13,6 +13,7 @@ T=$(date +%s%N)
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "${_DIR}"
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
@@ -24,7 +25,6 @@ fi
 
 printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[3'th] TASKs:" "${_lct}"
 [[ ! ${UID} -eq 0 ]] || f_xcd 10
-cd "${_DIR}"
 
 # inspecting zone-files then update it's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
