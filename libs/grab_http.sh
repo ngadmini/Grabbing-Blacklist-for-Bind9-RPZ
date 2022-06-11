@@ -31,7 +31,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    # make some adjusment for initialize category
    mkdir ipv4; mv phishing malware; mv gambling trust+
    cat vpn/domains >> redirector/domains; rm -rf vpn
-   mapfile -t ar_cat < <(f_cat)          # initialize category
+   mapfile -t ar_cat < <(f_cat)          # initializing category
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"
    ar_dmn=(); ar_tmp=(); ar_txt=()
@@ -45,16 +45,16 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trap; f_cnf
+   source "${_LIB}"; f_trap
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\nstarting %s at ${_CYN}\n" "${0##*/} ${_ver}" "${_lct}"
+printf "\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "${_lct}"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 10; f_ok
 
-ar_shy=(./grab_build.sh ./grab_cereal.sh ./grab_duplic.sh ./grab_rsync.sh)
+ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 declare -A ar_num
 ar_num[ar_txt]=1               # index's position of pv4 category is no.1 at ar_txt
@@ -71,17 +71,17 @@ f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
 for E in "${!ar_shy[@]}"; do
-   if [[ -e ${ar_shy[E]/.\/} ]]; then
-      [[ -x ${ar_shy[E]/.\/} ]] || chmod +x "${ar_shy[E]/.\/}"
+   if [[ -e ${ar_shy[E]} ]]; then
+      [[ -x ${ar_shy[E]} ]] || chmod +x "${ar_shy[E]}"
    else
-      f_no "${ar_shy[E]/.\/}"
-      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[E]/.\/}" "${_ori}/libs/${ar_shy[E]/.\/}"
-      if [[ $(f_stc "${_ori}/libs/${ar_shy[E]/.\/}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shy[E]/.\/}" >> "${ar_shy[E]/.\/}" || f_xcd 14
-         printf "${_inf} %-73s" "succeed get ${ar_shy[E]/.\/} from origin"
+      f_no "${ar_shy[E]}"
+      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[E]}" "${_ori}/libs/${ar_shy[E]}"
+      if [[ $(f_stc "${_ori}/libs/${ar_shy[E]}") -eq 200 ]]; then
+         curl -fs "${_ori}/libs/${ar_shy[E]}" >> "${ar_shy[E]}" || f_xcd 14
+         printf "${_inf} %-73s" "succeed get ${ar_shy[E]} from origin"
       else
-         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shy[E]/.\/}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shy[E]/.\/}")"
+         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shy[E]}" "${_ori/$_ver/}"
+         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shy[E]}")"
          exit 1
       fi
    fi
@@ -124,18 +124,17 @@ trust=$(mktemp --tmpdir="${_DIR}")
 untrust=$(mktemp --tmpdir="${_DIR}")
 porn=$(mktemp --tmpdir="${_DIR}")
 
-f_sm7 1 "${ar_sho[1]}";f_do    # done when initiating category
+f_sm7 1 "${ar_sho[1]}";f_do    # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
-# identifying porn domains, use it to reduce porn domains in trust+ category
+# identifying porn domains, use it to reducing porn domains in trust+ category
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ipv "${porn}" "${ar_dmn[1]}"
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 # throw porn domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
-cat "${trust}" >> "${ar_dmn[0]}"
 f_do
 
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
@@ -143,21 +142,21 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-f_sm7 0 "${ar_sho[0]}"; f_do    # done when initiating category
+f_sm7 0 "${ar_sho[0]}"; f_do    # done while initializing category
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_sm7 7 "${ar_sho[7]}"; f_do    # done when processing trust+ category
+f_sm7 7 "${ar_sho[7]}"; cat "${trust}" >> "${ar_dmn[0]}"; f_do
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
-f_sm8 "${ar_cat[4]}" 2          # done when initiating category
+f_sm8 "${ar_cat[4]}" 2          # done while initializing category
 for F in {4,5}; do f_sm7 "$F" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm8 "${ar_cat[3]}" 5
-f_sm7 3 "${ar_sho[3]}";f_do     # done when initiating category
+f_sm7 3 "${ar_sho[3]}";f_do     # done while initializing category
 for G in {8..11}; do
    f_sm7 "$G" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
@@ -166,7 +165,7 @@ f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 f_sm8 "${ar_cat[2]}" 8
-f_sm7 2 "${ar_sho[2]}"; f_do    # done when initiating category
+f_sm7 2 "${ar_sho[2]}"; f_do    # done while initializing category
 f_sm7 12 "${ar_sho[12]}"
 f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm7 13 "${ar_sho[13]}"
@@ -224,28 +223,29 @@ printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | 
 T="$(($(date +%s%N)-T))"; f_time
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
-f_sm6; f_sm0 "${HOST}"; read -r opsi
+f_sm6; f_cnf; f_sm0 "${HOST}"; read -r opsi
+
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} or ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
 case ${opsi} in
-   1) f_sm1; "${ar_shy[2]}"; f_sm10 st;;
+   1) f_sm1; "./${ar_shy[2]}"; f_sm10 st;;
    2) f_sm2
-      if "${ar_shy[2]}"; then
-         if "${ar_shy[0]}"; then f_sm10 nd; fi
+      if "./${ar_shy[2]}"; then
+         if "./${ar_shy[0]}"; then f_sm10 nd; fi
       else exit 1; fi;;
    3) f_sm3
-      if "${ar_shy[2]}"; then
-         if "${ar_shy[0]}"; then
-            if "${ar_shy[1]}"; then f_sm10 th; fi
+      if "./${ar_shy[2]}"; then
+         if "./${ar_shy[0]}"; then
+            if "./${ar_shy[1]}"; then f_sm10 th; fi
          else exit 1; fi
       else exit 1; fi;;
    4) f_sm4
-      if "${ar_shy[2]}"; then
-         if "${ar_shy[0]}"; then
-            if "${ar_shy[1]}"; then
-               if "${ar_shy[3]}"; then f_sm10 th; fi
+      if "./${ar_shy[2]}"; then
+         if "./${ar_shy[0]}"; then
+            if "./${ar_shy[1]}"; then
+               if "./${ar_shy[3]}"; then f_sm10 th; fi
             else exit 1; fi
          else exit 1; fi
       else exit 1; fi;;
