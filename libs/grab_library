@@ -9,7 +9,7 @@
 #   see README and LICENSE
 # shellcheck disable=SC2034 disable=SC2059 disable=SC2148 disable=SC2154
 
-shopt -s expand_aliases lastpipe
+shopt -s expand_aliases
 alias _grp="LC_ALL=C grep"
 alias _snc="rsync -rtxX -e 'ssh -q -T -c aes128-ctr -o Compression=no -x'"
 alias _sed="LC_ALL=C sed"
