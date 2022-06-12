@@ -45,7 +45,7 @@ f_klin() { printf "\n"; f_tmp; f_uset; }
 f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 255' INT; }
 f_uset() {
    unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,num,miss,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
-   set +Eeuo pipefail; shopt -u expand_aliases lastpipe
+   set +Eeuo pipefail; shopt -u expand_aliases
 }
 
 f_xcd() {   # exit code {7..19}

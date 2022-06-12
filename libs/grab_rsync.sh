@@ -10,7 +10,7 @@
 # shellcheck source=/dev/null disable=SC2059 disable=SC2154
 
 T=$(date +%s%N)
-set -Eeuo pipefail; shopt -s lastpipe
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
