@@ -286,7 +286,7 @@ f_cnf() {   # valuation variables in grab_config
       mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then   # get values supplied by "${CNF}", instead of "source ${CNF}"
          local _ptr; _ptr="s/=[ ^ ]/=/g;s/CNAME\(\t\|\s.*\)\./CNAME ./g;s/['\"#]//g;s/\( \|\t\)\{2,\}.*//g;s/\. [a0-z9].*/\./g"
-         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "${_ptr}"| sort | cut -d= -f2)
+         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "${_ptr}" | sort | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
