@@ -63,74 +63,72 @@ ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=3               #                  grab_regex
 if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
 
-printf "${_pre} %-63s" "check required packages in local-host: $(hostname -I)"
-for D in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
-   if ! dpkg -s "$D" >> /dev/null 2>&1; then f_xcd 8 "$D"; fi
+printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
+for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
+   if ! dpkg -s "$C" >> /dev/null 2>&1; then f_xcd 8 "$C"; fi
 done
 f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
-for E in "${!ar_shy[@]}"; do
-   if [[ -e ${ar_shy[E]} ]]; then
-      [[ -x ${ar_shy[E]} ]] || chmod +x "${ar_shy[E]}"
+for D in "${!ar_shy[@]}"; do
+   if [[ -e ${ar_shy[D]} ]]; then
+      [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
    else
-      f_no "${ar_shy[E]}"
-      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[E]}" "${_ori}/libs/${ar_shy[E]}"
-      if [[ $(f_stc "${_ori}/libs/${ar_shy[E]}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shy[E]}" >> "${ar_shy[E]}" || f_xcd 14
-         printf "${_inf} %-73s" "succeed get ${ar_shy[E]} from origin"
+      f_no "${ar_shy[D]}"
+      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[D]}" "${_ori}/libs/${ar_shy[D]}"
+      if [[ $(f_stc "${_ori}/libs/${ar_shy[D]}") -eq 200 ]]; then
+         curl -fs "${_ori}/libs/${ar_shy[D]}" >> "${ar_shy[D]}" || f_xcd 14
+         printf "${_inf} %-73s" "succeed get ${ar_shy[D]} from origin"
       else
-         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shy[E]}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shy[E]}")"
+         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shy[D]}" "${_ori/$_ver/}"
+         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shy[D]}")"
          exit 1
       fi
    fi
 done
 
-for e in "${!ar_shn[@]}"; do
-   if [[ -e ${ar_shn[e]} ]]; then
-      if [[ $(stat -L -c "%a" "${ar_shn[e]}") != 644 ]]; then chmod 644 "${ar_shn[e]}"; fi
-      _sed -i "/^$/d" "${ar_shn[e]}"
+for E in "${!ar_shn[@]}"; do
+   if [[ -e ${ar_shn[E]} ]]; then
+      if [[ $(stat -L -c "%a" "${ar_shn[E]}") != 644 ]]; then chmod 644 "${ar_shn[E]}"; fi
+      _sed -i "/^$/d" "${ar_shn[E]}"
    else
-      f_no "${ar_shn[e]}"
-      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shn[e]}" "${_ori}/libs/${ar_shn[e]}"
-      if [[ $(f_stc "${_ori}/libs/${ar_shn[e]}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shn[e]}" >> "${ar_shn[e]}" || f_xcd 14
-         printf "${_inf} %-73s" "succeed get ${ar_shn[e]} from origin"
+      f_no "${ar_shn[E]}"
+      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shn[E]}" "${_ori}/libs/${ar_shn[E]}"
+      if [[ $(f_stc "${_ori}/libs/${ar_shn[E]}") -eq 200 ]]; then
+         curl -fs "${_ori}/libs/${ar_shn[E]}" >> "${ar_shn[E]}" || f_xcd 14
+         printf "${_inf} %-73s" "succeed get ${ar_shn[E]} from origin"
       else
-         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shn[e]}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shn[e]}")"
+         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shn[E]}" "${_ori/$_ver/}"
+         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shn[E]}")"
          exit 1
       fi
    fi
 
-   if [[ ${e} -eq ${ar_num[ar_shn]} ]]; then
-      mapfile -t ar_reg < "${ar_shn[e]}"
-      [[ ${#ar_reg[@]} -eq ${ar_num[ar_reg]} ]] || f_xcd 12 "${ar_shn[e]}"
+   if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
+      mapfile -t ar_reg < "${ar_shn[E]}"
+      [[ ${#ar_reg[@]} -eq ${ar_num[ar_reg]} ]] || f_xcd 12 "${ar_shn[E]}"
    else
-      mapfile -t ar_url < "${ar_shn[e]}"
-      [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 11 "${ar_shn[e]}"
+      mapfile -t ar_url < "${ar_shn[E]}"
+      [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 11 "${ar_shn[E]}"
    fi
 done
 f_ok
 
-printf "${_pre} check the remote-files isUP or isDOWN\n"
+printf "${_pre} check the remote-files (in grab_urls) isUP or isDOWN\n"
 f_crawl "${ar_shn[1]}" || :
 f_grab
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
-trust=$(mktemp --tmpdir="${_DIR}")
-untrust=$(mktemp --tmpdir="${_DIR}")
-porn=$(mktemp --tmpdir="${_DIR}")
+trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do    # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
-# identifying porn domains, use it to reducing porn domains in trust+ category
+# identifying porn domains, use it to reducing porn domains entry in "${untrust}"
 printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-f_ipv "${porn}" "${ar_dmn[1]}"
+f_ipv "${porn}" "${ar_dmn[1]}"   # capture ipv4 in "${porn}" first, save in ipv4 CATEGORY
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 # throw porn domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
@@ -178,18 +176,18 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
-for I in {19,20}; do     # save ipv4 into sub-nets
+for I in {19,20}; do            # save ipv4 into sub-nets
    f_sm7 "$I" "${ar_sho[I]}"
-   f_add "${ar_url[I]}" | _grp -v "^#" | _sed -e "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
+   f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
-f_sm9 "${ar_cat[1]}"     # remove duplicate entry then sort the rest
+f_sm9 "${ar_cat[1]}"            # remove duplicate entry then sort the rest
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
 f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # <finishing>
-printf "\nacquired domains (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
+printf "\nprocessing raw-domains (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${aqr_sum}"
@@ -224,28 +222,28 @@ T="$(($(date +%s%N)-T))"; f_time
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
 f_sm6; f_cnf; f_sm0 "${HOST}"; read -r opsi
-
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} or ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
+ar_exc=(); for L in "${!ar_shy[@]}"; do ar_exc+=("${_DIR}/${ar_shy[L]}"); done
 case ${opsi} in
-   1) f_sm1; "./${ar_shy[2]}"; f_sm10 st;;
+   1) f_sm1; "${ar_exc[2]}"; f_sm10 st;;
    2) f_sm2
-      if "./${ar_shy[2]}"; then
-         if "./${ar_shy[0]}"; then f_sm10 nd; fi
+      if "${ar_exc[2]}"; then
+         if "${ar_exc[0]}"; then f_sm10 nd; fi
       else exit 1; fi;;
    3) f_sm3
-      if "./${ar_shy[2]}"; then
-         if "./${ar_shy[0]}"; then
-            if "./${ar_shy[1]}"; then f_sm10 th; fi
+      if "${ar_exc[2]}"; then
+         if "${ar_exc[0]}"; then
+            if "${ar_exc[1]}"; then f_sm10 th; fi
          else exit 1; fi
       else exit 1; fi;;
    4) f_sm4
-      if "./${ar_shy[2]}"; then
-         if "./${ar_shy[0]}"; then
-            if "./${ar_shy[1]}"; then
-               if "./${ar_shy[3]}"; then f_sm10 th; fi
+      if "${ar_exc[2]}"; then
+         if "${ar_exc[0]}"; then
+            if "${ar_exc[1]}"; then
+               if "${ar_exc[3]}"; then f_sm10 th; fi
             else exit 1; fi
          else exit 1; fi
       else exit 1; fi;;

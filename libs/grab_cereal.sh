@@ -51,7 +51,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
                newSERIAL="${DATE}00"
             fi
          fi
-         _sed -i -e "s/${SERIAL}/${newSERIAL}/g" "$Z"
+         _sed -i "s/${SERIAL}/${newSERIAL}/" "$Z"
          if [[ $(stat -L -c "%a" "$Z") != 640 ]]; then chmod 640 "$Z"; fi
          f_g4c "$Z"
       done
