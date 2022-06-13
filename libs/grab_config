@@ -1,6 +1,6 @@
 # TAGS
 #   grab_config
-#   v7.0
+#   v7.1
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # PLEASE PAY ATTENTIONS
@@ -23,10 +23,6 @@
 # or ip-address
 #   HOST=172.30.254.253
 HOST=rpz.warnet-ersa.net
-
-# change to your locale country numeric. used for number formatting.
-# leave this as it is if you are from Indonesia
-LC_NUMERIC=id_ID.UTF-8
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some server with low_RAM
@@ -51,4 +47,5 @@ RPZ_DOM=CNAME .
 RPZ_IPV=rpz-nsip CNAME .
 
 # change to directory where zone-files (rpz.*) and db-files (db.*) are located  
-ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz
+#ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz
+ZONE_DIR=/etc/bind/zones-rpz

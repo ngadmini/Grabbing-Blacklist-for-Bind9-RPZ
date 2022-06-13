@@ -1,4 +1,4 @@
-# README version v7.0
+# README version v7.1
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
 ###########################################################
@@ -10,12 +10,14 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.0:
-*) grab_urls: change some urls to https 
+what's new in v7.1:
+*) exit status changed to non standard value
+*) prettyfy the message display
+*) no longer using LC_NUMERIC as a variable
 
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.0/gb4rpz-v7.0.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.1/gb4rpz-v7.1.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
@@ -81,10 +83,6 @@ prerequisites:
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>
       RNDC_RELOAD=yes
-
-      # change to your locale country numeric. used for number formatting.
-      # leave this as it is if you are from Indonesia
-      LC_NUMERIC=id_ID.UTF-8
 
       # change Resource Record <CNAME> and Right Hand Value <.>
       # if you have other policy RR and RH Value.

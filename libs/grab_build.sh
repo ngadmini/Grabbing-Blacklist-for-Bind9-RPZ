@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_build.sh
-#   v7.0
+#   v7.1
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -24,7 +24,7 @@ else
 fi
 
 printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "[2'nd] TASKs:" "${_lct}"
-[[ ! ${UID} -eq 0 ]] || f_xcd 10
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
 
 # inspecting required files <categories> first then split txt.adult
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
@@ -33,7 +33,7 @@ ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf 
 declare -A ar_num
 ar_num[l_adult]=749999        # the adult category will be devided into this number of lines
 ar_num[db_ipv4]=7             # index's position of ipv4 category at aray: ar_(txt|split)
-if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
+if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
@@ -46,7 +46,7 @@ if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; th
    printf -v mr_p "%s" "$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)"
    printf "${_CYN}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
 else
-   printf "${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 19 "${ar_cat[*]}"
+   printf "${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${ar_cat[*]}"
 fi
 
 # inspecting splitted txt.adult & rebuild to rpz-format
@@ -61,11 +61,11 @@ if [[ ${#ar_txt[@]} -eq ${#ar_spl[@]} && ${ar_txt[*]} == "${ar_spl[*]}" ]]; then
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}"
       fi
    done
-   printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
-   printf "%45s : %10s entries\n" "TOTAL" "${ttl}"
 else
-   printf "${_err} misMATCH file: ${_CYN}" "${mr_p}"; f_xcd 19 "${ar_spl[*]}"
+   printf "${_err} misMATCH file: ${_CYN}" "${mr_p}"; f_xcd 255 "${ar_spl[*]}"
 fi
 
+printf -v ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
+printf "%45s : %10s entries\n" "TOTAL" "${ttl}"
 T="$(($(date +%s%N)-T))"; f_time
 exit 0

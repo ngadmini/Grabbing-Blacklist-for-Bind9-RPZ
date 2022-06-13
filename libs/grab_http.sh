@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v7.0
+#   v7.1
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -17,23 +17,23 @@ cd "${_DIR}"
 
 f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
-   f_tmp                       # remove temporary dir-file if any
+   f_tmp                       # remove stale dir-file if any
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
       local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
       find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
-      curl -sfO "${ar_url[A]}" || f_xcd 14 "${ar_url[A]}"
+      curl -sfO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
       f_do
    done
 
-   # make some adjusment for initialize category
+   # some adjusment for initialize category
    mkdir ipv4; mv phishing malware; mv gambling trust+
    cat vpn/domains >> redirector/domains; rm -rf vpn
    mapfile -t ar_cat < <(f_cat)          # initializing category
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   f_frm "txt.*"
+   f_frm "txt.*"                         # remove stale raw-domains
    ar_dmn=(); ar_tmp=(); ar_txt=()
    for B in "${!ar_cat[@]}"; do
       ar_dmn+=("${ar_cat[B]}"/domains)   # ar_dmn as raw-domains container
@@ -52,7 +52,7 @@ fi
 
 printf "\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "${_lct}"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-[[ ! ${UID} -eq 0 ]] || f_xcd 10; f_ok
+[[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
@@ -61,11 +61,11 @@ ar_num[ar_txt]=1               # index's position of pv4 category is no.1 at ar_
 ar_num[ar_shn]=0               #                     grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=3               #                  grab_regex
-if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 15; fi
+if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
-   if ! dpkg -s "$C" >> /dev/null 2>&1; then f_xcd 8 "$C"; fi
+   if ! dpkg -s "$C" >> /dev/null 2>&1; then f_xcd 245 "$C"; fi
 done
 f_ok
 
@@ -75,14 +75,12 @@ for D in "${!ar_shy[@]}"; do
       [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
    else
       f_no "${ar_shy[D]}"
-      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shy[D]}" "${_ori}/libs/${ar_shy[D]}"
+      printf "${_inf} try get ${_CYN} from origin:\n%s\n" "${ar_shy[D]}" "${_ori}/libs/${ar_shy[D]}"
       if [[ $(f_stc "${_ori}/libs/${ar_shy[D]}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shy[D]}" >> "${ar_shy[D]}" || f_xcd 14
+         curl -fs "${_ori}/libs/${ar_shy[D]}" >> "${ar_shy[D]}" || f_xcd 251
          printf "${_inf} %-73s" "succeed get ${ar_shy[D]} from origin"
       else
-         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shy[D]}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shy[D]}")"
-         exit 1
+         f_stb "${ar_shy[D]}" "libs/${ar_shy[D]}"
       fi
    fi
 done
@@ -93,28 +91,26 @@ for E in "${!ar_shn[@]}"; do
       _sed -i "/^$/d" "${ar_shn[E]}"
    else
       f_no "${ar_shn[E]}"
-      printf "${_inf} try get ${_CYN} from origin\n%s\n" "${ar_shn[E]}" "${_ori}/libs/${ar_shn[E]}"
+      printf "${_inf} try get ${_CYN} from origin:\n%s\n" "${ar_shn[E]}" "${_ori}/libs/${ar_shn[E]}"
       if [[ $(f_stc "${_ori}/libs/${ar_shn[E]}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shn[E]}" >> "${ar_shn[E]}" || f_xcd 14
+         curl -fs "${_ori}/libs/${ar_shn[E]}" >> "${ar_shn[E]}" || f_xcd 251
          printf "${_inf} %-73s" "succeed get ${ar_shn[E]} from origin"
       else
-         printf "${_err} ${_CYN} notFOUND in origin:\n%s\n" "${_ver}/libs/${ar_shn[E]}" "${_ori/$_ver/}"
-         printf "${_err} download failed with status= %d\n" "$(f_stc "${_ori}/libs/${ar_shn[E]}")"
-         exit 1
+         f_stb "${ar_shn[E]}" "libs/${ar_shn[E]}"
       fi
    fi
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
-      [[ ${#ar_reg[@]} -eq ${ar_num[ar_reg]} ]] || f_xcd 12 "${ar_shn[E]}"
+      [[ ${#ar_reg[@]} -eq ${ar_num[ar_reg]} ]] || f_xcd 249 "${ar_shn[E]}"
    else
       mapfile -t ar_url < "${ar_shn[E]}"
-      [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 11 "${ar_shn[E]}"
+      [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 248 "${ar_shn[E]}"
    fi
 done
 f_ok
 
-printf "${_pre} check the remote-files (in grab_urls) isUP or isDOWN\n"
+printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
 f_crawl "${ar_shn[1]}" || :
 f_grab
 

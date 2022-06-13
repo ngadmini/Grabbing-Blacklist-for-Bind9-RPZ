@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_cereal.sh
-#   v7.0
+#   v7.1
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -24,13 +24,14 @@ else
 fi
 
 printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[3'th] TASKs:" "${_lct}"
-[[ ! ${UID} -eq 0 ]] || f_xcd 10
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
 
 # inspecting zone-files then update it's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+ )
+   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
 mapfile -t ar_zon < <(f_fnd "rpz.*")
 printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
+printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 
 printf "\n${_inf} incrementing serial of zone-files"
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
@@ -57,16 +58,15 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
       done
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}\n" "${newSERIAL}"
    else
-      printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 19 "${ar_rpz[*]}"
+      printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${mr_p}"
    fi
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-   printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 19 "${ar_rpz[*]}"
+   printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${mr_p}"
 else
    f_cnf
-   printf "\n${_err} missing zone-files: ${_CYN}\n" "${miss_v}"
-   ar_miss=(); ar_miss+=("${miss_v}")
-   printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
-   f_cer "${ar_miss[@]}"
+   printf "\n${_err} missing zone-files: ${_CYN}" "${miss_v}"
+   printf "\n${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
+   f_cer "${miss_v}"
 fi
 
 T="$(($(date +%s%N)-T))"; f_time
