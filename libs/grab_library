@@ -44,7 +44,7 @@ f_tmp() {   # remove temporary files, directories & arrays, generated while scri
 f_klin() { printf "\n"; f_tmp; f_uset; }
 f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 255' INT; }
 f_uset() {
-   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,num,miss,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
+   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exc,num,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
    set +Eeuo pipefail; shopt -u expand_aliases
 }
 
@@ -247,23 +247,25 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
       else
          printf "${_err} ${_CYN} not found in %s\n" "${a}" "${HOST}. try to get from origin:"
          printf "%s\n" "${_ori}/zones-rpz/${a}"
-         if [[ $(f_stc "${_ori}/zones-rpz/${a}") -eq 200 ]]; then
-            curl -fs "${_ori}/zones-rpz/${a}" >> "${a}" || f_xcd 14
-            printf "${_inf} succeed get ${_CYN} from origin\n" "${a}"
-         else
-            f_stb "${a}" "zones-rpz/${a}"
-         fi
+         f_ori "zones-rpz/${a}" "${a}"
       fi
    done
-   printf "${_inf} retry to running TASK again\n"
+   printf "\n${_inf} retry to running TASK again\n"
    exec "$0"
 }
 
-f_stb() {
-   printf "${_err} ${_CYN} notFOUND in origin. download failed with status %d\n" "$1" "$(f_stc "${_ori}/$2")"
-   return 1
+f_ori() {
+   printf "${_inf} try get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
+   if [[ $(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1") -eq 200 ]]; then
+      curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
+      printf "${_inf} %-73s" "succeed get $2 from origin"
+   else
+      printf "${_err} ${_CYN} notFOUND in origin. download failed with status %d\n" "$2" \
+         "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
+      return 1
+   fi
 }
-f_stc() { curl -so /dev/null -I -w "%{http_code}" "$1"; }
+
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
 f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }

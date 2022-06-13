@@ -74,14 +74,7 @@ for D in "${!ar_shy[@]}"; do
    if [[ -e ${ar_shy[D]} ]]; then
       [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
    else
-      f_no "${ar_shy[D]}"
-      printf "${_inf} try get ${_CYN} from origin:\n%s\n" "${ar_shy[D]}" "${_ori}/libs/${ar_shy[D]}"
-      if [[ $(f_stc "${_ori}/libs/${ar_shy[D]}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shy[D]}" >> "${ar_shy[D]}" || f_xcd 251
-         printf "${_inf} %-73s" "succeed get ${ar_shy[D]} from origin"
-      else
-         f_stb "${ar_shy[D]}" "libs/${ar_shy[D]}"
-      fi
+      f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
    fi
 done
 
@@ -90,14 +83,7 @@ for E in "${!ar_shn[@]}"; do
       if [[ $(stat -L -c "%a" "${ar_shn[E]}") != 644 ]]; then chmod 644 "${ar_shn[E]}"; fi
       _sed -i "/^$/d" "${ar_shn[E]}"
    else
-      f_no "${ar_shn[E]}"
-      printf "${_inf} try get ${_CYN} from origin:\n%s\n" "${ar_shn[E]}" "${_ori}/libs/${ar_shn[E]}"
-      if [[ $(f_stc "${_ori}/libs/${ar_shn[E]}") -eq 200 ]]; then
-         curl -fs "${_ori}/libs/${ar_shn[E]}" >> "${ar_shn[E]}" || f_xcd 251
-         printf "${_inf} %-73s" "succeed get ${ar_shn[E]} from origin"
-      else
-         f_stb "${ar_shn[E]}" "libs/${ar_shn[E]}"
-      fi
+      f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
    fi
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
