@@ -37,8 +37,8 @@ _tks="${_red}TASKs${_ncl}"
 _wn0="${_grn}WARNING:${_ncl}"; _wn1="${_red}[WARN]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find . -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
-   find . -maxdepth 1 -type d ! -name "." -print0 | xargs -0 -r rm -rf
+   find -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
+   find -maxdepth 1 -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 f_klin() { printf "\n"; f_tmp; f_uset; }
@@ -66,7 +66,7 @@ f_xcd() {   # exit code {244..255}
         250) local _re0='[curl-code section] https://curl.se/docs/manpage.html'
              local _re1='[status-code section] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
              local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
-             printf "${_err} %s:\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}"; exit 1;;
+             printf "${_err} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"; exit 1;;
         251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin"; return 1;;
         252) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | grep "[\.,]")"
              printf "%s\ninvalid ar_num's values: %s\n" "${_xcd}" "${_ind}"
@@ -150,7 +150,7 @@ f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} ${_RED} ${_CYN}\n" "noFOUND:" "$1"; }
 
 # grabbing raw-domains && fixing false and bad entries
-f_add() { curl -fs "$1" || f_xcd 14 "$1"; }
+f_add() { curl -fs "$1" || f_xcd 251 "$1"; }
 f_fix() { f_sm9 "$1"; _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
 f_ipv() {
    _grp -P "${_prl}" "$1" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
@@ -186,7 +186,7 @@ f_crawl() {   # verify remote-urls [grab_urls] isUP
    if [[ ${#ar_dwn[@]} -eq 0 ]]; then
       printf "%30s\n" " " | tr " " -; printf "%s\n" "All URLS of remote-files isUP."
    else
-      printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 13
+      printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 250
    fi
 }
 
@@ -267,9 +267,9 @@ f_ori() {
 }
 
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
-f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
-f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
-f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
+f_fnd() { find -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
+f_frm() { find -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
+f_cat() { find -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
 
 f_dft() {   # variable: define default values
    printf "${_inf} forking ${_CYN} with default configurations:\n" "${_foo}"

@@ -21,7 +21,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
       local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
-      find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
+      find -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -sfO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
