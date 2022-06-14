@@ -11,9 +11,10 @@ license:
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 what's new in v7.1:
-*) exit status changed to non standard value
+*) change exit status to non standard value
 *) prettyfy the message display
 *) no longer using LC_NUMERIC as a variable
+*) add some regex-keywords to grab_regex
 
 file parts of this version:
    download script-pack from:

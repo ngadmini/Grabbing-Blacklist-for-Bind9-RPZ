@@ -42,7 +42,7 @@ f_tmp() {   # remove temporary files, directories & arrays, generated while scri
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 f_klin() { printf "\n"; f_tmp; f_uset; }
-f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 255' INT; }
+f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 130' INT; }
 f_uset() {
    unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exc,num,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
    set +Eeuo pipefail; shopt -u expand_aliases
@@ -241,6 +241,7 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
 
 f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
    f_ssh
+   ar_get=(); local i=-1
    for a in $1; do
       if scp root@"${HOST}":"${ZONE_DIR}"/"${a}" "${_DIR}" >> /dev/null 2>&1; then
          printf "${_inf} succeed get ${_CYN} from %s\n" "${a}" "${HOST}"
@@ -249,7 +250,7 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
          f_ori "zones-rpz/${a}" "${a}"
       fi
    done
-   printf "\n${_inf} retry to running TASK again\n"
+   printf "\n${_inf} retry to forking ${_CYN} again" "${_foo}"
    exec "$0"
 }
 
@@ -260,7 +261,7 @@ f_ori() {
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
       printf "${_inf} %-73s\n" "succeed get $2 from origin"
    else
-      printf "${_err} ${_CYN} notFOUND in origin. download failed with status %d\n" "$2" "${_val}"
+      printf "${_err} ${_CYN} notFOUND. download failed: status-code %d\n" "$2" "${_val}"
       return 1
    fi
 }
@@ -271,7 +272,7 @@ f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
 
 f_dft() {   # variable: define default values
-   printf "${_inf} ${_foo} will continued with default configurations:\n"
+   printf "${_inf} forking ${_CYN} with default configurations:\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
