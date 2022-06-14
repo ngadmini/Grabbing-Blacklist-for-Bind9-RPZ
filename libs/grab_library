@@ -147,7 +147,7 @@ f_time() { # time elapsed in Minute:Second.milisecond
 f_up() { printf "${_GRN}\n" "isUP"; }
 f_ok() { printf "${_GRN}\n" "isOK"; }
 f_do() { printf "${_GRN}\n" "DONE"; }
-f_no() { printf "${_RED}\n" "$1 notFOUND"; }
+f_no() { printf "\n${_err} ${_RED} ${_CYN}\n" "noFOUND:" "$1"; }
 
 # grabbing raw-domains && fixing false and bad entries
 f_add() { curl -fs "$1" || f_xcd 14 "$1"; }
@@ -245,8 +245,7 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
       if scp root@"${HOST}":"${ZONE_DIR}"/"${a}" "${_DIR}" >> /dev/null 2>&1; then
          printf "${_inf} succeed get ${_CYN} from %s\n" "${a}" "${HOST}"
       else
-         printf "${_err} ${_CYN} not found in %s\n" "${a}" "${HOST}. try to get from origin:"
-         printf "%s\n" "${_ori}/zones-rpz/${a}"
+         printf "\n${_err} ${_CYN} not found in %s\n" "${a}" "${HOST}"
          f_ori "zones-rpz/${a}" "${a}"
       fi
    done
@@ -255,13 +254,13 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 }
 
 f_ori() {
-   printf "${_inf} try get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
-   if [[ $(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1") -eq 200 ]]; then
+   printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
+   printf -v _val "%d" "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
+   if [[ ${_val} -eq 200 ]]; then
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
-      printf "${_inf} %-73s" "succeed get $2 from origin"
+      printf "${_inf} %-73s\n" "succeed get $2 from origin"
    else
-      printf "${_err} ${_CYN} notFOUND in origin. download failed with status %d\n" "$2" \
-         "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
+      printf "${_err} ${_CYN} notFOUND in origin. download failed with status %d\n" "$2" "${_val}"
       return 1
    fi
 }

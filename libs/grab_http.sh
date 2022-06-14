@@ -71,20 +71,19 @@ f_ok
 
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
 for D in "${!ar_shy[@]}"; do
-   if [[ -e ${ar_shy[D]} ]]; then
-      [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
-   else
-      f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
+   if ! [[ -e ${ar_shy[D]} ]]; then
+      f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"; res_1=$?
    fi
+   [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
 done
 
 for E in "${!ar_shn[@]}"; do
-   if [[ -e ${ar_shn[E]} ]]; then
-      if [[ $(stat -L -c "%a" "${ar_shn[E]}") != 644 ]]; then chmod 644 "${ar_shn[E]}"; fi
-      _sed -i "/^$/d" "${ar_shn[E]}"
-   else
-      f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
+   if ! [[ -e ${ar_shn[E]} ]]; then
+      f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"; res_2=$?
    fi
+
+   if [[ $(stat -L -c "%a" "${ar_shn[E]}") != 644 ]]; then chmod 644 "${ar_shn[E]}"; fi
+   _sed -i "/^$/d" "${ar_shn[E]}"
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
@@ -94,12 +93,12 @@ for E in "${!ar_shn[@]}"; do
       [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 248 "${ar_shn[E]}"
    fi
 done
-f_ok
+set +u; if [[ ${res_1} != 0 ]] && [[ ${res_2} != 0 ]]; then f_ok; else printf "\n"; fi; set -u
 
 printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
 f_crawl "${ar_shn[1]}" || :
-f_grab
 
+f_grab
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
@@ -146,10 +145,8 @@ f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 f_sm8 "${ar_cat[2]}" 8
 f_sm7 2 "${ar_sho[2]}"; f_do    # done while initializing category
-f_sm7 12 "${ar_sho[12]}"
-f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
-f_sm7 13 "${ar_sho[13]}"
-f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
+f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
+f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
    f_sm7 "$H" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
@@ -163,9 +160,7 @@ for I in {19,20}; do            # save ipv4 into sub-nets
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
-f_sm9 "${ar_cat[1]}"            # remove duplicate entry then sort the rest
-awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"
-f_do
+f_sm9 "${ar_cat[1]}"; awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # <finishing>

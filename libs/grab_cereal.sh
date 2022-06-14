@@ -34,6 +34,7 @@ printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
 printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 
 printf "\n${_inf} incrementing serial of zone-files"
+printf "\n${_inf} %s" "check availability zone-files"
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
       printf "\n${_inf} FOUND: %s zone-files (complete)" "${#ar_zon[@]}"
@@ -63,9 +64,8 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
    printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${mr_p}"
 else
-   f_cnf
-   printf "\n${_err} missing zone-files: ${_CYN}" "${miss_v}"
-   printf "\n${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
+   f_no "${miss_v}"; f_cnf
+   printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
    f_cer "${miss_v}"
 fi
 
