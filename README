@@ -68,7 +68,6 @@ prerequisites:
 
       # modify file grab_config to fit your BIND9-server environment
       #   *) type in format VARIABLE=VALUE
-      #   *) there are 6 variables you have to change.
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) do not leave any of the following variables undefined.
       #      it will return all variables to their default values
