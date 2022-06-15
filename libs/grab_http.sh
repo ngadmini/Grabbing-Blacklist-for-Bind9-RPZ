@@ -72,16 +72,17 @@ f_ok
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
-      f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"; res_1=$?
+      f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
    fi
-   [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
+   res_1=$?; [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
 done
 
 for E in "${!ar_shn[@]}"; do
    if ! [[ -e ${ar_shn[E]} ]]; then
-      f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"; res_2=$?
+      f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
    fi
 
+   res_2=$?
    if [[ $(stat -L -c "%a" "${ar_shn[E]}") != 644 ]]; then chmod 644 "${ar_shn[E]}"; fi
    _sed -i "/^$/d" "${ar_shn[E]}"
 
@@ -93,7 +94,7 @@ for E in "${!ar_shn[@]}"; do
       [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 248 "${ar_shn[E]}"
    fi
 done
-set +u; if [[ ${res_1} != 0 ]] && [[ ${res_2} != 0 ]]; then f_ok; else printf "\n"; fi; set -u
+if [[ ${res_1} != 0 ]] && [[ ${res_2} != 0 ]]; then f_ok; else echo; fi
 
 printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
 f_crawl "${ar_shn[1]}" || :
