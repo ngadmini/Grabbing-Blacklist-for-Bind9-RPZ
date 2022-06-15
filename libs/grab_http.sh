@@ -7,7 +7,7 @@
 # TL;DR
 #   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059 disable=SC2154
+# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 umask 027; set -Eeuo pipefail
@@ -15,13 +15,13 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
-f_grab() {   # initialize CATEGORY, many categories are obtained but the main one is adult
+f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
    f_tmp                       # remove stale dir-file if any
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
       local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
-      find -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
+      find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -sfO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
@@ -45,7 +45,7 @@ f_grab() {   # initialize CATEGORY, many categories are obtained but the main on
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trap
+   source "${_LIB}"; f_trp
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -97,9 +97,9 @@ done
 if [[ ${res_1} != 0 ]] && [[ ${res_2} != 0 ]]; then f_ok; else echo; fi
 
 printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
-f_crawl "${ar_shn[1]}" || :
+f_crw "${ar_shn[1]}" || :
 
-f_grab
+f_grb
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
@@ -196,7 +196,7 @@ done
 unset -v ar_txt
 mapfile -t ar_txt < <(f_fnd "txt.*")
 printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d' ' -f3)"
-T="$(($(date +%s%N)-T))"; f_time
+T="$(($(date +%s%N)-T))"; f_tim
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
 f_sm6; f_cnf; f_sm0 "${HOST}"; read -r opsi
@@ -204,24 +204,24 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} or ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
-ar_exc=(); for L in "${!ar_shy[@]}"; do ar_exc+=("${_DIR}/${ar_shy[L]}"); done
+ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
 case ${opsi} in
-   1) f_sm1; "${ar_exc[2]}"; f_sm10 st;;
+   1) f_sm1; "${ar_exe[2]}"; f_sma st;;
    2) f_sm2
-      if "${ar_exc[2]}"; then
-         if "${ar_exc[0]}"; then f_sm10 nd; fi
+      if "${ar_exe[2]}"; then
+         if "${ar_exe[0]}"; then f_sma nd; fi
       else exit 1; fi;;
    3) f_sm3
-      if "${ar_exc[2]}"; then
-         if "${ar_exc[0]}"; then
-            if "${ar_exc[1]}"; then f_sm10 th; fi
+      if "${ar_exe[2]}"; then
+         if "${ar_exe[0]}"; then
+            if "${ar_exe[1]}"; then f_sma th; fi
          else exit 1; fi
       else exit 1; fi;;
    4) f_sm4
-      if "${ar_exc[2]}"; then
-         if "${ar_exc[0]}"; then
-            if "${ar_exc[1]}"; then
-               if "${ar_exc[3]}"; then f_sm10 th; fi
+      if "${ar_exe[2]}"; then
+         if "${ar_exe[0]}"; then
+            if "${ar_exe[1]}"; then
+               if "${ar_exe[3]}"; then f_sma th; fi
             else exit 1; fi
          else exit 1; fi
       else exit 1; fi;;

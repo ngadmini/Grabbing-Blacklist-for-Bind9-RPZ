@@ -7,7 +7,7 @@
 #   don't change unless you know what you're doing
 #   intended for use by other scripts, not to be executed directly.
 #   see README and LICENSE
-# shellcheck disable=SC2034 disable=SC2059 disable=SC2148 disable=SC2154
+# shellcheck disable=SC2034,SC2059,SC2148,SC2154
 
 shopt -s expand_aliases
 alias _grp="LC_ALL=C grep"
@@ -37,14 +37,14 @@ _tks="${_red}TASKs${_ncl}"
 _wn0="${_grn}WARNING:${_ncl}"; _wn1="${_red}[WARN]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
-   find -maxdepth 1 -type d ! -name "." -print0 | xargs -0 -r rm -rf
+   find . -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
+   find . -maxdepth 1 -type d ! -name "." -print0 | xargs -0 -r rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
-f_klin() { printf "\n"; f_tmp; f_uset; }
-f_trap() { trap f_klin EXIT TERM; trap 'f_klin; exit 130' INT; }
-f_uset() {
-   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exc,num,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
+f_cln() { printf "\n"; f_tmp; f_set; }
+f_trp() { trap f_cln EXIT TERM; trap 'f_cln; exit 130' INT; }
+f_set() {
+   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exe,num,reg,rpz,shn,sho,shy,spl,tmp,txt,url,zon}
    set +Eeuo pipefail; shopt -u expand_aliases
 }
 
@@ -102,11 +102,11 @@ f_sm0() {   # display messages while getting options
 f_sm1() {   # f_sm[1..5]: display messages while chosing option
    printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "${opsi}"
    printf "${_cnt} 1) eliminating duplicate entries between CATEGORY\n"
-   f_sm11 "st"
+   f_smb "st"
 }
 
-f_sm2() { f_sm5 "nd"; f_sm11 "nd"; }
-f_sm3() { f_sm5 "th"; printf "%30s serial at zone-files [rpz.*]\n" "2) incrementing"; f_sm11 "th"; }
+f_sm2() { f_sm5 "nd"; f_smb "nd"; }
+f_sm3() { f_sm5 "th"; printf "%30s serial at zone-files [rpz.*]\n" "2) incrementing"; f_smb "th"; }
 
 f_sm4() {
    f_sm5 "th"
@@ -118,7 +118,7 @@ f_sm4() {
    else
       printf "%6s${_wn0} ${_rnr} will be executed too. press ${_ccl} to abort\n" ""
    fi
-   f_sm11 "th"
+   f_smb "th"
 }
 
 f_sm5() {
@@ -136,10 +136,10 @@ f_sm6() {   # display FINISH messages
 f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nprocessing ${_CYN} with (%d) additional remote-files\n" "${1^^} CATEGORY" "$2"; }
 f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
-f_sm10() { printf "\n${_tks} based on %s'%s options: ${_GRN}\n" "${opsi}" "$1" "DONE"; }
-f_sm11() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "${opsi}" "$1"; }
+f_sma() { printf "\n${_tks} based on %s'%s options: ${_GRN}\n" "${opsi}" "$1" "DONE"; }
+f_smb() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "${opsi}" "$1"; }
 
-f_time() { # time elapsed in Minute:Second.milisecond
+f_tim() { # time elapsed in Minute:Second.milisecond
    local S; S="$((T/1000000000))"; local M; M="$((T%1000000000/1000000))"
    printf "${_inf} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${M}"
 }
@@ -163,7 +163,7 @@ f_fip() {   # capture ip-address entry. save it into sub-net [pv4 CATEGORY]
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
 }
 
-f_crawl() {   # verify remote-urls [grab_urls] isUP
+f_crw() {   # verify remote-urls [grab_urls] isUP
    ar_sho=(); local ar_dwn=(); local i=-1
    while IFS='' read -r line; do
       # slicing remote-urls && add as an element to ${ar_sho[@]}
@@ -190,9 +190,9 @@ f_crawl() {   # verify remote-urls [grab_urls] isUP
    fi
 }
 
-f_dupl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
-f_dawk() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt > "$3"; }
-f_ddup() {   # [and above] used by grab_duplic.sh
+f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
+f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt > "$3"; }
+f_dpn() {   # [and above] used by grab_duplic.sh
    printf "%11s = deduplicating %s entries\t\t" "STEP $6.$1" "$2"
    _srt "$3" "$4" | uniq -d | _srt -u > "$5"
 }
@@ -267,9 +267,9 @@ f_ori() {
 }
 
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
-f_fnd() { find -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
-f_frm() { find -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
-f_cat() { find -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
+f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
+f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
+f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
 
 f_dft() {   # variable: define default values
    printf "${_inf} forking ${_CYN} with default configurations:\n" "${_foo}"

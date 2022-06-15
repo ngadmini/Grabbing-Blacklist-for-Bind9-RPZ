@@ -7,7 +7,7 @@
 # TL;DR
 #   don't change unless you know what you're doing
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059 disable=SC2154
+# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 set -Eeuo pipefail
@@ -18,7 +18,7 @@ cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trap; f_cnf
+   source "${_LIB}"; f_trp; f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -72,5 +72,5 @@ else
    printf "${_hnt} use ${_shd} at host: %s to abort\n" "${HOST}"
 fi
 
-T="$(($(date +%s%N)-T))"; f_time
+T="$(($(date +%s%N)-T))"; f_tim
 exit 0
