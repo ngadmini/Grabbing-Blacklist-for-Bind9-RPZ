@@ -15,6 +15,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
+f_sta() { if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
    f_tmp                       # remove stale dir-file if any
@@ -44,7 +45,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi
    source "${_LIB}"; f_trp
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
@@ -74,7 +75,7 @@ for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
    fi
-   res_1=$?; [[ -x ${ar_shy[D]} ]] || chmod +x "${ar_shy[D]}"
+   res_1=$?; f_sta 755 "${ar_shy[D]}"
 done
 
 for E in "${!ar_shn[@]}"; do
@@ -82,9 +83,7 @@ for E in "${!ar_shn[@]}"; do
       f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
    fi
 
-   res_2=$?
-   if [[ $(stat -L -c "%a" "${ar_shn[E]}") != 644 ]]; then chmod 644 "${ar_shn[E]}"; fi
-   _sed -i "/^$/d" "${ar_shn[E]}"
+   res_2=$?; f_sta 644 "${ar_shn[E]}"; _sed -i "/^$/d" "${ar_shn[E]}"
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
@@ -96,15 +95,14 @@ for E in "${!ar_shn[@]}"; do
 done
 if [[ ${res_1} != 0 ]] && [[ ${res_2} != 0 ]]; then f_ok; else echo; fi
 
-printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
-f_crw "${ar_shn[1]}" || :
+printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"; f_crw "${ar_shn[1]}" || :
 
 f_grb
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
 
-f_sm7 1 "${ar_sho[1]}";f_do    # done while initializing category
+f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
@@ -122,21 +120,21 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 f_sm8 "${ar_cat[0]}" 3
-f_sm7 0 "${ar_sho[0]}"; f_do    # done while initializing category
+f_sm7 0 "${ar_sho[0]}"; f_do     # done while initializing category
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
 f_sm7 7 "${ar_sho[7]}"; cat "${trust}" >> "${ar_dmn[0]}"; f_do
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
-f_sm8 "${ar_cat[4]}" 2          # done while initializing category
+f_sm8 "${ar_cat[4]}" 2           # done while initializing category
 for F in {4,5}; do f_sm7 "$F" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm8 "${ar_cat[3]}" 5
-f_sm7 3 "${ar_sho[3]}";f_do     # done while initializing category
+f_sm7 3 "${ar_sho[3]}";f_do      # done while initializing category
 for G in {8..11}; do
    f_sm7 "$G" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
@@ -145,7 +143,7 @@ f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 f_sm8 "${ar_cat[2]}" 8
-f_sm7 2 "${ar_sho[2]}"; f_do    # done while initializing category
+f_sm7 2 "${ar_sho[2]}"; f_do     # done while initializing category
 f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
@@ -156,7 +154,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
-for I in {19,20}; do            # save ipv4 into sub-nets
+for I in {19,20}; do             # save ipv4 into sub-nets
    f_sm7 "$I" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do

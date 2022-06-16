@@ -23,9 +23,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "[2'nd] TASKs:" "${_lct}"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247
-
+f_stt "[2'nd] TASKs:"
 # inspecting required files <categories> first then split txt.adult
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
@@ -37,7 +35,7 @@ if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 
-printf "${_inf} splitting ${_CYN} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${ar_num[l_adult]}"
+printf "\n${_inf} splitting ${_CYN} to %'d lines/sub-category:\n" "${ar_cat[0]}" "${ar_num[l_adult]}"
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
    unset -v ar_CAT
    split -l "${ar_num[l_adult]}" "${ar_cat[0]}" "${ar_cat[0]}"

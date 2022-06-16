@@ -23,9 +23,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[3'th] TASKs:" "${_lct}"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247
-
+f_stt "[3'th] TASKs:"
 # inspecting zone-files then update it's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
    rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
@@ -53,9 +51,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
                newSERIAL="${DATE}00"
             fi
          fi
-         _sed -i "s/${SERIAL}/${newSERIAL}/" "$Z"
-         if [[ $(stat -L -c "%a" "$Z") != 640 ]]; then chmod 640 "$Z"; fi
-         f_g4c "$Z"
+         _sed -i "s/${SERIAL}/${newSERIAL}/" "$Z"; f_sta 640 "$Z"; f_g4c "$Z"
       done
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}\n" "${newSERIAL}"
    else

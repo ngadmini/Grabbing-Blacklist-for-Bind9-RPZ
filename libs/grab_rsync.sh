@@ -23,10 +23,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[4'th] TASKs:" "${_lct}"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247
-
-if [[ $(stat -L -c "%a" {rpz,db}.*) != 640 ]]; then chmod 640 {rpz,db}.*; fi
+f_stt "[4'th] TASKs:"; f_sta 640 "{rpz,db}.*"
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
    db.ipv4 db.malware db.publicite db.redirector db.trust+)
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \

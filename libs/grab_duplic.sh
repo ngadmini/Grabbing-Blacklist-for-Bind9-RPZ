@@ -23,9 +23,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "[1'th] TASKs:" "${_lct}"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247
-
+f_stt "[1'th] TASKs:"
 # inspecting required files <categories> first
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")
