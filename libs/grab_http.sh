@@ -15,7 +15,6 @@ PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
-f_sta() { if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
    f_tmp                       # remove stale dir-file if any
@@ -45,7 +44,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
 
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi
+   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
