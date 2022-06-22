@@ -23,7 +23,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-f_stt "[4'th] TASKs:"; f_sta 640 "{rpz,db}.*"
+f_stt "[4'th] TASKs:"
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
    db.ipv4 db.malware db.publicite db.redirector db.trust+)
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
@@ -43,6 +43,9 @@ printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)"
 if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then
    printf "\n${_inf} misMATCH file: ${_CYN}" "${miss_RPZ}"; f_xcd 255 "${ar_RPZ[*]}"
 fi
+
+# check permission: zone-files and db-files at local-host
+for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "$PERM"; done
 f_ok; f_ssh   # end of check
 
 # archieving old RPZ-dBase at remote-host
