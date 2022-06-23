@@ -28,7 +28,7 @@ f_stt "[2'nd] TASKs:"
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-declare -A ar_num
+declare -A ar_num             # numeric value
 ar_num[l_adult]=749999        # the adult category will be devided into this number of lines
 ar_num[db_ipv4]=7             # index's position of ipv4 category at aray: ar_(txt|split)
 if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi

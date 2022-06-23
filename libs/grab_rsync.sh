@@ -45,7 +45,7 @@ if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then
 fi
 
 # check permission: zone-files and db-files at local-host
-for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "$PERM"; done
+for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "${PERM}"; done
 f_ok; f_ssh   # end of check
 
 # archieving old RPZ-dBase at remote-host
