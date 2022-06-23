@@ -29,10 +29,9 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    done
 
    # some adjusment for initialize category
-   if [[ -d phishing ]] && [[ -d gambling ]] && [[ -d vpn ]]; then
-      mkdir ipv4; mv phishing malware; mv gambling trust+
-      cat vpn/domains >> redirector/domains; rm -rf vpn
-   fi
+   mkdir ipv4; mv phishing malware; mv gambling trust+
+   cat vpn/domains >> redirector/domains; rm -rf vpn
+
    mapfile -t ar_cat < <(f_cat)          # initializing category
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"                         # remove stale raw-domains
