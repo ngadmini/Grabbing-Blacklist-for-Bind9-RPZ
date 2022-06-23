@@ -31,7 +31,7 @@ ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf 
 declare -A ar_num
 ar_num[l_adult]=749999        # the adult category will be devided into this number of lines
 ar_num[db_ipv4]=7             # index's position of ipv4 category at aray: ar_(txt|split)
-if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
+if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
 

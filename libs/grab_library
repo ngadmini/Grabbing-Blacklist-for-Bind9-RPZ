@@ -68,9 +68,9 @@ f_xcd() {   # exit code {244..255}
              local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
              printf "${_err} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"; exit 1;;
         251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin"; return 1;;
-        252) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | grep "[\.,]")"
-             printf "%s\ninvalid ar_num's values: %s\n" "${_xcd}" "${_ind}"
-             printf "${_hnt} use numeric in ar_num's values%s\n"; return 1;;
+        252) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | _grp '[aA-zZ\.,]')"
+             printf "\n%s, invalid ar_num's values: %s" "${_xcd}" "${_ind}"
+             printf "\n${_hnt} use numeric in ar_num's values%s\n"; return 1;;
         253) local _lin; printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)"
              local _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;

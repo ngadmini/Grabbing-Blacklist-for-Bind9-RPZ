@@ -36,9 +36,9 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    f_frm "txt.*"                         # remove stale raw-domains
    ar_dmn=(); ar_tmp=(); ar_txt=()
    for B in "${!ar_cat[@]}"; do
-      ar_dmn+=("${ar_cat[B]}"/domains)   # ar_dmn as raw-domains container
-      ar_tmp+=(tmq."${ar_cat[B]}")       # ar_tmp as in-process-domains container (temporary)
-      ar_txt+=(txt."${ar_cat[B]}")       # ar_txt as processed-domains containe
+      ar_dmn+=("${ar_cat[B]}"/domains)   # as raw-domains container
+      ar_tmp+=(tmq."${ar_cat[B]}")       # as in-process-domains container (temporary)
+      ar_txt+=(txt."${ar_cat[B]}")       # as processed-domains container
    done
 }
 
@@ -56,12 +56,12 @@ printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
-declare -A ar_num
+declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of pv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                     grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=3               #                  grab_regex
-if echo "${ar_num[*]}" | grep "[\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
+if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
