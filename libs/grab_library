@@ -259,7 +259,7 @@ f_ori() {
    printf -v _val "%d" "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
    if [[ ${_val} -eq 200 ]]; then
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
-      printf "${_inf} %-73s\n" "succeed get $2 from origin"
+      printf "${_inf} %-73s" "get $2 from origin"
    else
       printf "${_err} ${_CYN} notFOUND. download failed: status-code %d\n" "$2" "${_val}"
       return 1

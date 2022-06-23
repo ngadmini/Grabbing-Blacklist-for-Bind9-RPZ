@@ -29,8 +29,10 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    done
 
    # some adjusment for initialize category
-   mkdir ipv4; mv phishing malware; mv gambling trust+
-   cat vpn/domains >> redirector/domains; rm -rf vpn
+   if [[ -d phishing ]] && [[ -d gambling ]] && [[ -d vpn ]]; then
+      mkdir ipv4; mv phishing malware; mv gambling trust+
+      cat vpn/domains >> redirector/domains; rm -rf vpn
+   fi
    mapfile -t ar_cat < <(f_cat)          # initializing category
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"                         # remove stale raw-domains
@@ -92,7 +94,7 @@ for E in "${!ar_shn[@]}"; do
       [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 248 "${ar_shn[E]}"
    fi
 done
-if [[ ${res_1} != 0 ]] && [[ ${res_2} != 0 ]]; then f_ok; else echo; fi
+if [[ ${res_1} = 0 ]] && [[ ${res_2} = 0 ]]; then f_ok; else echo; fi
 
 printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"; f_crw "${ar_shn[1]}" || :
 
