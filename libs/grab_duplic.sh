@@ -74,7 +74,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    # remove duplicate domains based on ${ar_cat[5]}. do nothing
    printf "eliminating duplicate entries based on ${_CYN}\t\tdo nothing\n" "${ar_cat[5]^^}"
 else
-   printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${ar_cat[*]}"
+   f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
 # display result

@@ -44,7 +44,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
          else
             SERIAL_date=${SERIAL::-2}                   # slice to [20190104]
             if [[ ${DATE} -eq ${SERIAL_date} ]]; then   # it same day
-               SERIAL_num=${SERIAL: -2}                 # give [00-99] times to change
+               SERIAL_num=${SERIAL: -2}                 # give {00..99} times to change
                SERIAL_num=$((10#${SERIAL_num} + 1))     # force decimal increment
                newSERIAL="${DATE}$(printf "%02d" ${SERIAL_num})"
             else
@@ -55,10 +55,10 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
       done
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}\n" "${newSERIAL}"
    else
-      printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${mr_p}"
+      f_mis "${miss_v}" "${mr_p}"
    fi
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
-   printf "\n${_err} misMATCH file: ${_CYN}" "${miss_v}"; f_xcd 255 "${mr_p}"
+   f_mis "${miss_v}" "${mr_p}"
 else
    f_no "${miss_v}"; f_cnf
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"

@@ -82,7 +82,6 @@ for E in "${!ar_shn[@]}"; do
    if ! [[ -e ${ar_shn[E]} ]]; then
       f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
    fi
-
    res_2=$?; f_sta 644 "${ar_shn[E]}"; _sed -i "/^$/d" "${ar_shn[E]}"
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
@@ -168,8 +167,8 @@ for J in "${!ar_cat[@]}"; do
    printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${aqr_sum}"
 done
-printf -v _sum "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
-printf "%12s: %9s entries\n" "TOTAL" "${_sum}"
+printf -v _ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
+printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
 
 printf "\n${_YLW} sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n" "PRUNING:"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1

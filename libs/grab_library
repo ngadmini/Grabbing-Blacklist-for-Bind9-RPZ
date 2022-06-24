@@ -75,10 +75,10 @@ f_xcd() {   # exit code {244..255}
              local _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
         254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
-        255) printf "\n%s: required file(s):\n${_CYN}\n" "${_xcd}" "$2"; return 1;;
+        255) printf "\n%s: required files:\n${_CYN}\n" "${_xcl}" "$2"; return 1;;
           *) local _ukn; _ukn="Unknown exit code [f_xcd $1], please check:"
-             local _knw; printf -v _knw "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
-             printf "\n${_err} %s\n%s\n" "${_ukn}" "${_knw}"; return 1;;
+             local _ukm; printf -v _knw "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
+             printf "\n${_err} %s\n%s\n" "${_ukn}" "${_ukm}"; return 1;;
       esac
    done
 }
@@ -129,7 +129,7 @@ f_sm5() {
 
 f_sm6() {   # display FINISH messages
    printf "${_wn1} there are still remaining duplicate entries between CATEGORIES\n"
-   printf "${_hnt} consider continue to next TASKs.\n"
+   printf "${_hnt} consider continue to next TASKs\n"
 }
 
 # f_sm[7..11]: display processing messages
@@ -266,6 +266,7 @@ f_ori() {
    fi
 }
 
+f_mis() { printf "\n${_err} misMATCH file: ${_CYN}" "$1"; f_xcd 255 "$2"; }
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
 f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }

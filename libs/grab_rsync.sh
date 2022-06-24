@@ -29,22 +29,18 @@ ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adu
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
    rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
 
-# check required: db-files at local-host
+# check properties: db-files & zone-files at local-host
 printf "\n${_inf} check availability: RPZ-dBase and zone-files in local-host: %-25s" "$(hostname -I)"
 mapfile -t ar_dbc < <(f_fnd "db.*")
 printf -v miss_DBC "%s" "$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)"
-if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then
-   printf "\n${_inf} misMATCH file: ${_CYN}" "${miss_DBC}"; f_xcd 255 "${ar_DBC[*]}"
-fi
+printf -v req_DBC "%s\n%s" "${ar_DBC[*]:0:6}" "${ar_DBC[*]:6:6}"
+if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then f_mis "${miss_DBC}" "${req_DBC}"; fi
 
-# check required: zone-files at local-host
 mapfile -t ar_rpz < <(f_fnd "rpz.*")
 printf -v miss_RPZ "%s" "$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)"
-if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then
-   printf "\n${_inf} misMATCH file: ${_CYN}" "${miss_RPZ}"; f_xcd 255 "${ar_RPZ[*]}"
-fi
+printf -v req_RPZ "%s\n%s" "${ar_RPZ[*]:0:6}" "${ar_RPZ[*]:6:6}"
+if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then f_mis "${miss_RPZ}" "${req_RPZ}"; fi
 
-# check permission: zone-files and db-files at local-host
 for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "${PERM}"; done
 f_ok; f_ssh   # end of check
 
