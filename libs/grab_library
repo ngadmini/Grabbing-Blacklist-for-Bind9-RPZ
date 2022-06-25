@@ -76,9 +76,9 @@ f_xcd() {   # exit code {244..255}
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
         254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
         255) printf "\n%s: required files:\n${_CYN}\n" "${_xcl}" "$2"; return 1;;
-          *) local _ukn; _ukn="Unknown exit code [f_xcd $1], please check:"
-             local _ukm; printf -v _knw "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
-             printf "\n${_err} %s\n%s\n" "${_ukn}" "${_ukm}"; return 1;;
+          *) local _ukn; _ukn="Unknown exit code [f_xcd $1], please check"
+             local _ukm; printf -v _ukm "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
+             printf "\n${_err} %s %s\n" "${_ukn}" "${_ukm}"; return 1;;
       esac
    done
 }
