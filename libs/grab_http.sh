@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v7.1
+#   v7.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -43,7 +43,8 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    done
 }
 
-readonly _LIB="${_DIR}"/grab_library
+# <start main script>
+readonly _LIB="${_DIR}"/grab_library   # sourcing to grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp
@@ -64,6 +65,7 @@ ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=3               #                  grab_regex
 if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 
+# requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "$C" >> /dev/null 2>&1; then f_xcd 245 "$C"; fi
@@ -96,7 +98,7 @@ if [[ ${res_1} = 0 ]] && [[ ${res_2} = 0 ]]; then f_ok; else echo; fi
 
 printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"; f_crw "${ar_shn[1]}" || :
 
-f_grb
+f_grb   # initialize, grab and processing raw-domains (CATEGORY)
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
@@ -105,12 +107,12 @@ f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
-# identifying porn domains, use it to reducing porn domains entry in "${untrust}"
-printf "%12s: %-64s\t" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
+# identifying porn-domains, use it to reducing porn-domain entries in "${untrust}"
+printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ipv "${porn}" "${ar_dmn[1]}"   # capture ipv4 in "${porn}" first, save in ipv4 CATEGORY
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
-# throw porn domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
+# throw porn-domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
 f_do
 

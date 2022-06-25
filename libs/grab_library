@@ -1,6 +1,6 @@
 # TAGS
 #   grab_library
-#   v7.1
+#   v7.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -133,9 +133,9 @@ f_sm6() {   # display FINISH messages
 }
 
 # f_sm[7..11]: display processing messages
-f_sm7() { printf "%12s: %-64s\t" "grab_$1" "${2##htt*\/\/}"; }
+f_sm7() { printf "%12s: %-66s" "grab_$1" "${2##htt*\/\/}"; }
 f_sm8() { printf "\nprocessing ${_CYN} with (%d) additional remote-files\n" "${1^^} CATEGORY" "$2"; }
-f_sm9() { printf "%12s: %-64s\t" "fixing" "bads, duplicates and false entries at ${1^^}"; }
+f_sm9() { printf "%12s: %-66s" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sma() { printf "\n${_tks} based on %s'%s options: ${_GRN}\n" "${opsi}" "$1" "DONE"; }
 f_smb() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "${opsi}" "$1"; }
 
@@ -158,7 +158,7 @@ f_ipv() {
 }
 
 f_fip() {   # capture ip-address entry. save it into sub-net [pv4 CATEGORY]
-   printf "%12s: %-64s\t" "moving" "IP-address entries into $3 CATEGORY"
+   printf "%12s: %-66s" "moving" "IP-address entries into $3 CATEGORY"
    f_ipv "$@"; f_do
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
 }
@@ -174,7 +174,7 @@ f_crw() {   # verify remote-urls [grab_urls] isUP
       local _stc; _stc=$(curl -so /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
       ((i++))
       ar_sho+=("${_url}")
-      printf "%12s: %-64s\t" "urls_${i}" "${ar_sho[i]}"
+      printf "%12s: %-66s" "urls_${i}" "${ar_sho[i]}"
 
      if ! [[ $_stc = 2* ]]; then
          printf "${_RED}\n" "$_stc"
@@ -193,7 +193,7 @@ f_crw() {   # verify remote-urls [grab_urls] isUP
 f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
 f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt > "$3"; }
 f_dpn() {   # [and above] used by grab_duplic.sh
-   printf "%11s = deduplicating %s entries\t\t" "STEP $6.$1" "$2"
+   printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d | _srt -u > "$5"
 }
 

@@ -1,10 +1,10 @@
-; generate at 2022-06-14 01:42:10 WIB by grab_build.sh v7.1
+; generate at 2022-06-25 23:09:49 WIB by grab_build.sh v7.2
 ;
-ume.gr.jp CNAME .
-*.ume.gr.jp CNAME .
-umeboshi5.tumblr.com CNAME .
-*.umeboshi5.tumblr.com CNAME .
-umeda-passion.com CNAME .
-*.umeda-passion.com CNAME .
-umeda-yamatoya.com CNAME .
-*.umeda-yamatoya.com CNAME .
+tuglobqueens.blogspot.com.es CNAME .
+*.tuglobqueens.blogspot.com.es CNAME .
+tuglobqueens.blogspot.com.mt CNAME .
+*.tuglobqueens.blogspot.com.mt CNAME .
+tuglobqueens.blogspot.com.ng CNAME .
+*.tuglobqueens.blogspot.com.ng CNAME .
+tuglobqueens.blogspot.com.tr CNAME .
+*.tuglobqueens.blogspot.com.tr CNAME .

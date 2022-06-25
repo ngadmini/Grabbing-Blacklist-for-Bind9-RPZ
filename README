@@ -1,4 +1,4 @@
-# README version v7.1
+# README version v7.2
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
 ###########################################################
@@ -10,15 +10,12 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.1:
-*) change exit status to non standard value
+what's new in v7.2:
 *) prettyfy the message display
-*) no longer using LC_NUMERIC as a variable
-*) add some regex-keywords to grab_regex
 
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.1/gb4rpz-v7.1.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.2/gb4rpz-v7.2.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
@@ -98,8 +95,7 @@ prerequisites:
       # NS-IP Trigger with NXDOMAIN Action for ip-address-list
       RPZ_IPV=rpz-nsip CNAME .
 
-      # change to directory where zone-files (rpz.* and db.*) are located
-      # in bind9-server
+      # change to directory where zone-files (rpz.* and db.*) are located in bind9-server
       ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz
 
 *) on your BIND9-server

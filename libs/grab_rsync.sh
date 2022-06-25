@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_rsync.sh
-#   v7.1
+#   v7.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
