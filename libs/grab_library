@@ -58,10 +58,10 @@ f_xcd() {   # exit code {244..255}
         246) printf "\n%s: %s\n" "${_xcd}" "'$2' required '$3' but it's not installed"; return 1;;
         247) printf "\n%s: %s\n" "${_xcd}" "you must execute as non-root privileges"; return 1;;
         248) local _msj; _msj="urls. it should consist of ${ar_num[ar_url]} urls"
-             local _lmm; printf -v _lmm "%s" "$(basename "$2"): $(wc -l < "$2")"
+             local _lmm; _lmm="$(basename "$2"): $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"; return 1;;
         249) local _msg; _msg="lines. it should consist of ${ar_num[ar_reg]} lines"
-             local _lnn; printf -v _lnn "%s" "$(basename "$2"): $(wc -l < "$2")"
+             local _lnn; _lnn="$(basename "$2"): $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lnn} ${_msg}"; return 1;;
         250) local _re0='[curl-code section] https://curl.se/docs/manpage.html'
              local _re1='[status-code section] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
@@ -71,7 +71,7 @@ f_xcd() {   # exit code {244..255}
         252) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | _grp '[aA-zZ\.,]')"
              printf "\n%s, invalid ar_num's values: %s" "${_xcd}" "${_ind}"
              printf "\n${_hnt} use numeric in ar_num's values%s\n"; return 1;;
-        253) local _lin; printf -v _lin "%s" "$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)"
+        253) local _lin; _lin=$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)
              local _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
         254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
@@ -207,7 +207,7 @@ f_g4c() {   # used by grab_cereal.sh
 
 f_g4b() {   # nested in f_rpz and f_ip4
    _sed -i "1i ; generate at ${_lct} by ${_foo} ${_ver}\n;" "$1"
-   printf -v acq_al "%'d" "$(wc -l < "$1")"
+   local acq_al; printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
 }
 
@@ -255,7 +255,7 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 
 f_ori() {
    printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
-   local _val; printf -v _val "%d" "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
+   local _val; _val=$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
    if [[ ${_val} -eq 200 ]]; then
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
       printf "${_inf} %-73s" "get $2 from origin"

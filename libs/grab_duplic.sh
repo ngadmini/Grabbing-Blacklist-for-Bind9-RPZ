@@ -27,7 +27,7 @@ f_stt "[1'th] TASKs:"
 # inspecting required files <categories> first
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")
-printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
+miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 
 if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
    unset -v ar_cat

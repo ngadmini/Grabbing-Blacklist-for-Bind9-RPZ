@@ -33,7 +33,7 @@ ar_num[l_adult]=749999        # the adult category will be devided into this num
 ar_num[db_ipv4]=7             # index's position of ipv4 category at aray: ar_(txt|split)
 if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 mapfile -t ar_CAT < <(f_fnd "txt.*")
-printf -v miss_v "%s" "$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)"
+miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 
 printf "\n${_inf} splitting ${_CYN} to %'d lines/sub-category:" "${ar_cat[0]}" "${ar_num[l_adult]}"
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
@@ -41,7 +41,7 @@ if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; th
    split -l "${ar_num[l_adult]}" "${ar_cat[0]}" "${ar_cat[0]}"
    mv txt.adult /tmp
    mapfile -t ar_txt < <(f_fnd "txt.*")
-   printf -v mr_p "%s" "$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)"
+   mr_p=$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)
    printf "\n${_CYN}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
 else
    f_mis "${miss_v}" "${ar_cat[*]}"

@@ -28,7 +28,7 @@ f_stt "[3'th] TASKs:"
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
    rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
 mapfile -t ar_zon < <(f_fnd "rpz.*")
-printf -v miss_v "%s" "$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)"
+miss_v=$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)
 printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 
 printf "\n${_inf} incrementing serial of zone-files"
