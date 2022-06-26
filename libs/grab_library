@@ -241,7 +241,6 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
 
 f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
    f_ssh
-   ar_get=()
    for a in $1; do
       if scp root@"${HOST}":"${ZONE_DIR}"/"${a}" "${_DIR}" >> /dev/null 2>&1; then
          printf "${_inf} succeed get ${_CYN} from %s\n" "${a}" "${HOST}"
