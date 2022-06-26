@@ -140,8 +140,8 @@ f_sma() { printf "\n${_tks} based on %s'%s options: ${_GRN}\n" "${opsi}" "$1" "D
 f_smb() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "${opsi}" "$1"; }
 
 f_tim() { # time elapsed in Minute:Second.milisecond
-   local S; S="$((T/1000000000))"; local M; M="$((T%1000000000/1000000))"
-   printf "${_inf} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${M}"
+   local S="$((T/1000000000))"; local MS="$((T%1000000000/1000000))"
+   printf "${_inf} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${MS}"
 }
 
 f_up() { printf "${_GRN}\n" "isUP"; }
@@ -241,7 +241,7 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
 
 f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
    f_ssh
-   ar_get=(); local i=-1
+   ar_get=()
    for a in $1; do
       if scp root@"${HOST}":"${ZONE_DIR}"/"${a}" "${_DIR}" >> /dev/null 2>&1; then
          printf "${_inf} succeed get ${_CYN} from %s\n" "${a}" "${HOST}"
@@ -256,7 +256,7 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 
 f_ori() {
    printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
-   printf -v _val "%d" "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
+   local _val; printf -v _val "%d" "$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")"
    if [[ ${_val} -eq 200 ]]; then
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
       printf "${_inf} %-73s" "get $2 from origin"
