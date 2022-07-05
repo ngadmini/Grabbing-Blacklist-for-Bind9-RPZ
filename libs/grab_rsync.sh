@@ -45,9 +45,10 @@ for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "${PERM}"; done
 f_ok; f_ssh   # end of check
 
 # archieving old RPZ-dBase at remote-host
+_cd=$(basename "$ZONE_DIR")
 printf -v _ID "/home/rpz-%s.tar.gz" "$(date +%Y%m%d-%H%M%S)"
 printf "${_inf} %-85s" "archiving stale RPZ-dBase in ${HOST}:${_ID}"
-_ssh root@"${HOST}" "cd ${ZONE_DIR/zones-rpz/}; tar -I pigz -cf ${_ID} zones-rpz"; f_do
+_ssh root@"${HOST}" "cd ${ZONE_DIR/$_cd/}; tar -I pigz -cf ${_ID} ${_cd}"; f_do
 printf "${_hnt} extract with: '${_GRN}'\nfollowed by '${_GRN}'\n" "unpigz -v ${_ID}" "tar -xvf ${_ID/.gz/}"
 printf "${_inf} %-85s" "find and remove old RPZ-dBase archive in ${HOST}:/home"
 _ssh root@"${HOST}" "find /home -regex '^.*\(tar.gz\)$' -mmin +1440 -print0 | xargs -0 -r rm"; f_do

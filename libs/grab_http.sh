@@ -54,7 +54,7 @@ fi
 
 printf "\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "${_lct}"
 printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
-[[ ! ${UID} -eq 0 ]] || f_xcd 1247; f_ok
+[[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)

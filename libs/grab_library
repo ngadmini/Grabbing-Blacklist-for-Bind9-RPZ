@@ -53,10 +53,10 @@ f_xcd() {   # exit code {244..255}
       local _xcd; _xcd=$(printf "${_err} ${_foo} line ${BASH_LINENO[0]}. exit %s" "${EC}")
       local _xcl; _xcl=$(printf "${_err} ${_fuu} line ${BASH_LINENO[0]}. exit %s" "${EC}")
       case $EC in
-        244) printf "\n%s: %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"; return 1;;
-        245) printf "\n%s: %s\n" "${_xcd}" "required '$2' but it's not installed"; return 1;;
-        246) printf "\n%s: %s\n" "${_xcd}" "'$2' required '$3' but it's not installed"; return 1;;
-        247) printf "\n%s: %s\n" "${_xcd}" "you must execute as non-root privileges"; return 1;;
+        244) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"; return 1;;
+        245) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required '$2' but it's not installed"; return 1;;
+        246) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "'$2' required '$3' but it's not installed"; return 1;;
+        247) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "you must execute ${_foo} as non-root privileges"; return 1;;
         248) local _msj; _msj="urls. it should consist of ${ar_num[ar_url]} urls"
              local _lmm; _lmm="$(basename "$2"): $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"; return 1;;
