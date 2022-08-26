@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v7.2
+#   v7.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -96,9 +96,10 @@ for E in "${!ar_shn[@]}"; do
 done
 if [[ ${res_1} = 0 ]] && [[ ${res_2} = 0 ]]; then f_ok; else echo; fi
 
-printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"; f_crw "${ar_shn[1]}" || :
-
+printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
+f_crw "${ar_shn[1]}" || :
 f_grb   # initialize, grab and processing raw-domains (CATEGORY)
+
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
@@ -150,6 +151,7 @@ f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' '
 for H in {14..18}; do
    f_sm7 "$H" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
+_sed -i '/doubleclick.net$/d' "${ar_dmn[2]}"
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 

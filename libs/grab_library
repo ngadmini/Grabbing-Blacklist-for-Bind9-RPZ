@@ -1,6 +1,6 @@
 # TAGS
 #   grab_library
-#   v7.2
+#   v7.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -75,7 +75,7 @@ f_xcd() {   # exit code {244..255}
              local _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
         254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
-        255) printf "\n%s: required files:\n${_CYN}\n" "${_xcl}" "$2"; return 1;;
+        255) printf "\n%s: FOUND files:\n${_CYN}\n" "${_xcl}" "$2"; return 1;;
           *) local _ukn; _ukn="Unknown exit code [f_xcd $1], please check"
              local _ukm; printf -v _ukm "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
              printf "\n${_err} %s %s\n" "${_ukn}" "${_ukm}"; return 1;;
@@ -150,7 +150,7 @@ f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} ${_RED} ${_CYN}\n" "noFOUND:" "$1"; }
 
 # grabbing raw-domains && fixing false and bad entries
-f_add() { curl -fs "$1" || f_xcd 251 "$1"; }
+f_add() { curl --retry 5 --retry-all-errors -f -s "$1" || f_xcd 251 "$1"; }
 f_fix() { f_sm9 "$1"; _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do; }
 f_ipv() {
    _grp -P "${_prl}" "$1" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
@@ -171,12 +171,11 @@ f_crw() {   # verify remote-urls [grab_urls] isUP
       local ll; ll="$(basename "$line")"
       local l; l="${lll/\/*/}"
       local _url; _url="$l/..?../$ll"
-      local _stc; _stc=$(curl -so /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
-      ((i++))
-      ar_sho+=("${_url}")
+      ar_sho+=("${_url}"); ((i++))
+		local _stc;_stc=$(curl -C - -fs -o /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
       printf "%12s: %-66s" "urls_${i}" "${ar_sho[i]}"
 
-     if ! [[ $_stc = 2* ]]; then
+      if ! [[ $_stc =~ ^[02]* ]]; then
          printf "${_RED}\n" "$_stc"
          ar_dwn+=("[status-code:${_stc}] ${line}")
       else
