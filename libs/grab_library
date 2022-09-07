@@ -172,7 +172,7 @@ f_crw() {   # verify remote-urls [grab_urls] isUP
       local l; l="${lll/\/*/}"
       local _url; _url="$l/..?../$ll"
       ar_sho+=("${_url}"); ((i++))
-		local _stc;_stc=$(curl -C - -fs -o /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
+      local _stc;_stc=$(curl -C - -fs -o /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
       printf "%12s: %-66s" "urls_${i}" "${ar_sho[i]}"
 
       if ! [[ $_stc =~ ^[02]* ]]; then

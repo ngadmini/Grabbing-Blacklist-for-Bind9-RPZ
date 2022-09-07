@@ -140,6 +140,7 @@ f_sm7 3 "${ar_sho[3]}";f_do      # done while initializing category
 for G in {8..11}; do
    f_sm7 "$G" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
+_sed -i "s/ # third-party//g" "${ar_dmn[3]}"   # https://v.firebog.net/hosts/Easylist.txt
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
