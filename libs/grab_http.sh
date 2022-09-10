@@ -59,7 +59,7 @@ printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 declare -A ar_num              # numeric value
-ar_num[ar_txt]=1               # index's position of pv4 category is no.1 at ar_txt
+ar_num[ar_txt]=1               # index's position of ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                     grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=3               #                  grab_regex
