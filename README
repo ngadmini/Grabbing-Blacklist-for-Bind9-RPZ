@@ -12,6 +12,7 @@ license:
 
 what's new in v7.3:
 *) Ignore SSL connect error (curl-code:35). The SSL handshaking failed when checking remote-files isUP or isDOWN
+*) update grab_regex due to remote files format change
 
 file parts of this version:
    download script-pack from:
