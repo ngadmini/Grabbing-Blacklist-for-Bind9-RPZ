@@ -11,7 +11,7 @@
 
 T=$(date +%s%N)
 set -Eeuo pipefail
-PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
@@ -38,7 +38,7 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
       printf "\n${_inf} FOUND: %s zone-files (complete)" "${#ar_zon[@]}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
-         SERIAL=$(grep "SOA" "$Z" | cut -d \( -f2 | cut -d' ' -f1)
+         SERIAL=$(grep "SOA" "${Z}" | cut -d \( -f2 | cut -d' ' -f1)
          if [[ ${#SERIAL} -lt ${#DATE} ]]; then
             newSERIAL="${DATE}00"
          else
@@ -46,12 +46,12 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
             if [[ ${DATE} -eq ${SERIAL_date} ]]; then   # it same day
                SERIAL_num=${SERIAL: -2}                 # give {00..99} times to change
                SERIAL_num=$((10#${SERIAL_num} + 1))     # force decimal increment
-               newSERIAL="${DATE}$(printf "%02d" ${SERIAL_num})"
+               newSERIAL="${DATE}$(printf "%02d" "${SERIAL_num}")"
             else
                newSERIAL="${DATE}00"
             fi
          fi
-         _sed -i "s/${SERIAL}/${newSERIAL}/" "$Z"; f_sta 640 "$Z"; f_g4c "$Z"
+         _sed -i "s/${SERIAL}/${newSERIAL}/" "${Z}"; f_sta 640 "${Z}"; f_g4c "${Z}"
       done
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}\n" "${newSERIAL}"
    else

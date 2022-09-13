@@ -11,7 +11,7 @@
 
 T=$(date +%s%N)
 set -Eeuo pipefail
-PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
@@ -44,7 +44,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    f_dpl "${ar_cat[0]}"   # remove duplicate domains based on ${ar_cat[0]}
    printf "%11s = deduplicating %s entries%-16sSKIP\n" "STEP 0.1" "${ar_cat[1]}" ""
    for C in {2..5}; do
-      f_dpn "$C" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
+      f_dpn "${C}" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
       f_dpm "${ar_tmp[C]}" "${ar_CAT[C]}" "${ar_dmn[C]}"
       cp "${ar_dmn[C]}" "${ar_CAT[C]}"; f_do
    done
@@ -54,14 +54,14 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
 
    f_dpl "${ar_cat[2]}"   # remove duplicate domains based on ${ar_cat[2]}
    for D in {3..5}; do
-      f_dpn "$D" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
+      f_dpn "${D}" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
       f_dpm "${ar_tmp[D]}" "${ar_CAT[D]}" "${ar_dmn[D]}"
       cp "${ar_dmn[D]}" "${ar_CAT[D]}"; f_do
    done
 
    f_dpl "${ar_cat[3]}"   # remove duplicate domains based on ${ar_cat[3]}
    for E in 4 5; do
-      f_dpn "$E" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
+      f_dpn "${E}" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
       f_dpm "${ar_tmp[E]}" "${ar_CAT[E]}" "${ar_dmn[E]}"
       cp "${ar_dmn[E]}" "${ar_CAT[E]}"; f_do
    done

@@ -11,7 +11,7 @@
 
 T=$(date +%s%N)
 umask 027; set -Eeuo pipefail
-PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
@@ -53,7 +53,7 @@ if [[ ${#ar_txt[@]} -eq ${#ar_spl[@]} && ${ar_txt[*]} == "${ar_spl[*]}" ]]; then
    f_frm "db.*"; ar_dom=()
    for X in "${!ar_txt[@]}"; do
       ar_dom+=("${ar_txt[X]/txt./db.}")
-      if [[ $X -eq ${ar_num[db_ipv4]} ]]; then
+      if [[ ${X} -eq ${ar_num[db_ipv4]} ]]; then
          f_ip4 "${ar_dom[X]}" "${ar_txt[X]}"
       else
          f_rpz "${ar_dom[X]}" "${ar_txt[X]}"

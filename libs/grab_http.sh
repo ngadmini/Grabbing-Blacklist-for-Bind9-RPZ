@@ -11,7 +11,7 @@
 
 T=$(date +%s%N)
 umask 027; set -Eeuo pipefail
-PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 
@@ -68,7 +68,7 @@ if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
-   if ! dpkg -s "$C" >> /dev/null 2>&1; then f_xcd 245 "$C"; fi
+   if ! dpkg -s "${C}" >> /dev/null 2>&1; then f_xcd 245 "${C}"; fi
 done
 f_ok
 
@@ -96,7 +96,7 @@ for E in "${!ar_shn[@]}"; do
 done
 if [[ ${res_1} = 0 ]] && [[ ${res_2} = 0 ]]; then f_ok; else echo; fi
 
-printf "${_pre} check the remote-files (in %s) isUP or isDOWN\n" "${ar_shn[1]}"
+printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
 f_crw "${ar_shn[1]}" || :
 f_grb   # initialize, grab and processing raw-domains (CATEGORY)
 
@@ -130,7 +130,7 @@ f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 f_sm8 "${ar_cat[4]}" 2           # done while initializing category
-for F in {4,5}; do f_sm7 "$F" "${ar_sho[F]}"; f_do; done
+for F in {4,5}; do f_sm7 "${F}" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -138,7 +138,7 @@ f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm8 "${ar_cat[3]}" 5
 f_sm7 3 "${ar_sho[3]}";f_do      # done while initializing category
 for G in {8..11}; do
-   f_sm7 "$G" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
+   f_sm7 "${G}" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
@@ -149,7 +149,7 @@ f_sm7 2 "${ar_sho[2]}"; f_do     # done while initializing category
 f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
-   f_sm7 "$H" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
+   f_sm7 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
@@ -157,7 +157,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
 for I in {19,20}; do             # save ipv4 into sub-nets
-   f_sm7 "$I" "${ar_sho[I]}"
+   f_sm7 "${I}" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
@@ -176,7 +176,7 @@ printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
 printf "\n${_YLW} sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n" "PRUNING:"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 for K in "${!ar_txt[@]}"; do
-   if [[ $K -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
+   if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
       while IFS= read -r; do                 # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
@@ -225,6 +225,7 @@ case ${opsi} in
             else exit 1; fi
          else exit 1; fi
       else exit 1; fi;;
+   *) f_cln; exit 1;;
 esac
 printf "bye!\n"
 exit 0

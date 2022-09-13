@@ -52,7 +52,7 @@ f_xcd() {   # exit code {244..255}
    for EC in $1; do
       local _xcd; _xcd=$(printf "${_err} ${_foo} line ${BASH_LINENO[0]}. exit %s" "${EC}")
       local _xcl; _xcl=$(printf "${_err} ${_fuu} line ${BASH_LINENO[0]}. exit %s" "${EC}")
-      case $EC in
+      case ${EC} in
         244) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"; return 1;;
         245) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required '$2' but it's not installed"; return 1;;
         246) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "'$2' required '$3' but it's not installed"; return 1;;
@@ -67,7 +67,7 @@ f_xcd() {   # exit code {244..255}
              local _re1='[status-code section] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
              local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
              printf "${_err} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"; exit 1;;
-        251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin"; return 1;;
+        251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin, please check spelling"; return 1;;
         252) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | _grp '[aA-zZ\.,]')"
              printf "\n%s, invalid ar_num's values: %s" "${_xcd}" "${_ind}"
              printf "\n${_hnt} use numeric in ar_num's values%s\n"; return 1;;
@@ -165,18 +165,18 @@ f_fip() {   # capture ip-address entry. save it into sub-net [pv4 CATEGORY]
 
 f_crw() {   # verify remote-urls [grab_urls] isUP
    ar_sho=(); local ar_dwn=(); local i=-1
-   while IFS='' read -r line; do
+   while read -r line; do
       # slicing remote-urls && add as an element to ${ar_sho[@]}
       local lll; lll="${line##htt*\/\/}"
-      local ll; ll="$(basename "$line")"
+      local ll; ll="$(basename "${line}")"
       local l; l="${lll/\/*/}"
-      local _url; _url="$l/..?../$ll"
+      local _url; _url="${l}/..?../${ll}"
       ar_sho+=("${_url}"); ((i++))
-      local _stc;_stc=$(curl -C - -fs -o /dev/null -I -w "%{http_code}" "${line}"; echo " curl-code:$?")
       printf "%12s: %-66s" "urls_${i}" "${ar_sho[i]}"
+      local _stc; _stc=$(curl -so /dev/null -Iw "%{http_code}" "${line}"; echo " curl-code:$?")
 
-      if ! [[ $_stc =~ ^[02]* ]]; then
-         printf "${_RED}\n" "$_stc"
+      if ! [[ ${_stc} = [02]* ]]; then
+         printf "${_RED}\n" "${_stc}"
          ar_dwn+=("[status-code:${_stc}] ${line}")
       else
          f_up
@@ -234,7 +234,7 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
 
    printf "${_inf} %-85s" "check required debian-packages in ${HOST}"
    for C in {rsync,pigz}; do   # require: rsync and pigz
-      _ssh root@"${HOST}" "hash $C >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "$C"
+      _ssh root@"${HOST}" "hash ${C} >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "${C}"
    done; f_ok
 }
 
