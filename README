@@ -1,4 +1,4 @@
-# README version v7.3
+# README version v7.4
 #   this program is tailorized to updating blackist domains
 #   at BIND9 - Response Policy Zone 
 ###########################################################
@@ -10,13 +10,15 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.3:
-*) ignore SSL connect error (curl-code:35). The SSL handshaking failed when checking remote-files isUP or isDOWN
-*) update grab_regex due to remote files format change
+what's new in v7.4:
+*) update grab_library, ignoring SSL connect error (curl-code:35). The SSL handshaking failed when checking availability remote-files
+*) update grab_http.sh and grab_regex due to :
+   - format change on several remote-files
+   - invalid TLDs coming from grab_urls line 6 
 
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.3/gb4rpz-v7.3.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.4/gb4rpz-v7.4.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in

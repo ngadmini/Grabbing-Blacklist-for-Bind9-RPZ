@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v7.3
+#   v7.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -62,7 +62,7 @@ declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                     grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
-ar_num[ar_reg]=3               #                  grab_regex
+ar_num[ar_reg]=4               #                  grab_regex
 if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 
 # requirement inspection
@@ -105,7 +105,7 @@ f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" >> "${untrust}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 # identifying porn-domains, use it to reducing porn-domain entries in "${untrust}"
