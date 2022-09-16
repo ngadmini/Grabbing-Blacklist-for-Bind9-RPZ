@@ -14,7 +14,7 @@ what's new in v7.4:
 *) update grab_library, ignoring SSL connect error (curl-code:35). The SSL handshaking failed when checking availability remote-files
 *) update grab_http.sh and grab_regex due to :
    - format change on several remote-files
-   - invalid TLDs coming from grab_urls line 6 
+   - invalid TLDs coming from grab_urls line 8 
 
 file parts of this version:
    download script-pack from:
