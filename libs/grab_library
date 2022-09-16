@@ -37,8 +37,8 @@ _tks="${_red}TASKs${_ncl}"
 _wn0="${_grn}WARNING:${_ncl}"; _wn1="${_red}[WARN]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find . -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -0 -r rm -rf
-   find . -maxdepth 1 -type d ! -name "." -print0 | xargs -0 -r rm -rf
+   find . -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
+   find . -maxdepth 1 -type d ! -name "." -print0 | xargs -r0 rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 f_cln() { printf "\n"; f_tmp; f_set; }
@@ -172,20 +172,23 @@ f_crw() {   # verify remote-urls [grab_urls] is available
       local l; l="${lll/\/*/}"
       local _url; _url="${l}/..?../${ll}"
       ar_sho+=("${_url}"); ((i++))
+
+      # starting check; ignore curl-code: 35
       printf "%12s: %-66s" "urls_${i}" "${ar_sho[i]}"
       local _stc; _stc=$(curl -so /dev/null -Iw "%{http_code}" "${line}")
       _ret=$?
 
-      if ! [[ ${_stc} =~ ^[02].* ]]; then
+      if ! [[ ${_stc} =~ ^[02]{3}$ ]]; then
           printf "${_RED}\n" "stat-code: ${_stc}"
           ar_dwn+=("[stat-code: ${_stc}] ${line}")
       elif [[ ${_ret} = 6 ]]; then
           printf "${_RED}\n" "curl-code: ${_ret}"
-          ar_dwn+=("[curl-code: ${_ret}]   ${line}")
+          ar_dwn+=("[curl-code: ${_ret}] ${line}")
       else
          f_up
       fi
    done < "$1"
+
    # display result
    if [[ ${#ar_dwn[@]} -eq 0 ]]; then
       printf "%30s\n" " " | tr " " -; printf "%s\n" "All URLS of remote-files isUP."
@@ -272,7 +275,7 @@ f_ori() {
 f_mis() { printf "\n${_err} misMATCH file: ${_CYN}" "$1"; f_xcd 255 "$2"; }
 f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
 f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
-f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -0 -r rm; }
+f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
 f_sta() { if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 f_stt() {
