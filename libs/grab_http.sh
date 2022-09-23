@@ -13,7 +13,9 @@ T=$(date +%s%N)
 umask 027; set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
 cd "${_DIR}"
+readonly _LIB="${_DIR}"/grab_library
 
 f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
@@ -44,8 +46,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
 }
 
 # <start main script>
-readonly _LIB="${_DIR}"/grab_library   # sourcing to grab_library
-if [[ -e ${_LIB} ]]; then
+if [[ -e ${_LIB} ]]; then                # sourcing to grab_library
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp
 else
@@ -105,7 +106,7 @@ f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed "${ar_reg[3]}" >> "${untrust}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 # identifying porn-domains, use it to reducing porn-domain entries in "${untrust}"

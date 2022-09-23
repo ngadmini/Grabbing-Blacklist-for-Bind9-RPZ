@@ -4,7 +4,7 @@
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # PLEASE PAY ATTENTIONS
-#   *) type in format VARIABLE=VALUE
+#   *) type in format VARIABLE=value
 #   *) blank lines and lines starting with '#' will be ignored.
 #   *) all variables must be determined.
 #   *) do not leave any of the following variables undefined,

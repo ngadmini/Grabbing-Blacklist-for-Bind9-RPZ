@@ -13,8 +13,8 @@ T=$(date +%s%N)
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:$PATH
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-cd "${_DIR}"
 
+cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
@@ -44,7 +44,7 @@ if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then f_mis "${miss_RPZ}" "${req_RPZ}"
 for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "${PERM}"; done
 f_ok; f_ssh   # end of check
 
-# archieving old RPZ-dBase at remote-host
+# archieving current RPZ-dBase at remote-host
 _cd=$(basename "$ZONE_DIR")
 printf -v _ID "/home/rpz-%s.tar.gz" "$(date +%Y%m%d-%H%M%S)"
 printf "${_inf} %-85s" "archiving stale RPZ-dBase in ${HOST}:${_ID}"
@@ -59,7 +59,7 @@ _snc {rpz,db}.* root@"${HOST}":"${ZONE_DIR}"; f_do
 
 # applying latest RPZ-dBase at remote-host
 if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then
-   # required sufficient RAM to executing "rndc reload"
+   # require sufficient RAM to executing "rndc reload"
    printf "execute ${_rnr} at BIND9-server:%s\n" "${HOST}"
    _ssh root@"${HOST}" "rndc reload"
 else

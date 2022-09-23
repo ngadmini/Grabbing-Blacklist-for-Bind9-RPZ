@@ -283,7 +283,7 @@ f_stt() {
    [[ ! ${UID} -eq 0 ]] || f_xcd 247
 }
 
-f_dft() {   # variable: define default values
+f_dft() {   # define default values in grab_config
    printf "${_inf} forking ${_CYN} with default configurations:\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
    : "${RNDC_RELOAD:=no}"                   # yes OR no
@@ -294,22 +294,23 @@ f_dft() {   # variable: define default values
 
 f_cnf() {   # valuation variables in grab_config
    readonly CNF="${_DIR}"/grab_config
-   local _ptr="s/=[ ^ ]/=/g;s/CNAME\(\t\|\s.*\)\./CNAME ./g;s/['\"#]//g;s/\( \|\t\)\{2,\}.*//g;s/\. [a0-z9].*/\./g"
+   local _ptr="s/=[ ^ ]/=/g;s/['\"]//g;s/[#;].*//g;s/[[:space:]]+/ /g;s/[[:space:]]$//g"
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
       ar_cnf=(HOST RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
       mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
-      if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then   # get values supplied by "${CNF}", instead of "source ${CNF}"
+      if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
          mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "${_ptr}" | sort | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
+            # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
-      else   # misconfigurations occurs: fallback to default values
+      else  # misconfigurations occurs: fallback to default values
          printf "\n${_wn1} misconfigurations occurs in %s. undefine value:\n" "${CNF##*/}"
          printf "%9s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
          f_dft
       fi
-   else      # missing "${CNF}": fallback to default values
+   else     # missing "${CNF}": fallback to default values
       printf "\n${_wn0} %s notFOUND\n" "${CNF##*/}"
       f_dft
    fi
