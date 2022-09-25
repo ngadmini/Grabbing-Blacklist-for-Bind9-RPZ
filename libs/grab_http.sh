@@ -106,7 +106,7 @@ f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -r "${ar_reg[3]}" >> "${untrust}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 # identifying porn-domains, use it to reducing porn-domain entries in "${untrust}"
