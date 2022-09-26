@@ -178,14 +178,14 @@ printf "\n${_YLW} sub-domains if parent-domains present and sub-nets into CIDR b
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 for K in "${!ar_txt[@]}"; do
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
-      while IFS= read -r; do                 # require 'libnet-netmask-perl'
+      while IFS= read -r; do                   # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
          END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
       done < "${ar_txt[K]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
-   else                                      # prune sub-domains if parent domain present
+   else                                        # prune sub-domains if parent domain present
       _sed 's/^/\./' "${ar_txt[K]}" | rev | _srt -u \
          | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
          | rev | _sed "s/^\.//" | _srt > "${ar_tmp[K]}"
