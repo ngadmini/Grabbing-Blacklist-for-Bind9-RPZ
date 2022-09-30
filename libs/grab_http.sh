@@ -106,6 +106,7 @@ f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
+# grab ${ar_url[7]} and remove invalid tlds
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
@@ -194,8 +195,6 @@ for K in "${!ar_txt[@]}"; do
    fi
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
-unset -v ar_txt
-mapfile -t ar_txt < <(f_fnd "txt.*")
 printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d' ' -f3)"
 T="$(($(date +%s%N)-T))"; f_tim
 
