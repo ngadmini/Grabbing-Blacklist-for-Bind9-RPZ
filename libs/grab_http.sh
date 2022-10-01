@@ -64,7 +64,6 @@ ar_num[ar_txt]=1               # index's position of ipv4 category is no.1 at ar
 ar_num[ar_shn]=0               #                     grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=4               #                  grab_regex
-if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
@@ -73,7 +72,9 @@ for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
 done
 f_ok
 
+# scripts inspection
 printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
+if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
@@ -169,13 +170,13 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 # <finishing>
 printf "\nprocessing raw-domains (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
-   printf -v aqr_sum "%'d" "$(wc -l < "${ar_txt[J]}")"
-   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${aqr_sum}"
+   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
+   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
 printf -v _ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
 printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
 
-printf "\n${_YLW} sub-domains if parent-domains present and sub-nets into CIDR blocks if any\n" "PRUNING:"
+printf "\n${_YLW} sub-domains if parent-domains present and IPV4 into CIDR blocks if any\n" "PRUNING:"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
 for K in "${!ar_txt[@]}"; do
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
