@@ -1,10 +1,10 @@
-; generate at 2022-09-16 23:59:24 WIB by grab_build.sh v7.4
+; generate at 2022-10-03 02:22:17 WIB by grab_build.sh v7.5
 ;
 0001.best CNAME .
 *.0001.best CNAME .
-005.0x1f4b0.com CNAME .
-*.005.0x1f4b0.com CNAME .
-008844.cc CNAME .
-*.008844.cc CNAME .
-00bloggers.ru CNAME .
-*.00bloggers.ru CNAME .
+000123456789.online CNAME .
+*.000123456789.online CNAME .
+000123456789.site CNAME .
+*.000123456789.site CNAME .
+000123456789.space CNAME .
+*.000123456789.space CNAME .

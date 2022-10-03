@@ -1,12 +1,12 @@
-; generate at 2022-09-16 23:59:33 WIB by grab_cereal.sh v7.4
+; generate at 2022-10-03 02:22:28 WIB by grab_cereal.sh v7.5
 ;   rpz.trust+
 $TTL 3600
 $ORIGIN trust+.domain.
-@   SOA   trust+.domain. rpz.trust+.domain. (2022091621 3600 3600 86400 3600)
+@   SOA   trust+.domain. rpz.trust+.domain. (2022100300 3600 3600 86400 3600)
 @         NS   trust+.domain.
 @   IN    A    127.0.0.24
 ;
-; TLDs for gambling content
+; TLDs for gambling content, we've remove when executing grab_http.sh
 *.bet     CNAME .
 *.casino  CNAME .
 *.lotto   CNAME .

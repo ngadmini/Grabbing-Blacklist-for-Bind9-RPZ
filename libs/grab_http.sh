@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_http.sh
-#   v7.4
+#   v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -173,7 +173,7 @@ for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
-printf -v _ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | cut -d' ' -f3)"
+printf -v _ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
 printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
 
 printf "\n${_YLW} sub-domains if parent-domains present and IPV4 into CIDR blocks if any\n" "PRUNING:"
@@ -196,7 +196,7 @@ for K in "${!ar_txt[@]}"; do
    fi
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
-printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | cut -d' ' -f3)"
+printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
 T="$(($(date +%s%N)-T))"; f_tim
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here

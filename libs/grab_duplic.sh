@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_duplic.sh
-#   v7.4
+#   v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -85,7 +85,7 @@ for P in "${!ar_CAT[@]}"; do
    printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${_dpl}"
 done
-printf -v _ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | cut -d' ' -f3)"
+printf -v _ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
 printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
 T="$(($(date +%s%N)-T))"; f_tim
 exit 0

@@ -1,12 +1,12 @@
-; generate at 2022-09-16 23:59:33 WIB by grab_cereal.sh v7.4
+; generate at 2022-10-03 02:22:28 WIB by grab_cereal.sh v7.5
 ;   rpz.publicite
 $TTL 3600
 $ORIGIN publicite.domain.
-@   SOA   publicite.domain. rpz.publicite.domain. (2022091621 3600 3600 86400 3600)
+@   SOA   publicite.domain. rpz.publicite.domain. (2022100300 3600 3600 86400 3600)
 @         NS   publicite.domain.
 @   IN    A    127.0.0.15
 ;
-; indiehome domain
+; indiehome's domains
 d01.notifa.info IN CNAME .
 d31qbv1cthcecs.cloudfront.net IN CNAME .
 d5nxst8fruw4z.cloudfront.net IN CNAME .

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_build.sh
-#   v7.4
+#   v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -63,7 +63,7 @@ else
    f_mis "${mr_p}" "${ar_spl[*]}"
 fi
 
-printf -v _ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | cut -d' ' -f2)"
+printf -v _ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
 printf "%45s : %10s entries\n" "TOTAL" "${_ttl}"
 T="$(($(date +%s%N)-T))"; f_tim
 exit 0

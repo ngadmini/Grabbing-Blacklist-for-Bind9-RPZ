@@ -1,6 +1,6 @@
 # TAGS
 #   grab_library
-#   v7.4
+#   v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -22,7 +22,7 @@ _fuu="${BASH_SOURCE[0]##*/}"
 _prl='^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
 _ver=$(grep -P "^#\s{1,}v.*" "${_foo}" | cut -d' ' -f4)
 _ori="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/${_ver}"
-printf -v _lct "%s %s" "$(date +%Y-%m-%d\ %T)" "$(date | awk -F' ' '{print $6}')"
+printf -v _lct "%s %s" "$(date +%Y-%m-%d\ %T)" "$(date | awk -F' ' '{print $NF}')"
 
 # colorizing
 _cyn='\e[96m'; _grn='\e[92m'; _ncl='\e[0m'; _red='\e[91m'; _ylw='\e[93m'
@@ -298,9 +298,9 @@ f_cnf() {   # valuation variables in grab_config
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
       ar_cnf=(HOST RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "s/[ ^ ]=/=/g" | cut -d= -f1 | sort)
+      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "s/[ ^ ]=/=/g" | cut -d= -f1)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "${_ptr}" | sort | cut -d= -f2)
+         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed -r "${_ptr}" | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
