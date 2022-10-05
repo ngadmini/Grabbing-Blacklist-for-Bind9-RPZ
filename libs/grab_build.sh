@@ -65,5 +65,7 @@ fi
 
 printf -v _ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
 printf "%45s : %10s entries\n" "TOTAL" "${_ttl}"
+_tmb=$(bc <<< "scale=3; $(wc -c db.* | grep total | awk -F' ' '{print $(NF-1)}') / 1024^2")
+printf "%45s : %10s Megabytes\n" "disk-usage" "${_tmb/./,}"
 T="$(($(date +%s%N)-T))"; f_tim
 exit 0

@@ -104,7 +104,7 @@ f_grb   # initialize, grab and processing raw-domains (CATEGORY)
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
 f_sm8 "${ar_cat[5]}" 3
-trust=$(mktemp --tmpdir="${_DIR}"); untrust=$(mktemp --tmpdir="${_DIR}"); porn=$(mktemp --tmpdir="${_DIR}")
+trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
 # grab ${ar_url[7]} and remove invalid tlds
@@ -128,6 +128,8 @@ f_sm8 "${ar_cat[0]}" 3
 f_sm7 0 "${ar_sho[0]}"; f_do     # done while initializing category
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
 f_sm7 7 "${ar_sho[7]}"; cat "${trust}" >> "${ar_dmn[0]}"; f_do
+
+_gog1=$(mktemp -p "${_DIR}"); f_gog "${_gog1}" "${ar_dmn[0]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -154,6 +156,8 @@ f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' '
 for H in {14..18}; do
    f_sm7 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
+
+_gog2=$(mktemp -p "${_DIR}"); f_gog "${_gog2}" "${ar_dmn[2]}"
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -202,7 +206,7 @@ T="$(($(date +%s%N)-T))"; f_tim
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
 f_sm6; f_cnf; f_sm0 "${HOST}"; read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
-   printf "please enter: ${_CYN} or ${_ccl} to quit\n" "[1|2|3|4]"
+   printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
 ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done

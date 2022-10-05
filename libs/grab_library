@@ -28,7 +28,7 @@ printf -v _lct "%s %s" "$(date +%Y-%m-%d\ %T)" "$(date | awk -F' ' '{print $NF}'
 _cyn='\e[96m'; _grn='\e[92m'; _ncl='\e[0m'; _red='\e[91m'; _ylw='\e[93m'
 _err="${_red}[FAIL]${_ncl}"; _hnt="${_cyn}[HINT]${_ncl}"; _inf="${_ylw}[INFO]${_ncl}"
 _CYN="${_cyn}%s${_ncl}"; _GRN="${_grn}%s${_ncl}"; _RED="${_red}%s${_ncl}"; _YLW="${_ylw}%s${_ncl}"
-_ccl="${_grn}'Ctrl C'${_ncl}"
+_ccl="${_grn}(Ctrl+C)${_ncl}"
 _cnt="${_cyn}CONTINUED to :${_ncl}"
 _pre="${_ylw}PREPARING TASKs:${_ncl}"
 _rnr="${_grn}'rndc reload'${_ncl}"
@@ -37,7 +37,7 @@ _tks="${_red}TASKs${_ncl}"
 _wn0="${_grn}WARNING:${_ncl}"; _wn1="${_red}[WARN]${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find . -maxdepth 1 -regex "^.*\(sed\|dmn\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
+   find . -maxdepth 1 -regex "^.*\(dmn\|sed\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
    find . -maxdepth 1 -type d ! -name "." -print0 | xargs -r0 rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
@@ -96,7 +96,7 @@ f_sm0() {   # display messages while getting options
       printf "%6s${_wn0} ${_rnr} will be executed too.\n" ""
    fi
    printf "%4s) use ${_ccl} to quit\n" "^C"
-   printf "ENTER: ${_CYN} or ${_ccl} to quit\n" "[1|2|3|4]"
+   printf "ENTER: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
 }
 
 f_sm1() {   # f_sm[1..5]: display messages while chosing option
@@ -313,5 +313,14 @@ f_cnf() {   # valuation variables in grab_config
    else     # missing "${CNF}": fallback to default values
       printf "\n${_wn0} %s notFOUND\n" "${CNF##*/}"
       f_dft
+   fi
+}
+
+f_gog() {
+   _grp '\.goog$' "$2" | _sed 's/\.translate\.goog//;s/-/\./g;s/\.\./-/g' | sort -u > "$1"
+   if [[ -s $1 ]]; then
+      cat "$1" >> "$2"
+   else
+      printf "${_ylw}%12s${_ncl}: %-66s\n" "[INFO]" "file $1 is empty"
    fi
 }

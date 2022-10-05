@@ -87,5 +87,7 @@ for P in "${!ar_CAT[@]}"; do
 done
 printf -v _ttl "%'d" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
 printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
+_tmb=$(bc <<< "scale=3; $(wc -c txt.* | grep total | awk -F' ' '{print $(NF-1)}') / 1024^2")
+printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb/./,}"
 T="$(($(date +%s%N)-T))"; f_tim
 exit 0
