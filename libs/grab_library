@@ -1,11 +1,8 @@
 # TAGS
-#   grab_library
-#   v7.5
+#   grab_library v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
-#   don't change unless you know what you're doing
-#   intended for use by other scripts, not to be executed directly.
 #   see README and LICENSE
 # shellcheck disable=SC2034,SC2059,SC2148,SC2154
 
@@ -20,7 +17,7 @@ _fkt="$(faketime -f "+5m" date +%H:%M:%S) $(date | awk -F' ' '{print $6}')"
 _foo="${0##*/}"
 _fuu="${BASH_SOURCE[0]##*/}"
 _prl='^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
-_ver=$(grep -P "^#\s{1,}v.*" "${_foo}" | cut -d' ' -f4)
+_ver=$(_grp -P "^#[[:space:]]+grab_" "${_foo}" | awk -F' ' '{print $NF}')
 _ori="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/${_ver}"
 printf -v _lct "%s %s" "$(date +%Y-%m-%d\ %T)" "$(date | awk -F' ' '{print $NF}')"
 
@@ -316,11 +313,11 @@ f_cnf() {   # valuation variables in grab_config
    fi
 }
 
-f_gog() {
+f_gog() { # fixing false related to domain: translate.goog
    _grp '\.goog$' "$2" | _sed 's/\.translate\.goog//;s/-/\./g;s/\.\./-/g' | sort -u > "$1"
    if [[ -s $1 ]]; then
       cat "$1" >> "$2"
    else
-      printf "${_ylw}%12s${_ncl}: %-66s\n" "[INFO]" "file $1 is empty"
+      printf "${_ylw}%12s${_ncl}: %-66s\n" "[INFO]" "file $(basename "${1}") is empty"
    fi
 }

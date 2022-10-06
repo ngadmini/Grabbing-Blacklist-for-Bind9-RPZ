@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_cereal.sh
-#   v7.5
+#   grab_cereal.sh v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
-#   don't change unless you know what you're doing
 #   see README and LICENSE
 # shellcheck source=/dev/null disable=SC2059,SC2154
 

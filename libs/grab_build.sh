@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh
-#   v7.5
+#   grab_build.sh v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
-#   don't change unless you know what you're doing
 #   see README and LICENSE
 # shellcheck source=/dev/null disable=SC2059,SC2154
 
@@ -63,9 +61,8 @@ else
    f_mis "${mr_p}" "${ar_spl[*]}"
 fi
 
-printf -v _ttl "%'d" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
-printf "%45s : %10s entries\n" "TOTAL" "${_ttl}"
-_tmb=$(bc <<< "scale=3; $(wc -c db.* | grep total | awk -F' ' '{print $(NF-1)}') / 1024^2")
+_tmb=$(bc <<< "scale=3; $(wc -c "${ar_dom[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
+printf "%45s : %'d entries\n" "TOTAL" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%45s : %10s Megabytes\n" "disk-usage" "${_tmb/./,}"
 T="$(($(date +%s%N)-T))"; f_tim
 exit 0

@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh
-#   v7.5
+#   grab_http.sh v7.5
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
-#   don't change unless you know what you're doing
 #   see README and LICENSE
 # shellcheck source=/dev/null disable=SC2059,SC2154
 
@@ -73,7 +71,7 @@ done
 f_ok
 
 # scripts inspection
-printf "${_pre} %-63s" "check properties of script-pack in local-host: $(hostname -I)"
+printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
 if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
@@ -177,8 +175,9 @@ for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
-printf -v _ttl "%'d" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
-printf "%12s: %9s entries\n" "TOTAL" "${_ttl}"
+_tmb1=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
+printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
+printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb1/./,}"
 
 printf "\n${_YLW} sub-domains if parent-domains present and IPV4 into CIDR blocks if any\n" "PRUNING:"
 dos2unix "${ar_txt[@]}" >> /dev/null 2>&1
@@ -200,7 +199,9 @@ for K in "${!ar_txt[@]}"; do
    fi
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
-printf "%12s: %'d entries\n\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $(NF-1)}')"
+_tmb2=$(bc <<< "scale=3; $(wc -c "${ar_tmp[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
+printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $1}')"
+printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
 T="$(($(date +%s%N)-T))"; f_tim
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
