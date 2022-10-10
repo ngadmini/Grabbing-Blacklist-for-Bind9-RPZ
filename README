@@ -11,7 +11,7 @@ license:
 
 what's new in v7.5:
 *) update grab_http.sh, grab_regex and grab_library to fixing false entries affecting google translate proxy
-*) adding disk-usage to grab_build.sh and grab_duplic.sh
+*) adding disk-usage to grab_http.sh, grab_build.sh and grab_duplic.sh
    
 file parts of this version:
    download script-pack from:
@@ -44,8 +44,13 @@ file parts of this version:
    7. grab_urls --contain urls list of remote raw-files.
         case sensitive, strict order, line count and no blank lines
    8. grab_regex --contain reguler expressions.
-        case sensitive, strict order, line count and no blank lines
-
+        *) case sensitive, strict order, line count and no blank lines
+        *) intended for fixing/removing false entries:
+           - less than 4 characters and larger than 64 characters (RFC 1035)
+           - construct with international characters (non ASCII). check it's with: LC_ALL=C grep -P -n '[^\x00-\x7F]'
+           - explicite TLDs: adult and gambling: \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
+           - invalid TLDs based on IANA. bash_script to obstain invalid TLDs available on:
+                https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
         old db.* and rpz.* files in BIND9-server. use below to decompress
@@ -125,8 +130,3 @@ output:
 
 please use our discussion for questions, feedback and bug fixes:
 *) https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions
-
-tool:
-*) https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
-*) use this bash_script to obstain invalid TLD coming from:
-   https://raw.githubusercontent.com/alsyundawy/dnstrust-apjii/main/raw/db_trustpositif.txt

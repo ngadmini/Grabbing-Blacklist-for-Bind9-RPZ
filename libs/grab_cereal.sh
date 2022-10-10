@@ -21,7 +21,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-f_stt "[3'th] TASKs:"
+f_stt "[3'th] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
 # inspecting zone-files then update it's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
    rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)

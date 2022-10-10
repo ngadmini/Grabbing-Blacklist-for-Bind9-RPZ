@@ -21,7 +21,7 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-f_stt "[4'th] TASKs:"
+f_stt "[4'th] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
    db.ipv4 db.malware db.publicite db.redirector db.trust+)
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \

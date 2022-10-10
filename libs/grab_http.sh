@@ -20,7 +20,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    f_tmp                       # remove stale dir-file if any
    for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
-      local ext_dsi; ext_dsi="${tar_dsi/.tar.gz/}"
+      local ext_dsi="${tar_dsi/.tar.gz/}"
       find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
       curl -sfO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
@@ -58,8 +58,8 @@ printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 declare -A ar_num              # numeric value
-ar_num[ar_txt]=1               # index's position of ipv4 category is no.1 at ar_txt
-ar_num[ar_shn]=0               #                     grab_regex is no.0 at ar_shn
+ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
+ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=4               #                  grab_regex
 
@@ -111,7 +111,7 @@ f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
 # identifying porn-domains, use it to reducing porn-domain entries in "${untrust}"
 printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-f_ipv "${porn}" "${ar_dmn[1]}"   # capture ipv4 in "${porn}" first, save in ipv4 CATEGORY
+f_ipv "${porn}" "${ar_dmn[1]}"   # capture ipv4 in "${porn}" first, then save in ipv4 CATEGORY
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
 # throw porn-domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
