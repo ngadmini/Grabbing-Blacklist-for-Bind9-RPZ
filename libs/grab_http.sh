@@ -72,7 +72,7 @@ f_ok
 
 # scripts inspection
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
-if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:beta:]])" >> /dev/null 2>&1; then f_xcd 252; fi
+if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
