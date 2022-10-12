@@ -1,4 +1,4 @@
-# README version v7.5
+# README version v7.6-alpha
 #   this program is tailorized to updating blackist domains at BIND9 - Response Policy Zone 
 #
 
@@ -9,13 +9,13 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.5:
+what's new in v7.6-alpha:
 *) update grab_http.sh, grab_regex and grab_library to fixing false entries affecting google translate proxy
 *) adding disk-usage to grab_http.sh, grab_build.sh and grab_duplic.sh
    
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.5/gb4rpz-v7.5.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.6-alpha/gb4rpz-v7.6-alpha.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
@@ -48,7 +48,7 @@ file parts of this version:
         *) intended for fixing/removing false entries:
            - less than 4 characters and larger than 64 characters (RFC 1035)
            - construct with international characters (non ASCII). check it's with: LC_ALL=C grep -P -n '[^\x00-\x7F]'
-           - explicite TLDs: adult and gambling: \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
+           - explicit site: adult and gambling: \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
            - invalid TLDs based on IANA. bash_script to obstain invalid TLDs available on:
                 https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.

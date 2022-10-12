@@ -72,7 +72,7 @@ f_ok
 
 # scripts inspection
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
-if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
+if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:beta:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
@@ -109,14 +109,12 @@ f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
-# identifying porn-domains, use it to reducing porn-domain entries in "${untrust}"
+# identifying porn-domains, use it to moving porn-domain entries to adult category
 printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-f_ipv "${porn}" "${ar_dmn[1]}"   # capture ipv4 in "${porn}" first, then save in ipv4 CATEGORY
+f_ipv "${porn}" "${ar_dmn[1]}"   # moving ipv4 in "${porn}" to ipv4 CATEGORY
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
-# throw porn-domains ${untrust} into adult CATEGORY, save the rest in trust+ CATEGORY
-awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
-f_do
+f_dpm "${trust}" "${untrust}" "${ar_dmn[5]}"; f_do
 
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
@@ -161,7 +159,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm8 "${ar_cat[1]}" 2
-for I in {19,20}; do             # save ipv4 into sub-nets
+for I in {19,20}; do             # save ipv4 into sub-nets (CIDR block)
    f_sm7 "${I}" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
