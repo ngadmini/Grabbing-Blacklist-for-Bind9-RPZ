@@ -114,7 +114,8 @@ printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ipv "${porn}" "${ar_dmn[1]}"   # moving ipv4 in "${porn}" to ipv4 CATEGORY
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
 _grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
-f_dpm "${trust}" "${untrust}" "${ar_dmn[5]}"; f_do
+awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
+f_do
 
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"

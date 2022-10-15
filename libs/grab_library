@@ -195,7 +195,7 @@ f_crw() {   # verify remote-urls [grab_urls] is available
 }
 
 f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
-f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt >> "$3"; }
+f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt > "$3"; }
 f_dpn() {   # [with f_dpm] used by grab_duplic.sh
    printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d | sort -o "$5"
