@@ -195,10 +195,10 @@ f_crw() {   # verify remote-urls [grab_urls] is available
 }
 
 f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
-f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt > "$3"; }
+f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"; }
 f_dpn() {   # [with f_dpm] used by grab_duplic.sh
    printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
-   _srt "$3" "$4" | uniq -d | sort -o "$5"
+   _srt "$3" "$4" | uniq -d | _srt -o "$5"
 }
 
 f_g4c() {   # used by grab_cereal.sh
@@ -270,10 +270,10 @@ f_ori() {
 }
 
 f_mis() { printf "\n${_err} misMATCH file: ${_CYN}" "$1"; f_xcd 255 "$2"; }
-f_sed() { _sed "s/ /\n/g" | sort | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
-f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | sort; }
+f_sed() { _sed "s/ /\n/g" | _srt | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
+f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | _srt; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }
-f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | sort; }
+f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | _srt; }
 f_sta() { if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 f_stt() { printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "$1" "${_lct}"; }
 
@@ -310,11 +310,14 @@ f_cnf() {   # valuation variables in grab_config
    fi
 }
 
-f_gog() {   # delete false entries related to domain: translate.goog
-   _grp '\.goog$' "$2" | _sed 's/\.translate\.goog$//;s/-/\./g;s/\.\./-/g' | sort -u > "$1"
-   if [[ -s $1 ]]; then
-      cat "$1" >> "$2"
+f_gog() {   # fixing false entries: translate.goog
+   printf "%12s: %-66s" "fixing" "false entries affecting google translate proxy"
+   local _gog; _gog=$(mktemp -p "${_DIR}")
+   _grp '\.goog$' "$1" | _sed 's/\.translate\.goog$//;s/-/\./g;s/\.\./-/g' | _srt -u > "${_gog}"
+   if [[ -s ${_gog} ]]; then
+      cat "${_gog}" >> "$1"
    else
-      printf "${_ylw}%12s${_ncl}: %-66s\n" "[INFO]" "no false entry found in file ${1##*/}"
+      printf "${_ylw}%12s${_ncl}: %-66s\n" "[INFO]" "no translate.goog entry found in ""${_gog}"""
    fi
+   f_do
 }

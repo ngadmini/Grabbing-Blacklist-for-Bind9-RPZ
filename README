@@ -11,6 +11,7 @@ license:
 
 what's new in v7.5:
 *) update grab_http.sh, grab_regex and grab_library to fixing false entries affecting google translate proxy
+*) update grab_regex to reduce adult domains in trust+ category
 *) adding disk-usage to grab_http.sh, grab_build.sh and grab_duplic.sh
    
 file parts of this version:

@@ -105,15 +105,14 @@ f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
-# grab ${ar_url[7]} and remove invalid tlds
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
 
-# identifying porn-domains, use it to moving porn-domain entries to adult category
+# identifying porn-domains to reduce adult entries in trust+ and move to adult category
 printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
 f_ipv "${porn}" "${ar_dmn[1]}"   # moving ipv4 in "${porn}" to ipv4 CATEGORY
 _srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
-_grp -E "${ar_reg[2]}" "${untrust}" | sort -u >> "${trust}"
+_grp -E "${ar_reg[2]}" "${untrust}" | _srt -u >> "${trust}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
 f_do
 
@@ -124,9 +123,10 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm8 "${ar_cat[0]}" 3
 f_sm7 0 "${ar_sho[0]}"; f_do     # done while initializing category
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_sm7 7 "${ar_sho[7]}"; cat "${trust}" >> "${ar_dmn[0]}"; f_do
+f_sm7 7 "${ar_sho[7]}"           # move adult entries in trust+ to "${ar_dmn[0]}"
+cat "${trust}" >> "${ar_dmn[0]}"; f_do
 
-_gog1=$(mktemp -p "${_DIR}"); f_gog "${_gog1}" "${ar_dmn[0]}"
+f_gog "${ar_dmn[0]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -154,7 +154,7 @@ for H in {14..18}; do
    f_sm7 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
 
-_gog2=$(mktemp -p "${_DIR}"); f_gog "${_gog2}" "${ar_dmn[2]}"
+f_gog "${ar_dmn[2]}"
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
