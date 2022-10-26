@@ -46,7 +46,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
 # <start main script>
 if [[ -e ${_LIB} ]]; then                # sourcing to grab_library
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trp
+   source "${_LIB}"; f_trp; clear
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
