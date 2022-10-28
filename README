@@ -1,4 +1,4 @@
-# README version v7.5
+# README version v7.6
 #   this program is tailorized to updating blackist domains at BIND9 - Response Policy Zone 
 #
 
@@ -9,14 +9,12 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.5:
-*) update grab_http.sh, grab_regex and grab_library to fixing false entries affecting google translate proxy
-*) update grab_regex to reduce adult domains in trust+ category and fixing invalid TLDs
-*) adding disk-usage to grab_http.sh, grab_build.sh and grab_duplic.sh
+what's new in v7.6:
+*) update grab_http.sh to add options as required debian packages are not installed
    
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.5/gb4rpz-v7.5.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.6/gb4rpz-v7.6.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in

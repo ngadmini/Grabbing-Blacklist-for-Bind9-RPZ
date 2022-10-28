@@ -1,10 +1,10 @@
-; generate at 2022-10-03 02:22:17 WIB by grab_build.sh v7.5
+; generate at 2022-10-27 02:56:02 WIB by grab_build.sh v7.6
 ;
-relatos-eroticos.org CNAME .
-*.relatos-eroticos.org CNAME .
-relatos-eroticos.org.e CNAME .
-*.relatos-eroticos.org.e CNAME .
-relatos-eroticos.redsat.net CNAME .
-*.relatos-eroticos.redsat.net CNAME .
-relatos-eroticos.tetudascalientes.com CNAME .
-*.relatos-eroticos.tetudascalientes.com CNAME .
+regaloespecial.com CNAME .
+*.regaloespecial.com CNAME .
+regaloplacer.es CNAME .
+*.regaloplacer.es CNAME .
+regaloporno.com CNAME .
+*.regaloporno.com CNAME .
+regalosvirtuales.com CNAME .
+*.regalosvirtuales.com CNAME .

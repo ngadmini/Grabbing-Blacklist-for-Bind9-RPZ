@@ -1,10 +1,10 @@
-; generate at 2022-10-03 02:22:17 WIB by grab_build.sh v7.5
+; generate at 2022-10-27 02:56:02 WIB by grab_build.sh v7.6
 ;
-thesauceftw2.blogspot.ro CNAME .
-*.thesauceftw2.blogspot.ro CNAME .
-thesauceftw2.blogspot.ru CNAME .
-*.thesauceftw2.blogspot.ru CNAME .
-thesauceftw2.blogspot.se CNAME .
-*.thesauceftw2.blogspot.se CNAME .
-thesauceftw2.blogspot.sg CNAME .
-*.thesauceftw2.blogspot.sg CNAME .
+thepussylink.com CNAME .
+*.thepussylink.com CNAME .
+thepussylist.com CNAME .
+*.thepussylist.com CNAME .
+thepussylist.tumblr.com CNAME .
+*.thepussylist.tumblr.com CNAME .
+thepussyloveblackcock.tumblr.com CNAME .
+*.thepussyloveblackcock.tumblr.com CNAME .

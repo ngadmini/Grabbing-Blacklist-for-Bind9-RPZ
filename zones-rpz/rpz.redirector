@@ -1,14 +1,14 @@
-; generate at 2022-10-03 02:22:28 WIB by grab_cereal.sh v7.5
+; generate at 2022-10-27 02:56:14 WIB by grab_cereal.sh v7.6
 ;   rpz.redirector
 $TTL 3600
 $ORIGIN redirector.domain.
-@   SOA   redirector.domain. rpz.redirector.domain. (2022100300 3600 3600 86400 3600)
+@   SOA   redirector.domain. rpz.redirector.domain. (2022102700 3600 3600 86400 3600)
 @         NS   redirector.domain.
 @    IN   A    127.0.0.16
 ;
-;ultrasurf
-;https://otx.alienvault.com/indicator/domain/tcdn.me
-;https://securitytrails.com/list/apex_domain/tcdn.me
+;ultrasurf:
+;    https://otx.alienvault.com/indicator/domain/tcdn.me
+;    https://securitytrails.com/list/apex_domain/tcdn.me
 ns-422.awsdns-52.com    CNAME .
 ns-843.awsdns-41.net    CNAME .
 ns-1179.awsdns-19.org   CNAME .

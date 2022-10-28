@@ -20,6 +20,6 @@ $ORIGIN adultaa.domain.
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
 ; xhamster.com redirect to this
-xhvid.com  CNAME .
+;xhvid.com  CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"

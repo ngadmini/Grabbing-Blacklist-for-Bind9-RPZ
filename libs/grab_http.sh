@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v7.5
+#   grab_http.sh v7.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -66,9 +66,19 @@ ar_num[ar_reg]=4               #                  grab_regex
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
-   if ! dpkg -s "${C}" >> /dev/null 2>&1; then f_xcd 245 "${C}"; fi
+   if ! dpkg -s "${C}" >> /dev/null 2>&1; then
+      printf "${_err}\n"
+      printf "${_CYN}: %s %-60s" "[CONFIRM]" "${C}" "not installed. do you want to install it's (y/n)?"
+      read -r confirm
+      case ${confirm:0:1} in
+         y|Y) printf "${_inf}: %-72s" "installing ${C}"
+              sudo apt install "${C}" -y -qq >> /dev/null 2>&1;;
+           *) f_xcd 245 "${C}";;
+      esac
+   fi
+   stat=$?
 done
-f_ok
+if [[ $stat -eq 0 ]]; then f_ok; fi
 
 # scripts inspection
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
