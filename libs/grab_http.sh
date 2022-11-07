@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v7.6
+#   grab_http.sh v7.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -12,38 +12,8 @@ umask 027; set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-cd "${_DIR}"
-readonly _LIB="${_DIR}"/grab_library
-
-f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
-   printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
-   f_tmp                       # remove stale dir-file if any
-   for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
-      local tar_dsi; tar_dsi=$(basename "${ar_url[A]}")
-      local ext_dsi="${tar_dsi/.tar.gz/}"
-      find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
-      printf "%12s: %-66s" "${ext_dsi^^}" "${ar_sho[A]}"
-      curl -sfO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
-      tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
-      f_do
-   done
-
-   # some adjusment for initialize category
-   mkdir ipv4; mv phishing malware; mv gambling trust+
-   cat vpn/domains >> redirector/domains; rm -rf vpn
-
-   mapfile -t ar_cat < <(f_cat)          # initializing category
-   printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   f_frm "txt.*"                         # remove stale raw-domains
-   ar_dmn=(); ar_tmp=(); ar_txt=()
-   for B in "${!ar_cat[@]}"; do
-      ar_dmn+=("${ar_cat[B]}"/domains)   # as raw-domains container
-      ar_tmp+=(tmq."${ar_cat[B]}")       # as in-process-domains container (temporary)
-      ar_txt+=(txt."${ar_cat[B]}")       # as processed-domains container
-   done
-}
-
 # <start main script>
+cd "${_DIR}"; readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then                # sourcing to grab_library
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp; clear
@@ -52,11 +22,12 @@ else
 fi
 
 printf "\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "${_lct}"
-printf "${_pre} %-63s" "check ${0##*/} is execute by non-root privileges"
+printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
+ar_pac=()
 declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_shn
@@ -67,18 +38,24 @@ ar_num[ar_reg]=4               #                  grab_regex
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "${C}" >> /dev/null 2>&1; then
-      printf "${_err}\n"
-      printf "${_CYN}: %s %-60s" "[CONFIRM]" "${C}" "not installed. do you want to install it's (y/n)?"
-      read -r confirm
-      case ${confirm:0:1} in
-         y|Y) printf "${_inf}: %-72s" "installing ${C}"
-              sudo apt install "${C}" -y -qq >> /dev/null 2>&1;;
-           *) f_xcd 245 "${C}";;
-      esac
+      printf "\n${_err} %s %-60s" "${C}" "not installed"
+      ar_pac+=("${C}")
    fi
-   stat=$?
 done
-if [[ $stat -eq 0 ]]; then f_ok; fi
+
+if [[ ${#ar_pac[@]} -eq 0 ]]; then
+   f_ok
+else
+   printf "\n${_CYN} do you want to install ${_CYN} (Y/n)? " "[CONFIRM]" "${ar_pac[*]}"
+   read -r confirm
+   case ${confirm:0:1} in
+      y|Y) for _pac in "${ar_pac[@]}"; do
+              printf "${_inf} installing %-62s" "${_pac}"
+              sudo apt install "${_pac}" -y -qq >> /dev/null 2>&1; f_do
+           done;;
+        *) f_xcd 245 "${ar_pac[*]}";;
+   esac
+fi
 
 # scripts inspection
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"

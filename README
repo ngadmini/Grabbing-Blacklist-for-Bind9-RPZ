@@ -1,4 +1,4 @@
-# README version v7.6
+# README version v7.7
 #   this program is tailorized to updating blackist domains at BIND9 - Response Policy Zone 
 #
 
@@ -9,12 +9,13 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.6:
-*) update grab_http.sh to add options as required debian packages are not installed
+what's new in v7.7:
+*) grab_http.sh: adding array to checking required debian-packages
+*) grab_regex: added some regex due to changes on remote-files
    
 file parts of this version:
    download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.6/gb4rpz-v7.6.tar.gz
+   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.7/gb4rpz-v7.7.tar.gz
 
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
@@ -111,7 +112,7 @@ prerequisites:
 *) passwordless ssh
       your linux desktop and BIND9-server, both must configure to use passwordless for
       ssh, scp dan rsync connections. you can reffer to :
-      https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH
+      https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH-and-sudo
 
 *) reconfigure your bind9-server to run RPZ BIND9-fiture. you can reffer to :
       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
