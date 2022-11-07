@@ -61,10 +61,10 @@ fi
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
 if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
-   if ! [[ -x ${ar_shy[D]} ]]; then
+   if ! [[ -e ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
-      chmod 755 "${ar_shy[D]}"
    fi
+   f_sta 755 "${ar_shy[D]}"
 done
 
 for E in "${!ar_shn[@]}"; do
