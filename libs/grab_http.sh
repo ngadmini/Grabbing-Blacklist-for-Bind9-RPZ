@@ -57,21 +57,21 @@ else
    esac
 fi
 
-# scripts inspection
+# script-pack's properties inspection
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
 if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
-   if ! [[ -e ${ar_shy[D]} ]]; then
+   if ! [[ -x ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
+      chmod 755 "${ar_shy[D]}"
    fi
-   res_1=$?; f_sta 755 "${ar_shy[D]}"
 done
 
 for E in "${!ar_shn[@]}"; do
    if ! [[ -e ${ar_shn[E]} ]]; then
       f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
    fi
-   res_2=$?; f_sta 644 "${ar_shn[E]}"; _sed -i "/^$/d" "${ar_shn[E]}"
+   f_sta 644 "${ar_shn[E]}"; _sed -i "/^$/d" "${ar_shn[E]}"
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
@@ -81,19 +81,20 @@ for E in "${!ar_shn[@]}"; do
       [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 248 "${ar_shn[E]}"
    fi
 done
-if [[ ${res_1} = 0 ]] && [[ ${res_2} = 0 ]]; then f_ok; else echo; fi
+f_ok
 
 printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
 f_crw "${ar_shn[1]}" || :
-f_grb   # initialize, grab and processing raw-domains (CATEGORY)
+f_grb   # initialize, grabbing and processing raw-domains (CATEGORY)
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
+# contains: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
-f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${porn}"; f_do
+f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed "/\-ru\)$/d" >> "${porn}"; f_do
 
 # identifying porn-domains to reduce adult entries in trust+ and move to adult category
 printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
@@ -107,6 +108,7 @@ f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
+# contains: adult and porn domains
 f_sm8 "${ar_cat[0]}" 3
 f_sm7 0 "${ar_sho[0]}"; f_do     # done while initializing category
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
@@ -118,12 +120,14 @@ f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
+# contains: vpn and proxy domains
 f_sm8 "${ar_cat[4]}" 2           # done while initializing category
 for F in {4,5}; do f_sm7 "${F}" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
+# contains: ads domains
 f_sm8 "${ar_cat[3]}" 5
 f_sm7 3 "${ar_sho[3]}";f_do      # done while initializing category
 for G in {8..11}; do
@@ -133,6 +137,7 @@ f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
+# contains: malware, phishing, ransomware domains
 f_sm8 "${ar_cat[2]}" 8
 f_sm7 2 "${ar_sho[2]}"; f_do     # done while initializing category
 f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
@@ -146,6 +151,7 @@ f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
+# contains: captured ipv4 from adult, publicite, malware and trust+
 f_sm8 "${ar_cat[1]}" 2
 for I in {19,20}; do             # save ipv4 into sub-nets (CIDR block)
    f_sm7 "${I}" "${ar_sho[I]}"

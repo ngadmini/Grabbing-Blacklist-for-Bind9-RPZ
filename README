@@ -10,7 +10,7 @@ license:
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 what's new in v7.7:
-*) grab_http.sh: adding array to checking required debian-packages
+*) optimized grab_http.sh
 *) grab_regex: added some regex due to changes on remote-files
    
 file parts of this version:
