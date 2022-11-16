@@ -1,10 +1,10 @@
-; generate at 2022-11-07 11:01:37 WIB by grab_build.sh v7.7
+; generate at 2022-11-11 01:29:58 WIB by grab_build.sh v7.8
 ;
 0-000.store CNAME .
 *.0-000.store CNAME .
 0001.best CNAME .
 *.0001.best CNAME .
-000123456789.online CNAME .
-*.000123456789.online CNAME .
-000123456789.site CNAME .
-*.000123456789.site CNAME .
+001adafg.xyz CNAME .
+*.001adafg.xyz CNAME .
+0024aaaa.com CNAME .
+*.0024aaaa.com CNAME .

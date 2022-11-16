@@ -1,6 +1,5 @@
-# README version v7.7
-#   this program is tailorized to updating blackist domains at BIND9 - Response Policy Zone 
-#
+# README version v7.8
+#   all scripts adapted to update blacklisted domains in BIND9 - Response Policy Zone
 
 author:
    ngadimin@warnet-ersa.net
@@ -9,14 +8,14 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.7:
-*) optimized grab_http.sh
-*) grab_regex: added some regex due to changes on remote-files
+what's new in v7.8:
+*) grab_library: added function to check latest release
    
-file parts of this version:
-   download script-pack from:
-   https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/download/v7.7/gb4rpz-v7.7.tar.gz
+Get url to download script-pack (latest version) :
+   ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
+     | grep download_url | awk -F\" '{print $4}'
 
+file parts of this version:
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
         the same directory. IF no option is selected, it just generates a txt.*
@@ -25,8 +24,8 @@ file parts of this version:
    2. grab_duplic.sh --removing duplicate entries between domain lists.
         you can run this scipt separately, only if txt.* are available in the same directory.
 
-         ~ ls | grep txt | tr "\n" " "
-         txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
+        ~ ls | grep txt | tr "\n" " "
+        txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
 
    3. grab_build.sh --rewriting to BIND9-rpz format.
         you can run this scipt separately, only if txt.* are available in the same directory.
@@ -47,10 +46,13 @@ file parts of this version:
         *) case sensitive, strict order, line count and no blank lines
         *) intended for fixing/removing false entries:
            - less than 4 characters and larger than 64 characters (RFC 1035)
-           - construct with international characters (non ASCII). check it's with: LC_ALL=C grep -P -n '[^\x00-\x7F]'
-           - explicit site: adult and gambling: \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
+           - construct with international characters (non ASCII). check it's with :
+                ~ LC_ALL=C grep -P -n '[^\x00-\x7F]'
+           - explicit site: adult and gambling
+                ~ \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
            - invalid TLDs based on IANA. bash_script to obstain invalid TLDs available on:
-                https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
+                ~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
+
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
         old db.* and rpz.* files in BIND9-server. use below to decompress

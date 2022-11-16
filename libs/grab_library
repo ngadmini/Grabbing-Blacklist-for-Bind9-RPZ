@@ -1,5 +1,5 @@
 # TAGS
-#   grab_library v7.7
+#   grab_library v7.8
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -275,7 +275,7 @@ f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | _srt; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | _srt; }
 f_sta() { if [[ $(stat -L -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
-f_stt() { printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "$1" "${_lct}"; }
+f_stt() { printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}" "$1" "${_lct}"; f_ver; }
 
 f_dft() {   # define default values in grab_config
    printf "${_inf} forking ${_CYN} with default configurations:\n" "${_foo}"
@@ -348,4 +348,15 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
       ar_tmp+=(tmq."${ar_cat[B]}")       # as in-process-domains container (temporary)
       ar_txt+=(txt."${ar_cat[B]}")       # as processed-domains container
    done
+}
+
+f_ver() {
+   local _api="https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest"
+   local _get; _get=$(curl -s "${_api}" | grep download_url | awk -F"\/" '{print $8}')
+   if ! [[ ${_get} == "${_ver}" ]]; then
+      printf "\n${_inf} you're running %s. an update available\n" "${0##*/} version ${_ver}"
+      printf "${_hnt} please download %s\n" "${0##*/} version ${_get} at"
+      printf "%s\n" "$(curl -s ${_api} |  grep download_url | awk -F\" '{print $4}')"
+      return 1
+   fi
 }

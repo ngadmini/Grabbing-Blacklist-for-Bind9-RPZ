@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v7.7
+#   grab_http.sh v7.8
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -21,8 +21,8 @@ else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
 
-printf "\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "${_lct}"
-printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
+printf "\nstarting ${0##*/} ${_ver} at ${_CYN}" "${_lct}"; f_ver
+printf "\n${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
@@ -93,7 +93,7 @@ f_grb
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
 
-f_sm7 1 "${ar_sho[1]}";f_do      # done while initializing category
+f_sm7 1 "${ar_sho[1]}"; f_do     # done while initializing category
 f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed "/-ru$/d" >> "${porn}"; f_do
 

@@ -1,4 +1,4 @@
-; generate at 2022-11-07 11:01:37 WIB by grab_build.sh v7.7
+; generate at 2022-11-11 01:29:58 WIB by grab_build.sh v7.8
 ;
 0-1kiss.com CNAME .
 *.0-1kiss.com CNAME .
