@@ -1,7 +1,7 @@
 <h1 align="center">Grabbing Blacklist Domains for Bind9-RPZ</h1>
 
 <p align="center">
-  	<b>Tailorized bash script-pack to update blacklist domains in BIND9 Response Policy Zone<br>
+  	<b>Tailorized bash script-pack to update blacklisted domains in BIND9 Response Policy Zone<br>
 	Please consider adapting this pack to fit your environment properties,<br>
 	since simple duplication may not given appropriate results.<br>
 	The partial output of this script-pack can be found at link below</b><br>

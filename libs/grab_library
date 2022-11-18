@@ -350,7 +350,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    done
 }
 
-f_ver() {
+f_ver() { # confirm to latest release
    local _api="https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest"
    local _get; _get=$(curl -s "${_api}" | grep download_url | awk -F"\/" '{print $8}')
    if ! [[ ${_get} == "${_ver}" ]]; then

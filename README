@@ -10,6 +10,7 @@ license:
 
 what's new in v7.8:
 *) grab_library: added function to check latest release
+*) grap_regex: update regex due to changes on remote-files
    
 Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
