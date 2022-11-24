@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v7.8
+#   grab_http.sh v7.9
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -204,17 +204,17 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
 done
 ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
 case ${opsi} in
-   1) f_sm1; "${ar_exe[2]}"; f_sma st;;
+   1) f_sm1; "${ar_exe[2]}"; f_sma st; shift;;
    2) f_sm2
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then f_sma nd; fi
-      else exit 1; fi;;
+      else exit 1; fi; shift;;
    3) f_sm3
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then
             if "${ar_exe[1]}"; then f_sma th; fi
          else exit 1; fi
-      else exit 1; fi;;
+      else exit 1; fi; shift;;
    4) f_sm4
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then
@@ -222,7 +222,7 @@ case ${opsi} in
                if "${ar_exe[3]}"; then f_sma th; fi
             else exit 1; fi
          else exit 1; fi
-      else exit 1; fi;;
+      else exit 1; fi; shift;;
    *) f_cln; exit 1;;
 esac
 printf "bye!\n"

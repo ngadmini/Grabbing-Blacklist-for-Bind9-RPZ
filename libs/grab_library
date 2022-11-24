@@ -1,5 +1,5 @@
 # TAGS
-#   grab_library v7.8
+#   grab_library v7.9
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -172,7 +172,7 @@ f_crw() {   # verify remote-urls [grab_urls] is available
 
       # starting check; ignore curl-code: 35
       printf "%12s: %-66s" "urls_${i}" "${ar_sho[i]}"
-      local _stc; _stc=$(curl -so /dev/null -Iw "%{http_code}" "${line}")
+      local _stc; _stc=$(curl --connect-timeout 15 -so /dev/null -Iw "%{http_code}" "${line}")
       _ret=$?
 
       if ! [[ ${_stc} =~ ^[02]{3}$ ]]; then
@@ -259,7 +259,7 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 
 f_ori() {
    printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
-   local _val; _val=$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
+   local _val; _val=$(curl --connect-timeout 15 -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
    if [[ ${_val} -eq 200 ]]; then
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
       printf "${_inf} %-73s" "get $2 from origin"
@@ -355,7 +355,7 @@ f_ver() { # confirm to latest release
    local _get; _get=$(curl -s "${_api}" | grep download_url | awk -F"\/" '{print $8}')
    if ! [[ ${_get} == "${_ver}" ]]; then
       printf "\n${_inf} you're running %s. an update available\n" "${0##*/} version ${_ver}"
-      printf "${_hnt} please download %s\n" "${0##*/} version ${_get} at"
+      printf "${_hnt} please download %s :\n" "${0##*/} version ${_get} at"
       printf "%s\n" "$(curl -s ${_api} |  grep download_url | awk -F\" '{print $4}')"
       return 1
    fi

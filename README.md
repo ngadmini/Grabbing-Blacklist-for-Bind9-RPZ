@@ -22,7 +22,7 @@
  8. [grab_rsync.sh][grab-scp] --intended for syncronize latest dBASE to Bind9 host
  9. [grab_config][grab-cnf] --configurations file
 10. [rpz.*][zone-file] --pack of zone-files, targeted by [grab_cereal.sh][grab-cereal] to incrementing serial zone
-> <b>NOTE</b><br>Place theme all under the same directory
+> <b>NOTE</b><br>Place them all under the same directory
 ### requirements:
 - [x] please see [these wiki][wik-i] and [README][read-me]
 ### usage:

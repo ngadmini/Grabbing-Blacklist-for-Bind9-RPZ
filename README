@@ -1,4 +1,4 @@
-# README version v7.8
+# README version v7.9
 #   all scripts adapted to update blacklisted domains in BIND9 - Response Policy Zone
 
 author:
@@ -8,9 +8,8 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v7.8:
-*) grab_library: added function to check latest release
-*) grap_regex: update regex due to changes on remote-files
+what's new in v7.9:
+*) optimizing grab_http.sh, grab_library and grap_regex
    
 Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
@@ -51,7 +50,7 @@ file parts of this version:
                 ~ LC_ALL=C grep -P -n '[^\x00-\x7F]'
            - explicit site: adult and gambling
                 ~ \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
-           - invalid TLDs based on IANA. bash_script to obstain invalid TLDs available on:
+           - invalid TLDs based on IANA. bash script to obstain invalid TLDs available on:
                 ~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
