@@ -1,5 +1,5 @@
 # TAGS
-#   grab_library v7.9
+#   grab_library v8.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -47,34 +47,35 @@ f_set() {
 
 f_xcd() {   # exit code {244..255}
    for EC in $1; do
-      local _xcd; _xcd=$(printf "${_err} ${_foo} line ${BASH_LINENO[0]}. exit %s" "${EC}")
-      local _xcl; _xcl=$(printf "${_err} ${_fuu} line ${BASH_LINENO[0]}. exit %s" "${EC}")
+      local _xcd _xcl _msj _lmm _msg _lnn _ind _lin _ext _ukn _ukm
+      _xcd=$(printf "${_err} ${_foo} line ${BASH_LINENO[0]}. exit %s" "${EC}")
+      _xcl=$(printf "${_err} ${_fuu} line ${BASH_LINENO[0]}. exit %s" "${EC}")
       case ${EC} in
         244) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"; return 1;;
         245) printf "%s: \n${_hnt} %s\n" "${_xcd}" "required '$2' but it's not installed"; return 1;;
         246) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "'$2' required '$3' but it's not installed"; return 1;;
         247) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "you must execute ${_foo} as non-root privileges"; return 1;;
-        248) local _msj; _msj="urls. it should consist of ${ar_num[ar_url]} urls"
-             local _lmm; _lmm="$(basename "$2"): $(wc -l < "$2")"
+        248) _msj="urls. it should consist of ${ar_num[ar_url]} urls"
+             _lmm="$(basename "$2"): $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"; return 1;;
-        249) local _msg; _msg="lines. it should consist of ${ar_num[ar_reg]} lines"
-             local _lnn; _lnn="$(basename "$2"): $(wc -l < "$2")"
+        249) _msg="lines. it should consist of ${ar_num[ar_reg]} lines"
+             _lnn="$(basename "$2"): $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lnn} ${_msg}"; return 1;;
         250) local _re0='[curl-code] https://curl.se/docs/manpage.html'
              local _re1='[stat-code] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
              local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
              printf "${_inf} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"; exit 1;;
         251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin, please check spelling"; return 1;;
-        252) local _ind; printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | _grp '[aA-zZ\.,]')"
+        252) printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | _grp '[aA-zZ\.,]')"
              printf "\n%s, invalid ar_num's values: %s" "${_xcd}" "${_ind}"
              printf "\n${_hnt} use numeric in ar_num's values%s\n"; return 1;;
-        253) local _lin; _lin=$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)
-             local _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
+        253) _lin=$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)
+             _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
         254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
         255) printf "\n%s: FOUND files:\n${_CYN}\n" "${_xcl}" "$2"; return 1;;
-          *) local _ukn; _ukn="Unknown exit code [f_xcd $1], please check"
-             local _ukm; printf -v _ukm "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
+          *) _ukn="Unknown exit code [f_xcd $1], please check"
+             printf -v _ukm "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
              printf "\n${_err} %s %s\n" "${_ukn}" "${_ukm}"; return 1;;
       esac
    done
@@ -163,11 +164,8 @@ f_fip() {   # capture ip-address entry. save it into sub-net [pv4 CATEGORY]
 f_crw() {   # verify remote-urls [grab_urls] is available
    ar_sho=(); local ar_dwn=(); local i=-1
    while read -r line; do
-      # slicing urls && add as an element to ${ar_sho[@]}
-      local lll; lll="${line##htt*\/\/}"
-      local ll; ll="$(basename "${line}")"
-      local l; l="${lll/\/*/}"
-      local _url; _url="${l}/..?../${ll}"
+      local l ll lll _url      # slicing urls && add as an element to ${ar_sho[@]}
+      lll="${line##htt*\/\/}"; ll="$(basename "${line}")"; l="${lll/\/*/}"; _url="${l}/..?../${ll}"
       ar_sho+=("${_url}"); ((i++))
 
       # starting check; ignore curl-code: 35

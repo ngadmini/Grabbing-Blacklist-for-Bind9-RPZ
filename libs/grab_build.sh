@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v7.9
+#   grab_build.sh v8.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -27,8 +27,8 @@ ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 declare -A ar_num             # numeric value
-ar_num[l_adult]=749999        # the adult category will be devided into this number of lines
-ar_num[db_ipv4]=7             # index's position of ipv4 category at aray: ar_(txt|split)
+ar_num[l_adult]=$(bc <<< "scale=0; $(wc -l "${ar_cat[0]}" | awk '{print $1}')/7")
+ar_num[db_ipv4]=7             # index's position of ipv4 category "${ar_spl[6]}"
 if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
