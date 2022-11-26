@@ -1,8 +1,8 @@
-; generate at 2022-11-26 11:06:30 WIB by grab_cereal.sh v7.9
+; generate at 2022-11-27 06:03:35 WIB by grab_cereal.sh v8.0
 ;   rpz.trust+
 $TTL 3600
 $ORIGIN trust+.domain.
-@   SOA   trust+.domain. rpz.trust+.domain. (2022112600 3600 3600 86400 3600)
+@   SOA   trust+.domain. rpz.trust+.domain. (2022112700 3600 3600 86400 3600)
 @         NS   trust+.domain.
 @   IN    A    127.0.0.24
 ;
