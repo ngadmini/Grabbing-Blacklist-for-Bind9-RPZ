@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.0
+#   grab_http.sh v8.1
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -94,15 +94,14 @@ f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
 
 f_sm7 1 "${ar_sho[1]}"; f_do     # done while initializing category
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${untrust}"; f_do
+f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${trust}"; f_do
 f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed "/-ru$/d" >> "${porn}"; f_do
 
 # identifying porn-domains to reduce adult entries and move to adult category [line: 115]
 printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-f_ipv "${porn}" "${ar_dmn[1]}"   # moving ipv4 in "${porn}" to ipv4 CATEGORY
-_srt "${untrust}" "${porn}" | uniq -d >> "${trust}"
-_grp -E "${ar_reg[2]}" "${untrust}" | _srt -u >> "${trust}"
-awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${trust}" "${untrust}" >> "${ar_dmn[5]}"
+_srt "${trust}" "${porn}" | uniq -d >> "${untrust}"
+_grp -E "${ar_reg[2]}" "${trust}" | _srt -u >> "${untrust}"
+awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 f_do
 
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
@@ -113,7 +112,7 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm8 "${ar_cat[0]}" 3
 f_sm7 0 "${ar_sho[0]}"; f_do     # done while initializing category
 f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_sm7 7 "${ar_sho[7]}"; cat "${trust}" >> "${ar_dmn[0]}"; f_do
+f_sm7 7 "${ar_sho[7]}"; cat "${untrust}" >> "${ar_dmn[0]}"; f_do
 
 f_gog "${ar_dmn[0]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"

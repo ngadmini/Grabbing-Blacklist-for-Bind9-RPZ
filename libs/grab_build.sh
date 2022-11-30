@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v8.0
+#   grab_build.sh v8.1
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -26,7 +26,7 @@ f_stt "[2'nd] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-_dev=$(($(bc <<< "$(wc -l "${ar_cat[0]}" | awk '{print $1}')/7")+1))
+_dev=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
 declare -A ar_num            # numeric value
 ar_num[db_porn]=${_dev}      # split txt.adult to this value
 ar_num[db_ipv4]=7            # index's position of ipv4 category "${ar_spl[6]}"

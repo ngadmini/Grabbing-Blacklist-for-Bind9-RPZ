@@ -1,10 +1,10 @@
-; generate at 2022-11-27 06:03:26 WIB by grab_build.sh v8.0
+; generate at 2022-11-30 21:38:09 WIB by grab_build.sh v8.1
 ;
-blondesenculees.blogspot.com.tr CNAME .
-*.blondesenculees.blogspot.com.tr CNAME .
-blondesenculees.blogspot.com.uy CNAME .
-*.blondesenculees.blogspot.com.uy CNAME .
-blondesenculees.blogspot.cz CNAME .
-*.blondesenculees.blogspot.cz CNAME .
-blondesenculees.blogspot.de CNAME .
-*.blondesenculees.blogspot.de CNAME .
+blondesenculees.blogspot.in CNAME .
+*.blondesenculees.blogspot.in CNAME .
+blondesenculees.blogspot.is CNAME .
+*.blondesenculees.blogspot.is CNAME .
+blondesenculees.blogspot.it CNAME .
+*.blondesenculees.blogspot.it CNAME .
+blondesenculees.blogspot.jp CNAME .
+*.blondesenculees.blogspot.jp CNAME .
