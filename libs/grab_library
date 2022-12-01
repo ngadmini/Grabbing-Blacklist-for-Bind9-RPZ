@@ -136,7 +136,6 @@ f_smb() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "
 
 f_tim() { # time elapsed in Minute:Second.milisecond
    local S="$((T/1000000000))"; local MS="$((T%1000000000/1000000))"
-#   printf "${_inf} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${MS}"
    printf "${_don} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${MS}"
 }
 
