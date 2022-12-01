@@ -27,9 +27,8 @@ ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 
-declare -A ar_num            # numeric value
-ar_num[db_ipv4]=7            # index's position of ipv4 category "${ar_spl[7]}"
-if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
+declare -A ar_num   # get index's position of ipv4 category "${ar_spl[7]}"
+ar_num[db_ipv4]=$(echo "${ar_spl[*]}" | tr ' ' '\n' | awk '/txt\.ipv4/ {print NR-1}')
 _spl=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
 
 printf "\n${_inf} splitting ${_CYN} to %'d lines/sub-category:" "${ar_cat[0]}" "${_spl}"
