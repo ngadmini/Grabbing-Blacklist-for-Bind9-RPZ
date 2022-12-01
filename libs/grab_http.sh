@@ -139,7 +139,7 @@ f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # contents: malware, phishing and ransomware domains
 f_sm8 "${ar_cat[2]}" 8
 f_sm7 2 "${ar_sho[2]}"; f_do     # done while initializing category
-f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -v "^\(#\|:\)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
+f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
    f_sm7 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
@@ -195,7 +195,7 @@ printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
 T="$(($(date +%s%N)-T))"; f_tim
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
-f_sm6; f_cnf; f_sm0 "${HOST}"; read -r opsi
+f_sm0; read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
