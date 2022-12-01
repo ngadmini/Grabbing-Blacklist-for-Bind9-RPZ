@@ -34,7 +34,6 @@ ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_s
 ar_num[ar_url]=22              # number of lines: grab_urls
 ar_num[ar_reg]=4               #                  grab_regex
 
-
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
