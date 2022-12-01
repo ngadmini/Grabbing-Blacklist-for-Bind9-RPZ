@@ -26,19 +26,18 @@ f_stt "[2'nd] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
    txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-_dev=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
+
 declare -A ar_num            # numeric value
-ar_num[db_porn]=${_dev}      # split txt.adult to this value
-ar_num[db_ipv4]=7            # index's position of ipv4 category "${ar_spl[6]}"
+ar_num[db_ipv4]=7            # index's position of ipv4 category "${ar_spl[7]}"
 if echo "${ar_num[*]}" | _grp "[aA-zZ\.,]" >> /dev/null 2>&1; then f_xcd 252; fi
+_spl=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
+
+printf "\n${_inf} splitting ${_CYN} to %'d lines/sub-category:" "${ar_cat[0]}" "${_spl}"
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
-
-printf "\n${_inf} splitting ${_CYN} to %'d lines/sub-category:" "${ar_cat[0]}" "${ar_num[db_porn]}"
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
-   unset -v ar_CAT
-   split -l "${ar_num[db_porn]}" "${ar_cat[0]}" "${ar_cat[0]}"
-   mv txt.adult /tmp
+   split -l "${_spl}" "${ar_cat[0]}" "${ar_cat[0]}"
+   mv txt.adult /tmp; unset -v ar_CAT
    mapfile -t ar_txt < <(f_fnd "txt.*")
    mr_p=$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)
    printf "\n${_CYN}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
