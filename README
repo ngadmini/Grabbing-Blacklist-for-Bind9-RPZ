@@ -1,4 +1,4 @@
-# README version v8.1
+# README version v8.2
 #   all scripts adapted to update blacklisted domains in BIND9 - Response Policy Zone
 
 author:
@@ -8,9 +8,9 @@ license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v8.1:
-*) updating grab_http.sh, grap_build.sh, grab_library and grab_urls
-   
+what's new in v8.2:
+*) updating grab_duplic.sh and grab_library
+  
 Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
      | grep download_url | awk -F\" '{print $4}'

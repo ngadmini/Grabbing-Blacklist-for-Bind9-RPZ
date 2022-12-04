@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v8.1
+#   grab_duplic.sh v8.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -44,32 +44,28 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    for C in {2..5}; do
       f_dpn "${C}" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
       f_dpm "${ar_tmp[C]}" "${ar_CAT[C]}" "${ar_dmn[C]}"
-      cp "${ar_dmn[C]}" "${ar_CAT[C]}"; f_do
    done
 
-                          # remove duplicate domains based on ${ar_cat[1]}. do nothing
+   # remove duplicate domains based on ${ar_cat[1]}. do nothing
    printf "eliminating duplicate entries based on ${_CYN}%-13sdo nothing\n" "${ar_cat[1]^^}"
 
    f_dpl "${ar_cat[2]}"   # remove duplicate domains based on ${ar_cat[2]}
    for D in {3..5}; do
       f_dpn "${D}" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
       f_dpm "${ar_tmp[D]}" "${ar_CAT[D]}" "${ar_dmn[D]}"
-      cp "${ar_dmn[D]}" "${ar_CAT[D]}"; f_do
    done
 
    f_dpl "${ar_cat[3]}"   # remove duplicate domains based on ${ar_cat[3]}
    for E in 4 5; do
       f_dpn "${E}" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
       f_dpm "${ar_tmp[E]}" "${ar_CAT[E]}" "${ar_dmn[E]}"
-      cp "${ar_dmn[E]}" "${ar_CAT[E]}"; f_do
    done
 
    f_dpl "${ar_cat[4]}"   # remove duplicate domains based on ${ar_cat[4]}
    f_dpn 5 "${ar_cat[5]}" "${ar_CAT[5]}" "${ar_CAT[4]}" "${ar_tmp[5]}" 4
    f_dpm "${ar_tmp[5]}" "${ar_CAT[5]}" "${ar_dmn[5]}"
-   cp "${ar_dmn[5]}" "${ar_CAT[5]}"; f_do
 
-                          # remove duplicate domains based on ${ar_cat[5]}. do nothing
+   # remove duplicate domains based on ${ar_cat[5]}. do nothing
    printf "eliminating duplicate entries based on ${_CYN}%-11sdo nothing\n" "${ar_cat[5]^^}"
 else
    f_mis "${miss_v}" "${ar_cat[*]}"

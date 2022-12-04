@@ -1,5 +1,5 @@
 # TAGS
-#   grab_library v8.1
+#   grab_library v8.2
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -191,8 +191,12 @@ f_crw() {   # verify remote-urls [grab_urls] is available
 }
 
 f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
-f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"; }
-f_dpn() {   # [with f_dpm] used by grab_duplic.sh
+f_dpm() {
+   awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"
+   _sed "/\.xhamster\.com$/d" "$3" > "$2"; f_do
+}
+
+f_dpn() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
    printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d | _srt -o "$5"
 }
@@ -234,7 +238,7 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
    _ssh root@"${HOST}" [[ -d "${ZONE_DIR}" ]] || f_xcd 254 "${ZONE_DIR}" "${HOST}"; f_ok
 
    printf "${_inf} %-85s" "check required debian-packages in ${HOST}"
-   for C in {rsync,pigz}; do   # require: rsync and pigz
+   for C in {rsync,pigz}; do   # required: rsync and pigz
       _ssh root@"${HOST}" "hash ${C} >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "${C}"
    done; f_ok
 }
