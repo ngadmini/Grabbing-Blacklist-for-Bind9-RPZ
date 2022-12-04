@@ -1,8 +1,8 @@
-; generate at 2022-11-30 21:38:17 WIB by grab_cereal.sh v8.1
+; generate at 2022-12-04 12:59:03 WIB by grab_cereal.sh v8.1
 ;   rpz.adultaa
 $TTL 3600
 $ORIGIN adultaa.domain.
-@   SOA   adultaa.domain. rpz.adultaa.domain. (2022113014 3600 3600 86400 3600)
+@   SOA   adultaa.domain. rpz.adultaa.domain. (2022120403 3600 3600 86400 3600)
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
@@ -19,7 +19,5 @@ $ORIGIN adultaa.domain.
 ;
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
-; xhamster.com redirect to this
-xhvid.com  CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"

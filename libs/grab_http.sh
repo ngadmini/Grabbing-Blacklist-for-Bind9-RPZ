@@ -88,7 +88,7 @@ f_crw "${ar_shn[1]}" || :
 # initialize, grabbing and processing raw-domains (CATEGORY)
 f_grb
 
-# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${url[1,7,21]}
+# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7,21]}
 # contents: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
 f_sm8 "${ar_cat[5]}" 3
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
@@ -183,7 +183,7 @@ for K in "${!ar_txt[@]}"; do
    else                                        # prune sub-domains if parent domain present
       _sed 's/^/\./' "${ar_txt[K]}" | rev | _srt -u \
          | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-         | rev | _sed "s/^\.//" | _srt > "${ar_tmp[K]}"
+         | rev | _sed "s/^\.//" > "${ar_tmp[K]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_snp}"
    fi
