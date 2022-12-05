@@ -9,7 +9,7 @@ license:
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 what's new in v8.2:
-*) updating grab_duplic.sh and grab_library
+*) updating grab_http.sh, grab_duplic.sh and grab_library
   
 Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \

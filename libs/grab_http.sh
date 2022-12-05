@@ -84,18 +84,16 @@ f_ok
 
 printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
 f_crw "${ar_shn[1]}" || :
-
-# initialize, grabbing and processing raw-domains (CATEGORY)
-f_grb
+f_grb   # initialize, grabbing and processing raw-domains (CATEGORY)
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7,21]}
 # contents: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
-f_sm8 "${ar_cat[5]}" 3
+f_sm7 "${ar_cat[5]}" 3
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
 
-f_sm7 1 "${ar_sho[1]}"; f_do     # done while initializing category
-f_sm7 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[3]}" >> "${trust}"; f_do
-f_sm7 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed "/-ru$/d" >> "${porn}"; f_do
+f_sm6 1 "${ar_sho[1]}"; f_do     # done while initializing category
+f_sm6 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" >> "${trust}"; f_do
+f_sm6 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" >> "${porn}"; f_do
 
 # identifying porn-domains to reduce adult entries and move to adult category [line: 115]
 printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
@@ -109,10 +107,10 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
 # contents: adult and porn domains
-f_sm8 "${ar_cat[0]}" 3
-f_sm7 0 "${ar_sho[0]}"; f_do     # done while initializing category
-f_sm7 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_sm7 7 "${ar_sho[7]}"; cat "${untrust}" >> "${ar_dmn[0]}"; f_do
+f_sm7 "${ar_cat[0]}" 3
+f_sm6 0 "${ar_sho[0]}"; f_do     # done while initializing category
+f_sm6 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
+f_sm6 7 "${ar_sho[7]}"; cat "${untrust}" >> "${ar_dmn[0]}"; f_do
 
 f_gog "${ar_dmn[0]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
@@ -120,29 +118,29 @@ f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 # contents: vpn and proxy domains
-f_sm8 "${ar_cat[4]}" 2           # done while initializing category
-for F in {4,5}; do f_sm7 "${F}" "${ar_sho[F]}"; f_do; done
+f_sm7 "${ar_cat[4]}" 2           # done while initializing category
+for F in {4,5}; do f_sm6 "${F}" "${ar_sho[F]}"; f_do; done
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 # contents: ad domains
-f_sm8 "${ar_cat[3]}" 5
-f_sm7 3 "${ar_sho[3]}";f_do      # done while initializing category
+f_sm7 "${ar_cat[3]}" 5
+f_sm6 3 "${ar_sho[3]}";f_do      # done while initializing category
 for G in {8..11}; do
-   f_sm7 "${G}" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
+   f_sm6 "${G}" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 # contents: malware, phishing and ransomware domains
-f_sm8 "${ar_cat[2]}" 8
-f_sm7 2 "${ar_sho[2]}"; f_do     # done while initializing category
-f_sm7 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
-f_sm7 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
+f_sm7 "${ar_cat[2]}" 8
+f_sm6 2 "${ar_sho[2]}"; f_do     # done while initializing category
+f_sm6 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
+f_sm6 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
-   f_sm7 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
+   f_sm6 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
 
 f_gog "${ar_dmn[2]}"
@@ -151,13 +149,13 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 # contents: captured ipv4 from adult, publicite, malware and trust+
-f_sm8 "${ar_cat[1]}" 2
+f_sm7 "${ar_cat[1]}" 2
 for I in {19,20}; do             # save ipv4 as CIDR block
-   f_sm7 "${I}" "${ar_sho[I]}"
+   f_sm6 "${I}" "${ar_sho[I]}"
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
-f_sm9 "${ar_cat[1]}"; awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
+f_sm8 "${ar_cat[1]}"; awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # <finishing>
@@ -202,22 +200,22 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
 done
 ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
 case ${opsi} in
-   1) f_sm1; "${ar_exe[2]}"; f_sma st; shift;;
+   1) f_sm1; "${ar_exe[2]}"; f_sm9 st; shift;;
    2) f_sm2
       if "${ar_exe[2]}"; then
-         if "${ar_exe[0]}"; then f_sma nd; fi
+         if "${ar_exe[0]}"; then f_sm9 nd; fi
       else exit 1; fi; shift;;
    3) f_sm3
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then
-            if "${ar_exe[1]}"; then f_sma th; fi
+            if "${ar_exe[1]}"; then f_sm9 th; fi
          else exit 1; fi
       else exit 1; fi; shift;;
    4) f_sm4
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then
             if "${ar_exe[1]}"; then
-               if "${ar_exe[3]}"; then f_sma th; fi
+               if "${ar_exe[3]}"; then f_sm9 th; fi
             else exit 1; fi
          else exit 1; fi
       else exit 1; fi; shift;;

@@ -1,10 +1,10 @@
-; generate at 2022-12-04 21:17:27 WIB by grab_build.sh v8.2
+; generate at 2022-12-05 22:11:30 WIB by grab_build.sh v8.2
 ;
-japanesexxx.projav1 CNAME .
-*.japanesexxx.projav1 CNAME .
 xn--mgbx7cc31cyg.xn--mgbbh1a CNAME .
 *.xn--mgbx7cc31cyg.xn--mgbbh1a CNAME .
 xn--ygba6buib98dxi.xn--mgbbh1a CNAME .
 *.xn--ygba6buib98dxi.xn--mgbbh1a CNAME .
 xn--mp76-6qa.xn--9dbq2a CNAME .
 *.xn--mp76-6qa.xn--9dbq2a CNAME .
+xn--iibt-ipa3b.xn--9dbq2a CNAME .
+*.xn--iibt-ipa3b.xn--9dbq2a CNAME .
