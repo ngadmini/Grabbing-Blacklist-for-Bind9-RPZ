@@ -161,7 +161,7 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # <finishing>
 printf "\nprocessing raw-domains (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
-for J in "${!ar_txt[@]}"; do
+for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
