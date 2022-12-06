@@ -30,7 +30,7 @@
 ### output:
 - [x] new files with prefix `db.*` are dataBases for RPZ and ready to use at BIND9-server
 - [x] modified files with prefix `rpz.*` are zone -files, ready to use too
-- [x] new files with prefix `txt.*` are raw domains blacklist
+- [x] new files with prefix `txt.*` are processed domains blacklist
 ### in the real world
 the partial output of this script-pack, can be found at [Partial Output][part-output] as raw format.
 ### others:

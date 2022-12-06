@@ -155,12 +155,13 @@ for I in {19,20}; do             # save ipv4 as CIDR block
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
-f_sm8 "${ar_cat[1]}"; awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
+f_sm8 "${ar_cat[1]}"
+awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # <finishing>
 printf "\nprocessing raw-domains (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
-for J in "${!ar_cat[@]}"; do
+for J in "${!ar_txt[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
@@ -178,7 +179,7 @@ for K in "${!ar_txt[@]}"; do
       done < "${ar_txt[K]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
-   else                                        # prune sub-domains if parent domain present
+   else   # prune sub-domains of the parent-domain that are in the same category, NOT in a different category
       _sed 's/^/\./' "${ar_txt[K]}" | rev | _srt -u \
          | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
          | rev | _sed "s/^\.//" > "${ar_tmp[K]}"
