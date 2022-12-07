@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # TAGS
 #   grab_library v8.2
 # AUTHOR
@@ -189,11 +190,7 @@ f_crw() {   # verify remote-urls [grab_urls] is available
 }
 
 f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
-f_dpm() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
-   awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"
-   _sed "/\.xhamster\.com$/d" "$3" > "$2"; f_do
-}
-
+f_dpm() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"; f_do; }
 f_dpn() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
    printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d | _srt -o "$5"
@@ -268,7 +265,8 @@ f_ori() {
 }
 
 f_mis() { printf "\n${_err} misMATCH file: ${_CYN}" "$1"; f_xcd 255 "$2"; }
-f_sed() { _sed "s/ /\n/g" | _srt | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
+#f_sed() { _sed "s/ /\n/g" | _srt | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
+f_sed() { _srt | uniq -u | _sed ":a;N;$!ba;s/\n/\\\|/g"; }
 f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | _srt; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed -r "1d;s/\.\///" | _srt; }
