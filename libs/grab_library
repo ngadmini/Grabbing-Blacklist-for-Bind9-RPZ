@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # TAGS
 #   grab_library v8.3
 # AUTHOR
@@ -268,7 +269,6 @@ f_ori() {
 }
 
 f_mis() { printf "\n${_err} misMATCH file: ${_CYN}" "$1"; f_xcd 255 "$2"; }
-#f_sed() { _sed "s/ /\n/g" | _srt | uniq -u | tr "\n" " " | _sed "s/ $//g"; }
 f_sed() { _srt | uniq -u | _sed ":a;N;$!ba;s/\n/\\\|/g"; }
 f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed -r "s/\.\///" | _srt; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }

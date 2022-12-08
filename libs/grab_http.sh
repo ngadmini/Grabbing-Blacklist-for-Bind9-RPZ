@@ -14,7 +14,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # <start main script>
 cd "${_DIR}"; readonly _LIB="${_DIR}"/grab_library
-if [[ -e ${_LIB} ]]; then                # sourcing to grab_library
+if [[ -e ${_LIB} ]]; then      # sourcing to grab_library
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp; clear
 else
