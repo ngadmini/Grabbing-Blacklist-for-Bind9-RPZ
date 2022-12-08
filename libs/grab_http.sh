@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.2
+#   grab_http.sh v8.3
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -32,7 +32,7 @@ declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
-ar_num[ar_reg]=4               #                  grab_regex
+ar_num[ar_reg]=3               #                  grab_regex
 
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
@@ -89,16 +89,13 @@ f_grb   # initialize, grabbing and processing raw-domains (CATEGORY)
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7,21]}
 # contents: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
 f_sm7 "${ar_cat[5]}" 3
-trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}"); porn=$(mktemp -p "${_DIR}")
+trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}")
 
-f_sm6 1 "${ar_sho[1]}"; f_do     # done while initializing category
-f_sm6 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" >> "${trust}"; f_do
-f_sm6 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" >> "${porn}"; f_do
-
-# identifying porn-domains to reduce adult entries and move to adult category [line: 115]
-printf "%12s: %-66s" "throw" "porn domains into ${ar_cat[0]^^} CATEGORY"
-_srt "${trust}" "${porn}" | uniq -d >> "${untrust}"
-_grp -E "${ar_reg[2]}" "${trust}" | _srt -u >> "${untrust}"
+f_sm6 1 "${ar_sho[1]}"; f_do     # add gambling-domains to trust+ category
+f_sm6 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[2]}" >> "${trust}"; f_do
+# reduce adult entries and move it's to adult category [line: 110]
+f_sm6 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${untrust}"; f_do
+printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 f_do
 
