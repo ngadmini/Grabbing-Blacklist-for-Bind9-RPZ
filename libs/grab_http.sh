@@ -198,17 +198,17 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
 done
 ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
 case ${opsi} in
-   1) f_sm1; "${ar_exe[2]}"; f_sm9 st; shift;;
+   1) f_sm1; "${ar_exe[2]}"; f_sm9 st;;
    2) f_sm2
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then f_sm9 nd; fi
-      else exit 1; fi; shift;;
+      else exit 1; fi;;
    3) f_sm3
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then
             if "${ar_exe[1]}"; then f_sm9 th; fi
          else exit 1; fi
-      else exit 1; fi; shift;;
+      else exit 1; fi;;
    4) f_sm4
       if "${ar_exe[2]}"; then
          if "${ar_exe[0]}"; then
@@ -216,7 +216,7 @@ case ${opsi} in
                if "${ar_exe[3]}"; then f_sm9 th; fi
             else exit 1; fi
          else exit 1; fi
-      else exit 1; fi; shift;;
+      else exit 1; fi;;
    *) f_cln; exit 1;;
 esac
 printf "bye!\n"
