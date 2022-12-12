@@ -1,17 +1,10 @@
-; generate at 2022-12-08 14:40:55 WIB by grab_cereal.sh v8.3
+; generate at Tue 2022-12-13 01:08:52 WIB by grab_cereal.sh v8.4
 ;   rpz.ipv4
 $TTL 3600
 $ORIGIN ipv4.domain.
-@   SOA   ipv4.domain. rpz.ipv4.domain. (2022120802 3600 3600 86400 3600)
+@   SOA   ipv4.domain. rpz.ipv4.domain. (2022121300 3600 3600 86400 3600)
 @         NS   ipv4.domain.
 @   IN    A    127.0.0.13
-;
-; bappebti's ipv4
-32.244.107.77.103.rpz-nsip  CNAME .
-32.4.148.68.138.rpz-nsip    CNAME .
-32.82.238.248.178.rpz-nsip  CNAME .
-32.178.203.210.180.rpz-nsip CNAME .
-32.191.91.63.45.rpz-nsip    CNAME .
 ;
 ; Policy Trigger - NSIP Trigger - NXDOMAIN Action
 $INCLUDE "/etc/bind/zones-rpz/db.ipv4"

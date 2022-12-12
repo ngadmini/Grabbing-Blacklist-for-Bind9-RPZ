@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.3
+#   grab_http.sh v8.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -8,7 +8,8 @@
 # shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
-umask 027; set -Eeuo pipefail
+umask 027
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -32,7 +33,7 @@ declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_shn
 ar_num[ar_url]=22              # number of lines: grab_urls
-ar_num[ar_reg]=3               #                  grab_regex
+ar_num[ar_reg]=4               #                  grab_regex
 
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
@@ -83,64 +84,65 @@ done
 f_ok
 
 printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
-f_crw "${ar_shn[1]}" || :
+f_uri "${ar_shn[1]}" || :
 f_grb   # initialize, grabbing and processing raw-domains (CATEGORY)
 
-# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7,21]}
+# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
 # contents: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
-f_sm7 "${ar_cat[5]}" 3
-trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}")
+f_sm7 "${ar_cat[5]}" 2
+trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}") porn=$(mktemp -p "${_DIR}")
+f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
+f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" >> "${trust}"; f_do
 
-f_sm6 1 "${ar_sho[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_sho[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[2]}" >> "${trust}"; f_do
-# reduce adult entries and move it's to adult category [line: 110]
-f_sm6 21 "${ar_sho[21]}"; f_add "${ar_url[21]}" >> "${untrust}"; f_do
+# reduce adult entries and move it's to adult category [line: 103]
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
+f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" >> "${porn}"
+_srt "${trust}" "${porn}" | uniq -d >> "${untrust}"
+_grp -E "${ar_reg[2]}" "${trust}" | _srt -u >> "${untrust}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
-f_do
+cat "${untrust}" >> "${ar_dmn[0]}"; f_do
 
+# fixing false and bad entries
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6,7]}
-# contents: adult and porn domains
-f_sm7 "${ar_cat[0]}" 3
-f_sm6 0 "${ar_sho[0]}"; f_do     # done while initializing category
-f_sm6 6 "${ar_sho[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_sm6 7 "${ar_sho[7]}"; cat "${untrust}" >> "${ar_dmn[0]}"; f_do
-
-f_gog "${ar_dmn[0]}"
+# category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6]}
+# contents: adult-porn domains
+f_sm7 "${ar_cat[0]}" 2
+f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
+f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
+f_gog "${ar_dmn[0]}"             # fixing false and bad entries
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 # contents: vpn and proxy domains
 f_sm7 "${ar_cat[4]}" 2           # done while initializing category
-for F in {4,5}; do f_sm6 "${F}" "${ar_sho[F]}"; f_do; done
+for F in {4,5}; do f_sm6 "${F}" "${ar_uri[F]}"; f_do; done
+# fixing false and bad entries
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 # contents: ad domains
 f_sm7 "${ar_cat[3]}" 5
-f_sm6 3 "${ar_sho[3]}";f_do      # done while initializing category
+f_sm6 3 "${ar_uri[3]}";f_do      # done while initializing category
 for G in {8..11}; do
-   f_sm6 "${G}" "${ar_sho[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
-done
+   f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
+done                             # fixing false and bad entries
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 # contents: malware, phishing and ransomware domains
 f_sm7 "${ar_cat[2]}" 8
-f_sm6 2 "${ar_sho[2]}"; f_do     # done while initializing category
-f_sm6 12 "${ar_sho[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
-f_sm6 13 "${ar_sho[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
+f_sm6 2 "${ar_uri[2]}"; f_do     # done while initializing category
+f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
+f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
-   f_sm6 "${H}" "${ar_sho[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
+   f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
-
-f_gog "${ar_dmn[2]}"
+f_gog "${ar_dmn[2]}"             # fixing false and bad entries
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -148,11 +150,11 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # contents: captured ipv4 from adult, publicite, malware and trust+
 f_sm7 "${ar_cat[1]}" 2
 for I in {19,20}; do             # save ipv4 as CIDR block
-   f_sm6 "${I}" "${ar_sho[I]}"
-   f_add "${ar_url[I]}" | _grp -v "^#" | _sed -r "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
+   f_sm6 "${I}" "${ar_uri[I]}"
+   f_add "${ar_url[I]}" | _grp -v "^#" | _sed "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
 done
-f_sm8 "${ar_cat[1]}"
+f_sm8 "${ar_cat[1]}"             # fixing false and bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
@@ -162,12 +164,13 @@ for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
+
 _tmb1=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb1/./,}"
 
-printf "\n${_YLW} sub-domains if parent-domains present and IPV4 into CIDR blocks if any\n" "PRUNING:"
-for K in "${!ar_txt[@]}"; do
+printf "\n${_YLW} sub-domains if there is an it's parent-domain and IPV4 into CIDR blocks if any\n" "PRUNING:"
+for K in "${!ar_txt[@]}"; do   # sub-domains become useless if there is an it's parent-domain
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
       while IFS= read -r; do                   # require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
@@ -185,6 +188,7 @@ for K in "${!ar_txt[@]}"; do
    fi
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
+
 _tmb2=$(bc <<< "scale=3; $(wc -c "${ar_tmp[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
@@ -219,5 +223,4 @@ case ${opsi} in
       else exit 1; fi;;
    *) f_cln; exit 1;;
 esac
-printf "bye!\n"
 exit 0

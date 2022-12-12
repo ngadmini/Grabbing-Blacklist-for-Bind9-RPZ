@@ -1,29 +1,36 @@
-; generate at 2022-12-08 14:40:55 WIB by grab_cereal.sh v8.3
+; generate at Tue 2022-12-13 01:08:52 WIB by grab_cereal.sh v8.4
 ;   rpz.publicite
 $TTL 3600
 $ORIGIN publicite.domain.
-@   SOA   publicite.domain. rpz.publicite.domain. (2022120802 3600 3600 86400 3600)
+@   SOA   publicite.domain. rpz.publicite.domain. (2022121300 3600 3600 86400 3600)
 @         NS   publicite.domain.
 @   IN    A    127.0.0.15
 ;
 ; indiehome's domains
-d01.notifa.info IN CNAME .
+;   https://raw.githubusercontent.com/bebasid/bebasdns/main/custom-filtering-rules-blocklist
+aduankonten.id IN CNAME .
+*.aduankonten.id IN CNAME .
 d31qbv1cthcecs.cloudfront.net IN CNAME .
+*.d31qbv1cthcecs.cloudfront.net IN CNAME .
 d5nxst8fruw4z.cloudfront.net IN CNAME .
+*.d5nxst8fruw4z.cloudfront.net IN CNAME .
 digiads.co.id IN CNAME .
 *.digiads.co.id IN CNAME .
-internetpositif.id IN CNAME .
-p01.notifa.info IN CNAME .
-p02.notifa.info IN CNAME .
-p03.notifa.info IN CNAME .
-p05.notifa.info IN CNAME .
+notifa.info IN CNAME .
+*.notifa.info IN CNAME .
 uadexchange.com IN CNAME .
 *.uadexchange.com IN CNAME .
+u-ad.info IN CNAME .
+*.u-ad.info IN CNAME .
 upoint.id IN CNAME .
 *.upoint.id IN CNAME .
 usearch.co.id IN CNAME .
 *.usearch.co.id IN CNAME .
 uzone.id IN CNAME .
 *.uzone.id IN CNAME .
+welcome.indihome.co.id IN CNAME .
+*.welcome.indihome.co.id IN CNAME .
+x-tags.net IN CNAME .
+*.x-tags.net IN CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.publicite"

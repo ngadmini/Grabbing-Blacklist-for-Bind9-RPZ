@@ -1,8 +1,8 @@
-; generate at 2022-12-08 14:40:55 WIB by grab_cereal.sh v8.3
+; generate at Tue 2022-12-13 01:08:52 WIB by grab_cereal.sh v8.4
 ;   rpz.adultaa
 $TTL 3600
 $ORIGIN adultaa.domain.
-@   SOA   adultaa.domain. rpz.adultaa.domain. (2022120802 3600 3600 86400 3600)
+@   SOA   adultaa.domain. rpz.adultaa.domain. (2022121300 3600 3600 86400 3600)
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
