@@ -28,8 +28,9 @@ ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
    rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
 
 # check properties: db-files & zone-files at local-host
-printf "\n${_inf} check availability: RPZ-dBase and zone-files in local-host: %-25s" "$(hostname -I)"
+printf "${_inf} check availability: RPZ-dBase and zone-files in local-host: %-25s" "$(hostname -I)"
 mapfile -t ar_dbc < <(f_fnd "db.*")
+echo "${ar_DBC[@]}" "${ar_dbc[@]}"
 miss_DBC=$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)
 printf -v req_DBC "%s\n%s" "${ar_DBC[*]:0:6}" "${ar_DBC[*]:6:6}"
 if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then f_mis "${miss_DBC}" "${req_DBC}"; fi
@@ -38,9 +39,9 @@ mapfile -t ar_rpz < <(f_fnd "rpz.*")
 miss_RPZ=$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)
 printf -v req_RPZ "%s\n%s" "${ar_RPZ[*]:0:6}" "${ar_RPZ[*]:6:6}"
 if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then f_mis "${miss_RPZ}" "${req_RPZ}"; fi
-
 for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "${PERM}"; done
-f_ok; f_ssh   # end of check
+f_ok
+f_ssh   # end of check
 
 # archieving current RPZ-dBase at remote-host
 _cd=$(basename "$ZONE_DIR")

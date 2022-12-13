@@ -31,7 +31,7 @@ declare -A ar_num   # get index's position of ipv4 category "${ar_spl[7]}"
 ar_num[db_ipv4]=$(echo "${ar_spl[*]}" | tr ' ' '\n' | awk '/txt\.ipv4/ {print NR-1}')
 _spl=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
 
-printf "\n${_inf} splitting ${_CYN} to %'d lines/sub-category:" "${ar_cat[0]}" "${_spl}"
+printf "${_inf} splitting ${_CYN} to %'d lines/sub-category:" "${ar_cat[0]}" "${_spl}"
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then

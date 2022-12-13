@@ -29,11 +29,11 @@ mapfile -t ar_zon < <(f_fnd "rpz.*")
 miss_v=$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)
 printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 
-printf "\n${_inf} incrementing serial of zone-files"
-printf "\n${_inf} %s" "check availability zone-files"
+printf "${_inf} %s" "check availability zone-files"
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
       printf "\n${_inf} FOUND: %s zone-files (complete)" "${#ar_zon[@]}"
+      printf "\n${_inf} incrementing serial of zone-files:\n${_CYN}" "${mr_p}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
          SERIAL=$(grep "SOA" "${Z}" | cut -d \( -f2 | cut -d' ' -f1)

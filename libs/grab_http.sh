@@ -93,7 +93,6 @@ f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}") porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
 f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" >> "${trust}"; f_do
-
 # reduce adult entries and move it's to adult category [line: 103]
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" >> "${porn}"
@@ -101,7 +100,6 @@ _srt "${trust}" "${porn}" | uniq -d >> "${untrust}"
 _grp -E "${ar_reg[2]}" "${trust}" | _srt -u >> "${untrust}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"; f_do
-
 # fixing false and bad entries
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
@@ -192,10 +190,12 @@ done
 _tmb2=$(bc <<< "scale=3; $(wc -c "${ar_tmp[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
-T="$(($(date +%s%N)-T))"; f_tim
+T="$(($(date +%s%N)-T))"
+f_tim
 
 # <completing> offerring OPTIONs: continued to next tasks OR stop here
-f_sm0; read -r opsi
+f_sm0
+read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi

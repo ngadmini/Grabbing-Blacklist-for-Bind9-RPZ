@@ -36,7 +36,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
       ar_tmp+=(tmr."${ar_CAT[B]/txt./}")
    done
 
-   printf "\n${_inf} eliminating duplicate entries between CATEGORY\n"
+   printf "${_inf} eliminating duplicate entries between CATEGORY\n"
    printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
 
    f_dpl "${ar_cat[0]}"   # remove duplicate domains based on ${ar_cat[0]}
