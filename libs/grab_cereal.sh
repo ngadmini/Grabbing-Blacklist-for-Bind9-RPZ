@@ -8,6 +8,7 @@
 # shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
+umask 027
 set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -16,7 +17,8 @@ cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trp
+   source "${_LIB}"
+   f_trp
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -49,7 +51,9 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
                newSERIAL="${DATE}00"
             fi
          fi
-         _sed -i "s/${SERIAL}/${newSERIAL}/" "${Z}"; f_sta 640 "${Z}"; f_g4c "${Z}"
+         _sed -i "s/${SERIAL}/${newSERIAL}/" "${Z}"
+         f_sta 640 "${Z}"
+         f_g4c "${Z}"
       done
       printf "\n${_inf} all serial zone-files incremented to ${_CYN}\n" "${newSERIAL}"
    else
@@ -58,10 +62,12 @@ if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
 elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
    f_mis "${miss_v}" "${mr_p}"
 else
-   f_no "${miss_v}"; f_cnf
+   f_no "${miss_v}"
+   f_cnf
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
    f_cer "${miss_v}"
 fi
 
-T="$(($(date +%s%N)-T))"; f_tim
+T="$(($(date +%s%N)-T))"
+f_tim
 exit 0

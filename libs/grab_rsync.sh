@@ -30,7 +30,6 @@ ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
 # check properties: db-files & zone-files at local-host
 printf "${_inf} check availability: RPZ-dBase and zone-files in local-host: %-25s" "$(hostname -I)"
 mapfile -t ar_dbc < <(f_fnd "db.*")
-echo "${ar_DBC[@]}" "${ar_dbc[@]}"
 miss_DBC=$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)
 printf -v req_DBC "%s\n%s" "${ar_DBC[*]:0:6}" "${ar_DBC[*]:6:6}"
 if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then f_mis "${miss_DBC}" "${req_DBC}"; fi
@@ -47,10 +46,12 @@ f_ssh   # end of check
 _cd=$(basename "$ZONE_DIR")
 printf -v _ID "/home/rpz-%s.tar.gz" "$(date +%Y%m%d-%H%M%S)"
 printf "${_inf} %-85s" "archiving stale RPZ-dBase in ${HOST}:${_ID}"
-_ssh root@"${HOST}" "cd ${ZONE_DIR/$_cd/}; tar -I pigz -cf ${_ID} ${_cd}"; f_do
+_ssh root@"${HOST}" "cd ${ZONE_DIR/$_cd/}; tar -I pigz -cf ${_ID} ${_cd}"
+f_do
 printf "${_hnt} extract with: '${_GRN}'\nfollowed by '${_GRN}'\n" "unpigz -v ${_ID}" "tar -xvf ${_ID/.gz/}"
 printf "${_inf} %-85s" "find and remove old RPZ-dBase archive in ${HOST}:/home"
-_ssh root@"${HOST}" "find /home -regex '^.*\(tar.gz\)$' -mmin +1440 -print0 | xargs -0 -r rm"; f_do
+_ssh root@"${HOST}" "find /home -regex '^.*\(tar.gz\)$' -mmin +1440 -print0 | xargs -0 -r rm"
+f_do
 
 # syncronizing latest RPZ-dBase to remote-host
 printf "${_inf} %-85s" "syncronizing the latest RPZ-dBase to ${HOST}:${ZONE_DIR}"
@@ -68,5 +69,6 @@ else
    printf "${_hnt} use ${_shd} at host: %s to abort\n" "${HOST}"
 fi
 
-T="$(($(date +%s%N)-T))"; f_tim
+T="$(($(date +%s%N)-T))"
+f_tim
 exit 0

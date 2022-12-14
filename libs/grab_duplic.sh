@@ -16,7 +16,8 @@ cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trp
+   source "${_LIB}"
+   f_trp
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
 fi
@@ -29,7 +30,9 @@ miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 
 if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
    unset -v ar_cat
-   ar_cat=(); ar_dmn=(); ar_tmp=()
+   ar_cat=()
+   ar_dmn=()
+   ar_tmp=()
    for B in "${!ar_CAT[@]}"; do
       ar_cat+=("${ar_CAT[B]/txt./}")
       ar_dmn+=(dmn."${ar_CAT[B]/txt./}")
@@ -82,5 +85,6 @@ done
 _tmb=$(bc <<< "scale=3; $(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb/./,}"
-T="$(($(date +%s%N)-T))"; f_tim
+T="$(($(date +%s%N)-T))"
+f_tim
 exit 0

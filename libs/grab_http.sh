@@ -178,9 +178,9 @@ for K in "${!ar_txt[@]}"; do   # sub-domains become useless if there is an it's 
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
    else   # prune sub-domains of the parent-domain that are in the same category, NOT in a different category
-      _sed 's/^/\./' "${ar_txt[K]}" | rev | _srt -u \
+      _sed "s/^/\./" "${ar_txt[K]}" | rev | _srt -u \
          | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-         | rev | _sed "s/^\.//" > "${ar_tmp[K]}"
+         | rev | _sed "s/^\.//" | _srt > "${ar_tmp[K]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_snp}"
    fi
@@ -193,15 +193,14 @@ printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
 T="$(($(date +%s%N)-T))"
 f_tim
 
-# <completing> offerring OPTIONs: continued to next tasks OR stop here
-f_sm0
+f_sm0   # <completing> offerring OPTIONs: continued to next tasks OR stop here
 read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
 ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
-case ${opsi} in
+case ${opsi:0:1} in
    1) f_sm1; "${ar_exe[2]}"; f_sm9 st;;
    2) f_sm2
       if "${ar_exe[2]}"; then

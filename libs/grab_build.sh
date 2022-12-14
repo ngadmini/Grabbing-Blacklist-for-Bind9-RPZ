@@ -8,7 +8,8 @@
 # shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
-umask 027; set -Eeuo pipefail
+umask 027
+set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
@@ -36,7 +37,8 @@ mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
    split -l "${_spl}" "${ar_cat[0]}" "${ar_cat[0]}"
-   mv txt.adult /tmp; unset -v ar_CAT
+   mv txt.adult /tmp
+   unset -v ar_CAT
    mapfile -t ar_txt < <(f_fnd "txt.*")
    mr_p=$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)
    printf "\n${_CYN}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
@@ -47,7 +49,8 @@ fi
 # inspecting splitted txt.adult & rebuild to rpz-format
 printf "${_inf} rewriting all CATEGORIES to RPZ format\n"
 if [[ ${#ar_txt[@]} -eq ${#ar_spl[@]} && ${ar_txt[*]} == "${ar_spl[*]}" ]]; then
-   f_frm "db.*"; ar_dom=()
+   f_frm "db.*"
+   ar_dom=()
    for X in "${!ar_txt[@]}"; do
       ar_dom+=("${ar_txt[X]/txt./db.}")
       if [[ ${X} -eq ${ar_num[db_ipv4]} ]]; then
@@ -63,5 +66,6 @@ fi
 _tmb=$(bc <<< "scale=3; $(wc -c "${ar_dom[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%45s : %'d entries\n" "TOTAL" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%45s : %10s Megabytes\n" "disk-usage" "${_tmb/./,}"
-T="$(($(date +%s%N)-T))"; f_tim
+T="$(($(date +%s%N)-T))"
+f_tim
 exit 0
