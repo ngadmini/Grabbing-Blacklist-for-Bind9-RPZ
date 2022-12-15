@@ -17,18 +17,23 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"; readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then      # sourcing to grab_library
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trp; clear
+   source "${_LIB}"
+   f_trp
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
+   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+   exit 1
 fi
 
-printf "\nstarting ${0##*/} ${_ver} at ${_CYN}" "${_lct}"; f_ver
-printf "\n${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
+clear
+f_stt ""
+printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
+f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 ar_pac=()
+
 declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_shn
@@ -52,7 +57,8 @@ else
    case ${confirm:0:1} in
       y|Y) for _pac in "${ar_pac[@]}"; do
               printf "${_inf} installing %-62s" "${_pac}"
-              sudo apt install "${_pac}" -y -qq >> /dev/null 2>&1; f_do
+              sudo apt install "${_pac}" -y -qq >> /dev/null 2>&1
+              f_do
            done;;
         *) f_xcd 245 "${ar_pac[*]}";;
    esac
@@ -63,16 +69,21 @@ printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname
 if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
-      f_no "${ar_shy[D]}"; f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
+      f_no "${ar_shy[D]}"
+      f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
    fi
    f_sta 755 "${ar_shy[D]}"
 done
 
 for E in "${!ar_shn[@]}"; do
    if ! [[ -e ${ar_shn[E]} ]]; then
-      f_no "${ar_shn[E]}"; f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
+      f_no "${ar_shn[E]}"
+      f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
    fi
-   f_sta 644 "${ar_shn[E]}"; _sed -i "/^$/d" "${ar_shn[E]}"
+
+   f_sta 644 "${ar_shn[E]}"
+   _sed -i "/^$/d" "${ar_shn[E]}"
+
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
       [[ ${#ar_reg[@]} -eq ${ar_num[ar_reg]} ]] || f_xcd 249 "${ar_shn[E]}"
@@ -93,13 +104,16 @@ f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}") porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
 f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" >> "${trust}"; f_do
+
 # reduce adult entries and move it's to adult category [line: 103]
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" >> "${porn}"
 _srt "${trust}" "${porn}" | uniq -d >> "${untrust}"
 _grp -E "${ar_reg[2]}" "${trust}" | _srt -u >> "${untrust}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
-cat "${untrust}" >> "${ar_dmn[0]}"; f_do
+cat "${untrust}" >> "${ar_dmn[0]}"
+f_do
+
 # fixing false and bad entries
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"

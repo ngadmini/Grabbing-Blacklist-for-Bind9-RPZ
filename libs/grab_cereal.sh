@@ -20,10 +20,13 @@ if [[ -e ${_LIB} ]]; then
    source "${_LIB}"
    f_trp
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
+   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+   exit 1
 fi
 
-f_stt "[3'th] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
+f_stt "[3'th] TASKs:"
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
+
 # inspecting zone-files then update it's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
    rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
@@ -31,10 +34,10 @@ mapfile -t ar_zon < <(f_fnd "rpz.*")
 miss_v=$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)
 printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 
-printf "${_inf} %s" "check availability zone-files"
+printf "${_inf} %s" "check availability zone-files: "
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
-      printf "\n${_inf} FOUND: %s zone-files (complete)" "${#ar_zon[@]}"
+      printf "FOUND %s zone-files (complete)" "${#ar_zon[@]}"
       printf "\n${_inf} incrementing serial of zone-files:\n${_CYN}" "${mr_p}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)

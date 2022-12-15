@@ -14,7 +14,7 @@ alias _sed="LC_ALL=C sed"
 alias _srt="LC_ALL=C sort --buffer-size=80% --parallel=3"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 
-_fkt="$(faketime -f "+5m" date +%H:%M:%S) $(date | awk -F' ' '{print $6}')"
+_fkt="$(faketime -f "+5m" date +%I:%M:%S' %p %Z')"
 _foo="${0##*/}"
 _fuu="${BASH_SOURCE[0]##*/}"
 _prl='^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
@@ -22,7 +22,7 @@ _ver=$(_grp -P "^#[[:space:]]+grab_" "${_foo}" | awk -F' ' '{print $NF}')
 _api="https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest"
 _get=$(curl -s "${_api}" | grep download_url | awk -F/ '{print $8}')
 _ori="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/${_get}"
-printf -v _lct "%s" "$(date +%a\ %Y-%m-%d\ '%T %Z')"
+_lct=$(date +%a\ %Y-%m-%d\ '%T %Z')
 
 # colorizing
 _cyn='\e[96m'; _grn='\e[92m'; _ncl='\e[0m'; _red='\e[91m'; _ylw='\e[93m'

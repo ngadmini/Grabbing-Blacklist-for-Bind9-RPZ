@@ -18,10 +18,13 @@ if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp; f_cnf
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
+   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+   exit 1
 fi
 
-f_stt "[4'th] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
+f_stt "[4'th] TASKs:"
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
+
 ar_DBC=(db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag \
    db.ipv4 db.malware db.publicite db.redirector db.trust+)
 ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag \
@@ -64,7 +67,7 @@ if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then
    _ssh root@"${HOST}" "rndc reload"
 else
    # ${HOST} will reboot after [shutdown -r $@ --no-wall] minutes due to low memory
-   printf "${_wn1} remote-host: %s scheduled for ${_GRN}\n" "${HOST}" "reboot at ${_fkt}"
+   printf "${_wn1} remote-host: %s has scheduled to reboot at ${_GRN}\n" "${HOST}" "${_fkt}"
    _ssh root@"${HOST}" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
    printf "${_hnt} use ${_shd} at host: %s to abort\n" "${HOST}"
 fi

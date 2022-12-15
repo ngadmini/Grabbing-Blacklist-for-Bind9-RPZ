@@ -19,10 +19,13 @@ if [[ -e ${_LIB} ]]; then
    source "${_LIB}"
    f_trp
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
+   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+   exit 1
 fi
 
-f_stt "[1'st] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
+f_stt "[1'st] TASKs:"
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
+
 # inspecting required files <categories> first
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")

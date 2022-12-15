@@ -19,10 +19,13 @@ if [[ -e ${_LIB} ]]; then
    if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp; f_cnf
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"; exit 1
+   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+   exit 1
 fi
 
-f_stt "[2'nd] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
+f_stt "[2'nd] TASKs:"
+[[ ! ${UID} -eq 0 ]] || f_xcd 247
+
 # inspecting required files <categories> first then split txt.adult
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
