@@ -3,6 +3,7 @@
 #   grab_cereal.sh v8.4
 # AUTHOR
 #   ngadimin@warnet-ersa.net
+#   https://github.com/ngadmini
 # TL;DR
 #   see README and LICENSE
 # shellcheck source=/dev/null disable=SC2059,SC2154
@@ -16,7 +17,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
    f_trp
 else

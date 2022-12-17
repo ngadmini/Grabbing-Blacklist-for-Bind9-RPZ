@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_rsync.sh v8.4
+#   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -15,7 +16,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"; f_trp; f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
@@ -32,15 +33,17 @@ ar_RPZ=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf 
 
 # check properties: db-files & zone-files at local-host
 printf "${_inf} check availability: RPZ-dBase and zone-files in local-host: %-25s" "$(hostname -I)"
-mapfile -t ar_dbc < <(f_fnd "db.*")
+mapfile -t ar_dbc < <(f_fnd "db.*")   # check properties: db-files
 miss_DBC=$(echo "${ar_DBC[@]}" "${ar_dbc[@]}" | f_sed)
-printf -v req_DBC "%s\n%s" "${ar_DBC[*]:0:6}" "${ar_DBC[*]:6:6}"
-if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then f_mis "${miss_DBC}" "${req_DBC}"; fi
+printf -v need_DBC "%s\n%s" "${ar_DBC[*]:0:6}" "${ar_DBC[*]:6:6}"
+if ! [[ ${ar_dbc[*]} == "${ar_DBC[*]}" ]]; then f_mis "${miss_DBC}" "${need_DBC}"; fi
 
-mapfile -t ar_rpz < <(f_fnd "rpz.*")
+mapfile -t ar_rpz < <(f_fnd "rpz.*")   # check properties: zone-files
 miss_RPZ=$(echo "${ar_RPZ[@]}" "${ar_rpz[@]}" | f_sed)
-printf -v req_RPZ "%s\n%s" "${ar_RPZ[*]:0:6}" "${ar_RPZ[*]:6:6}"
-if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then f_mis "${miss_RPZ}" "${req_RPZ}"; fi
+printf -v need_RPZ "%s\n%s" "${ar_RPZ[*]:0:6}" "${ar_RPZ[*]:6:6}"
+if ! [[ ${ar_rpz[*]} == "${ar_RPZ[*]}" ]]; then f_mis "${miss_RPZ}" "${need_RPZ}"; fi
+
+# file permissions and ownership should be 640 root:bind
 for PERM in {"${ar_dbc[@]}","${ar_rpz[@]}"}; do f_sta 640 "${PERM}"; done
 f_ok
 f_ssh   # end of check

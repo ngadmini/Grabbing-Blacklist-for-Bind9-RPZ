@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # TAGS
 #   grab_duplic.sh v8.4
+#   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
@@ -15,7 +16,7 @@ _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
-   if [[ $(stat -L -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
+   if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
    f_trp
 else
