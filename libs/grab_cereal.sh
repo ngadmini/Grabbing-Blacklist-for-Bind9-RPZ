@@ -35,7 +35,7 @@ mapfile -t ar_zon < <(f_fnd "rpz.*")
 miss_v=$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)
 printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 
-printf "${_inf} %s" "check availability zone-files: "
+printf "${_inf} check availability zone-files: "
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
       printf "FOUND %s zone-files (complete)" "${#ar_zon[@]}"
