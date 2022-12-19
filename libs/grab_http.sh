@@ -104,11 +104,11 @@ f_grb   # initialize, grabbing and processing raw-domains (CATEGORY)
 f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}") porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" >> "${trust}"; f_do
+f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
 
 # reduce adult entries and move it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" >> "${porn}"
+f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" > "${porn}"
 _srt "${trust}" "${porn}" | uniq -d > "${untrust}"
 _grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"
 _srt -u "${untrust}" -o "${untrust}"
