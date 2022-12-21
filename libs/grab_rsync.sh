@@ -17,7 +17,9 @@ cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
-   source "${_LIB}"; f_trp; f_cnf
+   source "${_LIB}"
+   f_trp
+   f_cnf
 else
    printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
    exit 1

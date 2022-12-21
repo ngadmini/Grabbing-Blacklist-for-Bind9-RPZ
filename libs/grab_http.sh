@@ -15,7 +15,8 @@ PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # <start main script>
-cd "${_DIR}"; readonly _LIB="${_DIR}"/grab_library
+cd "${_DIR}"
+readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then      # sourcing to grab_library
    if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
@@ -108,10 +109,10 @@ f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_r
 
 # reduce adult entries and move it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" > "${porn}"
-_srt "${trust}" "${porn}" | uniq -d > "${untrust}"
-_grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"
-_srt -u "${untrust}" -o "${untrust}"
+f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
+_srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
+_grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
+_srt -u "${untrust}" -o "${untrust}"                         #+  adult category "${ar_dmn[0]}"
 
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"
@@ -187,7 +188,7 @@ printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb1/./,}"
 printf "\n${_YLW} sub-domains if there is an it's parent-domain and IPV4 into CIDR blocks if any\n" "PRUNING:"
 for K in "${!ar_txt[@]}"; do   # sub-domains become useless if there is an it's parent-domain
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
-      while IFS= read -r; do                   # require 'libnet-netmask-perl'
+      while IFS= read -r; do                   #+  require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
          $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
          END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"

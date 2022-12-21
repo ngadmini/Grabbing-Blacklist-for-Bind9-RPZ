@@ -152,7 +152,7 @@ f_sm8() { printf "%12s: %-66s" "fixing" "bads, duplicates and false entries at $
 f_sm9() { printf "${_tks} based on %s'%s options: ${_GRN}\nbye!\n" "${opsi}" "$1" "DONE"; }
 f_sm10() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "${opsi}" "$1"; }
 
-f_tim() { # time elapsed in Minute:Second.milisecond
+f_tim() { # time elapsed in Minute:Second:milisecond
    local S="$((T/1000000000))"; local MS="$((T%1000000000/1000000))"
    printf "${_don} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${MS}"
 }
@@ -167,7 +167,7 @@ f_add() { curl --retry 5 --retry-all-errors -f -s "$1" || f_xcd 251 "$1"; }
 f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
    f_tmp                       # remove stale dir & file if any
-   for A in {0..5}; do         # grabbing dsi.ut-capitole.fr use as initialize category
+   for A in {0..5}; do         # grab dsi.ut-capitole.fr and use as initialize category
       local tar_dsi; tar_dsi=$(basename "${ar_url[A]}"); local ext_dsi="${tar_dsi/.tar.gz/}"
       find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
@@ -196,7 +196,7 @@ f_fix() {   # fixing false and bad entries
    _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do
 }
 
-f_fip() {   # capture ip-address entry. save it into sub-net [pv4 CATEGORY]
+f_fip() {   # capture ip-address entry. save it into sub-net [ipv4 CATEGORY]
    printf "%12s: %-66s" "moving" "IP-address entries into $3 CATEGORY"
    _grp -P "${_prl}" "$1" | _sed "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
    _sed -i -r "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"; f_do
@@ -290,7 +290,8 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
    printf "${_inf} %-85s" "check required debian-packages in ${HOST}"
    for C in {rsync,pigz}; do   # required: rsync and pigz
       _ssh root@"${HOST}" "hash ${C} >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "${C}"
-   done; f_ok
+   done
+   f_ok
 }
 
 f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
@@ -333,7 +334,7 @@ f_dft() {   # define default values in grab_config
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
    : "${RPZ_IPV:=rpz-nsip CNAME .}"         #
-   : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir
+   : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
 
 f_cnf() {   # valuation variables in grab_config
@@ -342,9 +343,9 @@ f_cnf() {   # valuation variables in grab_config
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
       ar_cnf=(HOST RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
+      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1 | _srt)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed "${_ptr}" | cut -d= -f2)
+         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed "${_ptr}" | cut -d= -f2 | _srt)
          for ARG in "${!ar_VAR[@]}"; do
             # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"

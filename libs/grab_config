@@ -43,8 +43,8 @@ RNDC_RELOAD=no
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
 # this below value are define for <RR_RH=CNAME .>
-RPZ_DOM=CNAME .
 RPZ_IPV=rpz-nsip CNAME .
+RPZ_DOM=CNAME .
 
 # change to directory where zone-files (rpz.*) and db-files (db.*) are located  
 #ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz

@@ -46,33 +46,33 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    printf "${_inf} eliminating duplicate entries between CATEGORY\n"
    printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
 
-   f_dpl "${ar_cat[0]}"   # remove duplicate domains based on ${ar_cat[0]}
+   f_dpl "${ar_cat[0]}"   # remove duplicate entries based on ${ar_cat[0]}
    printf "%11s = deduplicating %s entries%-16sSKIP\n" "STEP 0.1" "${ar_cat[1]}" ""
    for C in {2..5}; do
       f_dpn "${C}" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
       f_dpm "${ar_tmp[C]}" "${ar_CAT[C]}" "${ar_dmn[C]}"
    done
 
-   # remove duplicate domains based on ${ar_cat[1]}. do nothing
+   # remove duplicate entries based on ${ar_cat[1]}. do nothing
    printf "eliminating duplicate entries based on ${_CYN}%-13sdo nothing\n" "${ar_cat[1]^^}"
 
-   f_dpl "${ar_cat[2]}"   # remove duplicate domains based on ${ar_cat[2]}
+   f_dpl "${ar_cat[2]}"   # remove duplicate entries based on ${ar_cat[2]}
    for D in {3..5}; do
       f_dpn "${D}" "${ar_cat[D]}" "${ar_CAT[D]}" "${ar_CAT[2]}" "${ar_tmp[D]}" 2
       f_dpm "${ar_tmp[D]}" "${ar_CAT[D]}" "${ar_dmn[D]}"
    done
 
-   f_dpl "${ar_cat[3]}"   # remove duplicate domains based on ${ar_cat[3]}
+   f_dpl "${ar_cat[3]}"   # remove duplicate entries based on ${ar_cat[3]}
    for E in 4 5; do
       f_dpn "${E}" "${ar_cat[E]}" "${ar_CAT[E]}" "${ar_CAT[3]}" "${ar_tmp[E]}" 3
       f_dpm "${ar_tmp[E]}" "${ar_CAT[E]}" "${ar_dmn[E]}"
    done
 
-   f_dpl "${ar_cat[4]}"   # remove duplicate domains based on ${ar_cat[4]}
+   f_dpl "${ar_cat[4]}"   # remove duplicate entries based on ${ar_cat[4]}
    f_dpn 5 "${ar_cat[5]}" "${ar_CAT[5]}" "${ar_CAT[4]}" "${ar_tmp[5]}" 4
    f_dpm "${ar_tmp[5]}" "${ar_CAT[5]}" "${ar_dmn[5]}"
 
-   # remove duplicate domains based on ${ar_cat[5]}. do nothing
+   # remove duplicate entries based on ${ar_cat[5]}. do nothing
    printf "eliminating duplicate entries based on ${_CYN}%-11sdo nothing\n" "${ar_cat[5]^^}"
 else
    f_mis "${miss_v}" "${ar_cat[*]}"
