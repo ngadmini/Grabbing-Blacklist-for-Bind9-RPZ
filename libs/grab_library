@@ -87,7 +87,7 @@ f_xcd() {   # exit code {244..255}
              printf "\n%s, invalid ar_num's values: %s" "${_xcd}" "${_ind}"
              printf "\n${_hnt} use numeric in ar_num's values%s\n"; return 1;;
         253) _lin=$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)
-             _ext; _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
+             _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
              printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
         254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
         255) printf "\n${_inf} NEED files:\n${_CYN}\n" "$2"; return 1;;
@@ -343,9 +343,9 @@ f_cnf() {   # valuation variables in grab_config
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
       ar_cnf=(HOST RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1 | _srt)
+      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed "${_ptr}" | cut -d= -f2 | _srt)
+         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed "${_ptr}" | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
