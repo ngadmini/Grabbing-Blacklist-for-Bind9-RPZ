@@ -343,9 +343,9 @@ f_cnf() {   # valuation variables in grab_config
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
       ar_cnf=(HOST RNDC_RELOAD RPZ_DOM RPZ_IPV ZONE_DIR)
-      mapfile -t ar_CNF < <(_grp -E "^[A-Z]" "${CNF}" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
+      mapfile -t ar_CNF < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
-         mapfile -t ar_VAR < <(_grp -E "^[A-Z]" "${CNF}" | _sed "${_ptr}" | cut -d= -f2)
+         mapfile -t ar_VAR < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "${_ptr}" | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do
             # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"

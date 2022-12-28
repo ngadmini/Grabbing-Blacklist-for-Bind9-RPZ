@@ -128,6 +128,8 @@ f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
 f_gog "${ar_dmn[0]}"             # fixing false and bad entries
+_grp 'bobet' "${ar_dmn[0]}" >> "${ar_txt[5]}"
+_sed -i '/bobet/d' "${ar_dmn[0]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
