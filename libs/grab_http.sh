@@ -188,7 +188,7 @@ printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | aw
 printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb1/./,}"
 
 printf "\n${_YLW} sub-domains if there is an it's parent-domain and IPV4 into CIDR blocks if any\n" "PRUNING:"
-for K in "${!ar_txt[@]}"; do   # sub-domains become useless if there is an it's parent-domain
+for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if there's an it's parent-domain
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
       while IFS= read -r; do                   #+  require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
