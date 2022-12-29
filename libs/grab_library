@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v8.4
+#   grab_library v8.5
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -57,7 +57,7 @@ f_set() {
 }
 
 f_cln() { printf "\n"; f_tmp; f_set; }
-f_trp() { trap f_cln EXIT TERM INT; }
+f_trp() { trap f_cln EXIT TERM; trap 'f_cln; exit 130' INT; }
 
 f_xcd() {   # exit code {244..255}
    for EC in $1; do
