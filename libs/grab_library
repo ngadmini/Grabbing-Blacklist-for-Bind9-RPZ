@@ -203,12 +203,10 @@ f_fip() {   # capture ip-address entry. save it into sub-net [ipv4 CATEGORY]
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
 }
 
-f_gog() {   # fixing bad entries: translate.goog
-   local _gog; _gog=$(mktemp -p "${_DIR}")
-   _grp '\.goog$' "$1" | _sed 's/\.translate\.goog$//;s/-/\./g;s/\.\./-/g' | _srt -u > "${_gog}"
-   if [[ -s ${_gog} ]]; then cat "${_gog}" >> "$1"; fi
+f_out() {   # fixing out of filtering
+   _grp 'bobet' "$1" >> "$2"
+   _sed -i '/bobet/d' "$1"
 }
-
 
 f_uri() {   # verify remote-urls [grab_urls] is available
    ar_uri=(); local ar_dwn=(); local i=-1
