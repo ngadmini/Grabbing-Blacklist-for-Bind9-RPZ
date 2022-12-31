@@ -1,10 +1,10 @@
-; generate at Thu 2022-12-29 20:57:15 WIB by grab_build.sh v8.5
+; generate at Sat 2022-12-31 10:16:35 WIB by grab_build.sh v8.6
 ;
-highlanders-cafe12.blogspot.co.za CNAME .
-*.highlanders-cafe12.blogspot.co.za CNAME .
-highlanders-cafe12.blogspot.com CNAME .
-*.highlanders-cafe12.blogspot.com CNAME .
-highlanders-cafe12.blogspot.com.au CNAME .
-*.highlanders-cafe12.blogspot.com.au CNAME .
-highlanders-cafe12.blogspot.com.br CNAME .
-*.highlanders-cafe12.blogspot.com.br CNAME .
+highlanders-cafe12.blogspot.fr CNAME .
+*.highlanders-cafe12.blogspot.fr CNAME .
+highlanders-cafe12.blogspot.hk CNAME .
+*.highlanders-cafe12.blogspot.hk CNAME .
+highlanders-cafe12.blogspot.hr CNAME .
+*.highlanders-cafe12.blogspot.hr CNAME .
+highlanders-cafe12.blogspot.hu CNAME .
+*.highlanders-cafe12.blogspot.hu CNAME .

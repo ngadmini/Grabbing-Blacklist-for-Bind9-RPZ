@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.5
+#   grab_http.sh v8.6
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -22,8 +22,14 @@ if [[ -e ${_LIB} ]]; then      # sourcing to grab_library
    source "${_LIB}"
    f_trp
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-   exit 1
+   curl -sfO https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/libs/grab_library
+   response=$?
+   if [[ ${response} -ne 0 ]]; then
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+      exit 1
+   else
+      exec "$0"
+   fi
 fi
 
 clear
@@ -38,9 +44,9 @@ ar_pac=()
 
 declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
-ar_num[ar_shn]=0               #                      grab_regex is no.0 at ar_shn
-ar_num[ar_url]=22              # number of lines: grab_urls
-ar_num[ar_reg]=4               #                  grab_regex
+ar_num[ar_shn]=0               #+                     grab_regex is no.0 at ar_shn
+ar_num[ar_url]=22              # fixed number of lines: grab_urls
+ar_num[ar_reg]=4               #+                       grab_regex
 
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
@@ -127,7 +133,8 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-f_out "${ar_dmn[0]}" "${ar_txt[5]}"   # fixing false and bad entries
+# fixing false and bad entries
+f_out "${ar_dmn[0]}" "${ar_txt[5]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -142,7 +149,7 @@ f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 # contents: ad domains
 f_sm7 "${ar_cat[3]}" 5
-f_sm6 3 "${ar_uri[3]}";f_do      # done while initializing category
+f_sm6 3 "${ar_uri[3]}"; f_do     # done while initializing category
 for G in {8..11}; do
    f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done                             # fixing false and bad entries

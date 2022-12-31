@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_cereal.sh v8.5
+#   grab_cereal.sh v8.6
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 #   https://github.com/ngadmini
@@ -21,8 +21,14 @@ if [[ -e ${_LIB} ]]; then
    source "${_LIB}"
    f_trp
 else
-   printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
-   exit 1
+   curl -sfO https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/libs/grab_library
+   response=$?
+   if [[ ${response} -ne 0 ]]; then
+      printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"
+      exit 1
+   else
+      exec "$0"
+   fi
 fi
 
 f_stt "[3'th] TASKs:"
