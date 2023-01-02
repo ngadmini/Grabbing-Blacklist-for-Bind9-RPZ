@@ -41,12 +41,10 @@ f_ok
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 ar_pac=()
-
 declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #+                     grab_regex is no.0 at ar_shn
-ar_num[ar_url]=22              # fixed number of lines: grab_urls
-ar_num[ar_reg]=4               #+                       grab_regex
+f_cnf
 
 # requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
@@ -94,17 +92,17 @@ for E in "${!ar_shn[@]}"; do
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
-      [[ ${#ar_reg[@]} -eq ${ar_num[ar_reg]} ]] || f_xcd 249 "${ar_shn[E]}"
+      [[ ${#ar_reg[@]} -eq ${REGEX} ]] || f_xcd 249 "${ar_shn[E]}"
    else
       mapfile -t ar_url < "${ar_shn[E]}"
-      [[ ${#ar_url[@]} -eq ${ar_num[ar_url]} ]] || f_xcd 248 "${ar_shn[E]}"
+      [[ ${#ar_url[@]} -eq ${URLS} ]] || f_xcd 248 "${ar_shn[E]}"
    fi
 done
 f_ok
 
 printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
 f_uri "${ar_shn[1]}" || :
-f_grb   # initialize, grabbing and processing raw-domains (CATEGORY)
+f_grb                            # initialize, grabbing and processing raw-domains (CATEGORY)
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
 # contents: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)

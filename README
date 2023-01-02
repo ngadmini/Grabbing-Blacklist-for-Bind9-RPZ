@@ -10,7 +10,8 @@ license:
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 what's new in v8.6:
-*) major updating
+*) move variables that located in grab_http to grab_config
+*) updating grab_http and grab_library
   
 Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
@@ -86,6 +87,9 @@ prerequisites:
       # specify in fqdn or ip-address
       HOST=rpz.warnet-ersa.net
 
+      # fixed number of lines grab_regex
+      REGEX=4
+
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>
       RNDC_RELOAD=yes
@@ -103,6 +107,9 @@ prerequisites:
       RPZ_DOM=CNAME .
       # NS-IP Trigger with NXDOMAIN Action for ip-address-list
       RPZ_IPV=rpz-nsip CNAME .
+
+      # fixed number of lines grab_urls
+      URLS=22
 
       # change to directory where zone-files (rpz.* and db.*) are located in bind9-server
       ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz
