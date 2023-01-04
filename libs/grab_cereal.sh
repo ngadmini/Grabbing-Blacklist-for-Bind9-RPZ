@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_cereal.sh v8.6
+#   grab_cereal.sh v8.7
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 #   https://github.com/ngadmini
 # TL;DR
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 umask 027

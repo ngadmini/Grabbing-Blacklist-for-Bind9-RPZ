@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_rsync.sh v8.6
+#   grab_rsync.sh v8.7
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 set -Eeuo pipefail

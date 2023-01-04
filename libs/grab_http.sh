@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.6
+#   grab_http.sh v8.7
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 umask 027
@@ -105,7 +104,7 @@ f_uri "${ar_shn[1]}" || :
 f_grb                            # initialize, grabbing and processing raw-domains (CATEGORY)
 
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
-# contents: gambling and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
+# contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
 f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}") porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
@@ -117,7 +116,6 @@ f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a con
 _srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
 _grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
 _srt -u "${untrust}" -o "${untrust}"                         #+  adult category "${ar_dmn[0]}"
-
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"
 f_do
@@ -194,8 +192,8 @@ for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if t
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
       while IFS= read -r; do                   #+  require 'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
-         $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
-         END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
+            $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
+            END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
       done < "${ar_txt[K]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
@@ -209,6 +207,7 @@ for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if t
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
 
+# display resume
 _tmb2=$(bc <<< "scale=3; $(wc -c "${ar_tmp[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"

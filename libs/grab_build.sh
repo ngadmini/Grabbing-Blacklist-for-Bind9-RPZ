@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v8.6
+#   grab_build.sh v8.7
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 umask 027
@@ -75,6 +74,7 @@ else
    f_mis "${mr_p}" "${ar_spl[*]}"
 fi
 
+# display resume
 _tmb=$(bc <<< "scale=3; $(wc -c "${ar_dom[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%45s : %'d entries\n" "TOTAL" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%45s : %10s Megabytes\n" "disk-usage" "${_tmb/./,}"

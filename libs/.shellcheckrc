@@ -1,0 +1,6 @@
+source-path=./
+source=/dev/null
+disable=SC2034
+disable=SC2059
+disable=SC2148
+disable=SC2154

@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v8.6
+#   grab_duplic.sh v8.7
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 # TL;DR
 #   see README and LICENSE
-# shellcheck source=/dev/null disable=SC2059,SC2154
 
 T=$(date +%s%N)
 set -Eeuo pipefail
@@ -84,7 +83,7 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-# display result
+# display resume
 unset -v ar_CAT
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf "\n${_inf} deduplicating raw-domains (${_CYN}) in summary:\n" "${#ar_CAT[@]} CATEGORIES"
