@@ -366,4 +366,16 @@ f_stt() {   # starting main script
       printf "%s\n" "$(curl -s ${_api} | grep download_url | awk -F\" '{print $4}')"
       return 1
    fi
+
+   # compatibility with shellcheck
+   if ! [[ -e .shellcheckrc ]]; then
+      cat <<eof>>.shellcheckrc
+source-path=./
+source=/dev/null
+disable=SC2034
+disable=SC2059
+disable=SC2148
+disable=SC2154
+eof
+   fi
 }

@@ -64,7 +64,9 @@ file parts of this version:
 
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
         rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
-  11. all of them must present in the same directory
+
+  11. .shellcheckrc --intended to shellcheck compatibility
+  12. all of them must present in the same directory
 
 prerequisites:
 *) on your linux desktop workstation
