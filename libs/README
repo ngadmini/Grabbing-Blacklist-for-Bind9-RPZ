@@ -1,6 +1,4 @@
-<h1 align="center">readme</h1>
-
-### version v8.8
+### readme version v8.8
    all scripts adapted to update blacklisted domains in BIND9 - Response Policy Zone
 
 ### author:
@@ -66,7 +64,7 @@
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
         rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
 
-  11. .shellcheckrc --intended to shellcheck compatibility
+  11. .shellcheckrc --intended to shellcheck portability
   12. all of them must present in the same directory
 
 ### prerequisites:

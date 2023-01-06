@@ -40,6 +40,7 @@ f_ok
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 ar_pac=()
+ar_exe=()
 declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
 ar_num[ar_shn]=0               #+                     grab_regex is no.0 at ar_shn
@@ -224,7 +225,11 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
-ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
+
+for L in "${!ar_shy[@]}"; do
+    ar_exe+=("${_DIR}/${ar_shy[L]}")
+done
+
 case ${opsi:0:1} in
    1) f_sm1; "${ar_exe[2]}"; f_sm9 st;;
    2) f_sm2
