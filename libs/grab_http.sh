@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.7
+#   grab_http.sh v8.8
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -106,7 +106,9 @@ f_grb                            # initialize, grabbing and processing raw-domai
 # category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
 # contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
 f_sm7 "${ar_cat[5]}" 2
-trust=$(mktemp -p "${_DIR}"); untrust=$(mktemp -p "${_DIR}") porn=$(mktemp -p "${_DIR}")
+trust=$(mktemp -p "${_DIR}")
+untrust=$(mktemp -p "${_DIR}")
+porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
 f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
 
@@ -148,7 +150,8 @@ f_sm7 "${ar_cat[3]}" 5
 f_sm6 3 "${ar_uri[3]}"; f_do     # done while initializing category
 for G in {8..11}; do
    f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
-done                             # fixing false and bad entries
+done
+# fixing false and bad entries
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
@@ -161,6 +164,7 @@ f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' '
 for H in {14..18}; do
    f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
+# fixing false and bad entries
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 

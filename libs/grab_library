@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v8.7
+#   grab_library v8.8
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -14,7 +14,7 @@ alias _sed="LC_ALL=C sed"
 alias _srt="LC_ALL=C sort --buffer-size=80% --parallel=3"
 alias _ssh="ssh -q -T -c aes128-ctr -o Compression=no -x"
 
-_fkt="$(faketime -f "+5m" date +%I:%M:%S' %p %Z')"
+_fkt="$(faketime -f "+5m" date +%I:%M:%S\ %p\ %Z)"
 _foo="${0##*/}"
 _fuu="${BASH_SOURCE[0]##*/}"
 _prl='^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
@@ -25,7 +25,11 @@ _ori="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RP
 _lct=$(date +%a\ %Y-%m-%d\ %T\ %Z)
 
 # colorizing
-_cyn='\e[96m'; _grn='\e[92m'; _ncl='\e[0m'; _red='\e[91m'; _ylw='\e[93m'
+_cyn='\e[96m'
+_grn='\e[92m'
+_ncl='\e[0m'
+_red='\e[91m'
+_ylw='\e[93m'
 _ccl="${_grn}(Ctrl+C)${_ncl}"
 _cnt="${_cyn}CONTINUED to :${_ncl}"
 _CYN="${_cyn}%s${_ncl}"
@@ -66,33 +70,43 @@ f_xcd() {   # exit code {244..255}
       case ${EC} in
         244) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"
              return 1;;
-        245) printf "%s: \n${_hnt} %s\n" "${_xcd}" "required '$2' but it's not installed"; return 1;;
+        245) printf "%s: \n${_hnt} %s\n" "${_xcd}" "required '$2' but it's not installed"
+             return 1;;
         246) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "'$2' required '$3' but it's not installed"
              return 1;;
         247) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "you must execute ${_foo} as non-root privileges"
              return 1;;
         248) _msj="urls. it should consist of ${ar_num[ar_url]} urls"
              _lmm="$(basename "$2"): $(wc -l < "$2")"
-             printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"; return 1;;
+             printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"
+             return 1;;
         249) _msg="lines. it should consist of ${ar_num[ar_reg]} lines"
              _lnn="$(basename "$2"): $(wc -l < "$2")"
-             printf "\n%s\n%s\n" "${_xcd}" "${_lnn} ${_msg}"; return 1;;
+             printf "\n%s\n%s\n" "${_xcd}" "${_lnn} ${_msg}"
+             return 1;;
         250) local _re0='[curl-code] https://curl.se/docs/manpage.html'
              local _re1='[stat-code] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
              local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
-             printf "${_inf} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"; exit 1;;
-        251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin, please check spelling"; return 1;;
+             printf "${_inf} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"
+             exit 1;;
+        251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin, please check spelling"
+             return 1;;
         252) printf -v _ind "${_CYN}" "$(echo "${ar_num[*]}" | _grp '[aA-zZ\.,]')"
              printf "\n%s, invalid ar_num's values: %s" "${_xcd}" "${_ind}"
-             printf "\n${_hnt} use numeric in ar_num's values%s\n"; return 1;;
+             printf "\n${_hnt} use numeric in ar_num's values%s\n"
+             return 1;;
         253) _lin=$(grep -En "^(HOST|#HOST)" "${CNF}" | cut -d: -f1)
              _ext=$(printf "\n${_err} ${CNF##*/} at line ${_lin}. exit %s" "${EC}")
-             printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"; return 1;;
-        254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"; return 1;;
-        255) printf "\n${_inf} NEED files:\n${_CYN}\n" "$2"; return 1;;
+             printf "%s\n%s : if spelling is correct, maybe isDOWN\n" "${_ext}" "${HOST}"
+             return 1;;
+        254) printf "\n%s: ${_CYN} doesn't exis in %s\n" "${_xcl}" "$(basename "$2")" "$3"
+             return 1;;
+        255) printf "\n${_inf} NEED files:\n${_CYN}\n" "$2"
+             return 1;;
           *) _ukn="Unknown exit code [f_xcd $1], please check"
              printf -v _ukm "%s" "${_foo} at line $(grep -n "f_xcd $1" "${_foo}" | cut -d: -f1)"
-             printf "\n${_err} %s %s\n" "${_ukn}" "${_ukm}"; return 1;;
+             printf "\n${_err} %s %s\n" "${_ukn}" "${_ukm}"
+             return 1;;
       esac
    done
 }
@@ -105,12 +119,14 @@ f_sm0() {   # display offering options
    printf "%4s) option [1] and rewriting all CATEGORIES to RPZ format [db.* files]\n" "2"
    printf "%4s) options [1,2] and incrementing serial zone-files [rpz.*]\n" "3"
    printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "${HOST}"
+
    if [[ ${RNDC_RELOAD} =~ [nN][oO] ]]; then
       printf "%6s${_wn0} remote-host: %s will REBOOT due to low memory\n" "" "${HOST}"
       printf "%18s ${_shd} at remote-host: %s to abort\n" "use" "${HOST}"
    else
       printf "%6s${_wn0} ${_rnr} will be executed after syncronizing.\n" ""
    fi
+
    printf "%4s) use ${_ccl} to quit\n" "^C"
    printf "please hit: ${_CYN} to continue OR ${_ccl} to quit\n" "(1/2/3/4)"
 }
@@ -122,7 +138,11 @@ f_sm1() {   # f_sm[1..5]: display messages while chosing option
 }
 
 f_sm2() { f_sm5 "nd"; f_sm10 "nd"; }
-f_sm3() { f_sm5 "th"; printf "%30s serial at zone-files [rpz.*]\n" "2) incrementing"; f_sm10 "th"; }
+f_sm3() {
+   f_sm5 "th"
+   printf "%30s serial at zone-files [rpz.*]\n" "2) incrementing"
+   f_sm10 "th"
+}
 
 f_sm4() {
    f_sm5 "th"
@@ -151,7 +171,8 @@ f_sm9() { printf "${_tks} based on %s'%s options: ${_GRN}\nbye!\n" "${opsi}" "$1
 f_sm10() { printf "${_cyn}Performing tasks based on %s'%s options ...${_ncl}\n" "${opsi}" "$1"; }
 
 f_tim() { # time elapsed in Minute:Second:milisecond
-   local S="$((T/1000000000))"; local MS="$((T%1000000000/1000000))"
+   local S="$((T/1000000000))"
+   local MS="$((T%1000000000/1000000))"
    printf "${_don} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${MS}"
 }
 
@@ -165,8 +186,11 @@ f_add() { curl --retry 5 --retry-all-errors -f -s "$1" || f_xcd 251 "$1"; }
 f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
    f_tmp                       # remove stale dir & file if any
+
    for A in {0..5}; do         # grab dsi.ut-capitole.fr and use as initialize category
-      local tar_dsi; tar_dsi=$(basename "${ar_url[A]}"); local ext_dsi="${tar_dsi/.tar.gz/}"
+      local tar_dsi
+      tar_dsi=$(basename "${ar_url[A]}")
+      local ext_dsi="${tar_dsi/.tar.gz/}"
       find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
       curl --retry 5 --retry-all-errors -f -s -O "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
@@ -175,13 +199,19 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    done
 
    # some adjusment for initialize category
-   mkdir ipv4; mv phishing malware; mv gambling trust+
-   cat vpn/domains >> redirector/domains; rm -rf vpn
+   mkdir ipv4
+   mv phishing malware
+   mv gambling trust+
+   cat vpn/domains >> redirector/domains
+   rm -rf vpn
 
    mapfile -t ar_cat < <(f_cat)          # initializing category
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"                         # remove stale raw-domains
-   ar_dmn=(); ar_tmp=(); ar_txt=()
+   ar_dmn=()
+   ar_tmp=()
+   ar_txt=()
+
    for B in "${!ar_cat[@]}"; do
       ar_dmn+=("${ar_cat[B]}"/domains)   # as raw-domains container
       ar_tmp+=(tmq."${ar_cat[B]}")       # as in-process-domains container (temporary)
@@ -190,14 +220,17 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
 }
 
 f_fix() {   # fixing false and bad entries
-   f_sm8 "$1"; dos2unix "$2" >> /dev/null 2>&1
-   _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"; f_do
+   f_sm8 "$1"
+   dos2unix "$2" >> /dev/null 2>&1
+   _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"
+   f_do
 }
 
 f_fip() {   # capture ip-address entry. save it into sub-net [ipv4 CATEGORY]
    printf "%12s: %-66s" "moving" "IP-address entries into $3 CATEGORY"
    _grp -P "${_prl}" "$1" | _sed "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
-   _sed -i -r "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"; f_do
+   _sed -i -r "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"
+   f_do
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
 }
 
@@ -207,13 +240,19 @@ f_out() {   # fixing out of filtering
 }
 
 f_uri() {   # verify remote-urls [grab_urls] is available
-   ar_uri=(); local ar_dwn=(); local i=-1
-   while read -r uri; do
-      local l ll _uri _stc           # slicing url && add as an element to ${ar_uri[@]}
-      ll="${uri##htt*\/\/}"; l="${ll/\/*/}"; _uri="${l}/..?../${uri##*/}"
-      ar_uri+=("${_uri}"); ((i++))   # shortener url
+   ar_uri=()
+   local ar_dwn=()
+   local i=-1
+
+   while read -r uri; do   # slicing url && add as an element to ${ar_uri[@]}
+      local l ll _uri _stc
+      ll="${uri##htt*\/\/}"
+      l="${ll/\/*/}"
+      _uri="${l}/..?../${uri##*/}"
 
       # starting check; ignore curl-code: 35
+      ar_uri+=("${_uri}")
+      ((i++))
       printf "%12s: %-66s" "url_${i}" "${ar_uri[i]}"
       _stc=$(curl --connect-timeout 15 -so /dev/null -Iw "%{http_code}" "${uri}")
       _ret=$?
@@ -236,13 +275,15 @@ f_uri() {   # verify remote-urls [grab_urls] is available
    fi
 }
 
+# f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
 f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
-f_dpm() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
+f_dpm() {
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"
-   cp "${3}" "${2}"; f_do
+   cp "${3}" "${2}"
+   f_do
 }
 
-f_dpn() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
+f_dpn() {
    printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d | _srt -o "$5"
 }
@@ -257,7 +298,8 @@ f_g4c() {   # used by grab_cereal.sh
 
 f_g4b() {   # nested in f_rpz and f_ip4
    _sed -i "1i ; generate at ${_lct} by ${_foo} ${_ver}\n;" "$1"
-   local acq_al; printf -v acq_al "%'d" "$(wc -l < "$1")"
+   local acq_al
+   printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
 }
 
@@ -275,13 +317,16 @@ f_ip4() {   # used by grab_build.sh [configurable in grab_config]
 
 f_ssh() {   # nested in f_cer and needed by grab_rsync
    printf "${_inf} %-85s" "check availability remote-host: ${HOST}"
-   if ! ping -w 1 "${HOST}" >> /dev/null 2>&1; then f_xcd 253; fi; f_up
+   if ! ping -w 1 "${HOST}" >> /dev/null 2>&1; then f_xcd 253; fi
+   f_up
 
    printf "${_inf} %-85s" "check passwordless ssh compatibility: ${HOST}"
-   _ssh -o BatchMode=yes "${HOST}" true  >> /dev/null 2>&1 || f_xcd 244 "${HOST}"; f_ok
+   _ssh -o BatchMode=yes "${HOST}" true  >> /dev/null 2>&1 || f_xcd 244 "${HOST}"
+   f_ok
 
    printf "${_inf} %-85s" "check availability: ${ZONE_DIR} in ${HOST}"
-   _ssh root@"${HOST}" [[ -d "${ZONE_DIR}" ]] || f_xcd 254 "${ZONE_DIR}" "${HOST}"; f_ok
+   _ssh root@"${HOST}" [[ -d "${ZONE_DIR}" ]] || f_xcd 254 "${ZONE_DIR}" "${HOST}"
+   f_ok
 
    printf "${_inf} %-85s" "check required debian-packages in ${HOST}"
    for C in {rsync,pigz}; do   # required: rsync and pigz
@@ -306,7 +351,9 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 
 f_ori() {
    printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
-   local _val; _val=$(curl --connect-timeout 15 -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
+   local _val
+   _val=$(curl --connect-timeout 15 -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
+
    if [[ ${_val} -eq 200 ]]; then
       curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
       printf "${_inf} %-73s" "get $2 from origin"
@@ -337,10 +384,12 @@ f_dft() {   # define default values in grab_config
 f_cnf() {   # valuation variables in grab_config
    readonly CNF="${_DIR}"/grab_config
    local _ptr="s/=[ ^ ]/=/g;s/['\"]//g;s/[#;].*//g;s/[[:space:]]+/ /g;s/[[:space:]]$//g"
+
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
       ar_cnf=(HOST REGEX RNDC_RELOAD RPZ_DOM RPZ_IPV URLS ZONE_DIR)
       mapfile -t ar_CNF < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
+
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
          mapfile -t ar_VAR < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "${_ptr}" | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do

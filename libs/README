@@ -1,23 +1,24 @@
-# README version v8.7
-#   all scripts adapted to update blacklisted domains in BIND9 - Response Policy Zone
+<h1 align="center">readme</h1>
 
-author:
+### version v8.8
+   all scripts adapted to update blacklisted domains in BIND9 - Response Policy Zone
+
+### author:
    ngadimin@warnet-ersa.net
    https://github.com/ngadmini/
 
-license:
+### license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-what's new in v8.7:
-*) adding file .shellcheckrc
+### what's new in v8.8:
 *) major updating
   
-Get url to download script-pack (latest version) :
+### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
      | grep download_url | awk -F\" '{print $4}'
 
-file parts of this version:
+### file parts
    1. grab_http.sh --grabing and proccessing raw domains.
         run this script as long as the below script and rpz.* are available in
         the same directory. IF no option is selected, it just generates a txt.*
@@ -27,7 +28,7 @@ file parts of this version:
         you can run this scipt separately, only if txt.* are available in the same directory.
 
         ~ ls | grep txt | tr "\n" " "
-        txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
+        txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+
 
    3. grab_build.sh --rewriting to BIND9-rpz format.
         you can run this scipt separately, only if txt.* are available in the same directory.
@@ -53,7 +54,7 @@ file parts of this version:
            - explicit site: adult and gambling
                 ~ \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
            - invalid TLDs based on IANA. bash script to obstain invalid TLDs available on:
-                ~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Tool
+                ~ https://gist.github.com/ngadmini/8bcabcb0b31f02619e7b638065621f75
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         in addition to synchronizing, this script also generates a tar file to bakcup
@@ -68,7 +69,7 @@ file parts of this version:
   11. .shellcheckrc --intended to shellcheck compatibility
   12. all of them must present in the same directory
 
-prerequisites:
+### prerequisites:
 *) on your linux desktop workstation
       # check require package installed or NOT
       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
@@ -129,11 +130,11 @@ prerequisites:
 *) reconfigure your bind9-server to run RPZ BIND9-fiture. you can reffer to :
       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
 
-usage:
+### usage:
 *) execute grab_http.sh with non root privileges either directly as a root user or by use
       of sudo command, from your linux desktop workstation then follow the next step
 
-output:
+### output:
 *) db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
       db.ipv4 db.malware db.publicite db.redirector db.trust+
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
