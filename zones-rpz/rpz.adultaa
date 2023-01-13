@@ -1,8 +1,8 @@
-; generate at Fri 2023-01-06 18:51:40 WIB by grab_cereal.sh v8.8
+; generate at Fri 2023-01-13 13:45:22 WIB by grab_cereal.sh v8.9
 ;   rpz.adultaa
 $TTL 604800
 $ORIGIN adultaa.domain.
-@   SOA   adultaa.domain. rpz.adultaa.domain. (2023010604 1w 1d 4w 1w)
+@   SOA   adultaa.domain. rpz.adultaa.domain. (2023011300 1w 1d 4w 1w)
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
@@ -19,7 +19,7 @@ $ORIGIN adultaa.domain.
 ;
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
-xhvid2.com CNAME .
 xhvid3.com CNAME .
+*.xhvid3.com CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"

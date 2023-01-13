@@ -1,8 +1,8 @@
-; generate at Fri 2023-01-06 18:51:40 WIB by grab_cereal.sh v8.8
+; generate at Fri 2023-01-13 13:45:22 WIB by grab_cereal.sh v8.9
 ;   rpz.adultae
 $TTL 604800
 $ORIGIN adultae.domain.
-@   SOA   adultae.domain. rpz.adultae.domain. (2023010604 1w 1d 4w 1w)
+@   SOA   adultae.domain. rpz.adultae.domain. (2023011300 1w 1d 4w 1w)
 @         NS   adultae.domain.
 @   IN    A    127.0.0.21
 ;

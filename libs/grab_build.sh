@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v8.8
+#   grab_build.sh v8.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v8.8
+#   grab_http.sh v8.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -14,6 +14,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # <start main script>
+clear
 cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
 if [[ -e ${_LIB} ]]; then      # sourcing to grab_library
@@ -31,7 +32,6 @@ else
    fi
 fi
 
-clear
 f_stt ""
 printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 247
@@ -73,6 +73,7 @@ fi
 # script-pack's properties inspection
 printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
 if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
+
 for D in "${!ar_shy[@]}"; do
    if ! [[ -e ${ar_shy[D]} ]]; then
       f_no "${ar_shy[D]}"
