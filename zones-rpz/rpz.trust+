@@ -6,7 +6,7 @@ $ORIGIN trust+.domain.
 @         NS   trust+.domain.
 @   IN    A    127.0.0.24
 ;
-; TLDs for gambling content, we've remove when executing grab_http.sh
+; explicite gambling domains
 *.bet     CNAME .
 *.casino  CNAME .
 *.lotto   CNAME .

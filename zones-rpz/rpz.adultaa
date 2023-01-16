@@ -6,7 +6,7 @@ $ORIGIN adultaa.domain.
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
-; TLD's for adult domain, we've remove when executing grab_http.sh
+; explicite adult domain
 *.adult  CNAME .
 *.cam    CNAME .
 *.lgbt   CNAME .
