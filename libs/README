@@ -11,6 +11,8 @@
 
 ### what's new in v8.9:
 *) update grab_library and rpz.adultaa
+*) fixing reguler expressions at grab_regex
+*) adding domains in rpz.adultaa as a part of xhamster.com's aliases (others alias: xhvid.com, xhvid2.com and xhvid3.com)
   
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
