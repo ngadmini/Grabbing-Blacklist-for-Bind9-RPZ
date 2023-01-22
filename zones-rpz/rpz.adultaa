@@ -19,7 +19,7 @@ $ORIGIN adultaa.domain.
 ;
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
-xhvictory.com
-*.xhvictory.com
+xhvictory.com	CNAME .
+*.xhvictory.com	CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"
