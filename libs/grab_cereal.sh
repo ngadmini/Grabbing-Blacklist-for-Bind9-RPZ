@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_cereal.sh v8.9
+#   grab_cereal.sh v9.0
 # AUTHOR
 #   ngadimin@warnet-ersa.net
 #   https://github.com/ngadmini

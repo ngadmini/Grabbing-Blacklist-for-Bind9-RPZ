@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v8.9
+#   grab_library v9.0
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -236,7 +236,7 @@ f_fip() {   # capture ip-address entry. save it into sub-net [ipv4 CATEGORY]
 
 f_out() {   # fixing out of filtering
    _grp 'bobet' "$1" >> "$2"
-   _sed -i '/bobet/d;s/id\.xhvid2\.com/xhvid2\.com/g' "$1"
+   _sed -i '/bobet/d;s/[a0-z9]\{1,\}\.xhvid2\.com/xhvid2\.com/g' "$1"
 }
 
 f_uri() {   # verify remote-urls [grab_urls] is available
