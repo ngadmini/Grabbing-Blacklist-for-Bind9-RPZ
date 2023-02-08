@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v9.0
+#   grab_duplic.sh v9.1
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
