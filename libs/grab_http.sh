@@ -134,18 +134,18 @@ f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
 # fixing false and bad entries
-f_out "${ar_dmn[0]}" "${ar_txt[5]}"
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_out "${ar_txt[0]}" "${ar_txt[5]}"
 
 # category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 # contents: vpn and proxy domains
 f_sm7 "${ar_cat[4]}" 2           # done while initializing category
 for F in {4,5}; do f_sm6 "${F}" "${ar_uri[F]}"; f_do; done
 # fixing false and bad entries
-f_out "${ar_dmn[4]}" "${ar_txt[5]}"
 f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_out "${ar_txt[4]}" "${ar_txt[5]}"
 
 # category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 # contents: ad domains
@@ -155,9 +155,9 @@ for G in {8..11}; do
    f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
 # fixing false and bad entries
-f_out "${ar_dmn[3]}" "${ar_txt[5]}"
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_out "${ar_txt[3]}" "${ar_txt[5]}"
 
 # category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 # contents: malware, phishing and ransomware domains
@@ -169,9 +169,9 @@ for H in {14..18}; do
    f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
 done
 # fixing false and bad entries
-f_out "${ar_dmn[2]}" "${ar_txt[5]}"
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_out "${ar_txt[2]}" "${ar_txt[5]}"
 
 # category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 # contents: captured ipv4 from adult, publicite, malware and trust+
