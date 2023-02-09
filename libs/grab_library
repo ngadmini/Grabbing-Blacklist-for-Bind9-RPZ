@@ -235,8 +235,8 @@ f_fip() {   # capture ip-address entry. save it into sub-net [ipv4 CATEGORY]
 }
 
 f_out() {   # fixing that passed the filtering
-   _grp -E '(bobet|[^ey]judi|poker)' "$1" >> "$2"
-   _sed -i '/\(bobet\|[^ey]judi\|poker\)/d' "$1"
+   _grp -E '(bobet|[^ey]judi|poker|togel)' "$1" >> "$2"
+   _sed -i '/\(bobet\|[^ey]judi\|poker\|togel\)/d' "$1"
 }
 
 f_uri() {   # verify remote-urls [grab_urls] is available
