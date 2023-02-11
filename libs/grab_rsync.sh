@@ -76,7 +76,8 @@ if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then
    printf "execute ${_rnr} at BIND9-server:%s\n" "${HOST}"
    _ssh root@"${HOST}" "rndc reload"
 else
-   # ${HOST} will reboot after [shutdown -r $@ --no-wall] minutes due to low memory
+   # 'faketime' needed. ${HOST} will reboot after [shutdown -r $@ --no-wall] minutes due to low memory
+   _fkt="$(faketime -f "+5m" date +%I:%M:%S\ %p\ %Z)"
    printf "${_wn1} remote-host: %s has scheduled to reboot at ${_GRN}\n" "${HOST}" "${_fkt}"
    _ssh root@"${HOST}" "shutdown -r 5 --no-wall >> /dev/null 2>&1"
    printf "${_hnt} use ${_shd} at host: %s to abort\n" "${HOST}"
