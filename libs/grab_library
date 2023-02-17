@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v9.1
+#   grab_library v9.2
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -63,10 +63,9 @@ f_trp() { trap f_cln EXIT TERM; trap 'f_cln; exit 130' INT; }
 
 f_xcd() {   # exit code {244..255}
    for EC in $1; do
-      local _xcd _xcl _msj _lmm _msg _ind _lin _ext _ukn _ukm
+      local _xcd _xcl _msj _lmm _lmn _msg _ind _lin _ext _ukn _ukm
       _xcd=$(printf "${_err} ${_foo} line ${BASH_LINENO[0]}. exit %s" "${EC}")
       _xcl=$(printf "${_err} ${_fuu} line ${BASH_LINENO[0]}. exit %s" "${EC}")
-      _lmm="$(basename "$2") consist of $(wc -l < "$2")"
       case ${EC} in
         244) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"
              return 1;;
@@ -77,15 +76,16 @@ f_xcd() {   # exit code {244..255}
         247) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "you must execute ${_foo} as non-root privileges"
              return 1;;
         248) _msj="urls. but URLS=${URLS} stated in file ${ar_shn[0]}"
+             _lmm="$(basename "$2") consist of $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"
              return 1;;
         249) _msg="lines. but REGEX=${REGEX} stated in file ${ar_shn[0]}"
-             printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msg}"
+             _lmn="$(basename "$2") consist of $(wc -l < "$2")"
+             printf "\n%s\n%s\n" "${_xcd}" "${_lmn} ${_msg}"
              return 1;;
-        250) local _re0='[curl-code] https://curl.se/docs/manpage.html'
-             local _re1='[stat-code] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
-             local _unk='check if there is a typo in grab_urls. if spelling is correct, please see'
-             printf "${_inf} %s:\n%s\n%s\n%s\n" "${_unk}" "${_re1}" "${_re0}" "${_xcl}"
+        250) local _ref='[exit-code] section at https://curl.se/docs/manpage.html'
+             local _unk='if spelling is correct, please see'
+             printf "${_inf} %s: %s\n%s\n" "${_unk}" "${_ref}" "${_xcl}"
              exit 1;;
         251) printf "\n%s\n%s\n" "${_xcd}" "download failed from origin, please check spelling"
              return 1;;
@@ -248,19 +248,15 @@ f_uri() {   # verify remote-urls [grab_urls] is available
       l="${ll/\/*/}"
       _uri="${l}/..?../${uri##*/}"
 
-      # starting check; ignore curl-code: 35
-      ar_uri+=("${_uri}")
+      ar_uri+=("${_uri}")   # starting check
       ((i++))
       printf "%12s: %-66s" "url_${i}" "${ar_uri[i]}"
-      _stc=$(curl --connect-timeout 15 -so /dev/null -Iw "%{http_code}" "${uri}")
+      _stc=$(curl -so /dev/null -Iw "%{http_code}" "${uri}")
       _ret=$?
 
-      if ! [[ ${_stc} =~ ^[02]{3}$ ]]; then
-          printf "${_RED}\n" "stat-code: ${_stc}"
-          ar_dwn+=("[stat-code: ${_stc}] ${uri}")
-      elif [[ ${_ret} = 6 ]]; then
+      if ! [[ ${_ret} = 0 ]]; then
           printf "${_RED}\n" "curl-code: ${_ret}"
-          ar_dwn+=("[curl-code: ${_ret}] ${uri}")
+          ar_dwn+=("[exit-code: ${_ret}] ${uri}")
       else
          f_up
       fi

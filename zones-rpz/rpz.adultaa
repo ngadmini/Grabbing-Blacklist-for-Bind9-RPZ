@@ -1,8 +1,8 @@
-; generate at Wed 2023-02-08 19:41:59 WIB by grab_cereal.sh v9.1
+; generate at Fri 2023-02-17 20:27:41 WIB by grab_cereal.sh v9.2
 ;   rpz.adultaa
 $TTL 604800
 $ORIGIN adultaa.domain.
-@   SOA   adultaa.domain. rpz.adultaa.domain. (2023020802 1w 1d 4w 1w)
+@   SOA   adultaa.domain. rpz.adultaa.domain. (2023021702 1w 1d 4w 1w)
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
@@ -17,6 +17,8 @@ $ORIGIN adultaa.domain.
 *.webcam CNAME .
 *.xxx    CNAME .
 ;
+xheve.com	CNAME .
+*.xheve.com	CNAME .
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 ;
