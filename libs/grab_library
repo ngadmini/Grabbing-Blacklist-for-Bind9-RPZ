@@ -63,9 +63,10 @@ f_trp() { trap f_cln EXIT TERM; trap 'f_cln; exit 130' INT; }
 
 f_xcd() {   # exit code {244..255}
    for EC in $1; do
-      local _xcd _xcl _msj _lmm _msg _lnn _ind _lin _ext _ukn _ukm
+      local _xcd _xcl _msj _lmm _msg _ind _lin _ext _ukn _ukm
       _xcd=$(printf "${_err} ${_foo} line ${BASH_LINENO[0]}. exit %s" "${EC}")
       _xcl=$(printf "${_err} ${_fuu} line ${BASH_LINENO[0]}. exit %s" "${EC}")
+      _lmm="$(basename "$2") consist of $(wc -l < "$2")"
       case ${EC} in
         244) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "required passwordless ssh to remote host: '$2'"
              return 1;;
@@ -75,13 +76,11 @@ f_xcd() {   # exit code {244..255}
              return 1;;
         247) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "you must execute ${_foo} as non-root privileges"
              return 1;;
-        248) _msj="urls. it should consist of ${ar_num[ar_url]} urls"
-             _lmm="$(basename "$2"): $(wc -l < "$2")"
+        248) _msj="urls. but URLS=${URLS} stated in file ${ar_shn[0]}"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"
              return 1;;
-        249) _msg="lines. it should consist of ${ar_num[ar_reg]} lines"
-             _lnn="$(basename "$2"): $(wc -l < "$2")"
-             printf "\n%s\n%s\n" "${_xcd}" "${_lnn} ${_msg}"
+        249) _msg="lines. but REGEX=${REGEX} stated in file ${ar_shn[0]}"
+             printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msg}"
              return 1;;
         250) local _re0='[curl-code] https://curl.se/docs/manpage.html'
              local _re1='[stat-code] https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'
@@ -268,7 +267,7 @@ f_uri() {   # verify remote-urls [grab_urls] is available
    done < "$1"
 
    if [[ ${#ar_dwn[@]} -eq 0 ]]; then   # display result
-      printf "%30s\n" " " | tr " " -; printf "%s\n" "All URLs of remote-files isUP."
+      printf "%30s\n" " " | tr " " -; printf "All URLs of remote-files isUP.\n"
    else
       printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 250
    fi
@@ -370,7 +369,7 @@ f_cat() { find . -maxdepth 1 -type d | _sed "1d;s/\.\///" | _srt; }
 f_sta() { if [[ $(stat -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 
 f_dft() {   # define default values in grab_config
-   printf "${_inf} forking ${_CYN} with default configurations\n" "${_foo}"
+   printf "${_CYN} continued with default configurations\n\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
    : "${REGEX:=4}"                          # fixed number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
@@ -396,8 +395,8 @@ f_cnf() {   # valuation variables in grab_config
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
       else  # misconfigurations occurs: fallback to default values
-         printf "\n${_wn1} misconfigurations occurs in %s. undefine value:\n" "${CNF##*/}"
-         printf "%9s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
+         printf "\n${_wn1} misconfigurations occurs in %s. undefine variable: " "${CNF##*/}"
+         printf "%s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
          f_dft
       fi
    else     # missing "${CNF}": fallback to default values
