@@ -1,8 +1,11 @@
-; generate at Fri 2023-02-17 20:27:41 WIB by grab_cereal.sh v9.2
-;   rpz.ipv4
+; rpz.ipv4
+; generate at Sun 2023-02-19 02:23:44 WIB by grab_cereal.sh v9.2
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.2/libs/grab_cereal.sh
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.2/zones-rpz/rpz.ipv4
+;
 $TTL 604800
 $ORIGIN ipv4.domain.
-@   SOA   ipv4.domain. rpz.ipv4.domain. (2023021702 1w 1d 4w 1w)
+@   SOA   ipv4.domain. rpz.ipv4.domain. (2023021930 1w 1d 4w 1w)
 @         NS   ipv4.domain.
 @   IN    A    127.0.0.13
 ;

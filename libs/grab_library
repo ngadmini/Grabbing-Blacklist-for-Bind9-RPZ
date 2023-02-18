@@ -22,6 +22,7 @@ _api="https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/rel
 _get=$(curl -s "${_api}" | grep download_url | awk -F/ '{print $8}')
 _ori="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/${_get}"
 _lct=$(date +%a\ %Y-%m-%d\ %T\ %Z)
+_gen="; generate at ${_lct} by ${_foo} ${_ver}"
 
 # colorizing
 _cyn='\e[96m'
@@ -263,9 +264,12 @@ f_uri() {   # verify remote-urls [grab_urls] is available
    done < "$1"
 
    if [[ ${#ar_dwn[@]} -eq 0 ]]; then   # display result
-      printf "%30s\n" " " | tr " " -; printf "All URLs of remote-files isUP.\n"
+      printf "%30s\n" " " | tr " " -
+      printf "All URLs of remote-files isUP.\n"
    else
-      printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 250
+      printf "%84s\n" " " | tr " " -
+      printf "${_CYN}\n" "${ar_dwn[@]}"
+      f_xcd 250
    fi
 }
 
@@ -283,18 +287,22 @@ f_dpn() {
 }
 
 f_g4c() {   # used by grab_cereal.sh
-   if [[ $(grep -n "^; generate at" "$1" | cut -d: -f1) = 1 ]]; then
-      _sed -i "1s/^.*$/; generate at ${_lct} by ${_foo} ${_ver}/" "$1"
+   if [[ $(grep -n "^; generate at" "$1" | cut -d: -f1) = 2 ]]; then
+      _sed -i "2s/^.*$/${_gen}/" "$1"
+      _sed -i "s/\/v9\.[0-9]/\/${_ver}/g" "$1"
+   elif [[ $(grep -n "^; rpz" "$1" | cut -d: -f1) = 1 ]]; then
+      _sed -i "2i ${_gen}" "$1"
    else
-      _sed -i "1i ; generate at ${_lct} by ${_foo} ${_ver}" "$1"
+      _sed -i "1i ; ${1}" "$1"
+      f_g4c "$@"
    fi
 }
 
 f_g4b() {   # nested in f_rpz and f_ip4
-   _sed -i "1i ; generate at ${_lct} by ${_foo} ${_ver}\n;" "$1"
    local acq_al
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
+   _sed -i "1i ; ${1} = ${acq_al} lines\n${_gen}\n; ${_ori}\/libs\/${_foo}\n;" "$1"
 }
 
 f_rpz() {   # used by grab_build.sh [configurable in grab_config]
@@ -367,11 +375,11 @@ f_sta() { if [[ $(stat -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 f_dft() {   # define default values in grab_config
    printf "${_CYN} continued with default configurations\n\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
-   : "${REGEX:=4}"                          # fixed number of lines grab_regex
+   : "${REGEX:=4}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
    : "${RPZ_IPV:=rpz-nsip CNAME .}"         #+
-   : "${URLS:=22}"                          # fixed number of lines grab_urls
+   : "${URLS:=22}"                          # fix number of lines grab_urls
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
 
@@ -395,7 +403,7 @@ f_cnf() {   # valuation variables in grab_config
          printf "%s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
          f_dft
       fi
-   else     # missing "${CNF}": fallback to default values
+   else     # missing file: "${CNF}". fallback to default values
       printf "\n${_wn0} %s notFOUND\n" "${CNF##*/}"
       f_dft
    fi
@@ -406,6 +414,7 @@ f_stt() {   # starting main script
    if ! [[ ${_get} == "${_ver}" ]]; then   # confirm to the latest release
       printf "${_inf} you're running %s. an update available\n" "${0##*/} version ${_ver}"
       printf "${_hnt} please download %s :\n" "${0##*/} version ${_get} at"
+      printf "%s\nOR script-pack :\n" "${_ori}/libs/${0##*/}"
       printf "%s\n" "$(curl -s ${_api} | grep download_url | awk -F\" '{print $4}')"
       return 1
    fi

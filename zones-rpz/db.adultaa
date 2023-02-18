@@ -1,4 +1,6 @@
-; generate at Fri 2023-02-17 20:27:30 WIB by grab_build.sh v9.2
+; db.adultaa = 1.432.350 lines
+; generate at Sun 2023-02-19 02:03:56 WIB by grab_build.sh v9.2
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.2/libs/grab_build.sh
 ;
 0----q.tumblr.com CNAME .
 *.0----q.tumblr.com CNAME .
@@ -6,5 +8,3 @@
 *.0--ass-cinema-newsp.da.ru CNAME .
 0--bondage.dk CNAME .
 *.0--bondage.dk CNAME .
-0--fightingshaving.da.ru CNAME .
-*.0--fightingshaving.da.ru CNAME .
