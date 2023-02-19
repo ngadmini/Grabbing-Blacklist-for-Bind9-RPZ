@@ -181,7 +181,7 @@ f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 
 # grabbing raw-domains
-f_add() { curl --retry 5 --retry-all-errors -f -s "$1" || f_xcd 251 "$1"; }
+f_add() { curl -sf "$1" || f_xcd 251 "$1"; }
 f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
    printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
    f_tmp                       # remove stale dir & file if any
@@ -192,7 +192,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
       local ext_dsi="${tar_dsi/.tar.gz/}"
       find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
-      curl --retry 5 --retry-all-errors -f -s -O "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
+      curl -sfO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
       tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
       f_do
    done
@@ -354,10 +354,10 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 f_ori() {
    printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
    local _val
-   _val=$(curl --connect-timeout 15 -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
+   _val=$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
 
    if [[ ${_val} -eq 200 ]]; then
-      curl -fs "${_ori}/$1" >> "$2" || f_xcd 251
+      curl -sf "${_ori}/$1" >> "$2" || f_xcd 251
       printf "${_inf} %-73s" "get $2 from origin"
    else
       printf "${_err} ${_CYN} notFOUND. download failed: status-code %d\n" "$2" "${_val}"
