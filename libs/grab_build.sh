@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v9.2
+#   grab_build.sh v9.3
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -21,7 +21,7 @@ if [[ -e ${_LIB} ]]; then
    f_trp
    f_cnf
 else
-   curl -sfO https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/libs/grab_library
+   curl -sO https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/libs/grab_library
    response=$?
    if [[ ${response} -ne 0 ]]; then
       printf "[FAIL] %s notFOUND\n" "${_LIB##*/}"

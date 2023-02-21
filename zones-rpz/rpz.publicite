@@ -1,9 +1,9 @@
 ; rpz.publicite
-; generate at Sun 2023-02-19 02:23:44 WIB by grab_cereal.sh v9.2
+; generate at Tue 2023-02-21 09:15:39 WIB by grab_cereal.sh v9.3
 ;
 $TTL 604800
 $ORIGIN publicite.domain.
-@   SOA   publicite.domain. rpz.publicite.domain. (2023021930 1w 1d 4w 1w)
+@   SOA   publicite.domain. rpz.publicite.domain. (2023022103 1w 1d 4w 1w)
 @         NS   publicite.domain.
 @   IN    A    127.0.0.15
 ;

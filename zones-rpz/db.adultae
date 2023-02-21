@@ -1,10 +1,10 @@
-; db.adultae = 1.432.350 lines
-; generate at Sun 2023-02-19 02:03:56 WIB by grab_build.sh v9.2
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.2/libs/grab_build.sh
+; db.adultae = 1.432.368 lines
+; generate at Tue 2023-02-21 09:15:24 WIB by grab_build.sh v9.3
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.3/libs/grab_build.sh
 ;
-mature-love.blogspot.mx CNAME .
-*.mature-love.blogspot.mx CNAME .
-mature-love.blogspot.my CNAME .
-*.mature-love.blogspot.my CNAME .
-mature-love.blogspot.nl CNAME .
-*.mature-love.blogspot.nl CNAME .
+mature-love.blogspot.hk CNAME .
+*.mature-love.blogspot.hk CNAME .
+mature-love.blogspot.hr CNAME .
+*.mature-love.blogspot.hr CNAME .
+mature-love.blogspot.hu CNAME .
+*.mature-love.blogspot.hu CNAME .
