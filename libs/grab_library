@@ -292,9 +292,9 @@ f_g4c() {   # used by grab_cereal.sh
    fi
 
    if ! grep -q "^; generate at" "$1" | cut -d: -f1; then
-      _sed -i "2i ${_gen}" "$1"
+      _sed -i "/; ${1}/a${_gen}" "$1"
    else
-      _sed -i "2s/^.*$/${_gen}/" "$1"
+      _sed -i "s/; generate.*/${_gen}/" "$1"
    fi
 }
 
