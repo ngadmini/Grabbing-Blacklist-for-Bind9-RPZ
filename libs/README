@@ -102,13 +102,13 @@
       #   RPZ_DOM=CNAME block.example.net.
       #   or
       #   RPZ_DOM=IN CNAME block.example.net.
-      #   RPZ_IPV=rpz-nsip CNAME block.example.net.
+      #   RPZ_IP4=rpz-nsip CNAME block.example.net.
       # for more detail about rpz policy action, please see:
       #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
       # QNAME Trigger with NXDOMAIN Action for domains-list
       RPZ_DOM=CNAME .
       # NS-IP Trigger with NXDOMAIN Action for ip-address-list
-      RPZ_IPV=rpz-nsip CNAME .
+      RPZ_IP4=rpz-nsip CNAME .
 
       # fixed number of lines grab_urls
       URLS=22

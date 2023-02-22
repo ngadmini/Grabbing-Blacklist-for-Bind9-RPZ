@@ -1,5 +1,5 @@
-; db.trust+ = 1.516.558 lines
-; generate at Tue 2023-02-21 09:15:24 WIB by grab_build.sh v9.3
+; db.trust+ = 1.516.560 lines
+; generate at Wed 2023-02-22 17:05:50 WIB by grab_build.sh v9.3
 ; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.3/libs/grab_build.sh
 ;
 0-1kiss.com CNAME .

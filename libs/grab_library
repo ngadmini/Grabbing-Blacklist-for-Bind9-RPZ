@@ -286,34 +286,35 @@ f_dpn() {
    _srt "$3" "$4" | uniq -d | _srt -o "$5"
 }
 
-f_g4c() {   # used by grab_cereal.sh
-   if ! grep -q "^; $1" "$1" | cut -d: -f1;  then
-      _sed -i "1i ; ${1}" "$1"
-   fi
+f_g4c() {   # used by grab_cereal.sh to remarking rpz.*
+   if ! grep -q "^; $1" "$1";  then _sed -i "1i ; ${1}" "$1"; fi
 
-   if ! grep -q "^; generate at" "$1" | cut -d: -f1; then
+   if ! grep -q "^; generate at" "$1"; then
       _sed -i "/; ${1}/a${_gen}" "$1"
    else
       _sed -i "s/; generate.*/${_gen}/" "$1"
    fi
+
+   if ! grep -q "${_ori}/zones-rpz/${1}" "$1"; then _sed -i "/${_gen}/a; ${_ori}\/zones-rpz\/${1}" "$1"; fi
+   if ! grep -q "${_ori}/libs/${_foo}" "$1"; then _sed -i "/ngadmini/a; ${_ori}\/libs\/${_foo}" "$1"; fi
 }
 
-f_g4b() {   # nested in f_rpz and f_ip4
+f_g4b() {   # remarking db.*
    local acq_al
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
    _sed -i "1i ; ${1} = ${acq_al} lines\n${_gen}\n; ${_ori}\/libs\/${_foo}\n;" "$1"
 }
 
-f_rpz() {   # used by grab_build.sh [configurable in grab_config]
+f_rpz() {   # used by grab_build.sh ["${RPZ_DOM}" configurable in grab_config and grab_library line: 388]
    printf "%13s %-31s : " "rewriting" "$2 to $1"
    awk -v DOM="${RPZ_DOM}" '{print $0" "DOM"\n""*."$0" "DOM}' "$2" >> "$1"
    f_g4b "$@"
 }
 
-f_ip4() {   # used by grab_build.sh [configurable in grab_config]
+f_ip4() {   # used by grab_build.sh ["${RPZ_IP4}" configurable in grab_config and grab_library line: 389]
    printf "%13s %-31s : " "rewriting" "$2 to $1"
-   _sed "s/\//\./" "$2" | awk -v IPV="${RPZ_IPV}" -F. '{print $5"."$4"."$3"."$2"."$1"."IPV}' >> "$1"
+   _sed "s/\//\./" "$2" | awk -v IPV="${RPZ_IP4}" -F. '{print $5"."$4"."$3"."$2"."$1"."IPV}' >> "$1"
    f_g4b "$@"
 }
 
@@ -378,7 +379,7 @@ f_dft() {   # define default values in grab_config
    : "${REGEX:=4}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
-   : "${RPZ_IPV:=rpz-nsip CNAME .}"         #+
+   : "${RPZ_IP4:=rpz-nsip CNAME .}"         #+
    : "${URLS:=22}"                          # fix number of lines grab_urls
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
@@ -389,7 +390,7 @@ f_cnf() {   # valuation variables in grab_config
 
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
-      ar_cnf=(HOST REGEX RNDC_RELOAD RPZ_DOM RPZ_IPV URLS ZONE_DIR)
+      ar_cnf=(HOST REGEX RNDC_RELOAD RPZ_DOM RPZ_IP4 URLS ZONE_DIR)
       mapfile -t ar_CNF < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
 
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then

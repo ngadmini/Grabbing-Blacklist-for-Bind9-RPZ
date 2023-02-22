@@ -40,12 +40,12 @@ RNDC_RELOAD=no
 #   RPZ_DOM=CNAME block.example.net.
 # or
 #   RPZ_DOM=IN CNAME block.example.net.
-#   RPZ_IPV=.rpz-nsip CNAME block.example.net.
+#   RPZ_IP4=.rpz-nsip CNAME block.example.net.
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
 # this below value are define for <RR_RH=CNAME .>
 RPZ_DOM=CNAME .
-RPZ_IPV=rpz-nsip CNAME .
+RPZ_IP4=rpz-nsip CNAME .
 
 # fixed number of lines grab_urls
 URLS=22
