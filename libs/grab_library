@@ -306,13 +306,13 @@ f_g4b() {   # remarking db.*
    _sed -i "1i ; ${1} = ${acq_al} lines\n${_gen}\n; ${_ori}\/libs\/${_foo}\n;" "$1"
 }
 
-f_rpz() {   # used by grab_build.sh ["${RPZ_DOM}" configurable in grab_config and grab_library line: 388]
+f_rpz() { # f_rpz & f_ip4, both are used by grab_build.sh
    printf "%13s %-31s : " "rewriting" "$2 to $1"
    awk -v DOM="${RPZ_DOM}" '{print $0" "DOM"\n""*."$0" "DOM}' "$2" >> "$1"
    f_g4b "$@"
 }
 
-f_ip4() {   # used by grab_build.sh ["${RPZ_IP4}" configurable in grab_config and grab_library line: 389]
+f_ip4() {
    printf "%13s %-31s : " "rewriting" "$2 to $1"
    _sed "s/\//\./" "$2" | awk -v IPV="${RPZ_IP4}" -F. '{print $5"."$4"."$3"."$2"."$1"."IPV}' >> "$1"
    f_g4b "$@"
@@ -373,7 +373,7 @@ f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed "1d;s/\.\///" | _srt; }
 f_sta() { if [[ $(stat -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 
-f_dft() {   # define default values in grab_config
+f_dft() {   # define default values of variables in grab_config
    printf "${_CYN} continued with default configurations\n\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
    : "${REGEX:=4}"                          # fix number of lines grab_regex
