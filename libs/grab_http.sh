@@ -39,7 +39,7 @@ f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
-ar_pac=()
+ar_pkg=()
 ar_exe=()
 declare -A ar_num              # numeric value
 ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
@@ -51,22 +51,22 @@ printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "${C}" >> /dev/null 2>&1; then
       printf "\n${_err} %s %-60s" "${C}" "not installed"
-      ar_pac+=("${C}")
+      ar_pkg+=("${C}")
    fi
 done
 
-if [[ ${#ar_pac[@]} -eq 0 ]]; then
+if [[ ${#ar_pkg[@]} -eq 0 ]]; then
    f_ok
 else
-   printf "\n${_CYN} do you want to install ${_CYN} (Y/n)? " "[CONFIRM]" "${ar_pac[*]}"
+   printf "\n${_CYN} do you want to install ${_CYN} (Y/n)? " "[CONFIRM]" "${ar_pkg[*]}"
    read -r confirm
    case ${confirm:0:1} in
-      y|Y) for _pac in "${ar_pac[@]}"; do
-              printf "${_inf} installing %-62s" "${_pac}"
-              sudo apt install "${_pac}" -y -qq >> /dev/null 2>&1
+      y|Y|"") for _pkg in "${ar_pkg[@]}"; do
+              printf "${_inf} installing %-62s" "${_pkg}"
+              sudo apt install "${_pkg}" -y -qq >> /dev/null 2>&1
               f_do
-           done;;
-        *) f_xcd 245 "${ar_pac[*]}";;
+              done;;
+           *) f_xcd 245 "${ar_pkg[*]}";;
    esac
 fi
 

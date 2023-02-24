@@ -54,7 +54,7 @@ f_tmp() {   # remove temporary files, directories & arrays, generated while scri
 }
 
 f_set() {
-   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exe,num,pac,reg,rpz,shn,shy,spl,tmp,txt,uri,url,zon}
+   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exe,num,pkg,reg,rpz,shn,shy,spl,tmp,txt,uri,url,zon}
    set +Eeuo pipefail
    shopt -u expand_aliases
 }
