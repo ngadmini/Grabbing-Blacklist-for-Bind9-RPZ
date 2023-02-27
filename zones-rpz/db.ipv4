@@ -1,6 +1,6 @@
 ; db.ipv4 = 55.800 lines
-; generate at Mon 2023-02-27 15:55:13 WIB by grab_build.sh v9.3
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.3/libs/grab_build.sh
+; generate at Mon 2023-02-27 17:45:11 WIB by grab_build.sh v9.4
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.4/libs/grab_build.sh
 ;
 32.19.218.0.1.rpz-nsip CNAME .
 32.230.218.0.1.rpz-nsip CNAME .

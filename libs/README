@@ -1,6 +1,6 @@
-### readme version v9.3
+### readme version v9.4
    all scripts adapted to updating blacklisted domains in BIND9 - Response Policy Zone
-   version v9.3 of all scripts are the next release after the earlier release.
+   version v9.4 of all scripts are the next release after the earlier release.
    it's a maintenance release that increases version compatibility with list of urls in grab_urls
 
 ### author:
@@ -11,7 +11,7 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v9.3:
+### what's new in v9.4:
 *) completed pruning subdomain entries across all categories
 
 ### Get url to download script-pack (latest version) :
