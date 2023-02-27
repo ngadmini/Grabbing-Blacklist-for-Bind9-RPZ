@@ -48,13 +48,13 @@ _wn1="${_red}[WARN]${_ncl}"
 _YLW="${_ylw}%s${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find . -maxdepth 1 -regex "^.*\(dmn\|sed\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
+   find . -maxdepth 1 -regex "^.*\(dmn\|prn\|sed\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
    find . -maxdepth 1 -type d ! -name "." -print0 | xargs -r0 rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 
 f_set() {
-   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exe,num,pkg,reg,rpz,shn,shy,spl,tmp,txt,uri,url,zon}
+   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exe,num,pkg,prn,reg,rpz,shn,shy,spl,tmp,txt,uri,url,zon}
    set +Eeuo pipefail
    shopt -u expand_aliases
 }
@@ -431,4 +431,10 @@ disable=SC2148
 disable=SC2154
 eof
    fi
+}
+
+f_prn() { # pruning sub-domains if there is an it's parent-domain
+   _sed "s/^/\./" "$1" | rev | _srt -u \
+      | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
+      | rev | _sed "s/^\.//" | _srt > "$2"
 }

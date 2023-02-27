@@ -1,5 +1,5 @@
-; db.redirector = 214.314 lines
-; generate at Wed 2023-02-22 17:05:50 WIB by grab_build.sh v9.3
+; db.redirector = 213.894 lines
+; generate at Mon 2023-02-27 15:55:13 WIB by grab_build.sh v9.3
 ; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.3/libs/grab_build.sh
 ;
 0------------0-------------0.0n-line.biz CNAME .

@@ -1,10 +1,10 @@
-; db.adultag = 1.432.358 lines
-; generate at Wed 2023-02-22 17:05:50 WIB by grab_build.sh v9.3
+; db.adultag = 1.427.418 lines
+; generate at Mon 2023-02-27 15:55:13 WIB by grab_build.sh v9.3
 ; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.3/libs/grab_build.sh
 ;
-summer-cummingss.blogspot.tw CNAME .
-*.summer-cummingss.blogspot.tw CNAME .
-summer-cummingss.blogspot.ug CNAME .
-*.summer-cummingss.blogspot.ug CNAME .
-summer-girls-beach-and-party.tumblr.com CNAME .
-*.summer-girls-beach-and-party.tumblr.com CNAME .
+sumddymanstories.blogspot.com.au CNAME .
+*.sumddymanstories.blogspot.com.au CNAME .
+sumddymanstories.blogspot.com.br CNAME .
+*.sumddymanstories.blogspot.com.br CNAME .
+sumddymanstories.blogspot.com.by CNAME .
+*.sumddymanstories.blogspot.com.by CNAME .

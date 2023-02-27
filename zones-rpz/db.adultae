@@ -1,10 +1,10 @@
-; db.adultae = 1.432.368 lines
-; generate at Wed 2023-02-22 17:05:50 WIB by grab_build.sh v9.3
+; db.adultae = 1.427.424 lines
+; generate at Mon 2023-02-27 15:55:13 WIB by grab_build.sh v9.3
 ; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.3/libs/grab_build.sh
 ;
-mature-love.blogspot.hk CNAME .
-*.mature-love.blogspot.hk CNAME .
-mature-love.blogspot.hr CNAME .
-*.mature-love.blogspot.hr CNAME .
-mature-love.blogspot.hu CNAME .
-*.mature-love.blogspot.hu CNAME .
+mature-legs-kov.blogspot.hk CNAME .
+*.mature-legs-kov.blogspot.hk CNAME .
+mature-legs-kov.blogspot.hr CNAME .
+*.mature-legs-kov.blogspot.hr CNAME .
+mature-legs-kov.blogspot.hu CNAME .
+*.mature-legs-kov.blogspot.hu CNAME .

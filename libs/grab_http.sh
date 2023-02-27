@@ -207,9 +207,7 @@ for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if t
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
    else   # prune sub-domains of the parent-domain that are in the same category, NOT in a different category
-      _sed "s/^/\./" "${ar_txt[K]}" | rev | _srt -u \
-         | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-         | rev | _sed "s/^\.//" | _srt > "${ar_tmp[K]}"
+      f_prn "${ar_txt[K]}" "${ar_tmp[K]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_snp}"
    fi
