@@ -91,7 +91,7 @@ prun_out=$(mktemp -p "${_DIR}")
 cat "${ar_CAT[@]}" | _srt -o "${prun_ini}"
 f_prn "${prun_ini}" "${prun_out}"
 for O in "${!ar_CAT[@]}"; do
-	_srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
+   _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
    cp "${ar_prn[O]}" "${ar_CAT[O]}"
 done
 f_do
