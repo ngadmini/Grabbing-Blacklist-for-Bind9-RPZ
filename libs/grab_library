@@ -413,11 +413,14 @@ f_cnf() {   # valuation variables in grab_config
 f_stt() {   # starting main script
    printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "$1" "${_lct}"
    if ! [[ ${_get} == "${_ver}" ]]; then   # confirm to the latest release
-      printf "${_inf} you're running %s. an update available\n" "${0##*/} version ${_ver}"
-      printf "${_hnt} please download %s :\n" "${0##*/} version ${_get} at"
-      printf "%s\nOR script-pack :\n" "${_ori}/libs/${0##*/}"
-      printf "%s\n" "$(curl -s ${_api} | grep download_url | awk -F\" '{print $4}')"
-      return 1
+      printf "${_inf} you're running ${_RED}. an update is available" "${0##*/} ${_ver}"
+      printf "\n${_CYN} do you want update to ${_CYN} and run it's again (Y/n)? " "[CONFIRM]" "${0##*/} ${_get}"
+      read -r confirm
+      case ${confirm:0:1} in
+         y|Y|"") curl -sO "${_ori}/libs/${0##*/}"
+                 exec "$0";;
+              *) return 1;;
+      esac
    fi
 
    # compatibility with shellcheck
