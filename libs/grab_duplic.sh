@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v9.3
+#   grab_duplic.sh v9.4
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -88,9 +88,9 @@ fi
 printf "\n${_inf} pruning sub-domains if there is an it's parent-domain at across CATEGORIES%-3s"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
-cat "${ar_CAT[@]}" | _srt -o "${prun_ini}"
+_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}"| _srt -o "${prun_ini}"
 f_prn "${prun_ini}" "${prun_out}"
-for O in "${!ar_CAT[@]}"; do
+for O in 0 {2..5}; do
    _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
    cp "${ar_prn[O]}" "${ar_CAT[O]}"
 done
