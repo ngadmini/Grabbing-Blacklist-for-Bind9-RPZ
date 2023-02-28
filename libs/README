@@ -12,7 +12,7 @@
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
 ### what's new in v9.4:
-*) completed pruning subdomain entries across all categories
+*) completed pruning subdomain entries across all categories, if parent domain exist
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest | grep download_url | awk -F\" '{print $4}'
