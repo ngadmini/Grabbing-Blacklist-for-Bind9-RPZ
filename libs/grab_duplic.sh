@@ -85,7 +85,7 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_inf} pruning sub-domains if there is an it's parent-domain at across CATEGORIES%-3s"
+printf "\n${_inf} pruning subdomain entries across categories, if parent domain exist%-3s"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}"| _srt -o "${prun_ini}"
