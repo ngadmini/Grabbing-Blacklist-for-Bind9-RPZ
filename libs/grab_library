@@ -193,7 +193,7 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
       find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
       printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
       curl -sO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
-      tar -xzf "${tar_dsi}" "${ext_dsi/domains}"
+      tar -xzf "${tar_dsi}"
       f_do
    done
 
@@ -412,7 +412,7 @@ f_cnf() {   # valuation variables in grab_config
 
 f_stt() {   # starting main script
    printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "$1" "${_lct}"
-   if ! [[ ${_get} == "${_ver}" ]]; then   # confirm to the latest release
+   if ! [[ ${_get} = "${_ver}" ]]; then   # confirm to the latest release
       printf "${_inf} you're running ${_RED}. an update is available" "${0##*/} ${_ver}"
       printf "\n${_CYN} do you want update to ${_CYN} and run it's again (Y/n)? " "[CONFIRM]" "${0##*/} ${_get}"
       read -r confirm
