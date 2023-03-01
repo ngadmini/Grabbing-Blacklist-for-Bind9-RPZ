@@ -12,19 +12,19 @@
 </p>
 
 ### script-pack
- 1. [grab_http.sh][grab-http]  --grabbing and proccessing raw domains
- 2. [grab_duplic.sh][grab-dedup] --removing duplicate entries between domain lists
- 3. [grab_build.sh][grab-build] --rewriting to Bind9-RPZ format
+ 1. [grab_http.sh][grab-http]  --grabbing and proccessing domains from [sources-list][grab-urls]
+ 2. [grab_duplic.sh][grab-dedup] --removing duplicate entries and sub-domains if parent domain exist
+ 3. [grab_build.sh][grab-build] --rewriting to Bind9-RPZ format-entry
  4. [grab_cereal.sh][grab-cereal] --incrementing serial number at [rpz.*][zone-file]
  5. [grab_library][grab-lib] --a library of functions. intended for use by other scripts, not to be executed directly
- 6. [grab_urls][grab-urls] --urls list of remote files. case sensitive, strict order, line count and no blank lines
+ 6. [grab_urls][grab-urls] --urls of sources-list. case sensitive, strict order, line count and no blank lines
  7. [grab_regex][grab-regex] --list of reguler expressions. case sensitive, strict order, line count and no blank lines
  8. [grab_rsync.sh][grab-scp] --intended for syncronize latest dBASE to Bind9 host
  9. [grab_config][grab-cnf] --configurations file
 10. [rpz.*][zone-file] --pack of zone-files
 > <b>NOTE</b><br>Place them all under the same directory
 ### requirements:
-- [x] please see [these wiki][wik-i] and [README][read-me]
+- [x] please see [these wiki][wik-i] and [README](libs/README)
 ### usage:
 - [x] execute `grab_http.sh` with `non root privileges` either directly as a `root user` or by use of `sudo command`, from your linux desktop workstation then follow the next step
 ### output:
