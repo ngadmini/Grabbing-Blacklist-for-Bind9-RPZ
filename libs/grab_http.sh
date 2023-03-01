@@ -105,8 +105,9 @@ printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
 f_uri "${ar_shn[1]}" || :
 f_grb                            # initialize, grabbing and processing raw-domains (CATEGORY)
 
-# category: TRUST+ --> ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
+# category: TRUST+
 # contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
+#+          ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
 f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}")
 untrust=$(mktemp -p "${_DIR}")
@@ -128,8 +129,9 @@ f_do
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: ADULT --> ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6]}
+# category: ADULT
 # contents: adult-porn domains
+#+          ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6]}
 f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
@@ -138,8 +140,9 @@ f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_out "${ar_txt[0]}" "${ar_txt[5]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: REDIRECTOR --> ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
+# category: REDIRECTOR
 # contents: vpn and proxy domains
+#+          ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
 f_sm7 "${ar_cat[4]}" 2           # done while initializing category
 for F in {4,5}; do f_sm6 "${F}" "${ar_uri[F]}"; f_do; done
 # fixing false and bad entries
@@ -147,8 +150,9 @@ f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[4]}"
 f_out "${ar_txt[4]}" "${ar_txt[5]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: PUBLICITE --> ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
+# category: PUBLICITE
 # contents: ad domains
+#+          ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm7 "${ar_cat[3]}" 5
 f_sm6 3 "${ar_uri[3]}"; f_do     # done while initializing category
 for G in {8..11}; do
@@ -159,8 +163,9 @@ f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[3]}"
 f_out "${ar_txt[3]}" "${ar_txt[5]}"
 f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: MALWARE --> ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
+# category: MALWARE
 # contents: malware, phishing and ransomware domains
+#+          ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
 f_sm7 "${ar_cat[2]}" 8
 f_sm6 2 "${ar_uri[2]}"; f_do     # done while initializing category
 f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
@@ -173,10 +178,11 @@ f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[2]}"
 f_out "${ar_txt[2]}" "${ar_txt[5]}"
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
-# category: IPV4 --> ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
-# contents: captured ipv4 from adult, publicite, malware and trust+
+# category: IPV4
+# contents: ipv4 as CIDR block and captured ipv4 from others category
+#+          ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm7 "${ar_cat[1]}" 2
-for I in {19,20}; do             # save ipv4 as CIDR block
+for I in {19,20}; do
    f_sm6 "${I}" "${ar_uri[I]}"
    f_add "${ar_url[I]}" | _grp -v "^#" | _sed "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
    f_do
@@ -185,21 +191,13 @@ f_sm8 "${ar_cat[1]}"             # fixing false and bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
-# <finishing>
-printf "\nprocessing raw-domains (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
-for J in "${!ar_cat[@]}"; do
-   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
-   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
-done
-
-_tmb1=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
-printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb1/./,}"
-
-printf "\n${_YLW} sub-domains if parent-domain exist in the current CATEGORY and IPV4 into CIDR blocks\n" "PRUNING:"
+# <pruning>
+printf "\n${_YLW} sub-domains if parent-domain exist in the current CATEGORY" "PRUNING:"
+printf "\n%12s pruning ipv4 by turning sub-nets to CIDR blocks\n" "AND"
+printf "${_YLW}\n" "SUMMARY:"
 for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if there's an it's parent-domain
-   if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
-      while IFS= read -r; do                   #+  require 'libnet-netmask-perl'
+   if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # pruning ipv4 by turning sub-nets to CIDR blocks. require:
+      while IFS= read -r; do                   #+  'libnet-netmask-perl'
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
             END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
@@ -214,14 +212,14 @@ for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if t
    cp "${ar_tmp[K]}" "${ar_txt[K]}"
 done
 
-# display resume
 _tmb2=$(bc <<< "scale=3; $(wc -c "${ar_tmp[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
 T="$(($(date +%s%N)-T))"
 f_tim
 
-f_sm0   # <completing> offerring OPTIONs: continued to next tasks OR stop here
+# <completing> offerring OPTIONs: continued to next tasks OR stop here
+f_sm0
 read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"

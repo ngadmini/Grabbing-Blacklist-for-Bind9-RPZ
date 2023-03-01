@@ -43,8 +43,8 @@ _RED="${_red}%s${_ncl}"
 _rnr="${_grn}'rndc reload'${_ncl}"
 _shd="${_grn}'shutdown -c'${_ncl}"
 _tks="${_red}TASKs${_ncl}"
-_wn0="${_grn}WARNING:${_ncl}"
-_wn1="${_red}[WARN]${_ncl}"
+_wn0="${_ylw}WARNING:${_ncl}"
+_wn1="${_ylw}[WARN]${_ncl}"
 _YLW="${_ylw}%s${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
@@ -112,8 +112,8 @@ f_xcd() {   # exit code {244..255}
 
 f_sm0() {   # display offering options
    printf "${_wn1} there are still remaining :\n"
-   printf "[x] duplicate entries across CATEGORIES\n"
-   printf "[x] sub-domains and it's parent-domain exist across CATEGORIES\n"
+   printf "   - duplicate entries across CATEGORIES\n"
+   printf "   - sub-domain and it's parent-domain exist across CATEGORIES\n"
    printf "${_hnt} consider continue to next TASKs\n"
    printf "${_CYN}\n" "you have 4 options to proceed to the next task:"
    printf "%4s) remove [duplicate] and [sub-domains if parent-domain exist] across CATEGORIES\n" "1"

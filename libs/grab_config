@@ -5,19 +5,15 @@
 #   ngadimin@warnet-ersa.net
 # PLEASE PAY ATTENTIONS
 #   *) type in format VARIABLE=value
-#   *) blank lines and lines starting with '#' will be ignored.
-#   *) all variables must be determined.
-#   *) do not leave any of the following variables undefined,
-#      it will return all variables to their default values.
-# OR
-#   *) you may want to change all variables to default values
-#      like in grab_library, instead of changing them here directly.
-#      go to grab_library line:
+#   *) blank lines and lines starting with '#' will be ignored
+#   *) all variables must be determined. if NOT it will fallback to their default
+#      values
+#   THEN
+#   *) change all variables in grab_library refer to this file. go to line:
 #      ~ nano +$(grep -n 'f_dft()' grab_library | cut -d: -f1) grab_library
 ##################################################################################
 
-# identify clearly and with certainty host-name in FQDN or ip-address bind9-server
-# use fqdn or ip-address
+# identify clearly and with certainty host-name. use fqdn or ip-address
 #   HOST=rpz.warnet-ersa.net
 #   HOST=172.30.254.253
 HOST=rpz.warnet-ersa.net
@@ -34,21 +30,21 @@ REGEX=4
 #   RNDC_RELOAD=yes
 RNDC_RELOAD=no
 
-# change Resource Record <CNAME> and Right Hand Value <.> if you have other
-# policy of RR and RH Value, applied to domains and ip-address.
-# for example, change Right Hand Value to <block.example.net.>:
+# change Resource Record (RR) and Right Hand Value (RH) if you have other
+# policy of RR and RH Value
+# for example:
 #   RPZ_DOM=CNAME block.example.net.
-# or
+# or:
 #   RPZ_DOM=IN CNAME block.example.net.
-#   RPZ_IP4=.rpz-nsip CNAME block.example.net.
+#   RPZ_IP4=rpz-nsip CNAME block.example.net.
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-# this below value are define for <RR_RH=CNAME .>
+# this below value are define for RR=CNAME and RH=. 
 RPZ_DOM=CNAME .
 RPZ_IP4=rpz-nsip CNAME .
 
 # fixed number of lines grab_urls
 URLS=22
 
-# change to directory where zone-files (rpz.*) and db-files (db.*) are located  
+# directory where zone-files (rpz.*) and db-files (db.*) are located  
 ZONE_DIR=/etc/bind/zones-rpz

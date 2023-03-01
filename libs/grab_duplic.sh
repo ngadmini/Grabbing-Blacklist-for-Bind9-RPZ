@@ -85,19 +85,25 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_inf} pruning sub-domain entries across CATEGORIES if parent domain exist%-3s"
+printf "\n${_inf} pruning sub-domain entries across CATEGORIES\n"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}"| _srt -o "${prun_ini}"
 f_prn "${prun_ini}" "${prun_out}"
-for O in 0 {2..5}; do
-   _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
-   cp "${ar_prn[O]}" "${ar_CAT[O]}"
+
+for O in {0..5}; do
+   if [[ ${O} -eq 1 ]]; then
+      printf "%3spruning sub-domain entries: %-25sSKIP\n" "" "${ar_cat[1]^^} category"
+   else
+      printf "%3spruning sub-domain entries: %-25s" "" "${ar_cat[O]^^} category"
+      _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
+      cp "${ar_prn[O]}" "${ar_CAT[O]}"
+      f_do
+   fi
 done
-f_do
 
 # display resume
-printf "${_inf} deduplicating and pruning sub-domains in summary:\n"
+printf "\n${_inf} deduplicating and pruning sub-domains in summary:\n"
 for P in "${!ar_CAT[@]}"; do
    printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${_dpl}"
