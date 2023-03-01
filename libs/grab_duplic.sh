@@ -50,7 +50,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
       ar_prn+=(prn."${ar_CAT[B]/txt./}")
    done
 
-   printf "${_inf} eliminating duplicate entries between CATEGORY\n"
+   printf "${_inf} eliminating duplicate entries across CATEGORIES\n"
    printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
 
    f_dpl "${ar_cat[0]}"   # remove duplicate entries based on ${ar_cat[0]}
@@ -85,7 +85,7 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_inf} pruning subdomain entries across categories, if parent domain exist%-3s"
+printf "\n${_inf} pruning sub-domain entries across CATEGORIES if parent domain exist%-3s"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}"| _srt -o "${prun_ini}"
@@ -99,7 +99,7 @@ f_do
 # display resume
 unset -v ar_CAT
 mapfile -t ar_CAT < <(f_fnd "txt.*")
-printf "${_inf} deduplicating domains across CATEGORIES ${_CYN} in summary:\n" "(${#ar_CAT[@]})"
+printf "${_inf} deduplicating and pruning sub-domains in summary:\n"
 for P in "${!ar_CAT[@]}"; do
    printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${_dpl}"

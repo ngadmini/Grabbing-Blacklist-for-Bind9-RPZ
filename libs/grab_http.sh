@@ -196,7 +196,7 @@ _tmb1=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n" "disk-usage" "${_tmb1/./,}"
 
-printf "\n${_YLW} sub-domains if there is an it's parent-domain and IPV4 into CIDR blocks if any\n" "PRUNING:"
+printf "\n${_YLW} sub-domains if parent-domain exist in the current CATEGORY and IPV4 into CIDR blocks\n" "PRUNING:"
 for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if there's an it's parent-domain
    if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # turn ipv4 sub-nets to CIDR blocks if any
       while IFS= read -r; do                   #+  require 'libnet-netmask-perl'
@@ -206,7 +206,7 @@ for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if t
       done < "${ar_txt[K]}"
       printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
-   else   # prune sub-domains of the parent-domain that are in the same category, NOT in a different category
+   else   # prune sub-domains if parent-domain exist in the current category
       f_prn "${ar_txt[K]}" "${ar_tmp[K]}"
       printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
       printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_snp}"
