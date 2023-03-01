@@ -97,8 +97,6 @@ done
 f_do
 
 # display resume
-unset -v ar_CAT
-mapfile -t ar_CAT < <(f_fnd "txt.*")
 printf "${_inf} deduplicating and pruning sub-domains in summary:\n"
 for P in "${!ar_CAT[@]}"; do
    printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
