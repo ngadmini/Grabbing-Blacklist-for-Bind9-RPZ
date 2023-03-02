@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v9.4
+#   grab_library v9.5
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -48,7 +48,7 @@ _wn1="${_ylw}[WARN]${_ncl}"
 _YLW="${_ylw}%s${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find . -maxdepth 1 -regex "^.*\(dmn\|prn\|sed\|tm[pqr]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
+   find . -maxdepth 1 -regex "^.*\(dmn\|prn\|sed\|tm[pq]\|txt.adulta\).*\|.*gz$" -print0 | xargs -r0 rm -rf
    find . -maxdepth 1 -type d ! -name "." -print0 | xargs -r0 rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
@@ -116,7 +116,7 @@ f_sm0() {   # display offering options
    printf "   - sub-domain and it's parent-domain exist across CATEGORIES\n"
    printf "${_hnt} consider continue to next TASKs\n"
    printf "${_CYN}\n" "you have 4 options to proceed to the next task:"
-   printf "%4s) remove [duplicate] and [sub-domains if parent-domain exist] across CATEGORIES\n" "1"
+   printf "%4s) pruning duplicate and sub-domains (if parent-domain exist) across CATEGORIES\n" "1"
    printf "%4s) option [1] and rewriting all domains to RPZ format-entry [db.* files]\n" "2"
    printf "%4s) options [1,2] and incrementing serial zone-files [rpz.*]\n" "3"
    printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "${HOST}"
@@ -210,12 +210,10 @@ f_grb() {   # initialize CATEGORY, many categories are obtained but the main one
    printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
    f_frm "txt.*"                         # remove stale raw-domains
    ar_dmn=()
-   ar_tmp=()
    ar_txt=()
 
    for B in "${!ar_cat[@]}"; do
       ar_dmn+=("${ar_cat[B]}"/domains)   # as raw-domains container
-      ar_tmp+=(tmq."${ar_cat[B]}")       # as in-process-domains container (temporary)
       ar_txt+=(txt."${ar_cat[B]}")       # as processed-domains container
    done
 }
@@ -276,7 +274,7 @@ f_uri() {   # verify remote-urls [grab_urls] is available
 }
 
 # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
-f_dpl() { printf "eliminating duplicate entries based on ${_CYN}\n" "${1^^}"; }
+f_dpl() { printf "pruning duplicate entries based on ${_CYN}\n" "${1^^}"; }
 f_dpm() {
    awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"
    cp "${3}" "${2}"
@@ -374,9 +372,10 @@ f_fnd() { find . -maxdepth 1 -type f -name "$1" | _sed "s/\.\///" | _srt; }
 f_frm() { find . -maxdepth 1 -type f -name "$1" -print0 | xargs -r0 rm; }
 f_cat() { find . -maxdepth 1 -type d | _sed "1d;s/\.\///" | _srt; }
 f_sta() { if [[ $(stat -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
+f_pkg() { if ! [[ -e $1 ]]; then f_no "$1"; f_ori libs/"$1" "$1"; fi; f_sta "$2" "$1"; }
 
-f_dft() {   # define default values of variables in grab_config
-   printf "${_CYN} continued with default configurations\n\n" "${_foo}"
+f_dft() {   # fallback to these values if grab_config missing or missconfigured
+   printf "\n${_wn0} ${_CYN} continued with default configurations\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
    : "${REGEX:=4}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
@@ -397,26 +396,36 @@ f_cnf() {   # valuation variables in grab_config
 
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
          mapfile -t ar_VAR < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "${_ptr}" | cut -d= -f2)
-         for ARG in "${!ar_VAR[@]}"; do
-            # get values supplied by "${CNF}", instead of "source ${CNF}"
+         for ARG in "${!ar_VAR[@]}"; do   # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
+         f_ok
       else  # misconfigurations occurs: fallback to default values
-         printf "\n${_wn1} misconfigurations occurs in %s. undefine variable: " "${CNF##*/}"
-         printf "%s%s\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
-         f_dft
+         printf "\n${_err} misconfigurations occurs in ${_CYN}. undefine variable: " "${CNF##*/}"
+         printf "%s${_CYN}\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
+         printf "${_CYN} do you want continue with default configurations (Y/n)? " "[CONFIRM]"
+         read -r confirm
+         case ${confirm:0:1} in
+            y|Y|"") f_dft;;
+                 *) return 1;;
+         esac
       fi
    else     # missing file: "${CNF}". fallback to default values
-      printf "\n${_wn0} %s notFOUND\n" "${CNF##*/}"
-      f_dft
+      f_no "${CNF##*/}"
+      printf "${_CYN} do you want continue with default configurations (Y/n)? " "[CONFIRM]"
+      read -r confirm
+      case ${confirm:0:1} in
+         y|Y|"") f_dft;;
+              *) return 1;;
+      esac
    fi
 }
 
 f_stt() {   # starting main script
    printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "$1" "${_lct}"
-   if ! [[ ${_get} = "${_ver}" ]]; then   # confirm to the latest release
-      printf "${_inf} you're running ${_RED}. an update is available" "${0##*/} ${_ver}"
-      printf "\n${_CYN} do you want update to ${_CYN} and run it's again (Y/n)? " "[CONFIRM]" "${0##*/} ${_get}"
+   if [[ ${_get} != "${_ver}" ]]; then   # confirm to the latest release
+      printf "${_err} you're running ${_RED}. an update is available" "${0##*/} ${_ver}"
+      printf "\n${_CYN} do you want upgrade to ${_CYN} (Y/n)? " "[CONFIRM]" "${0##*/} ${_get}"
       read -r confirm
       case ${confirm:0:1} in
          y|Y|"") curl -sO "${_ori}/libs/${0##*/}"
@@ -424,8 +433,7 @@ f_stt() {   # starting main script
               *) return 1;;
       esac
    fi
-
-   # compatibility with shellcheck
+   # shellcheck portability
    if ! [[ -e .shellcheckrc ]]; then
       cat <<eof>>.shellcheckrc
 source-path=./

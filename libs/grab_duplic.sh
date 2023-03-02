@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v9.4
+#   grab_duplic.sh v9.5
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -46,12 +46,12 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    for B in "${!ar_CAT[@]}"; do
       ar_cat+=("${ar_CAT[B]/txt./}")
       ar_dmn+=(dmn."${ar_CAT[B]/txt./}")
-      ar_tmp+=(tmr."${ar_CAT[B]/txt./}")
+      ar_tmp+=(tmp."${ar_CAT[B]/txt./}")
       ar_prn+=(prn."${ar_CAT[B]/txt./}")
    done
 
-   printf "${_inf} eliminating duplicate entries across CATEGORIES\n"
    printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
+   printf "${_inf} prune duplicate and sub-domains (if parent-domain exist) across CATEGORIES\n"
 
    f_dpl "${ar_cat[0]}"   # remove duplicate entries based on ${ar_cat[0]}
    printf "%11s = deduplicating %s entries%-16sSKIP\n" "STEP 0.1" "${ar_cat[1]}" ""
@@ -61,7 +61,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    done
 
    # remove duplicate entries based on ${ar_cat[1]}. do nothing
-   printf "eliminating duplicate entries based on ${_CYN}%-13sdo nothing\n" "${ar_cat[1]^^}"
+   printf "pruning duplicate entries based on ${_CYN}%-17sdo nothing\n" "${ar_cat[1]^^}"
 
    f_dpl "${ar_cat[2]}"   # remove duplicate entries based on ${ar_cat[2]}
    for D in {3..5}; do
@@ -80,20 +80,28 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    f_dpm "${ar_tmp[5]}" "${ar_CAT[5]}" "${ar_dmn[5]}"
 
    # remove duplicate entries based on ${ar_cat[5]}. do nothing
-   printf "eliminating duplicate entries based on ${_CYN}%-11sdo nothing\n" "${ar_cat[5]^^}"
+   printf "pruning duplicate entries based on ${_CYN}%-15sdo nothing\n" "${ar_cat[5]^^}"
 else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_inf} pruning sub-domain entries across CATEGORIES\n"
+printf "\n${_YLW} pruning sub-domain across CATEGORIES%-8s" "[PREPARING]"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}"| _srt -o "${prun_ini}"
 f_prn "${prun_ini}" "${prun_out}"
+f_ok
 
-for O in {0..5}; do
+for O in ${!ar_cat[@]}; do
    if [[ ${O} -eq 1 ]]; then
-      printf "%3spruning sub-domain entries: %-25sSKIP\n" "" "${ar_cat[1]^^} category"
+      printf "%3spruning sub-domain entries: %-25s" "" "${ar_cat[1]^^} category"
+      while IFS= read -r; do
+         perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
+            $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
+            END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[1]}"
+      done < "${ar_CAT[1]}"
+      cp "${ar_prn[1]}" "${ar_CAT[1]}"
+      f_do
    else
       printf "%3spruning sub-domain entries: %-25s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"

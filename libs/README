@@ -1,6 +1,6 @@
-### readme version v9.4
+### readme version v9.5
    all scripts adapted to updating blacklisted domains in BIND9 - Response Policy Zone
-   version v9.4 of all scripts are the next release after the earlier release.
+   version v9.5 of all scripts are the next release after the earlier release.
    it's a maintenance release that increases version compatibility with list of urls in grab_urls
 
 ### author:
@@ -11,9 +11,8 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v9.4:
-*) completed pruning sub-domain entries across categories if parent domain exist
-*) improve display messages
+### what's new in v9.5:
+*) improve filtering duplicate entries and pruning sub-domain entries (if parent domain exist) across categories
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest | grep download_url | awk -F\" '{print $4}'
@@ -43,7 +42,7 @@
         NO need modify, except you want change RPZ-policy triggers and actions.
         please SEE prerequisites section in this README
 
-   7. grab_urls --contain urls list of remote raw-files.
+   7. grab_urls --contain urls list of source files.
         case sensitive, strict order, line count and no blank lines
    8. grab_regex --contain reguler expressions.
         *) case sensitive, strict order, line count and no blank lines
@@ -71,55 +70,51 @@
 
 ### prerequisites:
 *) on your linux desktop workstation
-      # check require package installed or NOT
+      # check required package (dependencies)
       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
 
 *) modify file grab_config according to your BIND9-server environment
       # modify file grab_config to fit your BIND9-server environment
-      #   *) type in format VARIABLE=VALUE
+      #   *) type in format VARIABLE=value
       #   *) blank lines and lines starting with '#' will be ignored
-      #   *) do not leave any of the following variables undefined.
-      #      it will return all variables to their default values
-      #   OR
-      #   *) you may want to change all variables to default values
-      #      like in grab_library, instead of changing them in grab_config
-      #      go to grab_library line:
+      #   *) all variables must be determined. if NOT it will fallback to their default
+      #      values
+      #   THEN
+      #   *) change all variables in grab_library refer to this file. go to line:
       #      ~ nano +$(grep -n 'f_dft()' grab_library | cut -d: -f1) grab_library
 
       # specify in fqdn or ip-address
       HOST=rpz.warnet-ersa.net
 
-      # fixed number of lines grab_regex
+      # fixed number of lines grab_regex. DON'T CHANGE
       REGEX=4
 
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>
       RNDC_RELOAD=yes
 
-      # change Resource Record <CNAME> and Right Hand Value <.>
-      # if you have other policy RR and RH Value.
-      # for example, change Right Hand Value with <block.example.net.>:
+      # change Resource Record (RR) and Right Hand Value (RH) if you have other
+      # policy of RR and RH Value
+      # for example:
       #   RPZ_DOM=CNAME block.example.net.
-      #   or
+      # or:
       #   RPZ_DOM=IN CNAME block.example.net.
       #   RPZ_IP4=rpz-nsip CNAME block.example.net.
       # for more detail about rpz policy action, please see:
       #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-      # QNAME Trigger with NXDOMAIN Action for domains-list
+      # this below value are define for RR=CNAME and RH=.
       RPZ_DOM=CNAME .
-      # NS-IP Trigger with NXDOMAIN Action for ip-address-list
       RPZ_IP4=rpz-nsip CNAME .
 
-      # fixed number of lines grab_urls
+      # fixed number of lines grab_urls. DON'T CHANGE
       URLS=22
 
       # change to directory where zone-files (rpz.* and db.*) are located in bind9-server
-      # ZONE_DIR=/var/bind9/chroot/etc/bind/zones-rpz
       ZONE_DIR=/etc/bind/zones-rpz
 
 *) on your BIND9-server
-      # check required package
+      # check required package (dependencies)
       ~$ apt policy pigz rsync
       ~$ apt install -y pigz rsync
 
@@ -128,7 +123,7 @@
       ssh, scp dan rsync connections. you can reffer to :
       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH-and-sudo
 
-*) reconfigure your bind9-server to run RPZ BIND9-fiture. you can reffer to :
+*) reconfigure your bind9-server to run BIND9 RPZ feature. you can reffer to :
       https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
 
 ### usage:

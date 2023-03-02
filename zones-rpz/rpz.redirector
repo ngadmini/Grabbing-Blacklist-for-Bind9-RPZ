@@ -1,11 +1,11 @@
 ; rpz.redirector
-; generate at Mon 2023-02-27 19:43:24 WIB by grab_cereal.sh v9.4
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.4/zones-rpz/rpz.redirector
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.4/libs/grab_cereal.sh
+; generate at Thu 2023-03-02 23:24:14 WIB by grab_cereal.sh v9.5
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.5/zones-rpz/rpz.redirector
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.5/libs/grab_cereal.sh
 ;
 $TTL 604800
 $ORIGIN redirector.domain.
-@   SOA   redirector.domain. rpz.redirector.domain. (2023022704 1w 1d 4w 1w)
+@   SOA   redirector.domain. rpz.redirector.domain. (2023030201 1w 1d 4w 1w)
 @         NS   redirector.domain.
 @    IN   A    127.0.0.16
 ;

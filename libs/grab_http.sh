@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v9.4
+#   grab_http.sh v9.5
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -13,11 +13,11 @@ set -Eeuo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# <start main script>
+# sourcing to grab_library
 clear
 cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
-if [[ -e ${_LIB} ]]; then      # sourcing to grab_library
+if [[ -e ${_LIB} ]]; then
    if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
    f_trp
@@ -32,6 +32,7 @@ else
    fi
 fi
 
+# starting main script
 f_stt ""
 printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 247
@@ -42,11 +43,12 @@ ar_shn=(grab_regex grab_urls)
 ar_pkg=()
 ar_exe=()
 declare -A ar_num              # numeric value
-ar_num[ar_txt]=1               # index's position of: ipv4 category is no.1 at ar_txt
-ar_num[ar_shn]=0               #+                     grab_regex is no.0 at ar_shn
+ar_num[ar_shn]=0               # index's position of: grab_regex is no.0 at ar_shn
+
+# check the requirements
+printf "${_pre} %-63s" "check configuration at file: grab_config"
 f_cnf
 
-# requirement inspection
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "${C}" >> /dev/null 2>&1; then
@@ -62,33 +64,20 @@ else
    read -r confirm
    case ${confirm:0:1} in
       y|Y|"") for _pkg in "${ar_pkg[@]}"; do
-              printf "${_inf} installing %-62s" "${_pkg}"
-              sudo apt install "${_pkg}" -y -qq >> /dev/null 2>&1
-              f_do
+                 printf "${_inf} installing %-62s" "${_pkg}"
+                 sudo apt install "${_pkg}" -y -qq >> /dev/null 2>&1
+                 f_do
               done;;
            *) f_xcd 245 "${ar_pkg[*]}";;
    esac
 fi
 
-# script-pack's properties inspection
-printf "${_pre} %-63s" "check script-pack's properties in local-host: $(hostname -I)"
+# check script-pack's properties
+printf "${_pre} %-63s" "check script-pack's property in local-host: $(hostname -I)"
 if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
-
-for D in "${!ar_shy[@]}"; do
-   if ! [[ -e ${ar_shy[D]} ]]; then
-      f_no "${ar_shy[D]}"
-      f_ori "libs/${ar_shy[D]}" "${ar_shy[D]}"
-   fi
-   f_sta 755 "${ar_shy[D]}"
-done
-
+for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
 for E in "${!ar_shn[@]}"; do
-   if ! [[ -e ${ar_shn[E]} ]]; then
-      f_no "${ar_shn[E]}"
-      f_ori "libs/${ar_shn[E]}" "${ar_shn[E]}"
-   fi
-
-   f_sta 644 "${ar_shn[E]}"
+   f_pkg "${ar_shn[E]}" 644
    _sed -i "/^$/d" "${ar_shn[E]}"
 
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
@@ -101,9 +90,10 @@ for E in "${!ar_shn[@]}"; do
 done
 f_ok
 
-printf "${_pre} check availability of remote-files (in %s)\n" "${ar_shn[1]}"
+# initialize, grabbing and processing sources-list (CATEGORY)
+printf "${_pre} check availability of sources-list (as listed in %s)\n" "${ar_shn[1]}"
 f_uri "${ar_shn[1]}" || :
-f_grb                            # initialize, grabbing and processing raw-domains (CATEGORY)
+f_grb
 
 # category: TRUST+
 # contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
@@ -191,34 +181,21 @@ f_sm8 "${ar_cat[1]}"             # fixing false and bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
-# <pruning>
-printf "\n${_YLW} sub-domains if parent-domain exist in the current CATEGORY" "PRUNING:"
-printf "\n%12s pruning ipv4 by turning sub-nets to CIDR blocks\n" "AND"
-printf "${_YLW}\n" "SUMMARY:"
-for K in "${!ar_txt[@]}"; do                   # sub-domains become useless if there's an it's parent-domain
-   if [[ ${K} -eq ${ar_num[ar_txt]} ]]; then   # pruning ipv4 by turning sub-nets to CIDR blocks. require:
-      while IFS= read -r; do                   #+  'libnet-netmask-perl'
-         perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
-            $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
-            END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_tmp[K]}"
-      done < "${ar_txt[K]}"
-      printf -v _ip4 "%'d" "$(wc -l < "${ar_tmp[K]}")"
-      printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_ip4}"
-   else   # prune sub-domains if parent-domain exist in the current category
-      f_prn "${ar_txt[K]}" "${ar_tmp[K]}"
-      printf -v _snp "%'d" "$(wc -l < "${ar_tmp[K]}")"
-      printf "%12s: %9s entries\n" "${ar_cat[K]}" "${_snp}"
-   fi
-   cp "${ar_tmp[K]}" "${ar_txt[K]}"
+# resume
+printf "\nprocessing sources-list (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
+
+for J in "${!ar_cat[@]}"; do
+   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
+   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
 
-_tmb2=$(bc <<< "scale=3; $(wc -c "${ar_tmp[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
-printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_tmp[@]}" | grep "total" | awk -F' ' '{print $1}')"
+_tmb2=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
+printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
 T="$(($(date +%s%N)-T))"
 f_tim
 
-# <completing> offerring OPTIONs: continued to next tasks OR stop here
+# completed by offering OPTIONs: continued to various tasks OR stop here
 f_sm0
 read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
@@ -226,9 +203,7 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    read -r opsi
 done
 
-for L in "${!ar_shy[@]}"; do
-    ar_exe+=("${_DIR}/${ar_shy[L]}")
-done
+for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
 
 case ${opsi:0:1} in
    1) f_sm1; "${ar_exe[2]}"; f_sm9 st;;

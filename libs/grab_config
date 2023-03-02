@@ -1,5 +1,5 @@
 # TAGS
-#   grab_config v9.4
+#   grab_config v9.5
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -13,12 +13,10 @@
 #      ~ nano +$(grep -n 'f_dft()' grab_library | cut -d: -f1) grab_library
 ##################################################################################
 
-# identify clearly and with certainty host-name. use fqdn or ip-address
-#   HOST=rpz.warnet-ersa.net
-#   HOST=172.30.254.253
+# specify in fqdn or ip-address
 HOST=rpz.warnet-ersa.net
 
-# fixed number of lines grab_regex
+# fixed number of lines grab_regex. DON'T CHANGE
 REGEX=4
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
@@ -43,7 +41,7 @@ RNDC_RELOAD=no
 RPZ_DOM=CNAME .
 RPZ_IP4=rpz-nsip CNAME .
 
-# fixed number of lines grab_urls
+# fixed number of lines grab_urls. DON'T CHANGE
 URLS=22
 
 # directory where zone-files (rpz.*) and db-files (db.*) are located  
