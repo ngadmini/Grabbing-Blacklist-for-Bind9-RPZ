@@ -399,7 +399,6 @@ f_cnf() {   # valuation variables in grab_config
          for ARG in "${!ar_VAR[@]}"; do   # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
-         f_ok
       else  # misconfigurations occurs: fallback to default values
          printf "\n${_err} misconfigurations occurs in ${_CYN}. undefine variable: " "${CNF##*/}"
          printf "%s${_CYN}\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"
@@ -424,8 +423,8 @@ f_cnf() {   # valuation variables in grab_config
 f_stt() {   # starting main script
    printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "$1" "${_lct}"
    if [[ ${_get} != "${_ver}" ]]; then   # confirm to the latest release
-      printf "${_err} you're running ${_RED}. an update is available" "${0##*/} ${_ver}"
-      printf "\n${_CYN} do you want upgrade to ${_CYN} (Y/n)? " "[CONFIRM]" "${0##*/} ${_get}"
+      printf "${_err} you're running ${_RED}. an update is available\n" "${0##*/} ${_ver}"
+      printf "${_CYN} do you want upgrade to %s (Y/n)? " "[CONFIRM]" "${0##*/} ${_ver}"
       read -r confirm
       case ${confirm:0:1} in
          y|Y|"") curl -sO "${_ori}/libs/${0##*/}"
@@ -433,6 +432,7 @@ f_stt() {   # starting main script
               *) return 1;;
       esac
    fi
+
    # shellcheck portability
    if ! [[ -e .shellcheckrc ]]; then
       cat <<eof>>.shellcheckrc

@@ -21,6 +21,7 @@ if [[ -e ${_LIB} ]]; then
    if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
    f_trp
+   f_cnf
 else
    curl -sO https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/libs/grab_library
    response=$?
@@ -44,10 +45,6 @@ ar_pkg=()
 ar_exe=()
 declare -A ar_num              # numeric value
 ar_num[ar_shn]=0               # index's position of: grab_regex is no.0 at ar_shn
-
-# check the requirements
-printf "${_pre} %-63s" "check configuration at file: grab_config"
-f_cnf
 
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
