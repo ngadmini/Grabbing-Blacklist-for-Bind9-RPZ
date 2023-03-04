@@ -10,7 +10,9 @@
    </a><br><br>
   	<a href="#"><img src="http://s.4cdn.org/image/title/105.gif"></a>
 </p>
+
 ### featuring
+
 - [x] free from duplicate entries and sub-domains entries (if it's parent-domain exist) across entire categories
 - [x] free from invalid TLDs and domain entries that construct with international characters (non ASCII)
 - [x] ip-address is written in CIDR block
