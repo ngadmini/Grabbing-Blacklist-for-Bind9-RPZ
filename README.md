@@ -17,8 +17,8 @@
  3. [grab_build.sh][grab-build] --rewriting to Bind9-RPZ format-entry
  4. [grab_cereal.sh][grab-cereal] --incrementing serial number at [rpz.*][zone-file]
  5. [grab_library][grab-lib] --a library of functions. intended for use by other scripts, not to be executed directly
- 6. [grab_urls][grab-urls] --urls of sources-list. case sensitive, strict order, line count and no blank lines
- 7. [grab_regex][grab-regex] --list of reguler expressions. case sensitive, strict order, line count and no blank lines
+ 6. [grab_urls][grab-urls] --urls of sources-list. case sensitive, sort as is, line count and no blank lines
+ 7. [grab_regex][grab-regex] --list of reguler expressions. case sensitive, sort as is, line count and no blank lines
  8. [grab_rsync.sh][grab-scp] --intended for syncronize latest dBASE to Bind9 host
  9. [grab_config][grab-cnf] --configurations file
 10. [rpz.*][zone-file] --pack of zone-files
@@ -29,8 +29,8 @@
 - [x] execute `grab_http.sh` with `non root privileges` either directly as a `root user` or by use of `sudo command`, from your linux desktop workstation then follow the next step
 ### output:
 - [x] new files with prefix `db.*` are dataBases for RPZ and ready to use at BIND9-server
-- [x] modified files with prefix `rpz.*` are zone -files, ready to use too
-- [x] new files with prefix `txt.*` as the output of [grab_duplic.sh][grab-dedup] can be found at [Partial Output][part-output]
+- [x] incremented serial of zone-files - `[rpz.*][zone-file]`, ready to use too
+- [x] new files with prefix `txt.*` as the output of [grab_duplic.sh][grab-dedup] can be found at [this repository][part-output]
 ### others:
 - [x] **Credits to** : All Owner-Maintainer of sources-list in [grab_urls][grab-urls] and [KOMINFO NKRI][kominfo-nkri]
 - [x] [![CC BY-SA 4.0][cc-by-sa-badge]][cc-by-sa]

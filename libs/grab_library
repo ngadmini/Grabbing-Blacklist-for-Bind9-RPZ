@@ -37,8 +37,8 @@ _don="${_grn}[DONE]${_ncl}"
 _err="${_red}[FAIL]${_ncl}"
 _GRN="${_grn}%s${_ncl}"
 _hnt="${_cyn}[HINT]${_ncl}"
-_inf="${_ylw}[INFO]${_ncl}"
-_pre="${_ylw}PREPARING TASKs:${_ncl}"
+_inf="${_cyn}[INFO]${_ncl}"
+_pre="${_cyn}PREPARING TASKs:${_ncl}"
 _RED="${_red}%s${_ncl}"
 _rnr="${_grn}'rndc reload'${_ncl}"
 _shd="${_grn}'shutdown -c'${_ncl}"
@@ -116,7 +116,7 @@ f_sm0() {   # display offering options
    printf "   - sub-domain and it's parent-domain exist across CATEGORIES\n"
    printf "${_hnt} consider continue to next TASKs\n"
    printf "${_CYN}\n" "you have 4 options to proceed to the next task:"
-   printf "%4s) pruning duplicate and sub-domains (if parent-domain exist) across CATEGORIES\n" "1"
+   printf "%4s) pruning duplicate & sub-domain entries (if parent-domain exist) across CATEGORIES\n" "1"
    printf "%4s) option [1] and rewriting all domains to RPZ format-entry [db.* files]\n" "2"
    printf "%4s) options [1,2] and incrementing serial zone-files [rpz.*]\n" "3"
    printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "${HOST}"
@@ -134,7 +134,7 @@ f_sm0() {   # display offering options
 
 f_sm1() {   # f_sm[1..5]: display messages while chosing option
    printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "${opsi}"
-   printf "${_cnt}\n%4s) remove [duplicate] and [sub-domains if parent-domain exist] across CATEGORIES\n" "1"
+   printf "${_cnt}\n%4s) pruning duplicate & sub-domain entries (if parent-domain exist) across CATEGORIES\n" "1"
    f_sm10 "st"
 }
 
@@ -160,7 +160,7 @@ f_sm4() {
 
 f_sm5() {
    printf "\n${_red}[%s'%s] TASK options chosen${_ncl}\n" "${opsi}" "$1"
-   printf "${_cnt}\n%4s) remove [duplicate] and [sub-domains if parent-domain exist] across CATEGORIES\n" "1"
+   printf "${_cnt}\n%4s) pruning duplicate & sub-domain entries (if parent-domain exist) across CATEGORIES\n" "1"
    printf "%4s) rewriting all domains to RPZ format-entry [db.* files]\n" "2"
 }
 
@@ -182,42 +182,7 @@ f_ok() { printf "${_GRN}\n" "isOK"; }
 f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 
-# grabbing raw-domains
-f_add() { curl -s "$1" || f_xcd 251 "$1"; }
-f_grb() {   # initialize CATEGORY, many categories are obtained but the main one is adult
-   printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
-   f_tmp                       # remove stale dir & file if any
-
-   for A in {0..5}; do         # grab dsi.ut-capitole.fr and use as initialize category
-      local tar_dsi
-      tar_dsi=$(basename "${ar_url[A]}")
-      local ext_dsi="${tar_dsi/.tar.gz/}"
-      find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
-      printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
-      curl -sO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
-      tar -xzf "${tar_dsi}"
-      f_do
-   done
-
-   # some adjusment for initialize category
-   mkdir ipv4
-   mv phishing malware
-   mv gambling trust+
-   cat vpn/domains >> redirector/domains
-   rm -rf vpn
-
-   mapfile -t ar_cat < <(f_cat)          # initializing category
-   printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-   f_frm "txt.*"                         # remove stale raw-domains
-   ar_dmn=()
-   ar_txt=()
-
-   for B in "${!ar_cat[@]}"; do
-      ar_dmn+=("${ar_cat[B]}"/domains)   # as raw-domains container
-      ar_txt+=(txt."${ar_cat[B]}")       # as processed-domains container
-   done
-}
-
+f_add() { curl -s "$1" || f_xcd 251 "$1"; }    # grabbing domains from sources-list
 f_fix() {   # fixing false and bad entries
    f_sm8 "$1"
    dos2unix "$2" >> /dev/null 2>&1
@@ -225,7 +190,7 @@ f_fix() {   # fixing false and bad entries
    f_do
 }
 
-f_fip() {   # capture ip-address entry. save it into sub-net [ipv4 CATEGORY]
+f_fip() {   # capture ip-address entry. turn to CIDR & save it into ipv4 CATEGORY
    printf "%12s: %-66s" "moving" "IP-address entries into $3 CATEGORY"
    _grp -P "${_prl}" "$1" | _sed "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "$2"
    _sed -i -r "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"
@@ -276,14 +241,14 @@ f_uri() {   # verify remote-urls [grab_urls] is available
 # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
 f_dpl() { printf "pruning duplicate entries based on ${_CYN}\n" "${1^^}"; }
 f_dpm() {
-   awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" | _srt -o "$3"
+   awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" > "$3"
    cp "${3}" "${2}"
    f_do
 }
 
 f_dpn() {
    printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
-   _srt "$3" "$4" | uniq -d | _srt -o "$5"
+   _srt "$3" "$4" | uniq -d > "$5"
 }
 
 f_g4c() {   # used by grab_cereal.sh to remarking rpz.*
@@ -331,10 +296,8 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
    _ssh root@"${HOST}" [[ -d "${ZONE_DIR}" ]] || f_xcd 254 "${ZONE_DIR}" "${HOST}"
    f_ok
 
-   printf "${_inf} %-85s" "check required debian-packages in ${HOST}"
-   for C in {rsync,pigz}; do   # required: rsync and pigz
-      _ssh root@"${HOST}" "hash ${C} >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "${C}"
-   done
+   printf "${_inf} %-85s" "check required debian-packages in ${HOST}\n"
+   _ssh root@"${HOST}" "hash rsync >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "rsync"
    f_ok
 }
 
@@ -433,8 +396,7 @@ f_stt() {   # starting main script
       esac
    fi
 
-   # shellcheck portability
-   if ! [[ -e .shellcheckrc ]]; then
+   if ! [[ -e .shellcheckrc ]]; then     # portability to shellcheck
       cat <<eof>>.shellcheckrc
 source-path=./
 source=/dev/null

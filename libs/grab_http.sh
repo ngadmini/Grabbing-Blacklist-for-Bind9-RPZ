@@ -87,14 +87,41 @@ for E in "${!ar_shn[@]}"; do
 done
 f_ok
 
-# initialize, grabbing and processing sources-list (CATEGORY)
+# initialize CATEGORY, many categories are obtained but the main one is adult
 printf "${_pre} check availability of sources-list (as listed in %s)\n" "${ar_shn[1]}"
-f_uri "${ar_shn[1]}" || :
-f_grb
+f_uri "${ar_shn[1]}" || :             # check availability of sources-list
+printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
+f_tmp                                 # remove stale dir & files if any
+for A in {0..5}; do                   # grab blacklist from dsi.ut-capitole.fr
+   tar_dsi=$(basename "${ar_url[A]}") #+ and use as initialize categories
+   ext_dsi="${tar_dsi/.tar.gz/}"
+   find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
+   printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
+   curl -sO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
+   tar -xzf "${tar_dsi}"
+   f_do
+done
+
+mkdir ipv4                            # make some adjusment before initializing categories
+mv phishing malware
+mv gambling trust+
+cat vpn/domains >> redirector/domains
+rm -rf vpn
+
+mapfile -t ar_cat < <(f_cat)          # initializing category
+printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
+f_frm "txt.*"                         # remove stale domain lists
+ar_dmn=()                             # use it's as raw-domains container
+ar_txt=()                             #+            processed-domains container
+
+for B in "${!ar_cat[@]}"; do
+   ar_dmn+=("${ar_cat[B]}"/domains)
+   ar_txt+=(txt."${ar_cat[B]}")
+done
 
 # category: TRUST+
 # contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
-#+          ${ar_cat[5]} with 3 additional entries: ${ar_url[1,7]}
+#+          ${ar_cat[5]} with 2 additional entries: ${ar_url[1,7]}
 f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}")
 untrust=$(mktemp -p "${_DIR}")
@@ -118,7 +145,7 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT
 # contents: adult-porn domains
-#+          ${ar_cat[0]} with 3 additional entries: ${ar_url[0,6]}
+#+          ${ar_cat[0]} with 2 additional entries: ${ar_url[0,6]}
 f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
@@ -180,15 +207,13 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # resume
 printf "\nprocessing sources-list (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
-
 for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
-
-_tmb2=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
+_tmb=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb2/./,}"
+printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb/./,}"
 T="$(($(date +%s%N)-T))"
 f_tim
 

@@ -43,9 +43,9 @@
         please SEE prerequisites section in this README
 
    7. grab_urls --contain urls list of source files.
-        case sensitive, strict order, line count and no blank lines
+        case sensitive, sort as is, line count and no blank lines
    8. grab_regex --contain reguler expressions.
-        *) case sensitive, strict order, line count and no blank lines
+        *) case sensitive, sort as is, line count and no blank lines
         *) intended for fixing/removing false entries:
            - less than 4 characters and larger than 64 characters (RFC 1035)
            - construct with international characters (non ASCII). check it's with :
@@ -56,11 +56,8 @@
                 ~ https://gist.github.com/ngadmini/8bcabcb0b31f02619e7b638065621f75
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
-        in addition to synchronizing, this script also generates a tar file to bakcup
-        old db.* and rpz.* files in BIND9-server. use below to decompress
-
-        ~$ unpigz -v rpz-2022-04-09.tar.gz
-        ~$ tar -xvf rpz-2022-04-09.tar
+        in addition to synchronizing, this script also generates a tar-file to bakcup
+        old db.* and rpz.* files in BIND9-server and save it in home directory
 
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
         rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
@@ -115,8 +112,8 @@
 
 *) on your BIND9-server
       # check required package (dependencies)
-      ~$ apt policy pigz rsync
-      ~$ apt install -y pigz rsync
+      ~$ apt policy rsync
+      ~$ apt install -y rsync
 
 *) passwordless ssh
       your linux desktop and BIND9-server, both must configure to use passwordless for

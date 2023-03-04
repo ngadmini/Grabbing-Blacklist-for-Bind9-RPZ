@@ -59,9 +59,8 @@ f_ssh   # end of check
 _cd=$(basename "$ZONE_DIR")
 printf -v _ID "/home/rpz-%s.tar.gz" "$(date +%Y%m%d-%H%M%S)"
 printf "${_inf} %-85s" "archiving stale RPZ-dBase in ${HOST}:${_ID}"
-_ssh root@"${HOST}" "cd ${ZONE_DIR/$_cd/}; tar -I pigz -cf ${_ID} ${_cd}"
+_ssh root@"${HOST}" "cd ${ZONE_DIR/$_cd/}; tar -czf ${_ID} ${_cd}"
 f_do
-printf "${_hnt} extract with: '${_GRN}'\nfollowed by '${_GRN}'\n" "unpigz -v ${_ID}" "tar -xvf ${_ID/.gz/}"
 printf "${_inf} %-85s" "find and remove old RPZ-dBase archive in ${HOST}:/home"
 _ssh root@"${HOST}" "find /home -regex '^.*\(tar.gz\)$' -mmin +1440 -print0 | xargs -0 -r rm"
 f_do

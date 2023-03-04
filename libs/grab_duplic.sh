@@ -88,7 +88,7 @@ fi
 printf "\n${_YLW} pruning sub-domain across CATEGORIES%-8s" "[PREPARING]"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
-_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}"| _srt -o "${prun_ini}"
+_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 f_prn "${prun_ini}" "${prun_out}"
 f_ok
 
