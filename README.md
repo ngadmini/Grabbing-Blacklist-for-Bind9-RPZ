@@ -29,7 +29,7 @@
 - [x] execute `grab_http.sh` with `non root privileges` either directly as a `root user` or by use of `sudo command`, from your linux desktop workstation then follow the next step
 ### output:
 - [x] new files with prefix `db.*` are dataBases for RPZ and ready to use at BIND9-server
-- [x] incremented serial of zone-files - `[rpz.*][zone-file]`, ready to use too
+- [x] incremented serial of zone-files - [rpz.*][zone-file], ready to use too
 - [x] new files with prefix `txt.*` as the output of [grab_duplic.sh][grab-dedup] can be found at [this repository][part-output]
 ### others:
 - [x] **Credits to** : All Owner-Maintainer of sources-list in [grab_urls][grab-urls] and [KOMINFO NKRI][kominfo-nkri]
