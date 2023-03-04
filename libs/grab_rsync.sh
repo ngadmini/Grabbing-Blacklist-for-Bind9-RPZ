@@ -67,7 +67,8 @@ f_do
 
 # syncronizing latest RPZ-dBase to remote-host
 printf "${_inf} %-85s" "syncronizing the latest RPZ-dBase to ${HOST}:${ZONE_DIR}"
-_snc {rpz,db}.* root@"${HOST}":"${ZONE_DIR}"; f_do
+_snc {rpz,db}.* root@"${HOST}":"${ZONE_DIR}"
+f_do
 
 # applying latest RPZ-dBase at remote-host
 if [[ ${RNDC_RELOAD} =~ [yY][eE][sS] ]]; then

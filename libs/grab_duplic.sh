@@ -51,7 +51,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    done
 
    printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
-   printf "${_inf} prune duplicate and sub-domains (if parent-domain exist) across CATEGORIES\n"
+   printf "${_CYN} duplicate entries across CATEGORIES\n" "[PRUNE]"
 
    f_dpl "${ar_cat[0]}"   # remove duplicate entries based on ${ar_cat[0]}
    printf "%11s = deduplicating %s entries%-16sSKIP\n" "STEP 0.1" "${ar_cat[1]}" ""
@@ -85,16 +85,16 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_YLW} pruning sub-domain across CATEGORIES%-8s" "[PREPARING]"
+printf "\n${_CYN} sub-domains across CATEGORIES%-19s" "[PRUNE]"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
-f_prn "${prun_ini}" "${prun_out}"
-f_ok
+f_prn "${prun_ini}" "${prun_out}"   # pruning sub-domain across CATEGORIES
+f_do
 
-for O in ${!ar_cat[@]}; do
-   if [[ ${O} -eq 1 ]]; then
-      printf "%3spruning sub-domain entries: %-25s" "" "${ar_cat[1]^^} category"
+for O in "${!ar_cat[@]}"; do        # retrieve pruned sub-domains from across
+   if [[ ${O} -eq 1 ]]; then        #+  CATEGORIES to the current category
+      printf "%3sretrieve pruned sub-domains to: ${_CYN} category \t" "" "${ar_cat[1]^^}"
       while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
@@ -103,7 +103,7 @@ for O in ${!ar_cat[@]}; do
       cp "${ar_prn[1]}" "${ar_CAT[1]}"
       f_do
    else
-      printf "%3spruning sub-domain entries: %-25s" "" "${ar_cat[O]^^} category"
+      printf "%3sretrieve pruned sub-domains to: ${_CYN} category \t" "" "${ar_cat[O]^^}"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       f_do
