@@ -31,6 +31,8 @@ else
 fi
 
 f_stt "[3'th] TASKs:"
+printf "${_inf} %-65s" "check availability configuration file"
+f_cnf
 [[ ! ${UID} -eq 0 ]] || f_xcd 247
 
 # inspecting zone-files then update them's serial
@@ -43,8 +45,9 @@ printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
 printf "${_inf} check availability zone-files: "
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
-      printf "FOUND %s zone-files (complete)" "${#ar_zon[@]}"
-      printf "\n${_inf} incrementing serial of zone-files:\n${_CYN}" "${mr_p}"
+      printf "FOUND %s zone-files %-14s" "${#ar_zon[@]}"
+      f_ok
+      printf "${_inf} incrementing serial of zone-files:\n${_CYN}" "${mr_p}"
       for Z in "${ar_zon[@]}"; do
          DATE=$(date +%Y%m%d)
          SERIAL=$(grep "SOA" "${Z}" | cut -d \( -f2 | cut -d' ' -f1)
@@ -72,7 +75,6 @@ elif [[ ${#ar_zon[@]} -gt ${#ar_rpz[@]} ]]; then
    f_mis "${miss_v}" "${mr_p}"
 else
    f_no "${miss_v}"
-   f_cnf
    printf "${_inf} trying to get the missing zone-files from origin: %s\n" "${HOST}"
    f_cer "${miss_v}"
 fi

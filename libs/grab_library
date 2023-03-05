@@ -337,7 +337,7 @@ f_cat() { find . -maxdepth 1 -type d | _sed "1d;s/\.\///" | _srt; }
 f_sta() { if [[ $(stat -c "%a" "$2") != "$1" ]]; then chmod "$1" "$2"; fi; }
 f_pkg() { if ! [[ -e $1 ]]; then f_no "$1"; f_ori libs/"$1" "$1"; fi; f_sta "$2" "$1"; }
 
-f_dft() {   # fallback to these values if grab_config missing or missconfigured
+f_dft() {   # fallback to these default values if grab_config missing or missconfigured
    printf "\n${_wn0} ${_CYN} continued with default configurations\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
    : "${REGEX:=4}"                          # fix number of lines grab_regex
@@ -350,7 +350,6 @@ f_dft() {   # fallback to these values if grab_config missing or missconfigured
 
 f_cnf() {   # valuation variables in grab_config
    readonly CNF="${_DIR}"/grab_config
-   local _ptr="s/=[ ^ ]/=/g;s/['\"]//g;s/[#;].*//g;s/[[:space:]]+/ /g;s/[[:space:]]$//g"
 
    if [[ -e ${CNF} ]]; then
       f_sta 644 "${CNF}"
@@ -358,10 +357,12 @@ f_cnf() {   # valuation variables in grab_config
       mapfile -t ar_CNF < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "s/[ ^ ]=/=/g" | cut -d= -f1)
 
       if [[ ${ar_CNF[*]} == "${ar_cnf[*]}" ]]; then
+         local _ptr="s/=[ ^ ]/=/g;s/['\"]//g;s/[#;].*//g;s/[[:space:]]+/ /g;s/[[:space:]]$//g"
          mapfile -t ar_VAR < <(_srt "${CNF}" | _grp -E "^[A-Z]" | _sed "${_ptr}" | cut -d= -f2)
          for ARG in "${!ar_VAR[@]}"; do   # get values supplied by "${CNF}", instead of "source ${CNF}"
             printf -v "${ar_CNF[ARG]}" "%s" "${ar_VAR[ARG]}"
          done
+         f_ok
       else  # misconfigurations occurs: fallback to default values
          printf "\n${_err} misconfigurations occurs in ${_CYN}. undefine variable: " "${CNF##*/}"
          printf "%s${_CYN}\n" "" "$(echo "${ar_CNF[@]}" "${ar_cnf[@]}" | f_sed)"

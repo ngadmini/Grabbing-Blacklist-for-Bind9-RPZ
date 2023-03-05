@@ -1,10 +1,10 @@
-<h1 align="center">Grabbing Blacklist Domains for Bind9-RPZ</h1>
+<h1 align="center">Grabbing Blacklisted Domains for Bind9-RPZ</h1>
 
 <p align="center">
-  	<b>Tailorized bash script-pack to update blacklisted domains in BIND9 Response Policy Zone<br>
+  	<b>Bash script-pack to update blacklisted domains in BIND9 Response Policy Zone<br>
 	Please consider adapting this pack to fit your environment properties,<br>
 	since simple duplication may not given appropriate results.<br>
-	The partial output of this script-pack can be found at link below</b><br>
+	The partial output of this script-pack can be found at <a href="https://github.com/ngadmini/partial-output">this repo</a></b><br>
   	<a href="https://github.com/ngadmini/partial-output">
       <img src="https://img.shields.io/badge/bind9%20RPZ-Partial%20Output-blue?style=flat-square&logo=github">
    </a><br><br>

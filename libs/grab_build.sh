@@ -19,7 +19,6 @@ if [[ -e ${_LIB} ]]; then
    if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
    f_trp
-   f_cnf
 else
    curl -sO https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/master/libs/grab_library
    response=$?
@@ -32,6 +31,8 @@ else
 fi
 
 f_stt "[2'nd] TASKs:"
+printf "${_pre} %-63s" "check availability configuration file"
+f_cnf
 [[ ! ${UID} -eq 0 ]] || f_xcd 247
 
 # inspecting required files <categories> first then split txt.adult

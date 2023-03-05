@@ -94,7 +94,7 @@ f_do
 
 for O in "${!ar_cat[@]}"; do        # retrieve pruned sub-domains from across
    if [[ ${O} -eq 1 ]]; then        #+  CATEGORIES to the current category
-      printf "%3sretrieve pruned sub-domains to: ${_CYN} category \t" "" "${ar_cat[1]^^}"
+      printf "%3sretrieve pruned sub-domains to: %-21s" "" "${ar_cat[1]^^} category"
       while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
@@ -103,7 +103,7 @@ for O in "${!ar_cat[@]}"; do        # retrieve pruned sub-domains from across
       cp "${ar_prn[1]}" "${ar_CAT[1]}"
       f_do
    else
-      printf "%3sretrieve pruned sub-domains to: ${_CYN} category \t" "" "${ar_cat[O]^^}"
+      printf "%3sretrieve pruned sub-domains to: %-21s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       f_do
