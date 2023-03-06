@@ -85,16 +85,16 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_CYN} sub-domains across CATEGORIES%-19s" "[PRUNE]"
+printf "\n${_CYN} sub-domains if parent domain exist across CATEGORIES%-3s" "[PRUNE]"
 prun_ini=$(mktemp -p "${_DIR}")
 prun_out=$(mktemp -p "${_DIR}")
-_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
-f_prn "${prun_ini}" "${prun_out}"   # pruning sub-domain across CATEGORIES
+_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"   # pruning sub-domain if parent domain
+f_prn "${prun_ini}" "${prun_out}"                        #+  exist across CATEGORIES
 f_do
 
-for O in "${!ar_cat[@]}"; do        # retrieve pruned sub-domains from across
-   if [[ ${O} -eq 1 ]]; then        #+  CATEGORIES to the current category
-      printf "%3sretrieve pruned sub-domains to: %-21s" "" "${ar_cat[1]^^} category"
+for O in "${!ar_cat[@]}"; do        # send back pruned sub-domains an ipv4-addresses from across
+   if [[ ${O} -eq 1 ]]; then        #+  CATEGORIES to the appropriate category
+      printf "%3ssend back pruned ipv4-addresses to: %-24s" "" "${ar_cat[1]^^} category"
       while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
@@ -103,7 +103,7 @@ for O in "${!ar_cat[@]}"; do        # retrieve pruned sub-domains from across
       cp "${ar_prn[1]}" "${ar_CAT[1]}"
       f_do
    else
-      printf "%3sretrieve pruned sub-domains to: %-21s" "" "${ar_cat[O]^^} category"
+      printf "%3ssend back pruned sub-domains to: %-27s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       f_do
