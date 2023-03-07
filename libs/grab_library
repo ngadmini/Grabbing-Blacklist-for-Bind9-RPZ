@@ -408,9 +408,3 @@ disable=SC2154
 eof
    fi
 }
-
-f_prn() { # pruning sub-domains if there is an it's parent-domain
-   _sed "s/^/\./" "$1" | rev | _srt -u \
-      | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-      | rev | _sed "s/^\.//" | _srt > "$2"
-}

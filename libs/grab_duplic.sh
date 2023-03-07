@@ -86,10 +86,12 @@ else
 fi
 
 printf "\n${_CYN} sub-domains if parent domain exist across CATEGORIES%-3s" "[PRUNE]"
-prun_ini=$(mktemp -p "${_DIR}")
-prun_out=$(mktemp -p "${_DIR}")
-_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"   # pruning sub-domain if parent domain
-f_prn "${prun_ini}" "${prun_out}"                        #+  exist across CATEGORIES
+prun_ini=$(mktemp -p "${_DIR}")     # pruning sub-domain if parent domain
+prun_out=$(mktemp -p "${_DIR}")     #+  exist across CATEGORIES
+_srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
+_sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
+   | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
+   | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
 
 for O in "${!ar_cat[@]}"; do        # send back pruned sub-domains an ipv4-addresses from across
