@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v9.5
+#   grab_library v9.6
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -166,7 +166,7 @@ f_sm5() {
 
 # f_sm[6..10]: display processing messages
 f_sm6() { printf "%12s: %-66s" "grab_$1" "${2}"; }
-f_sm7() { printf "\nprocessing ${_CYN} with (%d) additional remote-files\n" "${1^^} CATEGORY" "$2"; }
+f_sm7() { printf "\nprocessing ${_CYN} with (%d) additional sources-url(s)\n" "${1^^} CATEGORY" "$2"; }
 f_sm8() { printf "%12s: %-66s" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm9() { printf "${_tks} based on %s'%s options: ${_GRN}\nbye!\n" "${opsi}" "$1" "DONE"; }
 f_sm10() { printf "${_cyn}PERFORMING TASKs:${_ncl} based on %s'%s options ...\n" "${opsi}" "$1"; }
@@ -182,7 +182,7 @@ f_ok() { printf "${_GRN}\n" "isOK"; }
 f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 
-f_add() { curl -s "$1" || f_xcd 251 "$1"; }    # grabbing domains from sources-list
+f_add() { curl -s "$1" || f_xcd 251 "$1"; }    # grabbing domains from sources-urls
 f_fix() {   # fixing false and bad entries
    f_sm8 "$1"
    dos2unix "$2" >> /dev/null 2>&1
@@ -230,7 +230,7 @@ f_uri() {   # verify remote-urls [grab_urls] is available
 
    if [[ ${#ar_dwn[@]} -eq 0 ]]; then   # display result
       printf "%30s\n" " " | tr " " -
-      printf "All URLs of remote-files isUP.\n"
+      printf "All URLs of sources-url(s) isUP.\n"
    else
       printf "%84s\n" " " | tr " " -
       printf "${_CYN}\n" "${ar_dwn[@]}"
@@ -340,11 +340,11 @@ f_pkg() { if ! [[ -e $1 ]]; then f_no "$1"; f_ori libs/"$1" "$1"; fi; f_sta "$2"
 f_dft() {   # fallback to these default values if grab_config missing or missconfigured
    printf "\n${_wn0} ${_CYN} continued with default configurations\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
-   : "${REGEX:=4}"                          # fix number of lines grab_regex
+   : "${REGEX:=2}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
    : "${RPZ_IP4:=rpz-nsip CNAME .}"         #+
-   : "${URLS:=22}"                          # fix number of lines grab_urls
+   : "${URLS:=21}"                          # fix number of lines grab_urls
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
 

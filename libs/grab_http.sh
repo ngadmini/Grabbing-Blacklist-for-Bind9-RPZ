@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v9.5
+#   grab_http.sh v9.6
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -77,7 +77,6 @@ for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
 for E in "${!ar_shn[@]}"; do
    f_pkg "${ar_shn[E]}" 644
    _sed -i "/^$/d" "${ar_shn[E]}"
-
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
       [[ ${#ar_reg[@]} -eq ${REGEX} ]] || f_xcd 249 "${ar_shn[E]}"
@@ -89,8 +88,8 @@ done
 f_ok
 
 # initialize CATEGORY, many categories are obtained but the main one is adult
-printf "${_pre} check availability of sources-list (as listed in %s)\n" "${ar_shn[1]}"
-f_uri "${ar_shn[1]}" || :             # check availability of sources-list
+printf "${_pre} check availability of sources-urls (as listed in %s)\n" "${ar_shn[1]}"
+f_uri "${ar_shn[1]}" || :             # check availability of sources-urls
 printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
 f_tmp                                 # remove stale dir & files if any
 for A in {0..5}; do                   # grab blacklist from dsi.ut-capitole.fr
@@ -119,30 +118,6 @@ for B in "${!ar_cat[@]}"; do
    ar_dmn+=("${ar_cat[B]}"/domains)
    ar_txt+=(txt."${ar_cat[B]}")
 done
-
-# category: TRUST+
-# contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
-#+          ${ar_cat[5]} with 2 additional entries: ${ar_url[1,7]}
-f_sm7 "${ar_cat[5]}" 2
-trust=$(mktemp -p "${_DIR}")
-untrust=$(mktemp -p "${_DIR}")
-porn=$(mktemp -p "${_DIR}")
-f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
-
-# reduce adult entries and move it's to adult category
-printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
-_srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
-_grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
-_srt -u "${untrust}" -o "${untrust}"                         #+  adult category "${ar_dmn[0]}"
-awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
-cat "${untrust}" >> "${ar_dmn[0]}"
-f_do
-
-# fixing false and bad entries
-f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"
-f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT
 # contents: adult-porn domains
@@ -206,8 +181,15 @@ f_sm8 "${ar_cat[1]}"             # fixing false and bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
+# category: TRUST+
+# contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
+#+          ${ar_cat[5]} with 1 additional entries: ${ar_url[1,7]}
+f_sm7 "${ar_cat[5]}" 1
+f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" >> "${ar_txt[5]}"; f_do
+printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[5]}")"
+
 # resume
-printf "\nprocessing sources-list (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
+printf "\nprocessing sources-urls (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
@@ -225,9 +207,7 @@ until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
-
 for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
-
 case ${opsi:0:1} in
    1) f_sm1; "${ar_exe[2]}"; f_sm9 st;;
    2) f_sm2

@@ -1,10 +1,10 @@
-; db.adultaf = 1.428.570 lines
-; generate at Thu 2023-03-02 23:24:04 WIB by grab_build.sh v9.5
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.5/libs/grab_build.sh
+; db.adultaf = 1.286.194 lines
+; generate at Wed 2023-03-08 13:11:25 WIB by grab_build.sh v9.6
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.6/libs/grab_build.sh
 ;
-pornvodlinks.blogspot.ca CNAME .
-*.pornvodlinks.blogspot.ca CNAME .
-pornvodlinks.blogspot.ch CNAME .
-*.pornvodlinks.blogspot.ch CNAME .
-pornvodlinks.blogspot.cl CNAME .
-*.pornvodlinks.blogspot.cl CNAME .
+pornvidsxxx.blogspot.jp CNAME .
+*.pornvidsxxx.blogspot.jp CNAME .
+pornvidsxxx.blogspot.kr CNAME .
+*.pornvidsxxx.blogspot.kr CNAME .
+pornvidsxxx.blogspot.li CNAME .
+*.pornvidsxxx.blogspot.li CNAME .
