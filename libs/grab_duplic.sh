@@ -54,7 +54,7 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    printf "${_CYN} duplicate entries across CATEGORIES\n" "[PRUNE]"
 
    f_dpl "${ar_cat[0]}"   # remove duplicate entries based on ${ar_cat[0]}
-   printf "%11s = deduplicating %s entries%-16sSKIP\n" "STEP 0.1" "${ar_cat[1]}" ""
+   printf "%11s = pruning duplicates %s entries%-11sSKIP\n" "STEP 0.1" "${ar_cat[1]}" ""
    for C in {2..5}; do
       f_dpn "${C}" "${ar_cat[C]}" "${ar_CAT[C]}" "${ar_CAT[0]}" "${ar_tmp[C]}" 0
       f_dpm "${ar_tmp[C]}" "${ar_CAT[C]}" "${ar_dmn[C]}"
@@ -85,7 +85,7 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_CYN} sub-domains if parent domain exist across CATEGORIES%-3s" "[PRUNE]"
+printf "\n${_CYN} sub-domains if parent domain exist across CATEGORIES%-2s" "[PRUNE]"
 prun_ini=$(mktemp -p "${_DIR}")     # pruning sub-domain if parent domain
 prun_out=$(mktemp -p "${_DIR}")     #+  exist across CATEGORIES
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
@@ -94,9 +94,9 @@ _sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
    | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
 
-for O in "${!ar_cat[@]}"; do        # send back pruned sub-domains an ipv4-addresses from across
+for O in "${!ar_cat[@]}"; do        # turn bak pruned sub-domains an ipv4-addresses from across
    if [[ ${O} -eq 1 ]]; then        #+  CATEGORIES to the appropriate category
-      printf "%3ssend back pruned ipv4-addresses to: %-24s" "" "${ar_cat[1]^^} category"
+      printf "%3sturn back pruned ipv4-addresses to: %-23s" "" "${ar_cat[1]^^} category"
       while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
@@ -105,7 +105,7 @@ for O in "${!ar_cat[@]}"; do        # send back pruned sub-domains an ipv4-addre
       cp "${ar_prn[1]}" "${ar_CAT[1]}"
       f_do
    else
-      printf "%3ssend back pruned sub-domains to: %-27s" "" "${ar_cat[O]^^} category"
+      printf "%3sturn back pruned sub-domains to: %-26s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       f_do
@@ -113,7 +113,7 @@ for O in "${!ar_cat[@]}"; do        # send back pruned sub-domains an ipv4-addre
 done
 
 # display resume
-printf "\n${_inf} deduplicating and pruning sub-domains in summary:\n"
+printf "\n${_inf} pruning duplicates and sub-domains in summary:\n"
 for P in "${!ar_CAT[@]}"; do
    printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[P]}")"
    printf "%12s: %9s entries\n" "${ar_cat[P]}" "${_dpl}"

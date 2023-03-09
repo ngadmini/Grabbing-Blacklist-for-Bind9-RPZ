@@ -187,6 +187,11 @@ f_fix() {   # fixing false and bad entries
    f_sm8 "$1"
    dos2unix "$2" >> /dev/null 2>&1
    _srt -u "$2" | _sed -e "$3" -e "$4" > "$5"
+}
+
+f_out() {   # domains that passed the filtering
+   _grp -E '(bobet|casino|gambling|[^ey]judi|lotto|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
+   _sed -i '/\(bobet\|casino\|gambling\|[^ey]judi\|lotto\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
    f_do
 }
 
@@ -196,11 +201,6 @@ f_fip() {   # capture ip-address entry. turn to CIDR & save it into ipv4 CATEGOR
    _sed -i -r "/^([0-9]{1,3}\.){3}[0-9]{1,3}$/d" "$1"
    f_do
    printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "$1")"
-}
-
-f_out() {   # domains that passed the filtering
-   _grp -E '(bobet|casino|gambling|[^ey]judi|lotto|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
-   _sed -i '/\(bobet\|casino\|gambling\|[^ey]judi\|lotto\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
 }
 
 f_uri() {   # verify remote-urls [grab_urls] is available
@@ -247,7 +247,7 @@ f_dpm() {
 }
 
 f_dpn() {
-   printf "%11s = deduplicating %-28s" "STEP $6.$1" "$2 entries"
+   printf "%11s = pruning duplicates %-23s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d > "$5"
 }
 
@@ -340,11 +340,11 @@ f_pkg() { if ! [[ -e $1 ]]; then f_no "$1"; f_ori libs/"$1" "$1"; fi; f_sta "$2"
 f_dft() {   # fallback to these default values if grab_config missing or missconfigured
    printf "\n${_wn0} ${_CYN} continued with default configurations\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
-   : "${REGEX:=2}"                          # fix number of lines grab_regex
+   : "${REGEX:=4}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
    : "${RPZ_IP4:=rpz-nsip CNAME .}"         #+
-   : "${URLS:=21}"                          # fix number of lines grab_urls
+   : "${URLS:=22}"                          # fix number of lines grab_urls
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
 

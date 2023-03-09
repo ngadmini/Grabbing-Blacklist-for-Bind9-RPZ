@@ -5,7 +5,7 @@ https://dsi.ut-capitole.fr/blacklists/download/publicite.tar.gz
 https://dsi.ut-capitole.fr/blacklists/download/redirector.tar.gz
 https://dsi.ut-capitole.fr/blacklists/download/vpn.tar.gz
 https://blocklistproject.github.io/Lists/alt-version/porn-nl.txt
-https://raw.githubusercontent.com/ngadmini/partial-output/master/txt.trust+
+https://raw.githubusercontent.com/alsyundawy/dnstrust-apjii/207abf401095f325facd64f71313f9664c4ebfc1/raw/db_trustpositif.txt
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml
 https://v.firebog.net/hosts/Easylist.txt
 https://v.firebog.net/hosts/AdguardDNS.txt
@@ -19,3 +19,4 @@ https://blocklistproject.github.io/Lists/alt-version/ransomware-nl.txt
 https://raw.githubusercontent.com/RPiList/specials/master/Blocklisten/malware
 https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset
 https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.ip
+https://gist.githubusercontent.com/ngadmini/e93677cfb451583641df87739738c15c/raw/dbac3b65489669c54e47aa075003d8e11f0fc327/porn.txt

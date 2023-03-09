@@ -17,7 +17,7 @@
 HOST=rpz.warnet-ersa.net
 
 # fixed number of lines grab_regex. DON'T CHANGE
-REGEX=2
+REGEX=4
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some server with low_RAM
@@ -42,7 +42,7 @@ RPZ_DOM=CNAME .
 RPZ_IP4=rpz-nsip CNAME .
 
 # fixed number of lines grab_urls. DON'T CHANGE
-URLS=21
+URLS=22
 
 # directory where zone-files (rpz.*) and db-files (db.*) are located  
 ZONE_DIR=/etc/bind/zones-rpz
