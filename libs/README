@@ -1,7 +1,7 @@
 ### readme version v9.6
-   all scripts adapted to updating blacklisted domains in BIND9 - Response Policy Zone
-   version v9.6 of all scripts are the next release after the earlier release.
-   it's a maintenance release that increases version compatibility with list of urls in grab_urls
+   all scripts are meant to update blacklisted domains in BIND9 - Response Policy Zone.
+   this v9.6 version is the next release after the previous release. it's a maintenance release
+   which improves version compatibility with sources-list in grab_urls
 
 ### author:
    ngadimin@warnet-ersa.net
@@ -85,7 +85,7 @@
       HOST=rpz.warnet-ersa.net
 
       # fixed number of lines grab_regex. DON'T CHANGE
-      REGEX=2
+      REGEX=4
 
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>
@@ -105,7 +105,7 @@
       RPZ_IP4=rpz-nsip CNAME .
 
       # fixed number of lines grab_urls. DON'T CHANGE
-      URLS=21
+      URLS=22
 
       # change to directory where zone-files (rpz.* and db.*) are located in bind9-server
       ZONE_DIR=/etc/bind/zones-rpz
