@@ -95,7 +95,6 @@ _sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
 f_do
 
 for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addresses from
-   printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[O]}")"
    if [[ ${O} -eq 1 ]]; then        #+  across CATEGORIES to the appropriate category
       printf "%3sturn-back pruned ipv4-addresses to %-18s" "" "${ar_cat[1]^^} category"
       while IFS= read -r; do        # prune ipv4 by turning to CIDR-block
@@ -104,11 +103,13 @@ for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addr
             END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[1]}"
       done < "${ar_CAT[1]}"
       cp "${ar_prn[1]}" "${ar_CAT[1]}"
+      printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[1]}")"
       printf ": %9s entries\n" "${_dpl}"
    else
       printf "%3sturn-back pruned sub-domains to %-21s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
+      printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[O]}")"
       printf ": %9s entries\n" "${_dpl}"
    fi
 done
