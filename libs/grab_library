@@ -296,7 +296,7 @@ f_ssh() {   # nested in f_cer and needed by grab_rsync
    _ssh root@"${HOST}" [[ -d "${ZONE_DIR}" ]] || f_xcd 254 "${ZONE_DIR}" "${HOST}"
    f_ok
 
-   printf "${_inf} %-85s" "check required debian-packages in ${HOST}\n"
+   printf "${_inf} %-85s" "check required debian-packages in ${HOST}"
    _ssh root@"${HOST}" "hash rsync >> /dev/null 2>&1" || f_xcd 246 "${HOST}" "rsync"
    f_ok
 }
