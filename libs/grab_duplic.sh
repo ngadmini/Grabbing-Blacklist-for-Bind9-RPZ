@@ -100,17 +100,15 @@ for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addr
       while IFS= read -r; do        # prune ipv4 by turning to CIDR-block
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
-            END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[1]}"
+            END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[O]}"
       done < "${ar_CAT[1]}"
-      cp "${ar_prn[1]}" "${ar_CAT[1]}"
-      printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[1]}")"
-      printf ": %9s entries\n" "${_dpl}"
+      cp "${ar_prn[O]}" "${ar_CAT[O]}"
+      printf ": %9s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
    else
       printf "%3sturn-back pruned sub-domains to %-21s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
-      printf -v _dpl "%'d" "$(wc -l < "${ar_CAT[O]}")"
-      printf ": %9s entries\n" "${_dpl}"
+      printf ": %9s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
    fi
 done
 
