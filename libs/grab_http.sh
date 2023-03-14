@@ -212,9 +212,8 @@ for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
-_tmb=$(bc <<< "scale=3; $(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%12s: %9s Megabytes\n\n" "disk-usage" "${_tmb/./,}"
+printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 

@@ -112,9 +112,8 @@ for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addr
    fi
 done
 
-_tmb=$(bc <<< "scale=3; $(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%56s: %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%56s: %9s Megabytes\n" "disk-usage" "${_tmb/./,}"
+printf "%56s: %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 exit 0

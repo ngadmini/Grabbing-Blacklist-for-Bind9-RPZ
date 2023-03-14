@@ -76,9 +76,8 @@ else
 fi
 
 # display resume
-_tmb=$(bc <<< "scale=3; $(wc -c "${ar_dom[@]}" | grep total | awk -F' ' '{print $1}')/1024^2")
 printf "%45s : %'d entries\n" "TOTAL" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%45s : %10s Megabytes\n" "disk-usage" "${_tmb/./,}"
+printf "%45s : %10s Megabytes\n" "disk-usage" "$(wc -c "${ar_dom[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 exit 0
