@@ -101,7 +101,7 @@ for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addr
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
             END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[O]}"
-      done < "${ar_CAT[1]}"
+      done < "${ar_CAT[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       printf ": %9s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
    else
