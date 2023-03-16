@@ -113,12 +113,13 @@ f_xcd() {   # exit code {244..255}
 f_sm0() {   # display offering options
    printf "${_wn1} there are still remaining :\n"
    printf "   - duplicate entries across CATEGORIES\n"
-   printf "   - sub-domain and it's parent-domain exist across CATEGORIES\n"
+   printf "   - sub-domains and it's parent-domain exist across CATEGORIES\n"
+   printf "   - ipv4 that can be reduced to a CIDR-block\n"
    printf "${_hnt} consider continue to next TASKs\n"
    printf "${_CYN}\n" "you have 4 options to proceed to the next task:"
-   printf "%4s) pruning duplicate & sub-domain entries (if parent-domain exist) across CATEGORIES\n" "1"
-   printf "%4s) option [1] and rewriting all domains to RPZ format-entry [db.* files]\n" "2"
-   printf "%4s) options [1,2] and incrementing serial zone-files [rpz.*]\n" "3"
+   printf "%4s) pruning ipv4, duplicate & sub-domain entries across CATEGORIES\n" "1"
+   printf "%4s) option [1] and rewriting ipv4 & domain entries to RPZ format-entry [db.* files]\n" "2"
+   printf "%4s) options [1,2] and incrementing serial zones [rpz.* files]\n" "3"
    printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "${HOST}"
 
    if [[ ${RNDC_RELOAD} =~ [nN][oO] ]]; then
@@ -134,14 +135,14 @@ f_sm0() {   # display offering options
 
 f_sm1() {   # f_sm[1..5]: display messages while chosing option
    printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "${opsi}"
-   printf "${_cnt}\n%4s) pruning duplicate & sub-domain entries (if parent-domain exist) across CATEGORIES\n" "1"
+   printf "${_cnt}\n%4s) pruning ipv4, duplicate & sub-domain entries across CATEGORIES\n" "1"
    f_sm10 "st"
 }
 
 f_sm2() { f_sm5 "nd"; f_sm10 "nd"; }
 f_sm3() {
    f_sm5 "th"
-   printf "%4s) incrementing serial at zone-files [rpz.*]\n" "3"
+   printf "%4s) incrementing serial zones [rpz.* files]\n" "3"
    f_sm10 "th"
 }
 
@@ -160,8 +161,8 @@ f_sm4() {
 
 f_sm5() {
    printf "\n${_red}[%s'%s] TASK options chosen${_ncl}\n" "${opsi}" "$1"
-   printf "${_cnt}\n%4s) pruning duplicate & sub-domain entries (if parent-domain exist) across CATEGORIES\n" "1"
-   printf "%4s) rewriting all domains to RPZ format-entry [db.* files]\n" "2"
+   printf "${_cnt}\n%4s) pruning ipv4, duplicate & sub-domain entries across CATEGORIES\n" "1"
+   printf "%4s) rewriting ipv4 & domain entries to RPZ format-entry [db.* files]\n" "2"
 }
 
 # f_sm[6..10]: display processing messages
