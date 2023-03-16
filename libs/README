@@ -23,7 +23,7 @@
         the same directory. IF no option is selected, it just generates a txt.*
         which is not free from duplication
 
-   2. grab_duplic.sh --removing duplicate entries between domain lists.
+   2. grab_duplic.sh --pruning ipv4, duplicate & sub-domain (if parent domain exist) entries across CATEGORIE
         you can run this scipt separately, only if txt.* are available in the same directory.
 
         ~ ls | grep txt | tr "\n" " "
