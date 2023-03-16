@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v9.6
+#   grab_http.sh v9.7
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -131,7 +131,7 @@ f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_r
 
 # reduce adult entries and move it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[21]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
+f_add "${ar_url[19]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
 _srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
 _grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
 _srt -u "${untrust}" -o "${untrust}"                         #+  adult category "${ar_dmn[0]}"
@@ -195,13 +195,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4
 # contents: ipv4 as CIDR block and captured ipv4 from others category
-#+          ${ar_cat[1]} with 2 additional entries: ${ar_url[19..20]}
 f_sm7 "${ar_cat[1]}" 2
-for I in {19,20}; do
-   f_sm6 "${I}" "${ar_uri[I]}"
-   f_add "${ar_url[I]}" | _grp -v "^#" | _sed "/\/[0-9]\{2\}$/ ! s/$/\/32/" >> "${ar_dmn[1]}"
-   f_do
-done
 f_sm8 "${ar_cat[1]}"             # fixing false-bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"

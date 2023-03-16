@@ -1,11 +1,11 @@
 ; rpz.adultaf
-; generate at Wed 2023-03-08 13:11:33 WIB by grab_cereal.sh v9.6
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.6/zones-rpz/rpz.adultaf
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.6/libs/grab_cereal.sh
+; generate at Thu 2023-03-16 23:51:25 WIB by grab_cereal.sh v9.7
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.7/zones-rpz/rpz.adultaf
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.7/libs/grab_cereal.sh
 ;
 $TTL 604800
 $ORIGIN adultaf.domain.
-@   SOA   adultaf.domain. rpz.adultaf.domain. (2023030801 1w 1d 4w 1w)
+@   SOA   adultaf.domain. rpz.adultaf.domain. (2023031602 1w 1d 4w 1w)
 @         NS   adultaf.domain.
 @   IN    A    127.0.0.22
 ;

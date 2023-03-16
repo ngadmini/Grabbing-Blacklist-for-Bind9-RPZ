@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v9.6
+#   grab_library v9.7
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -345,7 +345,7 @@ f_dft() {   # fallback to these default values if grab_config missing or misscon
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
    : "${RPZ_IP4:=rpz-nsip CNAME .}"         #+
-   : "${URLS:=22}"                          # fix number of lines grab_urls
+   : "${URLS:=20}"                          # fix number of lines grab_urls
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
 
