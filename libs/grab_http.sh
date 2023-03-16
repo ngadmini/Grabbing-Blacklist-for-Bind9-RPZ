@@ -195,7 +195,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4
 # contents: ipv4 as CIDR block and captured ipv4 from others category
-f_sm7 "${ar_cat[1]}" 2
+f_sm7 "${ar_cat[1]}" 0
 f_sm8 "${ar_cat[1]}"             # fixing false-bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
