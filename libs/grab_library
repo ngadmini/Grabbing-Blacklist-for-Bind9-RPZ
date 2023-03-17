@@ -119,8 +119,8 @@ f_sm0() {   # display offering options
    printf "${_CYN}\n" "you have 4 options to proceed to the next task:"
    printf "%4s) pruning ipv4, duplicate & sub-domain entries across CATEGORIES\n" "1"
    printf "%4s) option [1] and rewriting ipv4 & domain entries to RPZ format-entry [db.* files]\n" "2"
-   printf "%4s) options [1,2] and incrementing serial zones [rpz.* files]\n" "3"
-   printf "%4s) options [1,2,3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "${HOST}"
+   printf "%4s) option [2] and incrementing serial zones [rpz.* files]\n" "3"
+   printf "%4s) option [3] and syncronizing latest [rpz.* and db.*] files to %s\n" "4" "${HOST}"
 
    if [[ ${RNDC_RELOAD} =~ [nN][oO] ]]; then
       printf "%6s${_wn0} remote-host %s will REBOOT due to low memory\n" "" "${HOST}"
