@@ -39,10 +39,7 @@ miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 
 if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; then
    unset -v ar_cat
-   ar_cat=()
-   ar_dmn=()
-   ar_tmp=()
-   ar_prn=()
+   ar_cat=(); ar_dmn=(); ar_tmp=(); ar_prn=()
    for B in "${!ar_CAT[@]}"; do
       ar_cat+=("${ar_CAT[B]/txt./}")
       ar_dmn+=(dmn."${ar_CAT[B]/txt./}")
@@ -86,25 +83,25 @@ else
 fi
 
 printf "\n${_CYN} IPV4 and sub-domains if parent domain exist across CATEGORIES%-2s" "[PRUNE]"
-prun_ini=$(mktemp -p "${_DIR}")     # pruning sub-domain if parent domain
-prun_out=$(mktemp -p "${_DIR}")     #+  exist across CATEGORIES
+prun_ini=$(mktemp -p "${_DIR}")   # pruning sub-domains if parent
+prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 _sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
    | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
 
-for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addresses from
-   if [[ ${O} -eq 1 ]]; then        #+  across CATEGORIES to the appropriate category
+for O in "${!ar_cat[@]}"; do
+   if [[ ${O} -eq 1 ]]; then   # pruned ipv4s by turning to CIDR-block
       printf "%3sturn-back pruned ipv4-addresses to %-18s" "" "${ar_cat[1]^^} category"
-      while IFS= read -r; do        # prune ipv4 by turning to CIDR-block
+      while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
             END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[O]}"
       done < "${ar_CAT[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       printf ": %9s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
-   else
+   else                        # turn-back pruned sub-domains to the appropriate category
       printf "%3sturn-back pruned sub-domains to %-21s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
@@ -112,8 +109,8 @@ for O in "${!ar_cat[@]}"; do        # turn-back pruned sub-domains and ipv4-addr
    fi
 done
 
-printf "%56s: %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%56s: %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
+printf "%55s : %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
+printf "%55s : %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 exit 0
