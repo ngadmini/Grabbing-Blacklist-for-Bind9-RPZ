@@ -221,11 +221,11 @@ f_uri() {   # verify remote-urls [grab_urls] is available
       _stc=$(curl -so /dev/null -Iw "%{http_code}" "${uri}")
       _ret=$?
 
-      if ! [[ ${_ret} = 0 ]]; then
+      if [[ ${_ret} =~ (0|35) ]]; then
+         f_up   # ignored in case https://trustpositif.kominfo.go.id/assets/db/domains_isp
+      else      #+  curl_code=35. SSL connect error. the SSL handshaking failed
           printf "${_RED}\n" "curl-code: ${_ret}"
           ar_dwn+=("[exit-code: ${_ret}] ${uri}")
-      else
-         f_up
       fi
    done < "$1"
 
