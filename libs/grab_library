@@ -218,7 +218,7 @@ f_uri() {   # verify remote-urls [grab_urls] is available
       ar_uri+=("${_uri}")   # starting check
       ((i++))
       printf "%12s: %-66s" "url_${i}" "${ar_uri[i]}"
-      _stc=$(curl -so /dev/null -Iw "%{http_code}" "${uri}")
+      _stc=$(curl -kso /dev/null -Iw "%{http_code}" "${uri}")
       _ret=$?
 
       if [[ ${_ret} =~ (0|35) ]]; then

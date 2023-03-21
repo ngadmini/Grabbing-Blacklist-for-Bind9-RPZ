@@ -44,8 +44,8 @@ ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 ar_pkg=()
 ar_exe=()
-declare -A ar_num              # numeric value
-ar_num[ar_shn]=0               # index's position of: grab_regex is no.0 at ar_shn
+declare -A ar_num              # numeric value index's position of: grab_regex is no.0 at ar_shn
+ar_num[ar_shn]=$(echo "${ar_shn[*]}" | tr ' ' '\n' | awk '/grab_regex/ {print NR-1}')
 
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
@@ -72,7 +72,7 @@ fi
 
 # check script-pack's properties
 printf "${_pre} %-63s" "check script-pack's property in local-host: $(hostname -I)"
-if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
+#if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
 for E in "${!ar_shn[@]}"; do
    f_pkg "${ar_shn[E]}" 644
