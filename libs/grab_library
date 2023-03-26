@@ -388,8 +388,7 @@ f_cnf() {   # valuation variables in grab_config
 f_stt() {   # starting main script
    printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "$1" "${_lct}"
    if [[ ${_get} != "${_ver}" ]]; then   # confirm to the latest release
-      printf "${_err} you're running ${_RED}. an update is available\n" "${0##*/} ${_ver}"
-      printf "${_CYN} do you want upgrade to %s (Y/n)? " "[CONFIRM]" "${0##*/} ${_ver}"
+      printf "${_inf} an update is available\ndo you want upgrade to ${_CYN} (Y/n)? " "${0##*/} version ${_get}"
       read -r confirm
       case ${confirm:0:1} in
          y|Y|"") curl -sO "${_ori}/libs/${0##*/}"
