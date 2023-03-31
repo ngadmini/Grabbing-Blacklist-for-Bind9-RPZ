@@ -149,7 +149,7 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-# fixing false-bad entries and special entry: xhamster.com
+# fixing false-bad entries
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[0]}"
 f_out "${ar_txt[0]}" "${ar_txt[5]}"
 f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
