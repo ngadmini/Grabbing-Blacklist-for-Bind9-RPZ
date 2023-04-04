@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_rsync.sh v9.7
+#   grab_rsync.sh v9.8
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net

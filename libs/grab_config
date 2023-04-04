@@ -1,5 +1,5 @@
 # TAGS
-#   grab_config v9.7
+#   grab_config v9.8
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -37,12 +37,13 @@ RNDC_RELOAD=no
 #   RPZ_IP4=rpz-nsip CNAME block.example.net.
 # for more detail about rpz policy action, please see:
 #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-# this below value are define for RR=CNAME and RH=. 
+# defining for 'RR=CNAME' and 'RH=.' 
 RPZ_DOM=CNAME .
+# defining for 'RR=rpz-nsip CNAME' and 'RH=.' 
 RPZ_IP4=rpz-nsip CNAME .
 
 # fixed number of lines grab_urls. DON'T CHANGE
 URLS=20
 
-# directory where zone-files (rpz.*) and db-files (db.*) are located  
+# location of zone-files and dataBase (rpz.* and db.*) in bind9-server
 ZONE_DIR=/etc/bind/zones-rpz

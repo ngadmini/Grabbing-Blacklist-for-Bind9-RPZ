@@ -1,6 +1,6 @@
-### readme version v9.7
+### readme version v9.8
    all scripts are meant to update blacklisted domains in BIND9 - Response Policy Zone.
-   this v9.7 version is the next release after the previous release. it's a maintenance release
+   this v9.8 version is the next release after the previous release. it's a maintenance release
    which improves version compatibility with sources-list in grab_urls
 
 ### author:
@@ -11,9 +11,8 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v9.7:
-*) delete some source-lists that explicitly contain ip-addresses.
-   it is feared that the ip-address matches the domain name
+### what's new in v9.8:
+*) optimizing and fixing some typo
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest | grep download_url | awk -F\" '{print $4}'
@@ -101,14 +100,15 @@
       #   RPZ_IP4=rpz-nsip CNAME block.example.net.
       # for more detail about rpz policy action, please see:
       #   <https://www.zytrax.com/books/dns/ch7/rpz.html#policy-actions>
-      # this below value are define for RR=CNAME and RH=.
+      # defining for 'RR=CNAME' and 'RH=.'
       RPZ_DOM=CNAME .
+      # defining for 'RR=rpz-nsip CNAME' and 'RH=.'
       RPZ_IP4=rpz-nsip CNAME .
 
       # fixed number of lines grab_urls. DON'T CHANGE
       URLS=20
 
-      # change to directory where zone-files (rpz.* and db.*) are located in bind9-server
+      # location of zone-files and dataBase (rpz.* and db.*) in bind9-server
       ZONE_DIR=/etc/bind/zones-rpz
 
 *) on your BIND9-server

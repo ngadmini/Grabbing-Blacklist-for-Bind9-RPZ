@@ -1,10 +1,10 @@
-; db.publicite = 84.498 lines
-; generate at Thu 2023-03-16 23:51:17 WIB by grab_build.sh v9.7
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.7/libs/grab_build.sh
+; db.publicite = 87.742 lines
+; generate at Tue 2023-04-04 20:13:19 WIB by grab_build.sh v9.8
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/libs/grab_build.sh
 ;
 0-000.store CNAME .
 *.0-000.store CNAME .
+0.0.realodix CNAME .
+*.0.0.realodix CNAME .
 0001.best CNAME .
 *.0001.best CNAME .
-001adafg.xyz CNAME .
-*.001adafg.xyz CNAME .

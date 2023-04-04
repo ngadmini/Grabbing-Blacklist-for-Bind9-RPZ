@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v9.7
+#   grab_http.sh v9.8
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -72,7 +72,6 @@ fi
 
 # check script-pack's properties
 printf "${_pre} %-63s" "check script-pack's property in local-host: $(hostname -I)"
-#if echo "${ar_num[*]}" | _grp -E "([[:punct:]]|[[:alpha:]])" >> /dev/null 2>&1; then f_xcd 252; fi
 for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
 for E in "${!ar_shn[@]}"; do
    f_pkg "${ar_shn[E]}" 644
@@ -102,7 +101,7 @@ for A in {0..5}; do                   # grab blacklist from dsi.ut-capitole.fr
    f_do
 done
 
-mkdir ipv4                            # make some adjusment before initializing categories
+mkdir ipv4                            # make some adjusment to initializing categories
 mv phishing malware
 mv gambling trust+
 cat vpn/domains >> redirector/domains
@@ -110,7 +109,7 @@ rm -rf vpn
 
 mapfile -t ar_cat < <(f_cat)          # initializing category
 printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
-f_frm "txt.*"                         # remove stale domain lists
+f_frm "txt.*"                         # remove stale domain lists if any
 ar_dmn=()                             # use it's as raw-domains container
 ar_txt=()                             #+            processed-domains container
 
@@ -145,7 +144,7 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: ADULT
 # contents: adult-porn domains
-#+          ${ar_cat[0]} with 2 additional entries: ${ar_url[0,6]}
+#+          ${ar_cat[0]} with 2 additional entries: ${ar_url[0,6]} and some from the trust+ category
 f_sm7 "${ar_cat[0]}" 2
 f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do

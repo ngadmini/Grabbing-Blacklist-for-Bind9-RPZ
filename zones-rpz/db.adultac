@@ -1,10 +1,10 @@
-; db.adultac = 1.428.920 lines
-; generate at Thu 2023-03-16 23:51:17 WIB by grab_build.sh v9.7
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.7/libs/grab_build.sh
+; db.adultac = 1.429.274 lines
+; generate at Tue 2023-04-04 20:13:19 WIB by grab_build.sh v9.8
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/libs/grab_build.sh
 ;
-ericmtlucatoj.blogspot.co.za CNAME .
-*.ericmtlucatoj.blogspot.co.za CNAME .
-ericmtlucatoj.blogspot.com CNAME .
-*.ericmtlucatoj.blogspot.com CNAME .
-ericmtlucatoj.blogspot.com.ar CNAME .
-*.ericmtlucatoj.blogspot.com.ar CNAME .
+ericmtlucatoj.blogspot.mx CNAME .
+*.ericmtlucatoj.blogspot.mx CNAME .
+ericmtlucatoj.blogspot.my CNAME .
+*.ericmtlucatoj.blogspot.my CNAME .
+ericmtlucatoj.blogspot.nl CNAME .
+*.ericmtlucatoj.blogspot.nl CNAME .

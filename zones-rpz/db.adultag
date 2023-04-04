@@ -1,10 +1,10 @@
-; db.adultag = 1.428.918 lines
-; generate at Thu 2023-03-16 23:51:17 WIB by grab_build.sh v9.7
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.7/libs/grab_build.sh
+; db.adultag = 1.429.260 lines
+; generate at Tue 2023-04-04 20:13:19 WIB by grab_build.sh v9.8
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/libs/grab_build.sh
 ;
-summary.login-session.liangjianlight.com CNAME .
-*.summary.login-session.liangjianlight.com CNAME .
-summary.login-session.mainlandalumni.com CNAME .
-*.summary.login-session.mainlandalumni.com CNAME .
-summary.page-verif-center.us82999832.pp-id78364636778.com CNAME .
-*.summary.page-verif-center.us82999832.pp-id78364636778.com CNAME .
+summer-time-blog.blogspot.co.uk CNAME .
+*.summer-time-blog.blogspot.co.uk CNAME .
+summer-time-blog.blogspot.co.za CNAME .
+*.summer-time-blog.blogspot.co.za CNAME .
+summer-time-blog.blogspot.com CNAME .
+*.summer-time-blog.blogspot.com CNAME .
