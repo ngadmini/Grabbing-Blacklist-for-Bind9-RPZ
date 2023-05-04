@@ -126,8 +126,9 @@ trust=$(mktemp -p "${_DIR}")
 untrust=$(mktemp -p "${_DIR}")
 porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
-
+f_sm6 7 "${ar_uri[7]}"
+f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
+#_sed -e "${ar_reg[0]}" ~/Documents/TLDs/tlds/tld.gPvz/domains_isp | _sed -e "${ar_reg[3]}" > "${trust}"; f_do
 # reduce adult entries and move it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[19]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
@@ -137,7 +138,6 @@ _srt -u "${untrust}" -o "${untrust}"                         #+  adult category 
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"
 f_do
-
 # fixing false-bad entries
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_reg[0]}" "${ar_reg[1]}" "${ar_txt[5]}"; f_do
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
