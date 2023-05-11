@@ -128,7 +128,6 @@ porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
 f_sm6 7 "${ar_uri[7]}"
 f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
-#_sed -e "${ar_reg[0]}" ~/Documents/TLDs/tlds/tld.gPvz/domains_isp | _sed -e "${ar_reg[3]}" > "${trust}"; f_do
 # reduce adult entries and move it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[19]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
