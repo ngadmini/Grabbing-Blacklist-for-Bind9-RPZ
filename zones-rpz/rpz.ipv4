@@ -9,5 +9,8 @@ $ORIGIN ipv4.domain.
 @         NS   ipv4.domain.
 @   IN    A    127.0.0.13
 ;
+; coming from redirected xhamster.com to: xhvid[0-9]?.com, xhadult[0-9]?.com,
+;+ xheve[0-9]?.com, xhbranch[0-9]{1,}.com, xhtree[0-9]?.com
+;
 ; Policy Trigger - NSIP Trigger - NXDOMAIN Action
 $INCLUDE "/etc/bind/zones-rpz/db.ipv4"
