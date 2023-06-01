@@ -11,7 +11,7 @@ $ORIGIN ipv4.domain.
 ; coming from redirected xhamster.com to: xhvid[0-9]?.com, xhadult[0-9]?.com,
 ;+ xheve[0-9]?.com, xhbranch[0-9]{1,}.com, xhtree[0-9]?.com, xhvictory[0-9]?.com
 ;
-25.0.149.144.45.rpz-nsip CNAME .
+25.0.149.144.45.rpz-ip CNAME .
 ;
-; Policy Trigger - NSIP Trigger - NXDOMAIN Action
+; Policy Trigger - IP Trigger - NXDOMAIN Action
 $INCLUDE "/etc/bind/zones-rpz/db.ipv4"

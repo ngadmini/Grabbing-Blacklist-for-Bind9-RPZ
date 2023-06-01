@@ -339,7 +339,7 @@ f_dft() {   # fallback to these default values if grab_config missing or misscon
    : "${REGEX:=4}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
-   : "${RPZ_IP4:=rpz-nsip CNAME .}"         #+
+   : "${RPZ_IP4:=rpz-ip CNAME .}"           #+
    : "${URLS:=20}"                          # fix number of lines grab_urls
    : "${ZONE_DIR:=/etc/bind/zones-rpz}"     # target dir for rsync
 }
