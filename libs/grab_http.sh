@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v9.8
+#   grab_http.sh v9.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -126,14 +126,15 @@ trust=$(mktemp -p "${_DIR}")
 untrust=$(mktemp -p "${_DIR}")
 porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_uri[7]}"
-f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
-# reduce adult entries and move it's to adult category
+f_sm6 7 "${ar_uri[7]}"           # error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
+#f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
+_sed -e "${ar_reg[0]}" ~/Downloads/domains_isp | _sed -e "${ar_reg[3]}" > "${trust}"; f_do
+# reducing adult entries then moving it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[19]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
 _srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
 _grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
-_srt -u "${untrust}" -o "${untrust}"                         #+  adult category "${ar_dmn[0]}"
+_srt -u "${trust}" -o "${trust}"                             #+  adult category "${ar_dmn[0]}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"
 f_do
@@ -197,7 +198,7 @@ f_sm8 "${ar_cat[1]}"             # fixing false-bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
-# resume
+# summarize
 printf "\nprocessing sources-urls (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
@@ -208,8 +209,7 @@ printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | grep tot
 T="$(($(date +%s%N)-T))"
 f_tim
 
-# completed by offering OPTIONs: continued to various tasks OR stop here
-f_sm0
+f_sm0   # completed by offering OPTIONs: continued to various tasks OR stop here
 read -r opsi
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"

@@ -1,6 +1,6 @@
-### readme version v9.8
+### readme version v9.9
    all scripts are meant to update blacklisted domains in BIND9 - Response Policy Zone.
-   this v9.8 version is the next release after the previous release. it's a maintenance release
+   this v9.9 version is the next release after the previous release. it's a maintenance release
    which improves version compatibility with sources-list in grab_urls
 
 ### author:
@@ -11,8 +11,8 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v9.8:
-*) optimizing and fixing some typo
+### what's new in v9.9:
+*) major update and fixing some typo
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest | grep download_url | awk -F\" '{print $4}'
@@ -59,8 +59,8 @@
         in addition to synchronizing, this script also generates a tar-file to bakcup
         old db.* and rpz.* files in BIND9-server and save it in home directory
 
-  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf
-        rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+  10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
+        rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
 
   11. .shellcheckrc --intended to shellcheck portability
   12. all of them must present in the same directory
@@ -130,9 +130,9 @@
 
 ### output:
 *) db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
-      db.ipv4 db.malware db.publicite db.redirector db.trust+
+      db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+
+      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
 *) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
 
 please use our discussion for questions, feedback and bug fixes:

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v9.8
+#   grab_build.sh v9.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -38,22 +38,26 @@ f_cnf
 # inspecting required files <categories> first then split txt.adult
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
-   txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
+   txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+aa txt.trust+ab)
 
 declare -A ar_num   # get index's position of ipv4 category "${ar_spl[7]}"
 ar_num[db_ipv4]=$(echo "${ar_spl[*]}" | tr ' ' '\n' | awk '/txt\.ipv4/ {print NR-1}')
-_spl=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
+_spl_adult=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
+_spl_trust=$(((($(wc -l "${ar_cat[5]}" | awk '{print $1}')/2))+1))
 
-printf "${_inf} splitting ${_CYN} to %'d entries/sub-category:" "adult CATEGORY" "${_spl}"
+printf "${_inf} splitting ${_CYN} to %'d entries/sub-category AND" "adult CATEGORY" "${_spl_adult}"
+printf "\n       splitting ${_CYN} to %'d entries/sub-category:" "trust+ CATEGORY" "${_spl_trust}"
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
-   split -l "${_spl}" "${ar_cat[0]}" "${ar_cat[0]}"
-   mv txt.adult /tmp
+   split -l "${_spl_adult}" "${ar_cat[0]}" "${ar_cat[0]}"
+   split -l "${_spl_trust}" "${ar_cat[5]}" "${ar_cat[5]}"
+   mv txt.{adult,trust+} /tmp
    unset -v ar_CAT
    mapfile -t ar_txt < <(f_fnd "txt.*")
    mr_p=$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)
-   printf "\n${_CYN}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
+   printf "\n${_YLW}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
+   printf "${_YLW}\n" "$(f_fnd "txt.trust*" | tr '\n' ' ')"
 else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
@@ -75,7 +79,7 @@ else
    f_mis "${mr_p}" "${ar_spl[*]}"
 fi
 
-# display resume
+# summarize
 printf "%45s : %'d entries\n" "TOTAL" "$(wc -l "${ar_dom[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%45s : %10s Megabytes\n" "disk-usage" "$(wc -c "${ar_dom[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"

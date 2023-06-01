@@ -1,16 +1,16 @@
 ; rpz.ipv4
-; generate at Tue 2023-04-04 20:13:26 WIB by grab_cereal.sh v9.8
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/zones-rpz/rpz.ipv4
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/libs/grab_cereal.sh
+; generate at Thu 2023-06-01 23:31:33 WIB by grab_cereal.sh v9.9
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.9/libs/grab_cereal.sh
 ;
 $TTL 604800
 $ORIGIN ipv4.domain.
-@   SOA   ipv4.domain. rpz.ipv4.domain. (2023040400 1w 1d 4w 1w)
+@   SOA   ipv4.domain. rpz.ipv4.domain. (2023060106 1w 1d 4w 1w)
 @         NS   ipv4.domain.
 @   IN    A    127.0.0.13
 ;
 ; coming from redirected xhamster.com to: xhvid[0-9]?.com, xhadult[0-9]?.com,
-;+ xheve[0-9]?.com, xhbranch[0-9]{1,}.com, xhtree[0-9]?.com
+;+ xheve[0-9]?.com, xhbranch[0-9]{1,}.com, xhtree[0-9]?.com, xhvictory[0-9]?.com
+;
 25.0.149.144.45.rpz-nsip CNAME .
 ;
 ; Policy Trigger - NSIP Trigger - NXDOMAIN Action

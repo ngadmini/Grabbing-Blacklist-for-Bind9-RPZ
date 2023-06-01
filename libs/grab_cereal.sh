@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_cereal.sh v9.8
+#   grab_cereal.sh v9.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -37,15 +37,15 @@ f_cnf
 
 # inspecting zone-files then update them's serial
 ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+)
+   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab)
 mapfile -t ar_zon < <(f_fnd "rpz.*")
 miss_v=$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)
-printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:6}" "${ar_rpz[*]:6:6}"
+printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:7}" "${ar_rpz[*]:7:6}"
 
 printf "${_inf} check availability zone-files: "
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then
    if [[ ${ar_zon[*]} == "${ar_rpz[*]}" ]]; then
-      printf "FOUND %s zone-files %-14s" "${#ar_zon[@]}"
+      printf "FOUND %s zone-files %-14s" "${#ar_zon[@]}" ""
       f_ok
       printf "${_inf} incrementing serial of zone-files:\n${_CYN}" "${mr_p}"
       for Z in "${ar_zon[@]}"; do

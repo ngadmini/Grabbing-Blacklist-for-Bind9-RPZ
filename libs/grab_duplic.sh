@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v9.8
+#   grab_duplic.sh v9.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -109,6 +109,7 @@ for O in "${!ar_cat[@]}"; do
    fi
 done
 
+# summarize
 printf "%55s : %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
 printf "%55s : %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"

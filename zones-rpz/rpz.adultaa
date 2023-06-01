@@ -1,11 +1,10 @@
 ; rpz.adultaa
-; generate at Tue 2023-04-04 20:13:26 WIB by grab_cereal.sh v9.8
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/zones-rpz/rpz.adultaa
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.8/libs/grab_cereal.sh
+; generate at Thu 2023-06-01 23:31:33 WIB by grab_cereal.sh v9.9
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.9/libs/grab_cereal.sh
 ;
 $TTL 604800
 $ORIGIN adultaa.domain.
-@   SOA   adultaa.domain. rpz.adultaa.domain. (2023040400 1w 1d 4w 1w)
+@   SOA   adultaa.domain. rpz.adultaa.domain. (2023060106 1w 1d 4w 1w)
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
@@ -22,5 +21,31 @@ $ORIGIN adultaa.domain.
 ;
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
+;
+; coming from redirected xhamster.com
+xhadult.com      CNAME .
+*.xhadult.com    CNAME .
+xhadult1.com     CNAME .
+*.xhadult1.com   CNAME .
+xhadult2.com     CNAME .
+*.xhadult2.com   CNAME .
+xhvid2.com       CNAME .
+*.xhvid2.com     CNAME .
+xheve3.com       CNAME .
+*.xheve3.com     CNAME .
+xhbranch5.com    CNAME .
+*.xhbranch5.com  CNAME .
+xhbranch6.com    CNAME .
+*.xhbranch6.com  CNAME .
+xhbranch11.com   CNAME .
+*.xhbranch11.com CNAME .
+xhbranch12.com   CNAME .
+*.xhbranch12.com CNAME .
+xhbranch13.com   CNAME .
+*.xhbranch13.com CNAME .
+xhtree.com       CNAME .
+*.xhtree.com     CNAME .
+xhtree1.com      CNAME .
+*.xhtree1.com    CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"

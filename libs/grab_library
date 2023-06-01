@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v9.8
+#   grab_library v9.9
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -48,9 +48,9 @@ _wn1="${_ylw}[WARN]${_ncl}"
 _YLW="${_ylw}%s${_ncl}"
 
 f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
-   find . -maxdepth 1 -regex "^.*\(dmn\|prn\|sed\|tm[pq]\|txt.adulta\).*\|.*\(gz\|swp\)$" -print0 | xargs -r0 rm -rf
+   find . -maxdepth 1 -regex "^.*\(dmn\|prn\|sed\|tm[pq]\|txt.adulta\|txt.trust\+a\).*\|.*\(gz\|swp\)$" -print0 | xargs -r0 rm -rf
    find . -maxdepth 1 -type d ! -name "." -print0 | xargs -r0 rm -rf
-   find /tmp -maxdepth 1 -type f -name "txt.adult" -print0 | xargs -r0 mv -t .
+   find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 
 f_set() {
@@ -256,7 +256,7 @@ f_g4c() {   # used by grab_cereal.sh to remarking rpz.*
       _sed -i "s/; generate.*/${_gen}/" "$1"
    fi
 
-   if ! grep -q "${_ori}/zones-rpz/${1}" "$1"; then _sed -i "/${_gen}/a; ${_ori}\/zones-rpz\/${1}" "$1"; fi
+#   if ! grep -q "${_ori}/zones-rpz/${1}" "$1"; then _sed -i "/${_gen}/a; ${_ori}\/zones-rpz\/${1}" "$1"; fi
    if ! grep -q "${_ori}/libs/${_foo}" "$1"; then _sed -i "/ngadmini/a; ${_ori}\/libs\/${_foo}" "$1"; fi
 }
 

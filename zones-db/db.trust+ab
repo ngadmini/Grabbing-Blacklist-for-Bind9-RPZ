@@ -1,0 +1,10 @@
+; db.trust+ab = 826.720 lines
+; generate at Thu 2023-06-01 23:31:25 WIB by grab_build.sh v9.9
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.9/libs/grab_build.sh
+;
+kijang4d.win CNAME .
+*.kijang4d.win CNAME .
+kijang4d.xyz CNAME .
+*.kijang4d.xyz CNAME .
+kijang4dhoki.com CNAME .
+*.kijang4dhoki.com CNAME .

@@ -1,0 +1,10 @@
+; db.adultad = 1.430.814 lines
+; generate at Thu 2023-06-01 23:31:25 WIB by grab_build.sh v9.9
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.9/libs/grab_build.sh
+;
+hikaruland.blogspot.com.eg CNAME .
+*.hikaruland.blogspot.com.eg CNAME .
+hikaruland.blogspot.com.es CNAME .
+*.hikaruland.blogspot.com.es CNAME .
+hikaruland.blogspot.com.mt CNAME .
+*.hikaruland.blogspot.com.mt CNAME .
