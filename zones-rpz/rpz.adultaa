@@ -22,30 +22,4 @@ $ORIGIN adultaa.domain.
 xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
 *.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
 ;
-; coming from redirected xhamster.com
-xhadult.com      CNAME .
-*.xhadult.com    CNAME .
-xhadult1.com     CNAME .
-*.xhadult1.com   CNAME .
-xhadult2.com     CNAME .
-*.xhadult2.com   CNAME .
-xhvid2.com       CNAME .
-*.xhvid2.com     CNAME .
-xheve3.com       CNAME .
-*.xheve3.com     CNAME .
-xhbranch5.com    CNAME .
-*.xhbranch5.com  CNAME .
-xhbranch6.com    CNAME .
-*.xhbranch6.com  CNAME .
-xhbranch11.com   CNAME .
-*.xhbranch11.com CNAME .
-xhbranch12.com   CNAME .
-*.xhbranch12.com CNAME .
-xhbranch13.com   CNAME .
-*.xhbranch13.com CNAME .
-xhtree.com       CNAME .
-*.xhtree.com     CNAME .
-xhtree1.com      CNAME .
-*.xhtree1.com    CNAME .
-;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"
