@@ -8,10 +8,30 @@ $ORIGIN ipv4.domain.
 @         NS   ipv4.domain.
 @   IN    A    127.0.0.13
 ;
-; coming from redirected xhamster.com to: xhvid[0-9]?.com, xhadult[0-9]?.com,
-;+ xheve[0-9]?.com, xhbranch[0-9]{1,}.com, xhtree[0-9]?.com, xhvictory[0-9]?.com
-;
-25.0.149.144.45.rpz-ip CNAME .
+; coming from redirected xhamster.com to:
+; 104.18.155.3    xhamster.com
+; 104.18.156.3    +
+; 45.144.149.28   xhvictory.com
+; 45.144.149.29   xhavid.com
+; 45.144.149.30   xhavid1.com
+; 45.144.149.31   xhvid2.com
+; 45.144.149.32   xhvid3.com
+; 45.144.149.33   xhadult.com
+; 45.144.149.35   xheve.com
+; 45.144.149.36   xheve1.com
+; 45.144.149.37   xheve2.com
+; 45.144.149.38   xheve3.com
+; 45.144.149.44   xhadult2.com
+; 45.144.149.49   xhbranch.com
+; 45.144.149.68   xhbranch5.com
+; 45.144.149.69   xhbranch6.com
+; 45.144.149.76   xhbranch11.com
+; 45.144.149.77   xhbranch12.com
+; 45.144.149.78   xhtree.com
+; 45.144.149.79   xhtree1.com
+; 45.144.149.81   xhbranch13.com
+; 45.144.149.0/25 xh(adult|branch|eve|tree|vid[^e]|victory)[0-9]{1,}?
 ;
 ; Policy Trigger - IP Trigger - NXDOMAIN Action
+25.0.149.144.45.rpz-ip CNAME .
 $INCLUDE "/etc/bind/zones-rpz/db.ipv4"
