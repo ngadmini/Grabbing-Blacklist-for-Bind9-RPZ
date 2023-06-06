@@ -178,7 +178,8 @@ f_ok() { printf "${_GRN}\n" "isOK"; }
 f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 
-f_add() { curl -ks "$1" || f_xcd 251 "$1"; }    # grabbing domains from sources-urls
+# grabbing domains from sources-urls
+f_add() { curl -ks --http2 --tcp-fastopen --tcp-nodelay --tr-encoding --compressed --ignore-content-length "$1" || f_xcd 251 "$1"; }
 f_fix() {   # fixing false and bad entries
    f_sm8 "$1"
    dos2unix "$2" >> /dev/null 2>&1
@@ -186,8 +187,8 @@ f_fix() {   # fixing false and bad entries
 }
 
 f_out() {   # turn-back domains that passed filtering to trust+ category
-   _grp -E '(bandar|bobet|casino|[^\-]domino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
-   _sed -i '/\(bandar\|bobet\|casino\|[^\-]domino\|gambling\|[^ey]judi\|lot\([0-9]\{1,\}\|to\)\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
+   _grp -E '(bandar|bett?ing|bobet|casino|[^\-]domino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
+   _sed -i '/\(bandar\|bet\(ing\|ting\)\|bobet\|casino\|[^\-]domino\|gambling\|[^ey]judi\|lot\([0-9]\{1,\}\|to\)\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
    f_do
 }
 
