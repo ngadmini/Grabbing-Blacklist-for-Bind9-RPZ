@@ -186,8 +186,8 @@ f_fix() {   # fixing false and bad entries
 }
 
 f_out() {   # turn-back domains that passed filtering to trust+ category
-   _grp -E '(bobet|casino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
-   _sed -i '/\(bobet\|casino\|gambling\|[^ey]judi\|lot\([0-9]\{1,\}\|to\)\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
+   _grp -E '(bandar|bobet|casino|[^\-]domino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
+   _sed -i '/\(bandar\|bobet\|casino\|[^\-]domino\|gambling\|[^ey]judi\|lot\([0-9]\{1,\}\|to\)\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
    f_do
 }
 
@@ -245,6 +245,7 @@ f_dpm() {
 f_dpn() {
    printf "%11s = pruning duplicates %-23s" "STEP $6.$1" "$2 entries"
    _srt "$3" "$4" | uniq -d > "$5"
+
 }
 
 f_g4c() {   # used by grab_cereal.sh to remarking rpz.*
