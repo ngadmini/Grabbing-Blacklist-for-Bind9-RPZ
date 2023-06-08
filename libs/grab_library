@@ -187,8 +187,8 @@ f_fix() {   # fixing false and bad entries
 }
 
 f_out() {   # turn-back domains that passed filtering to trust+ category
-   _grp -E '(bandar|bett?ing|bobet|casino|[^\-]domino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|togel|\.(ac|go)\.id$)' "$1" >> "$2"
-   _sed -i '/\(bandar\|bet\(ing\|ting\)\|bobet\|casino\|[^\-]domino\|gambling\|[^ey]judi\|lot\([0-9]\{1,\}\|to\)\|poker\|togel\|\.\(ac\|go\)\.id$\)/d' "$1"
+   _grp -E '(bandar|bett?ing|bobet|casino|[^\-]domino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|to(gel|to)|\.(ac|go)\.id$)' "$1" >> "$2"
+   _sed -i -E '/(bandar|bett?ing|bobet|casino|[^\-]domino|gambling|[^ey]judi|lot([0-9]{1,}|to)|poker|to(gel|to)|\.(ac|go)\.id$)/d' "$1"
    f_do
 }
 
