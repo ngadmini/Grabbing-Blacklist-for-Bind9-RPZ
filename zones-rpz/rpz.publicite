@@ -8,16 +8,16 @@ $ORIGIN publicite.domain.
 @         NS   publicite.domain.
 @   IN    A    127.0.0.15
 ;
-; indiehome's domains
-;   https://raw.githubusercontent.com/bebasid/bebasdns/main/custom-filtering-rules-blocklist
-aduankonten.id IN CNAME .
-*.aduankonten.id IN CNAME .
+; indihome's domains
+;   https://github.com/bebasid/bebasdns/blob/main/dev/resources/hosts/custom-filtering-rules-blocklist
 d31qbv1cthcecs.cloudfront.net IN CNAME .
 *.d31qbv1cthcecs.cloudfront.net IN CNAME .
 d5nxst8fruw4z.cloudfront.net IN CNAME .
 *.d5nxst8fruw4z.cloudfront.net IN CNAME .
 digiads.co.id IN CNAME .
 *.digiads.co.id IN CNAME .
+lamanlabuh.aduankonten.id IN CNAME .
+*.lamanlabuh.aduankonten.id IN CNAME .
 notifa.info IN CNAME .
 *.notifa.info IN CNAME .
 uadexchange.com IN CNAME .

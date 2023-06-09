@@ -19,7 +19,7 @@ $ORIGIN adultaa.domain.
 *.webcam CNAME .
 *.xxx    CNAME .
 ;
-xn--videospornosenespaol-sva22ay2bwa.com   CNAME .
-*.xn--videospornosenespaol-sva22ay2bwa.com CNAME .
+; xhamster at google translate
+xhadult2-com.translate.goog   CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"
