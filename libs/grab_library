@@ -259,8 +259,7 @@ f_g4c() {   # used by grab_cereal.sh to remarking rpz.*
       _sed -i "s/; generate.*/${_gen}/" "$1"
    fi
 
-#   if ! grep -q "${_ori}/zones-rpz/${1}" "$1"; then _sed -i "/${_gen}/a; ${_ori}\/zones-rpz\/${1}" "$1"; fi
-   if ! grep -q "${_ori}/libs/${_foo}" "$1"; then _sed -i "/ngadmini/a; ${_ori}\/libs\/${_foo}" "$1"; fi
+   if ! grep -q "${_ori}/libs/${_foo}" "$1"; then _sed -i "/${_gen}/a; ${_ori}\/libs\/${_foo}" "$1"; fi
 }
 
 f_g4b() {   # remarking db.*
