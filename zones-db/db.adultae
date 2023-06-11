@@ -1,10 +1,10 @@
-; db.adultae = 1.430.814 lines
-; generate at Thu 2023-06-01 23:31:25 WIB by grab_build.sh v9.9
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.9/libs/grab_build.sh
+; db.adultae = 1.414.414 lines
+; generate at Mon 2023-06-12 01:36:58 WIB by grab_build.sh v10.0
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.0/libs/grab_build.sh
 ;
-mature-moms.blogspot.co.id CNAME .
-*.mature-moms.blogspot.co.id CNAME .
-mature-moms.blogspot.co.il CNAME .
-*.mature-moms.blogspot.co.il CNAME .
-mature-moms.blogspot.co.ke CNAME .
-*.mature-moms.blogspot.co.ke CNAME .
+mature-fucking.net CNAME .
+*.mature-fucking.net CNAME .
+mature-fuckings.com CNAME .
+*.mature-fuckings.com CNAME .
+mature-fucks.net CNAME .
+*.mature-fucks.net CNAME .

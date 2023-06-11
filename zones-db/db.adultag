@@ -1,10 +1,10 @@
-; db.adultag = 1.430.802 lines
-; generate at Thu 2023-06-01 23:31:25 WIB by grab_build.sh v9.9
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v9.9/libs/grab_build.sh
+; db.adultag = 1.414.410 lines
+; generate at Mon 2023-06-12 01:36:58 WIB by grab_build.sh v10.0
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.0/libs/grab_build.sh
 ;
-sundaylosangeles.com CNAME .
-*.sundaylosangeles.com CNAME .
-sundaymonday107.live CNAME .
-*.sundaymonday107.live CNAME .
-sundaynightsexshow.blogspot.ae CNAME .
-*.sundaynightsexshow.blogspot.ae CNAME .
+sucursalpersonas-transaccionesbancolombia-son.mypressonline.com CNAME .
+*.sucursalpersonas-transaccionesbancolombia-son.mypressonline.com CNAME .
+sucursalpersonas-transaccionesbancolombia-tyo.mypressonline.com CNAME .
+*.sucursalpersonas-transaccionesbancolombia-tyo.mypressonline.com CNAME .
+sucursalpersonas-transaccionesbancolombia-vfg.mypressonline.com CNAME .
+*.sucursalpersonas-transaccionesbancolombia-vfg.mypressonline.com CNAME .

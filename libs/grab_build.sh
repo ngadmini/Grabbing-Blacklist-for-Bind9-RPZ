@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v9.9
+#   grab_build.sh v10.0
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -45,19 +45,20 @@ ar_num[db_ipv4]=$(echo "${ar_spl[*]}" | tr ' ' '\n' | awk '/txt\.ipv4/ {print NR
 _spl_adult=$(((($(wc -l "${ar_cat[0]}" | awk '{print $1}')/7))+1))
 _spl_trust=$(((($(wc -l "${ar_cat[5]}" | awk '{print $1}')/2))+1))
 
-printf "${_inf} splitting ${_CYN} to %'d entries/sub-category AND" "adult CATEGORY" "${_spl_adult}"
-printf "\n       splitting ${_CYN} to %'d entries/sub-category:" "trust+ CATEGORY" "${_spl_trust}"
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
 if [[ ${#ar_cat[@]} -eq "${#ar_CAT[@]}" && ${ar_cat[*]} == "${ar_CAT[*]}" ]]; then
+   printf "${_inf} splitting ${_CYN} to %'d entries/sub-category:" "adult CATEGORY" "${_spl_adult}"
    split -l "${_spl_adult}" "${ar_cat[0]}" "${ar_cat[0]}"
+   mv txt.adult /tmp
+   printf "\n${_YLW}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
+   printf "${_inf} splitting ${_CYN} to %'d entries/sub-category:" "trust+ CATEGORY" "${_spl_trust}"
    split -l "${_spl_trust}" "${ar_cat[5]}" "${ar_cat[5]}"
-   mv txt.{adult,trust+} /tmp
+   mv txt.trust+ /tmp
+   printf "\n${_YLW}\n" "$(f_fnd "txt.trust*" | tr '\n' ' ')"
    unset -v ar_CAT
    mapfile -t ar_txt < <(f_fnd "txt.*")
    mr_p=$(echo "${ar_txt[@]}" "${ar_spl[@]}" | f_sed)
-   printf "\n${_YLW}\n" "$(f_fnd "txt.adult*" | tr '\n' ' ')"
-   printf "${_YLW}\n" "$(f_fnd "txt.trust*" | tr '\n' ' ')"
 else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
