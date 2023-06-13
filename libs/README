@@ -25,7 +25,6 @@
 
    2. grab_duplic.sh --pruning ipv4, duplicate & sub-domain (if parent domain exist) entries across CATEGORIE
         you can run this scipt separately, only if txt.* are available in the same directory.
-
         ~ ls | grep txt | tr "\n" " "
         txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+
 
@@ -46,13 +45,15 @@
         case sensitive, sort as is, line count and no blank lines
    8. grab_regex --contain reguler expressions.
         *) case sensitive, sort as is, line count and no blank lines
-        *) intended for fixing/removing false entries:
-           - less than 4 characters and larger than 64 characters (RFC 1035)
+        *) intended for fixing/removing false entries, i.e :
+           - less than 4 characters and TLDs larger than 24 characters
+                ~ iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
+                ~ curl -s "${iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > iana.tlds
+                ~ awk '{ print length }' iana.tlds | sort -g | tail -1
            - construct with international characters (non ASCII). check it's with :
                 ~ LC_ALL=C grep -P -n '[^\x00-\x7F]'
-           - explicit site: adult and gambling
+           - explicit TLDs (adult and gambling) and invalid TLDs
                 ~ \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
-           - invalid TLDs based on IANA. bash script to obstain invalid TLDs available on:
                 ~ https://gist.github.com/ngadmini/8bcabcb0b31f02619e7b638065621f75
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
