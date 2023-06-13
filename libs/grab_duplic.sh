@@ -94,12 +94,12 @@ http_iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 iana_tlds=$(mktemp -p "${_DIR}")  # tlds-alpha-by-domain.txt
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 inva_tlds=$(mktemp -p "${_DIR}")  # invalid TLDs
-curl -s "${http_iana}" | sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
-rev "${prun_out}" | sort -u | awk -F. '{print $1}' | rev > "${fals_tlds}"
+curl -s "${http_iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
+rev "${prun_out}" | _srt -u | awk -F. '{print $1}' | rev > "${fals_tlds}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${iana_tlds}" "${fals_tlds}" > "${inva_tlds}"
 if [ "$(wc -l "${inva_tlds}" | awk -F' ' '{print $1}')" -gt 0 ]; then
-   sed -i 's/^/\/\\\./g;s/$/\$\/d/g' "${inva_tlds}"
-   sed -i -f "${inva_tlds}" "${prun_out}"
+   _sed -i 's/^/\/\\\./g;s/$/\$\/d/g' "${inva_tlds}"
+   _sed -i -f "${inva_tlds}" "${prun_out}"
 fi
 f_do
 
