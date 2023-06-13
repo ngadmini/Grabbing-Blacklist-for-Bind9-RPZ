@@ -89,6 +89,18 @@ _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 _sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
    | rev | _sed "s/^\.//" > "${prun_out}"
+# final check: invalid TLDs. if found, then creating regex to removing it's TLDs
+http_iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
+iana_tlds=$(mktemp -p "${_DIR}")  # tlds-alpha-by-domain.txt
+fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
+inva_tlds=$(mktemp -p "${_DIR}")  # invalid TLDs
+curl -s "${http_iana}" | sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
+rev "${prun_out}" | sort -u | awk -F. '{print $1}' | rev > "${fals_tlds}"
+awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${iana_tlds}" "${fals_tlds}" > "${inva_tlds}"
+if [ "$(wc -l "${inva_tlds}" | awk -F' ' '{print $1}')" -gt 0 ]; then
+   sed -i 's/^/\/\\\./g;s/$/\$\/d/g' "${inva_tlds}"
+   sed -i -f "${inva_tlds}" "${prun_out}"
+fi
 f_do
 
 for O in "${!ar_cat[@]}"; do
