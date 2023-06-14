@@ -1,11 +1,12 @@
 ### readme version v10.0
-   all scripts are meant to update blacklisted domains in BIND9 - Response Policy Zone.
-   this v10.0 version is the next release after the previous release. it's a maintenance release
-   which improves version compatibility with sources-list in grab_urls
+   *) Bash scripts to update blacklisted domains in BIND9-Response Policy Zone
+   *) this v10.0 version is the next release after the previous release. it's a maintenance
+         release which improves version compatibility with sources-list in grab_urls
 
 ### author:
    ngadimin@warnet-ersa.net
-   https://github.com/ngadmini/
+   ~ https://github.com/ngadmini/
+   ~ https://gist.github.com/ngadmini
 
 ### license:
 *) Creative Commons Attribution-ShareAlike 4.0 International License
@@ -15,56 +16,55 @@
 *) fixing invalid TLDs across entire catagories
 
 ### Get url to download script-pack (latest version) :
-   ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest | grep download_url | awk -F\" '{print $4}'
+   ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
+        | grep download_url | awk -F\" '{print $4}'
 
 ### file parts
    1. grab_http.sh --grabing and proccessing raw domains.
-        run this script as long as the below script and rpz.* are available in
-        the same directory. IF no option is selected, it just generates a txt.*
-        which is not free from duplication
+        *) run this script as long as the below script and rpz.* are available in the same directory.
+        *) script completed by offering 4 options. IF no option are selected, it just generates a txt.*
+              which are not free from duplicate entries and invalid TLDs
 
    2. grab_duplic.sh --pruning ipv4, duplicate & sub-domain (if parent domain exist) entries across CATEGORIE
-        you can run this scipt separately, only if txt.* are available in the same directory.
-        ~ ls | grep txt | tr "\n" " "
-        txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+
+        *) you can run this scipt separately, if only txt.* are available in the same directory.
+              ~ ls | grep '^txt' | tr "\n" " "
+              txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+
 
    3. grab_build.sh --rewriting to BIND9-rpz format.
-        you can run this scipt separately, only if txt.* are available in the same directory.
-        it generated db.* files
+        *) you can run this scipt separately, if only txt.* are available in the same directory.
+              it generated db.* files
 
    4. grab_cereal.sh --incrementing serial zones.
-        you can run this scipt separately, only if rpz.* are available in the same directory.
-        if not, it try to get from bind9-server. it generated new serial at zone-files
+        *) you can run this scipt separately, if only rpz.* are available in the same directory.
+              if not, it try to get from bind9-server. it generated new serial at zone-files
 
    5. grab_config --configuration file.
    6. grab_library --a library of functions and fundamental values
-        NO need modify, except you want change RPZ-policy triggers and actions.
-        please SEE prerequisites section in this README
+        *) NO need modify, except you want change RPZ-policy triggers and actions.
+              please SEE prerequisites section in this README
 
    7. grab_urls --contain urls list of source files.
-        case sensitive, sort as is, line count and no blank lines
+        *) case sensitive, sort as is, line count and no blank lines
    8. grab_regex --contain reguler expressions.
         *) case sensitive, sort as is, line count and no blank lines
         *) intended for fixing/removing false entries, i.e :
-           - less than 4 characters and TLDs larger than 24 characters
+           - less than 4 characters and TLDs larger than 24 characters (currently in IANA)
                 ~ iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-                ~ curl -s "${iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > iana.tlds
-                ~ awk '{ print length }' iana.tlds | sort -g | tail -1
+                ~ curl -s "${iana}" | sed '/#/d;s/[A-Z]/\L&/g' \
+                  | awk '{ print length }' | sort -g | tail -1
            - construct with international characters (non ASCII). check it's with :
                 ~ LC_ALL=C grep -P -n '[^\x00-\x7F]'
-           - explicit TLDs (adult and gambling) and invalid TLDs
-                ~ \.\(adult\|bet\|cam\|casino\|lgbt\|lotto\|poker\|porn\|sex\|sexy\|tube\|webcam\|xxx\)$
-                ~ https://gist.github.com/ngadmini/8bcabcb0b31f02619e7b638065621f75
+           - explicit TLDs (adult & gambling) and invalid TLDs
+                ~ \.(adult|bet|cam|casino|lgbt|lotto|poker|porn|sex|sexy|tube|webcam|xxx)$
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
-        in addition to synchronizing, this script also generates a tar-file to bakcup
-        old db.* and rpz.* files in BIND9-server and save it in home directory
+        *) in addition to synchronizing, this script also generates a tar-file to bakcup
+              old db.* and rpz.* files in BIND9-server and save it in home directory
 
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-        rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
+         rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
 
   11. .shellcheckrc --intended to shellcheck portability
-  12. all of them must present in the same directory
 
 ### prerequisites:
 *) on your linux desktop workstation
@@ -78,7 +78,7 @@
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) all variables must be determined. if NOT it will fallback to their default
       #      values
-      #   THEN
+      #   THEN and OR
       #   *) change all variables in grab_library refer to this file. go to line:
       #      ~ nano +$(grep -n 'f_dft()' grab_library | cut -d: -f1) grab_library
 
@@ -113,17 +113,17 @@
       ZONE_DIR=/etc/bind/zones-rpz
 
 *) on your BIND9-server
-      # check required package (dependencies)
+      check required package (dependencies)
       ~$ apt policy rsync
       ~$ apt install -y rsync
 
-*) passwordless ssh
+*) passwordless SSH
       your linux desktop and BIND9-server, both must configure to use passwordless for
-      ssh, scp dan rsync connections. you can reffer to :
-      https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH-and-sudo
+      ssh, scp dan rsync connections. please reffer to :
+      ~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Passwordless-SSH-and-sudo
 
-*) reconfigure your bind9-server to run BIND9 RPZ feature. you can reffer to :
-      https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
+*) reconfigure your bind9-server to run BIND9-RPZ features. please reffer to :
+      ~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/wiki/Fitting-Environment
 
 ### usage:
 *) execute grab_http.sh with non root privileges either directly as a root user or by use
@@ -135,6 +135,8 @@
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
       rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
 *) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
-
-please use our discussion for questions, feedback and bug fixes:
-*) https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions
+      ~ https://github.com/ngadmini/partial-output
+ 
+### questions, feedback and issues:
+~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/discussions
+~ https://github.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/issues
