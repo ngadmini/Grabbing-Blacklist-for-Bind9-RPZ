@@ -86,7 +86,7 @@
       HOST=rpz.warnet-ersa.net
 
       # fixed number of lines grab_regex. DON'T CHANGE
-      REGEX=5
+      REGEX=3
 
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>

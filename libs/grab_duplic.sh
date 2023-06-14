@@ -88,21 +88,25 @@ prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 _sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-   | rev | _sed "s/^\.//" > "${prun_out}"
+   | rev | _sed "s/^\.//" | _srt -u > "${prun_out}"
+f_do
+
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
+printf "${_CYN} invalid Top Level Domains across CATEGORIES%-20s" "[PRUNE]"
 http_iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 iana_tlds=$(mktemp -p "${_DIR}")  # tlds-alpha-by-domain.txt
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 inva_tlds=$(mktemp -p "${_DIR}")  # invalid TLDs
 curl -s "${http_iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
-rev "${prun_out}" | _srt -u | awk -F. '{print $1}' | rev > "${fals_tlds}"
+rev "${prun_out}" | _srt -u | awk -F. '{print $1}' | rev | _srt -u > "${fals_tlds}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${iana_tlds}" "${fals_tlds}" > "${inva_tlds}"
 if [ "$(wc -l "${inva_tlds}" | awk -F' ' '{print $1}')" -gt 0 ]; then
-   _sed -i 's/^/\/\\\./g;s/$/\$\/d/g' "${inva_tlds}"
-   _sed -i -f "${inva_tlds}" "${prun_out}"
+   _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' "${inva_tlds}"
+   _sed -E -i -f "${inva_tlds}" "${prun_out}"
 fi
 f_do
 
+printf "${_CYN} turn-back pruned entries to related CATEGORIES\n" "[PRUNE]"
 for O in "${!ar_cat[@]}"; do
    if [[ ${O} -eq 1 ]]; then   # pruned ipv4s by turning to CIDR-block
       printf "%3sturn-back pruned ipv4-addresses to %-18s" "" "${ar_cat[1]^^} category"

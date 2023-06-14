@@ -183,7 +183,8 @@ f_add() { curl -ks --http2 --tcp-fastopen --tcp-nodelay --tr-encoding --compress
 f_fix() {   # fixing false and bad entries
    f_sm8 "$1"
    dos2unix "$2" >> /dev/null 2>&1
-   _srt -u "$2" | _sed -e "${ar_reg[0]}" -e "${ar_reg[1]}" | _grp -Ev "${ar_reg[4]}" > "$3"
+#   _srt -u "$2" | _sed -e "${ar_reg[0]}" -e "${ar_reg[1]}" > "$3"
+   _srt -u "$2" | _sed -E "${ar_reg[0]}" | _sed -E "${ar_reg[1]}" > "$3"
 }
 
 f_out() {   # turn-back domains that passed filtering to trust+ category
@@ -338,7 +339,7 @@ f_pkg() { if ! [[ -e $1 ]]; then f_no "$1"; f_ori libs/"$1" "$1"; fi; f_sta "$2"
 f_dft() {   # fallback to these default values if grab_config missing or missconfigured
    printf "\n${_wn0} ${_CYN} continued with default configurations\n" "${_foo}"
    : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
-   : "${REGEX:=5}"                          # fix number of lines grab_regex
+   : "${REGEX:=3}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
    : "${RPZ_IP4:=rpz-ip CNAME .}"           #+

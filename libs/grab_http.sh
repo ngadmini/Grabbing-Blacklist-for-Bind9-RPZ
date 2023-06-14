@@ -128,11 +128,11 @@ porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
 f_sm6 7 "${ar_uri[7]}"
 # frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
-f_add "${ar_url[7]}" | _sed -e "${ar_reg[0]}" -e "${ar_reg[3]}" > "${trust}"; f_do
-#_sed -e "${ar_reg[0]}" ~/Downloads/domains_isp | _sed -e "${ar_reg[3]}" > "${trust}"; f_do
+f_add "${ar_url[7]}" | _sed -E "${ar_reg[0]}" > "${trust}"; f_do
+#_sed -E "${ar_reg[0]}" ~/Downloads/domains_isp | _sed -E "${ar_reg[3]}" > "${trust}"; f_do
 # reducing adult entries then moving it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[19]}" | _sed -e "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
+f_add "${ar_url[19]}" | _sed -E "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
 _srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
 _grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
 _srt -u "${trust}" -o "${trust}"                             #+  adult category "${ar_dmn[0]}"
@@ -185,7 +185,7 @@ f_sm6 2 "${ar_uri[2]}"; f_do     # done while initializing category
 f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..18}; do
-   f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -v "#" >> "${ar_dmn[2]}"; f_do
+   f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -Ev "^(#|$)" >> "${ar_dmn[2]}"; f_do
 done
 # fixing false-bad entries
 f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_txt[2]}"

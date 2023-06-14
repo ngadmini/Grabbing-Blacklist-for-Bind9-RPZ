@@ -17,7 +17,7 @@
 HOST=rpz.warnet-ersa.net
 
 # fixed number of lines grab_regex. DON'T CHANGE
-REGEX=5
+REGEX=3
 
 # bind9-server need reload rndc (Remote Name Daemon Control)
 #   after syncronizing new dataBASE. but some server with low_RAM
