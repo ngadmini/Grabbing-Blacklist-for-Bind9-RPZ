@@ -128,8 +128,8 @@ porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
 f_sm6 7 "${ar_uri[7]}"
 # frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
-f_add "${ar_url[7]}" | _sed -E "${ar_reg[0]}" > "${trust}"; f_do
-#_sed -E "${ar_reg[0]}" ~/Downloads/domains_isp | _sed -E "${ar_reg[3]}" > "${trust}"; f_do
+#f_add "${ar_url[7]}" | _sed -E "${ar_reg[0]}" > "${trust}"; f_do
+_sed -E "${ar_reg[0]}" ~/Downloads/domains_isp > "${trust}"; f_do
 # reducing adult entries then moving it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[19]}" | _sed -E "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
