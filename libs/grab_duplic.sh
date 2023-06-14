@@ -82,7 +82,7 @@ else
    f_mis "${miss_v}" "${ar_cat[*]}"
 fi
 
-printf "\n${_CYN} IPV4 and sub-domains if parent domain exist across CATEGORIES%-2s" "[PRUNE]"
+printf "\n${_CYN} IPV4 and sub-domains if parent domain exist across CATEGORIES%-4s" "[PRUNE]"
 prun_ini=$(mktemp -p "${_DIR}")   # pruning sub-domains if parent
 prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
 _srt "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
@@ -92,7 +92,7 @@ _sed "s/^/\./" "${prun_ini}" | rev | _srt -u \
 f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
-printf "${_CYN} invalid Top Level Domains across CATEGORIES%-20s" "[PRUNE]"
+printf "${_CYN} invalid Top Level Domains across CATEGORIES%-22s" "[PRUNE]"
 http_iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 iana_tlds=$(mktemp -p "${_DIR}")  # tlds-alpha-by-domain.txt
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
@@ -109,25 +109,25 @@ f_do
 printf "${_CYN} turn-back pruned entries to related CATEGORIES\n" "[PRUNE]"
 for O in "${!ar_cat[@]}"; do
    if [[ ${O} -eq 1 ]]; then   # pruned ipv4s by turning to CIDR-block
-      printf "%3sturn-back pruned ipv4-addresses to %-18s" "" "${ar_cat[1]^^} category"
+      printf "%3sturn-back pruned ipv4-addresses to %-19s" "" "${ar_cat[1]^^} category"
       while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
             END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[O]}"
       done < "${ar_CAT[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
-      printf ": %9s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
-   else                        # turn-back pruned sub-domains to the appropriate category
-      printf "%3sturn-back pruned sub-domains to %-21s" "" "${ar_cat[O]^^} category"
+      printf ": %10s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
+   else                        # turn-back pruned domain entries to the appropriate category
+      printf "%3sturn-back pruned domains entry to %-20s" "" "${ar_cat[O]^^} category"
       _srt "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
-      printf ": %9s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
+      printf ": %10s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
    fi
 done
 
 # summarize
-printf "%55s : %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%55s : %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
+printf "%56s :  %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
+printf "%56s : %10s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 exit 0
