@@ -183,7 +183,6 @@ f_add() { curl -ks --http2 --tcp-fastopen --tcp-nodelay --tr-encoding --compress
 f_fix() {   # fixing false and bad entries
    f_sm8 "$1"
    dos2unix "$2" >> /dev/null 2>&1
-#   _srt -u "$2" | _sed -e "${ar_reg[0]}" -e "${ar_reg[1]}" > "$3"
    _srt -u "$2" | _sed -E "${ar_reg[0]}" | _sed -E "${ar_reg[1]}" > "$3"
 }
 
