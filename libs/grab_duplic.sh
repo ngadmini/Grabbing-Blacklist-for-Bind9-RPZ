@@ -93,7 +93,7 @@ f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
 printf "${_CYN} invalid Top Level Domains across CATEGORIES%-22s" "[PRUNE]"
-http_iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
+http_iana="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 iana_tlds=$(mktemp -p "${_DIR}")  # tlds-alpha-by-domain.txt
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 inva_tlds=$(mktemp -p "${_DIR}")  # invalid TLDs

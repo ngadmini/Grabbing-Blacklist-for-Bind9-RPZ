@@ -86,7 +86,7 @@
       HOST=rpz.warnet-ersa.net
 
       # fixed number of lines grab_regex. DON'T CHANGE
-      REGEX=3
+      REGEX=4
 
       # reload Remote Name Daemon Control (rndc)
       # set 'yes' to run <rndc reload>  or 'no' to <reboot>
@@ -107,7 +107,7 @@
       RPZ_IP4=rpz-ip CNAME .
 
       # fixed number of lines grab_urls. DON'T CHANGE
-      URLS=20
+      URLS=19
 
       # location of zone-files and dataBase (rpz.* and db.*) in bind9-server
       ZONE_DIR=/etc/bind/zones-rpz

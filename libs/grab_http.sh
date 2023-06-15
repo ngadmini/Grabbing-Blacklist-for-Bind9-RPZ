@@ -126,16 +126,14 @@ trust=$(mktemp -p "${_DIR}")
 untrust=$(mktemp -p "${_DIR}")
 porn=$(mktemp -p "${_DIR}")
 f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_uri[7]}"
-# frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
-f_add "${ar_url[7]}" | _sed -E "${ar_reg[0]}" > "${trust}"; f_do
-#_sed -E "${ar_reg[0]}" ~/Downloads/domains_isp > "${trust}"; f_do
-# reducing adult entries then moving it's to adult category
+f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" > "${trust}"; f_do   # frequently error-code curl: (35)
+#cp ~/Downloads/domains_isp "${trust}"; f_do                      #+  & firefox: PR_CONNECT_RESET_ERROR
+# reducing adult entries by moving it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[19]}" | _sed -E "${ar_reg[0]}" > "${porn}"   # use it's as a control to reducing
-_srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  adult-domains as listed in "${trust}"
-_grp -E "${ar_reg[2]}" "${trust}" >> "${untrust}"            #+  then move adult-domains to
-_srt -u "${trust}" -o "${trust}"                             #+  adult category "${ar_dmn[0]}"
+f_add "${ar_url[18]}" > "${porn}"                            # use it's as a control to reducing
+_srt -u "${trust}" -o "${trust}"                             #+  adult-domains as listed in "${trust}"
+_srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  then move adult-domains to
+_grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"            #+  adult category "${ar_dmn[0]}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"
 f_do
@@ -165,7 +163,7 @@ f_out "${ar_txt[4]}" "${ar_txt[5]}"
 f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE
-# contents: ad domains
+# contents: adv domains
 #+          ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm7 "${ar_cat[3]}" 5
 f_sm6 3 "${ar_uri[3]}"; f_do     # done while initializing category
@@ -184,7 +182,7 @@ f_sm7 "${ar_cat[2]}" 8
 f_sm6 2 "${ar_uri[2]}"; f_do     # done while initializing category
 f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
-for H in {14..18}; do
+for H in {14..17}; do
    f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -Ev "^(#|$)" >> "${ar_dmn[2]}"; f_do
 done
 # fixing false-bad entries
