@@ -101,7 +101,6 @@ curl -s "${http_iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
 rev "${prun_out}" | _srt -u | awk -F. '{print $1}' | rev | _srt -u > "${fals_tlds}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${iana_tlds}" "${fals_tlds}" > "${inva_tlds}"
 
-#if [[ "$(wc -l < "${inva_tlds}")" -gt 0 ]]; then
 if [[ -s "${inva_tlds}" ]]; then
    _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' "${inva_tlds}"
    _sed -E -i -f "${inva_tlds}" "${prun_out}"
