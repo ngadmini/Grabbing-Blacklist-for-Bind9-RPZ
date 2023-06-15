@@ -180,7 +180,7 @@ f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 # grabbing domains from sources-urls
 f_add() { curl -s --http2 --tcp-fastopen --tcp-nodelay --tr-encoding --compressed --ignore-content-length "$1" || f_xcd 251 "$1"; }
 # fixing false and bad entries
-f_fix() { f_sm8 "$1"; dos2unix "$2" >> /dev/null 2>&1; _srt -u "$2" | _sed -E "${ar_reg[0]}" > "$3"; }
+f_fix() { f_sm8 "$1"; dos2unix "$2" >> /dev/null 2>&1; _srt -u -s "$2" | _sed -E "${ar_reg[0]}" > "$3"; }
 # turn-back (domains) passed filtering to trust+ category
 f_out() { _grp -E "${ar_reg[2]}" "$1" >> "$2"; _sed -i -E "/${ar_reg[2]}/d" "$1"; f_do; }
 
@@ -237,7 +237,7 @@ f_dpm() {
 
 f_dpn() {
    printf "%11s = pruning duplicates %-23s" "STEP $6.$1" "$2 entries"
-   _srt "$3" "$4" | uniq -d > "$5"
+   _srt -s "$3" "$4" | uniq -d > "$5"
 
 }
 

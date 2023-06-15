@@ -131,8 +131,8 @@ f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" > "${trust}"; f_do   # frequently e
 # reducing adult entries by moving it's to adult category
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[18]}" > "${porn}"                            # use it's as a control to reducing
-_srt -u "${trust}" -o "${trust}"                             #+  adult-domains as listed in "${trust}"
-_srt "${trust}" "${porn}" | uniq -d > "${untrust}"           #+  then move adult-domains to
+_srt -u -s "${trust}" -o "${trust}"                          #+  adult-domains as listed in "${trust}"
+_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"        #+  then move adult-domains to
 _grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"            #+  adult category "${ar_dmn[0]}"
 awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${untrust}" "${trust}" >> "${ar_dmn[5]}"
 cat "${untrust}" >> "${ar_dmn[0]}"
@@ -194,7 +194,7 @@ f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 # contents: ipv4 as CIDR block and captured ipv4 from others category
 f_sm7 "${ar_cat[1]}" 0
 f_sm8 "${ar_cat[1]}"             # fixing false-bad entries
-awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -o "${ar_txt[1]}"; f_do
+awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -s -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # summarize
