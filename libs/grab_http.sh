@@ -177,8 +177,8 @@ f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE
 # contents: malware, phishing and ransomware domains
-#+          ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..18]}
-f_sm7 "${ar_cat[2]}" 8
+#+          ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..17]}
+f_sm7 "${ar_cat[2]}" 7
 f_sm6 2 "${ar_uri[2]}"; f_do     # done while initializing category
 f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
