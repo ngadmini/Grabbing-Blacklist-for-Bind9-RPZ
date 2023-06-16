@@ -99,7 +99,7 @@ fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 inva_tlds=$(mktemp -p "${_DIR}")  # invalid TLDs
 curl -s "${http_iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
 rev "${prun_out}" | _srt -u -s | awk -F. '{print $1}' | rev | _srt -u -s > "${fals_tlds}"
-awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "${iana_tlds}" "${fals_tlds}" > "${inva_tlds}"
+f_awk "${iana_tlds}" "${fals_tlds}" "${inva_tlds}"
 
 if [[ -s "${inva_tlds}" ]]; then
    _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' "${inva_tlds}"
