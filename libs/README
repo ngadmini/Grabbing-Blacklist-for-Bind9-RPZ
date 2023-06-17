@@ -30,32 +30,33 @@
               ~ ls | grep '^txt' | tr "\n" " "
               txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+
 
-   3. grab_build.sh --rewriting to BIND9-rpz format.
+   3. grab_build.sh --rewriting to BIND9-rpz format (generate to db.* files)
         *) you can run this scipt separately, if only txt.* are available in the same directory.
-              it generated db.* files
 
    4. grab_cereal.sh --incrementing serial zones.
         *) you can run this scipt separately, if only rpz.* are available in the same directory.
-              if not, it try to get from bind9-server. it generated new serial at zone-files
+              if not, it try to get from bind9-server. it generate new serial at zone-files
 
    5. grab_config --configuration file.
+        *) please SEE prerequisites section at this README
    6. grab_library --a library of functions and fundamental values
         *) NO need modify, except you want change RPZ-policy triggers and actions.
-              please SEE prerequisites section in this README
+        *) please SEE prerequisites section at this README
 
    7. grab_urls --contain urls list of source files.
         *) case sensitive, sort as is, line count and no blank lines
    8. grab_regex --contain reguler expressions.
         *) case sensitive, sort as is, line count and no blank lines
-        *) intended for fixing/removing false entries, i.e :
+        *) intended for filtering, fixing and removing invalid entries, i.e :
            - less than 4 characters and TLDs larger than 24 characters (currently in IANA)
-                ~ iana="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-                ~ curl -s "${iana}" | sed '/#/d;s/[A-Z]/\L&/g' \
-                  | awk '{ print length }' | sort -g | tail -1
+                ~ curl -s "https://data.iana.org/TLD/tlds-alpha-by-domain.txt" \
+                  | sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | sort -g | tail -1
            - construct with international characters (non ASCII). check it's with :
                 ~ LC_ALL=C grep -P -n '[^\x00-\x7F]'
-           - explicit TLDs (adult & gambling) and invalid TLDs
-                ~ \.(adult|bet|cam|casino|lgbt|lotto|poker|porn|sex|sexy|tube|webcam|xxx)$
+           - explicit TLDs (adult & gambling)
+                ~ \.(adult|bet|cam|casino|lgbt|lotto|poker|porn|sexy?|tube|(web)?cam|xxx)$
+           - turns back passes filtered to the proper category
+           - ipv4-address filtering
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
         *) in addition to synchronizing, this script also generates a tar-file to bakcup
@@ -77,8 +78,7 @@
       #   *) type in format VARIABLE=value
       #   *) blank lines and lines starting with '#' will be ignored
       #   *) all variables must be determined. if NOT it will fallback to their default
-      #      values
-      #   THEN and OR
+      #      values. THEN and OR
       #   *) change all variables in grab_library refer to this file. go to line:
       #      ~ nano +$(grep -n 'f_dft()' grab_library | cut -d: -f1) grab_library
 

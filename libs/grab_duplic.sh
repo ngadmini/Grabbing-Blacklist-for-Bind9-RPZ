@@ -93,26 +93,23 @@ f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
 printf "${_CYN} invalid Top Level Domains across CATEGORIES%-22s" "[PRUNE]"
-http_iana="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-iana_tlds=$(mktemp -p "${_DIR}")  # tlds-alpha-by-domain.txt
-fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
-inva_tlds=$(mktemp -p "${_DIR}")  # invalid TLDs
-curl -s "${http_iana}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds}"
+iana_tlds="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"   # valid TLDs
+fals_tlds=$(mktemp -p "${_DIR}")                                 # false TLDs
+curl -s "${iana_tlds}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds##*/}"
 rev "${prun_out}" | _srt -u -s | awk -F. '{print $1}' | rev | _srt -u -s > "${fals_tlds}"
-f_awk "${iana_tlds}" "${fals_tlds}" "${inva_tlds}"
+f_awk "${iana_tlds##*/}" "${fals_tlds}" invalid_tlds
 
-if [[ -s "${inva_tlds}" ]]; then
-   _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' "${inva_tlds}"
-   cp "${inva_tlds}" inva.tlds                  # make a copy "${inva_tlds}" if desired
-   _sed -E -i -f "${inva_tlds}" "${prun_out}"   # remove any found invalid tlds
-   f_do
-else
-  printf "${_CYN}\n" "noFOUND"                  # no invalid tlds found
+if [[ -s invalid_tlds ]]; then
+   _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' invalid_tlds
+   _sed -E -i -f invalid_tlds "${prun_out}"
+   f_do                           # remove all found invalid TLD's entries
+else                              # no invalid tlds found
+   printf "${_CYN}\n" "noFOUND"
 fi
 
 printf "${_CYN} turn-back pruned entries to related CATEGORIES\n" "[PRUNE]"
 for O in "${!ar_cat[@]}"; do
-   if [[ ${O} -eq 1 ]]; then   # pruned ipv4s by turning to CIDR-block
+   if [[ ${O} -eq 1 ]]; then      # pruned ipv4s by turning to CIDR-block
       printf "%34s to %-19s :" "turn-back pruned ipv4-addresses" "${ar_cat[1]^^} category"
       while IFS= read -r; do
          perl -MNet::Netmask -ne 'm!(\d+\.\d+\.\d+\.\d+/?\d*)! or next;
@@ -121,7 +118,7 @@ for O in "${!ar_cat[@]}"; do
       done < "${ar_CAT[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
       printf "%10s entries\n" "$(printf "%'d" "$(wc -l < "${ar_CAT[O]}")")"
-   else                        # turn-back pruned domain entries to the appropriate category
+   else                           # turn-back pruned domain entries to the proper category
       printf "%33s to %-20s :" "turn-back pruned domains entry" "${ar_cat[O]^^} category"
       _srt -s "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
       cp "${ar_prn[O]}" "${ar_CAT[O]}"
