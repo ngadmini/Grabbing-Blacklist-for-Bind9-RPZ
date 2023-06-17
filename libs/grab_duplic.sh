@@ -92,11 +92,11 @@ _sed "s/^/\./" "${prun_ini}" | rev | _srt -u -s \
 f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
-printf "${_CYN} invalid Top Level Domains across CATEGORIES%-22s" "[PRUNE]"
+printf "${_CYN} domains whose TLD is invalid %-36s" "[PRUNE]"
 iana_tlds="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"   # valid TLDs
 fals_tlds=$(mktemp -p "${_DIR}")                                 # false TLDs
 curl -s "${iana_tlds}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds##*/}"
-rev "${prun_out}" | _srt -u -s | awk -F. '{print $1}' | rev | _srt -u -s > "${fals_tlds}"
+awk -F. '{print $NF}' "${prun_out}" | _srt -u -s > "${fals_tlds}"
 f_awk "${iana_tlds##*/}" "${fals_tlds}" invalid_tlds
 
 if [[ -s invalid_tlds ]]; then
@@ -107,7 +107,7 @@ else                              # no invalid tlds found
    printf "${_CYN}\n" "noFOUND"
 fi
 
-printf "${_CYN} turn-back pruned entries to related CATEGORIES\n" "[PRUNE]"
+printf "${_CYN} turn-back pruned entries to proper CATEGORIES\n" "[PRUNE]"
 for O in "${!ar_cat[@]}"; do
    if [[ ${O} -eq 1 ]]; then      # pruned ipv4s by turning to CIDR-block
       printf "%34s to %-19s :" "turn-back pruned ipv4-addresses" "${ar_cat[1]^^} category"
