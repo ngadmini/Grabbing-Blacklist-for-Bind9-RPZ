@@ -88,7 +88,7 @@ prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
 _srt -s "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 _sed "s/^/\./" "${prun_ini}" | rev | _srt -u -s \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
-   | rev | _sed "s/^\.//" | _srt -u -s > "${prun_out}"
+   | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
