@@ -22,6 +22,7 @@ _get=$(curl -s "${_api}" | grep download_url | awk -F/ '{print $8}')
 _ori="https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/${_get}"
 _lct=$(date +%a\ %Y-%m-%d\ %T\ %Z)
 _gen="; generate at ${_lct} by ${_foo} ${_ver}"
+_tld="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 
 # colorizing
 _cyn='\e[96m'

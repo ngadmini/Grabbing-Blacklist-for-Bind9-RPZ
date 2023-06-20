@@ -93,15 +93,14 @@ f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
 printf "${_CYN} domains whose TLD is invalid %-36s" "[PRUNE]"
-iana_tlds="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"   # valid TLDs
-fals_tlds=$(mktemp -p "${_DIR}")                                 # false TLDs
-curl -s "${iana_tlds}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds##*/}"
+fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
+curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' > tlds.iana
 awk -F. '{print $NF}' "${prun_out}" | _srt -us > "${fals_tlds}"
-f_awk "${iana_tlds##*/}" "${fals_tlds}" invalid_tlds
+f_awk tlds.iana "${fals_tlds}" tlds.inva
 
-if [[ -s invalid_tlds ]]; then
-   _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' invalid_tlds
-   _sed -E -i -f invalid_tlds "${prun_out}"
+if [[ -s tlds.inva ]]; then
+   _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' tlds.inva
+   _sed -E -i -f tlds.inva "${prun_out}"
    f_do                           # remove all found invalid TLD's entries
 else                              # no invalid tlds found
    printf "${_CYN}\n" "noFOUND"

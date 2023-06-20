@@ -86,6 +86,19 @@ for E in "${!ar_shn[@]}"; do
 done
 f_ok
 
+#check actual longest of TLDs
+printf "${_pre} %-63s" "check the actual longest of Top Level Domains"
+_lng=$(curl -s "${_tld}" | sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | sort -g | tail -1)
+_reg=$(_sed '2,4d' "${ar_shn[0]}" | awk -F'|' '{print $10}')
+_cur=$(echo "${_reg}" | cut -d \{ -f2 | cut -d \, -f1)
+if (("${_lng}" >= "${_cur}")); then
+   printf "${_err}\n${_hnt} please change '%s' to '([a0-z9\-]){%d,} in ${ar_shn[0]} line: 1\n" "${_reg}" "$(("$_lng"+1))"
+   printf "currently the longest TLDs are %s characters, as shown at: %s\n" "${_lng}" "${_tld}"
+   exit 1
+else
+   f_ok
+fi
+
 # initialize CATEGORY, many categories are obtained but the main one is adult
 printf "${_pre} check availability of sources-urls (as listed in %s)\n" "${ar_shn[1]}"
 f_uri "${ar_shn[1]}" || :             # check availability of sources-urls
