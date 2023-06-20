@@ -85,8 +85,8 @@ fi
 printf "\n${_CYN} IPV4 and sub-domains if parent domain exist across CATEGORIES%-4s" "[PRUNE]"
 prun_ini=$(mktemp -p "${_DIR}")   # pruning sub-domains if parent
 prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
-_srt -s "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
-_sed "s/^/\./" "${prun_ini}" | rev | _srt -u -s \
+_srt -us "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
+_sed "s/^/\./" "${prun_ini}" | rev | _srt -us \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
    | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
@@ -96,7 +96,7 @@ printf "${_CYN} domains whose TLD is invalid %-36s" "[PRUNE]"
 iana_tlds="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"   # valid TLDs
 fals_tlds=$(mktemp -p "${_DIR}")                                 # false TLDs
 curl -s "${iana_tlds}" | _sed '/#/d;s/[A-Z]/\L&/g' > "${iana_tlds##*/}"
-awk -F. '{print $NF}' "${prun_out}" | _srt -u -s > "${fals_tlds}"
+awk -F. '{print $NF}' "${prun_out}" | _srt -us > "${fals_tlds}"
 f_awk "${iana_tlds##*/}" "${fals_tlds}" invalid_tlds
 
 if [[ -s invalid_tlds ]]; then

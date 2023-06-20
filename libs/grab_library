@@ -177,12 +177,10 @@ f_ok() { printf "${_GRN}\n" "isOK"; }
 f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 
-# grabbing domains from sources-urls
-f_add() { curl -s --http2 --tcp-fastopen --tcp-nodelay --tr-encoding --compressed --ignore-content-length "$1" || f_xcd 251 "$1"; }
-# fixing false and bad entries
-f_fix() { f_sm8 "$1"; dos2unix "$2" >> /dev/null 2>&1; _srt -u -s "$2" | _sed -E "${ar_reg[0]}" > "$3"; }
-# turn-back (domains) passed filtering to trust+ category
-f_out() { _grp -E "${ar_reg[2]}" "$1" >> "$2"; _sed -i -E "/${ar_reg[2]}/d" "$1"; f_do; }
+f_add() { curl -s "$1" || f_xcd 251 "$1"; }   # grabbing domains from sources-urls
+# fixing false and bad entries AND turn-back (domains) passed filtering to trust+ category
+f_fix() { f_sm8 "$1"; dos2unix -q "$2"; _sed -E "${ar_reg[0]}" "$2" | _srt -us > "$3"; }
+f_out() { _grp -E "${ar_reg[2]}" "$1" >> "$2"; _srt -us "$2" -o "$2"; _sed -i -E "/${ar_reg[2]}/d" "$1"; f_do; }
 
 f_fip() {   # capture ip-address entry. turn to CIDR & save it into ipv4 CATEGORY
    printf "%12s: %-66s" "moving" "IP-address entries into $3 CATEGORY"

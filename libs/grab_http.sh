@@ -130,7 +130,7 @@ f_sm6 7 "${ar_uri[7]}"; f_add "${ar_url[7]}" > "${trust}"; f_do   # frequently e
 #cp ~/Downloads/domains_isp "${trust}"; f_do                      #+  & firefox: PR_CONNECT_RESET_ERROR
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[18]}" > "${porn}"                       # use it's as a control to reducing
-_srt -u -s "${trust}" -o "${trust}"                     #+  adult-domains as listed in "${trust}"
+_srt -us "${trust}" -o "${trust}"                       #+  adult-domains as listed in "${trust}"
 _srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"   #+  then move adult-domains to
 _grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"       #+  adult category "${ar_dmn[0]}"
 f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"   # reducing adult entries by moving it's
