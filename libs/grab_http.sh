@@ -92,7 +92,7 @@ _lng=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | 
 _reg=$(_sed '2,4d' "${ar_shn[0]}" | awk -F'|' '{print $10}')
 _cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
 
-if (("${_lng}" >= "${_cur}")); then
+if (("${_lng}" >= "${_cur}")); then   # TO DO: substitude '${_cur}' with '$(("$_lng"+1))'
    printf "${_err}\n${_hnt} please change '%s' TO '([a0-z9\-]){%d,}' in ${ar_shn[0]} line: 1\n" "${_reg}" "$(("$_lng"+1))"
    printf "currently the longest TLDs are %s characters, as shown at: %s\n" "${_lng}" "${_tld}"
    exit 1
