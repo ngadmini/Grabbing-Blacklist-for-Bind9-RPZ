@@ -1,16 +1,17 @@
 ; rpz.adultaa
-; generate at Thu 2023-06-22 05:51:36 WIB by grab_cereal.sh v10.0
+; generate at Mon 2023-06-12 01:37:07 WIB by grab_cereal.sh v10.0
 ; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.0/libs/grab_cereal.sh
 ;
 $TTL 604800
 $ORIGIN adultaa.domain.
-@   SOA   adultaa.domain. rpz.adultaa.domain. (2023062201 1w 1d 4w 1w)
+@   SOA   adultaa.domain. rpz.adultaa.domain. (2023061201 1w 1d 4w 1w)
 @         NS   adultaa.domain.
 @   IN    A    127.0.0.17
 ;
 ; explicite adult domains
 *.adult  CNAME .
 *.cam    CNAME .
+*.camera CNAME .
 *.gay    CNAME .
 *.lgbt   CNAME .
 *.porn   CNAME .
@@ -22,6 +23,5 @@ $ORIGIN adultaa.domain.
 ;
 ; xhamster at google translate
 xhadult2-com.translate.goog   CNAME .
-xhadult3-com.translate.goog   CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"
