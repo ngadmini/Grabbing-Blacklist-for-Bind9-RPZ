@@ -70,6 +70,20 @@ else
    esac
 fi
 
+#check the actual longest of TLDs
+printf "${_pre} %-63s" "check the actual longest of Top Level Domains"
+_lng=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | _srt -g | tail -1)
+_reg=$(_sed '2,4d' "${ar_shn[0]}" | awk -F'|' '{print $10}')
+_cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
+
+if (("${_lng}" >= "${_cur}")); then
+   _neo=$(("$_lng"+1))
+   printf "${_YLW}\nchanging '%s' TO '([a0-z9\-]){%d,}' in ${ar_shn[0]} line: 1\n" "CHANGE occurs" "${_reg}" "${_neo}"
+   _sed -i "s/$_cur,/$_neo,/" "${ar_shn[0]}"
+else
+   f_ok
+fi
+
 # check script-pack's properties
 printf "${_pre} %-63s" "check script-pack's property in local-host: $(hostname -I)"
 for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
@@ -85,20 +99,6 @@ for E in "${!ar_shn[@]}"; do
    fi
 done
 f_ok
-
-#check actual longest of TLDs
-printf "${_pre} %-63s" "check the actual longest of Top Level Domains"
-_lng=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | _srt -g | tail -1)
-_reg=$(_sed '2,4d' "${ar_shn[0]}" | awk -F'|' '{print $10}')
-_cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
-
-if (("${_lng}" >= "${_cur}")); then   # TO DO: substitude '${_cur}' with '$(("$_lng"+1))'
-   printf "${_err}\n${_hnt} please change '%s' TO '([a0-z9\-]){%d,}' in ${ar_shn[0]} line: 1\n" "${_reg}" "$(("$_lng"+1))"
-   printf "currently the longest TLDs are %s characters, as shown at: %s\n" "${_lng}" "${_tld}"
-   exit 1
-else
-   f_ok
-fi
 
 # initialize CATEGORY, many categories are obtained but the main one is adult
 printf "${_pre} check availability of sources-urls (as listed in %s)\n" "${ar_shn[1]}"

@@ -54,7 +54,7 @@
            - construct with international characters (non ASCII). check it's with :
                 ~ LC_ALL=C grep -P -n '[^\x00-\x7F]'
            - explicit TLDs (adult & gambling)
-                ~ \.(adult|bet|cam|casino|lgbt|lotto|poker|porn|sexy?|tube|(web)?cam|xxx)$
+                ~ \.(adult|bet|cam(era)?|cas(h|ino)|gay|goog|lgbt|lotto|poker|porn|sexy?|tube|webcam|xxx)$
            - turns back passes filtered to the proper category
            - ipv4-address filtering
 
