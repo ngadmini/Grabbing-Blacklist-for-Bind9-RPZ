@@ -72,12 +72,11 @@ fi
 
 #check the actual longest of TLDs
 printf "${_pre} %-63s" "check the actual longest of Top Level Domains"
-_lng=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | _srt -g | tail -1)
+_act=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | _srt -g | tail -1)
 _reg=$(head -1 "${ar_shn[0]}" | awk -F'|' '{print $10}')
 _cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
-_neo=$(("$_lng"+1))
+_neo=$(("$_act"+1))
 
-#if (("${_lng}" >= "${_cur}")); then
 if [[ "${_neo}" != "${_cur}" ]]; then
    printf "${_YLW}\nchanging '%s' TO '([a0-z9\-]){%d,}' in ${ar_shn[0]} line: 1\n" "CHANGE occurs" "${_reg}" "${_neo}"
    _sed -i "s/$_cur,/$_neo,/" "${ar_shn[0]}"
