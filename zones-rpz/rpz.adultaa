@@ -23,5 +23,6 @@ $ORIGIN adultaa.domain.
 ;
 ; xhamster at google translate
 xhadult2-com.translate.goog   CNAME .
+xhadult3-com.translate.goog   CNAME .
 ;
 $INCLUDE "/etc/bind/zones-rpz/db.adultaa"

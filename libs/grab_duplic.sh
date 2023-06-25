@@ -92,18 +92,19 @@ _sed "s/^/\./" "${prun_ini}" | rev | _srt -us \
 f_do
 
 # final check: invalid TLDs. if found, then creating regex to removing it's TLDs
-printf "${_CYN} domains whose TLD is invalid %-36s" "[PRUNE]"
+printf "${_CYN} domains whose TLD is invalid. " "[PRUNE]"
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' > tlds.iana
 awk -F. '{print $NF}' "${prun_out}" | _srt -us > "${fals_tlds}"
 f_awk tlds.iana "${fals_tlds}" tlds.inva
 
 if [[ -s tlds.inva ]]; then
+   printf "FOUND: %s invalid TLDs%-12s" "$(awk 'END {print NR}' tlds.inva)" ""
    _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' tlds.inva
    _sed -E -i -f tlds.inva "${prun_out}"
    f_do                           # remove all found invalid TLD's entries
 else                              # no invalid tlds found
-   printf "${_CYN}\n" "noFOUND"
+   printf "%42s\n" "noFOUND"
 fi
 
 printf "${_CYN} turn-back pruned entries to proper CATEGORIES\n" "[PRUNE]"
