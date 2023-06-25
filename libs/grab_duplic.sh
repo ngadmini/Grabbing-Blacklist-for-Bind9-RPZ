@@ -126,8 +126,8 @@ for O in "${!ar_cat[@]}"; do
 done
 
 # summarize
-printf "%57s : %'d entries\n" "TOTAL" "$(wc -l "${ar_CAT[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%57s : %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
+printf "%57s : %'d entries\n" "TOTAL" "$(awk 'END {print NR}' "${ar_CAT[@]}")"
+printf "%57s : %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_CAT[@]}" | tail -1 | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 exit 0

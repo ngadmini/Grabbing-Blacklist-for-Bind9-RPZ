@@ -252,7 +252,7 @@ f_g4b() {   # remarking db.*
    _sed -i "1i ; ${1} = ${acq_al} lines\n${_gen}\n; ${_ori}\/libs\/${_foo}\n;" "$1"
 }
 
-f_rpz() { # f_rpz & f_ip4, both are used by grab_build.sh
+f_rpz() {   # f_rpz & f_ip4, both are used by grab_build.sh
    printf "%13s %-31s : " "rewriting" "$2 to $1"
    awk -v DOM="${RPZ_DOM}" '{print $0" "DOM"\n""*."$0" "DOM}' "$2" >> "$1"
    f_g4b "$@"

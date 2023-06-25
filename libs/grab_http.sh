@@ -72,7 +72,7 @@ fi
 
 #check the actual longest of TLDs
 printf "${_pre} %-63s" "check the actual longest of Top Level Domains"
-_act=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{ print length }' | _srt -g | tail -1)
+_act=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{print length}' | _srt -g | tail -1)
 _reg=$(head -1 "${ar_shn[0]}" | awk -F'|' '{print $10}')
 _cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
 _neo=$(("$_act"+1))
@@ -216,8 +216,8 @@ for J in "${!ar_cat[@]}"; do
    printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
 done
-printf "%12s: %'d entries\n" "TOTAL" "$(wc -l "${ar_txt[@]}" | grep "total" | awk -F' ' '{print $1}')"
-printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | grep total | awk -F' ' '{print ($1/1024^2)}')"
+printf "%12s: %'d entries\n" "TOTAL" "$(awk 'END {print NR}' "${ar_txt[@]}")"
+printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | tail -1 | awk -F' ' '{print ($1/1024^2)}')"
 T="$(($(date +%s%N)-T))"
 f_tim
 

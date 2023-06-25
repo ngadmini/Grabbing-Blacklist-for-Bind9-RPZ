@@ -18,6 +18,8 @@ digiads.co.id IN CNAME .
 *.digiads.co.id IN CNAME .
 lamanlabuh.aduankonten.id IN CNAME .
 *.lamanlabuh.aduankonten.id IN CNAME .
+lamanlabuh-aduankonten-id.translate.goog CNAME .   
+*.lamanlabuh-aduankonten-id.translate.goog CNAME .
 notifa.info IN CNAME .
 *.notifa.info IN CNAME .
 uadexchange.com IN CNAME .
