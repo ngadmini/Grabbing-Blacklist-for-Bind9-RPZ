@@ -85,8 +85,6 @@ fi
 printf "\n${_CYN} IPV4 and sub-domains if parent domain exist across CATEGORIES%-4s" "[PRUNE]"
 prun_ini=$(mktemp -p "${_DIR}")   # pruning sub-domains if parent
 prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
-#unset -v ar_CAT
-#mapfile -t ar_CAT < <(f_fnd "txt.*")
 _srt -us "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 _sed "s/^/\./" "${prun_ini}" | rev | _srt -us \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
