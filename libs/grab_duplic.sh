@@ -117,10 +117,12 @@ for O in "${!ar_cat[@]}"; do
             $h = $1; $h =~ s/(\.0)+$//; $b = Net::Netmask->new($h); $b->storeNetblock();
             END {print map {$_->base()."/".$_->bits()."\n"} cidrs2cidrs(dumpNetworkTable)}' > "${ar_prn[O]}"
       done < "${ar_CAT[O]}"
+      cp "${ar_prn[O]}" "${ar_CAT[O]}"
       printf "%10s entries\n" "$(printf "%'d" "$(wc -l < "${ar_prn[O]}")")"
    else                           # turn-back pruned domain entries to the proper category
       printf "%33s to %-20s :" "turn-back pruned domains entry" "${ar_cat[O]^^} category"
       _srt -s "${prun_out}" "${ar_CAT[O]}" | uniq -d > "${ar_prn[O]}"
+      cp "${ar_prn[O]}" "${ar_CAT[O]}"
       printf "%10s entries\n" "$(printf "%'d" "$(wc -l < "${ar_prn[O]}")")"
    fi
 done
