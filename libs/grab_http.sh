@@ -78,7 +78,7 @@ _cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
 _neo=$(("$_act"+1))
 
 if [[ "${_neo}" != "${_cur}" ]]; then
-   printf "${_YLW}\nchanging '%s' TO '([a0-z9\-]){%d,}' in ${ar_shn[0]} line: 1\n" "CHANGE occurs" "${_reg}" "${_neo}"
+   printf "${_YLW}\nchanging '%s' TO '[a0-z9\-]{%d,}' in ${ar_shn[0]} line: 1\n" "CHANGE occurs" "${_reg}" "${_neo}"
    _sed -i "s/$_cur,/$_neo,/" "${ar_shn[0]}"
 else
    f_ok
