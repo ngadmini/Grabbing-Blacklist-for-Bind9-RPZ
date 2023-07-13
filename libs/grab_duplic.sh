@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v10.0
+#   grab_duplic.sh v10.1
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -91,7 +91,7 @@ _sed "s/^/\./" "${prun_ini}" | rev | _srt -us \
    | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
 
-# final check: invalid TLDs. if found, then creating regex to removing it's TLDs
+# if found invalid TLDs, then creating regex to removing it's TLDs
 printf "${_CYN} domains whose TLD is invalid. " "[PRUNE]"
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 f_frm "tlds.*"
@@ -99,12 +99,12 @@ curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' > tlds.iana
 awk -F. '{print $NF}' "${prun_out}" | _srt -us > "${fals_tlds}"
 f_awk tlds.iana "${fals_tlds}" tlds.inva
 
-if [[ -s tlds.inva ]]; then
+if [[ -s tlds.inva ]]; then       # remove invalid TLD's entries
    printf "FOUND: %s invalid TLDs%-12s" "$(awk 'END {print NR}' tlds.inva)" ""
    _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' tlds.inva
    _sed -E -i -f tlds.inva "${prun_out}"
-   f_do                           # remove all found invalid TLD's entries
-else                              # no invalid tlds found
+   f_do
+else
    printf "%42s\n" "noFOUND"
 fi
 

@@ -1,10 +1,10 @@
-; db.adultad = 1.414.414 lines
-; generate at Mon 2023-06-12 01:36:58 WIB by grab_build.sh v10.0
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.0/libs/grab_build.sh
+; db.adultad = 1.410.472 lines
+; generate at Thu 2023-07-13 19:20:33 WIB by grab_build.sh v10.1
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.1/libs/grab_build.sh
 ;
-highheelsandlace.blogspot.cz CNAME .
-*.highheelsandlace.blogspot.cz CNAME .
-highheelsandlace.blogspot.de CNAME .
-*.highheelsandlace.blogspot.de CNAME .
-highheelsandlace.blogspot.dk CNAME .
-*.highheelsandlace.blogspot.dk CNAME .
+highoffkaay.tumblr.com CNAME .
+*.highoffkaay.tumblr.com CNAME .
+highofflesbians.tumblr.com CNAME .
+*.highofflesbians.tumblr.com CNAME .
+highoncum.tumblr.com CNAME .
+*.highoncum.tumblr.com CNAME .
