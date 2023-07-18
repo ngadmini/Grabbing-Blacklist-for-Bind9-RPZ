@@ -73,7 +73,7 @@
       # check required package (dependencies)
       ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
       ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
-      ~$ echo 'insecure' | tee -a ~/.curlr
+      ~$ echo 'insecure' | tee -a ~/.curlrc
 
 *) modify file grab_config according to your BIND9-server environment
       # modify file grab_config to fit your BIND9-server environment
