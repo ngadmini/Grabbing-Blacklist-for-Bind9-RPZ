@@ -73,7 +73,7 @@ fi
 # check the actual longest of TLDs
 printf "${_pre} %-63s" "check the actual longest of Top Level Domains"
 _act=$(curl -s "${_tld}" | _sed '/#/d;s/[A-Z]/\L&/g' | awk '{print length}' | _srt -g | tail -1)
-_reg=$(head -1 "${ar_shn[0]}" | awk -F'|' '{print $10}')
+_reg=$(head -1 "${ar_shn[0]}" | awk -F'|' '{print $7}')
 _cur=$(echo "${_reg}" | cut -d\{ -f2 | cut -d, -f1)
 _neo=$(("$_act"+1))
 
