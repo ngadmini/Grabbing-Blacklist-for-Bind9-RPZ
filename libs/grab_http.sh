@@ -151,63 +151,58 @@ _grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"       #+  adult category "${ar
 f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"            # reducing adult entries by moving it's
 cat "${untrust}" >> "${ar_dmn[0]}"                      #+ to adult category
 f_do
-# fixing false-bad entries
-f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_txt[5]}"; f_do
-f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_txt[5]}"; f_do  # fixing false-bad entries
+f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"      #+
 
 # category: ADULT
 # contents: adult-porn domains
 #+          ${ar_cat[0]} with 2 additional entries: ${ar_url[0,6]} and some from the trust+ category
 f_sm7 "${ar_cat[0]}" 2
-f_sm6 0 "${ar_uri[0]}"; f_do     # done while initializing category
+f_sm6 0 "${ar_uri[0]}"; f_do                           # done while initializing category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
-# fixing false-bad entries
-f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_txt[0]}"
-f_out "${ar_txt[0]}" "${ar_txt[5]}"
-f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_txt[0]}"     # fixing false-bad entries
+f_out "${ar_txt[0]}" "${ar_txt[5]}"                    #+
+f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
 
 # category: REDIRECTOR
 # contents: vpn and proxy domains
 #+          ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
-f_sm7 "${ar_cat[4]}" 2           # done while initializing category
+f_sm7 "${ar_cat[4]}" 2                                 # done while initializing category
 for F in {4,5}; do f_sm6 "${F}" "${ar_uri[F]}"; f_do; done
-# fixing false-bad entries
-f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_txt[4]}"
-f_out "${ar_txt[4]}" "${ar_txt[5]}"
-f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_txt[4]}"     # fixing false-bad entries
+f_out "${ar_txt[4]}" "${ar_txt[5]}"                    #+
+f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
 
 # category: PUBLICITE
 # contents: adv domains
 #+          ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm7 "${ar_cat[3]}" 5
-f_sm6 3 "${ar_uri[3]}"; f_do     # done while initializing category
+f_sm6 3 "${ar_uri[3]}"; f_do                           # done while initializing category
 for G in {8..11}; do
    f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
-# fixing false-bad entries
-f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_txt[3]}"
-f_out "${ar_txt[3]}" "${ar_txt[5]}"
-f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_txt[3]}"     # fixing false-bad entries
+f_out "${ar_txt[3]}" "${ar_txt[5]}"                    #+
+f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
 
 # category: MALWARE
 # contents: malware, phishing and ransomware domains
 #+          ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..17]}
 f_sm7 "${ar_cat[2]}" 7
-f_sm6 2 "${ar_uri[2]}"; f_do     # done while initializing category
+f_sm6 2 "${ar_uri[2]}"; f_do                           # done while initializing category
 f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..17}; do
-   f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -Ev "^(#|$)" >> "${ar_dmn[2]}"; f_do
+   f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -v "^#" >> "${ar_dmn[2]}"; f_do
 done
-# fixing false-bad entries
-f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_txt[2]}"
-f_out "${ar_txt[2]}" "${ar_txt[5]}"
-f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
+f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_txt[2]}"     # fixing false-bad entries
+f_out "${ar_txt[2]}" "${ar_txt[5]}"                    #+
+f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
 
 # category: IPV4
 # contents: ipv4 as CIDR block and captured ipv4 from others category
 f_sm7 "${ar_cat[1]}" 0
-f_sm8 "${ar_cat[1]}"             # fixing false-bad entries
+f_sm8 "${ar_cat[1]}"                                   # fixing false-bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -s -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
