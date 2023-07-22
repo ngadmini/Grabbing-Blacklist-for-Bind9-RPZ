@@ -76,11 +76,11 @@ f_xcd() {   # exit code {244..255}
              return 1;;
         247) printf "\n%s: \n${_hnt} %s\n" "${_xcd}" "you must execute ${_foo} as non-root privileges"
              return 1;;
-        248) _msj="urls. but URLS=${URLS} stated in file ${ar_shn[0]}"
+        248) _msj="urls. but URLS=${URLS} stated in file grab_config"
              _lmm="$(basename "$2") consist of $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmm} ${_msj}"
              return 1;;
-        249) _msg="lines. but REGEX=${REGEX} stated in file ${ar_shn[0]}"
+        249) _msg="lines. but REGEX=${REGEX} stated in file grab_config"
              _lmn="$(basename "$2") consist of $(wc -l < "$2")"
              printf "\n%s\n%s\n" "${_xcd}" "${_lmn} ${_msg}"
              return 1;;
