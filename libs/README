@@ -1,6 +1,6 @@
-### readme version v10.1
+### readme version v10.2
    *) Bash scripts to update blacklisted domains in BIND9-Response Policy Zone
-   *) this v10.1 version is the next release after the previous release. it's a maintenance
+   *) this v10.2 version is the next release after the previous release. it's a maintenance
          release which improves version compatibility with sources-list in grab_urls
 
 ### author:
@@ -12,8 +12,9 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v10.1:
-*) cumulative fixes
+### what's new in v10.2:
+*) convert Unicode characters to ASCII. [idn](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html)
+   is used to encode a non legal IDN coming from [domains_isp](https://trustpositif.kominfo.go.id/assets/db/domains_isp)
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \

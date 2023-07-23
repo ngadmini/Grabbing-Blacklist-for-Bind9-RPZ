@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v10.1
+#   grab_http.sh v10.2
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -48,7 +48,7 @@ declare -A ar_num              # numeric value index's position of: grab_regex i
 ar_num[ar_shn]=$(echo "${ar_shn[*]}" | tr ' ' '\n' | awk '/grab_regex/ {print NR-1}')
 
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
-for C in {curl,dos2unix,faketime,libnet-netmask-perl,rsync}; do
+for C in {curl,dos2unix,faketime,idn,libnet-netmask-perl,rsync}; do
    if ! dpkg -s "${C}" >> /dev/null 2>&1; then
       printf "\n${_err} %s %-60s" "${C}" "not installed"
       ar_pkg+=("${C}")
@@ -136,13 +136,14 @@ done
 # contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
 #+          ${ar_cat[5]} with 2 additional entries: ${ar_url[1,7]}
 f_sm7 "${ar_cat[5]}" 2
-trust=$(mktemp -p "${_DIR}")
-untrust=$(mktemp -p "${_DIR}")
-porn=$(mktemp -p "${_DIR}")
-f_sm6 1 "${ar_uri[1]}"; f_do     # add gambling-domains to trust+ category
-f_sm6 7 "${ar_uri[7]}"           # frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
-f_add "${ar_url[7]}" > "${trust}"; f_do                 #+ download first, then switch it's to comment
-#cp ~/Downloads/domains_isp "${trust}"; f_do            #+ and it's to uncomment
+trust=$(mktemp -p "${_DIR}");     porn=$(mktemp -p "${_DIR}")
+untrust=$(mktemp -p "${_DIR}");   idna=$(mktemp -p "${_DIR}")
+f_sm6 1 "${ar_uri[1]}"; f_do             # add gambling-domains to trust+ category
+f_sm6 7 "${ar_uri[7]}"                   # https://trustpositif.kominfo.go.id/assets/db/domains_isp
+f_add "${ar_url[7]}" > "${trust}"        #+  frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
+#cp ~/Downloads/domains_isp "${trust}"   #+  download then switch line above to comment and it's to uncomment
+LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"
+cat "${idna}" >> "${trust}"; f_do        # originated from not a legal IDN name
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[18]}" > "${porn}"                       # use it's as a control to reducing
 _srt -us "${trust}" -o "${trust}"                       #+  adult-domains as listed in "${trust}"

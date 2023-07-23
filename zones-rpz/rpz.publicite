@@ -1,10 +1,10 @@
 ; rpz.publicite
-; generate at Thu 2023-07-13 19:20:48 WIB by grab_cereal.sh v10.1
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.1/libs/grab_cereal.sh
+; generate at Min 2023-07-23 19:46:03 WIB by grab_cereal.sh v10.2
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.2/libs/grab_cereal.sh
 ;
 $TTL 604800
 $ORIGIN publicite.domain.
-@   SOA   publicite.domain. rpz.publicite.domain. (2023071300 1w 1d 4w 1w)
+@   SOA   publicite.domain. rpz.publicite.domain. (2023072301 1w 1d 4w 1w)
 @         NS   publicite.domain.
 @   IN    A    127.0.0.15
 ;
