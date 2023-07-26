@@ -14,9 +14,9 @@ PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 _DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # sourcing to grab_library
-clear
-cd "${_DIR}"
+clear; cd "${_DIR}"
 readonly _LIB="${_DIR}"/grab_library
+
 if [[ -e ${_LIB} ]]; then
    if [[ $(stat -c "%a" "${_LIB}") != 644 ]]; then chmod 644 "${_LIB}"; fi
    source "${_LIB}"
@@ -34,16 +34,13 @@ fi
 
 # starting main script
 f_stt ""
-printf "${_pre} %-63s" "check availability configuration file"
-f_cnf
+printf "${_pre} %-63s" "check availability configuration file"; f_cnf
 printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247
-f_ok
+[[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
 
 ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 ar_pkg=()
-ar_exe=()
 declare -A ar_num              # numeric value index's position of: grab_regex is no.0 at ar_shn
 ar_num[ar_shn]=$(echo "${ar_shn[*]}" | tr ' ' '\n' | awk '/grab_regex/ {print NR-1}')
 
@@ -115,25 +112,20 @@ for A in {0..5}; do                   # grab blacklist from dsi.ut-capitole.fr
    f_do
 done
 
-mkdir ipv4                            # make some adjusment to initializing categories
-mv phishing malware
-mv gambling trust+
-cat vpn/domains >> redirector/domains
-rm -rf vpn
-
-mapfile -t ar_cat < <(f_cat)          # initializing category
-printf "%12s: ${_CYN}\n" "initiating" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
+mkdir ipv4; mv phishing malware; mv gambling trust+   # make some adjusment
+cat vpn/domains >> redirector/domains; rm -rf vpn     #+  to categorizing
+mapfile -t ar_cat < <(f_cat)          # categorizing
 f_frm "txt.*"                         # remove stale domain lists if any
-ar_dmn=()                             # use it's as raw-domains container
-ar_txt=()                             #+            processed-domains container
-
+ar_dmn=()                             # used as raw-domains container
+ar_txt=()                             #+        processed-domains container
 for B in "${!ar_cat[@]}"; do
-   ar_dmn+=("${ar_cat[B]}"/domains)
-   ar_txt+=(txt."${ar_cat[B]}")
+   ar_dmn+=("${ar_cat[B]}"/domains); ar_txt+=(txt."${ar_cat[B]}")
 done
+printf "%12s: ${_CYN}\n" "categorized" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
+
 
 # category: TRUST+
-# contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/)
+# contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/assets/db/domains_isp)
 #+          ${ar_cat[5]} with 2 additional entries: ${ar_url[1,7]}
 f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}");     porn=$(mktemp -p "${_DIR}")
@@ -142,15 +134,15 @@ f_sm6 1 "${ar_uri[1]}"; f_do             # add gambling-domains to trust+ catego
 f_sm6 7 "${ar_uri[7]}"                   # https://trustpositif.kominfo.go.id/assets/db/domains_isp
 f_add "${ar_url[7]}" > "${trust}"        #+  frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
 #cp ~/Downloads/domains_isp "${trust}"   #+  download then switch line above to comment and it's to uncomment
-LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"
-cat "${idna}" >> "${trust}"; f_do        # originated from not a legal IDN name
+LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"   # capture non a legal IDN, then use
+cat "${idna}" >> "${trust}"; f_do                                          #+  idn tool to convert to ASCII
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[18]}" > "${porn}"                       # use it's as a control to reducing
-_srt -us "${trust}" -o "${trust}"                       #+  adult-domains as listed in "${trust}"
-_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"   #+  then move adult-domains to
-_grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"       #+  adult category "${ar_dmn[0]}"
-f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"            # reducing adult entries by moving it's
-cat "${untrust}" >> "${ar_dmn[0]}"                      #+ to adult category
+f_add "${ar_url[18]}" > "${porn}"                         # used as a control to reducing
+_srt -us "${trust}" -o "${trust}"                         #+  adult-domains as listed in "${trust}",
+_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"     #+  then move adult-domains to
+_grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"         #+  adult category "${ar_dmn[0]}"
+f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"              # reducing adult entries by moving it's
+cat "${untrust}" >> "${ar_dmn[0]}"                        #+  to adult category
 f_do
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_txt[5]}"; f_do  # fixing false-bad entries
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"      #+
@@ -201,7 +193,7 @@ f_out "${ar_txt[2]}" "${ar_txt[5]}"                    #+
 f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
 
 # category: IPV4
-# contents: ipv4 as CIDR block and captured ipv4 from others category
+# contents: ipv4 as a CIDR block comes from another category
 f_sm7 "${ar_cat[1]}" 0
 f_sm8 "${ar_cat[1]}"                                   # fixing false-bad entries
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -s -o "${ar_txt[1]}"; f_do
@@ -218,13 +210,13 @@ printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | tail -1 
 T="$(($(date +%s%N)-T))"
 f_tim
 
-f_sm0   # completed by offering OPTIONs: continued to various tasks OR stop here
-read -r opsi
+f_sm0; read -r opsi   # completed by offering OPTIONs: continued to various tasks OR stop here
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do
    printf "please enter: ${_CYN} to continue OR ${_ccl} to quit\n" "[1|2|3|4]"
    read -r opsi
 done
-for L in "${!ar_shy[@]}"; do ar_exe+=("${_DIR}/${ar_shy[L]}"); done
+
+ar_exe=(); for L in "${!ar_shy[@]}"; do ar_exe+=("./${ar_shy[L]}"); done
 case ${opsi:0:1} in
    1) f_sm1; "${ar_exe[2]}"; f_sm9 st;;
    2) f_sm2
