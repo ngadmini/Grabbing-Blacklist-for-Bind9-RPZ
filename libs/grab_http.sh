@@ -38,14 +38,9 @@ printf "${_pre} %-63s" "check availability configuration file"; f_cnf
 printf "${_pre} %-63s" "check ${0##*/} is executed by non-root privileges"
 [[ ! ${UID} -eq 0 ]] || f_xcd 247; f_ok
 
-ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
-ar_shn=(grab_regex grab_urls)
-ar_pkg=()
-declare -A ar_num              # numeric value index's position of: grab_regex is no.0 at ar_shn
-ar_num[ar_shn]=$(echo "${ar_shn[*]}" | tr ' ' '\n' | awk '/grab_regex/ {print NR-1}')
-
 printf "${_pre} %-63s" "check required debian-packages in local-host: $(hostname -I)"
 for C in {curl,dos2unix,faketime,idn,libnet-netmask-perl,rsync}; do
+   ar_pkg=()
    if ! dpkg -s "${C}" >> /dev/null 2>&1; then
       printf "\n${_err} %s %-60s" "${C}" "not installed"
       ar_pkg+=("${C}")
@@ -69,8 +64,12 @@ fi
 
 # check script-pack's properties
 printf "${_pre} %-63s" "check script-pack's property in local-host: $(hostname -I)"
+ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
+ar_shn=(grab_regex grab_urls)
 for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
 for E in "${!ar_shn[@]}"; do
+   declare -A ar_num   # numeric value. index's position of: grab_regex is no.0 at ar_shn
+   ar_num[ar_shn]=$(echo "${ar_shn[*]}" | tr ' ' '\n' | awk '/grab_regex/ {print NR-1}')
    f_pkg "${ar_shn[E]}" 644
    _sed -i "/^$/d" "${ar_shn[E]}"
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
@@ -97,13 +96,13 @@ else
    f_ok
 fi
 
-# initialize CATEGORY, many categories are obtained but the main one is adult
+# initial CATEGORY. many categories are obtained but the main one is adult
 printf "${_pre} check availability of sources-urls (as listed in %s)\n" "${ar_shn[1]}"
 f_uri "${ar_shn[1]}" || :             # check availability of sources-urls
 printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
 f_tmp                                 # remove stale dir & files if any
 for A in {0..5}; do                   # grab blacklist from dsi.ut-capitole.fr
-   tar_dsi=$(basename "${ar_url[A]}") #+ and use as initialize categories
+   tar_dsi=$(basename "${ar_url[A]}") #+ and use as initial categories
    ext_dsi="${tar_dsi/.tar.gz/}"
    find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
    printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
@@ -114,10 +113,10 @@ done
 
 mkdir ipv4; mv phishing malware; mv gambling trust+   # make some adjusment
 cat vpn/domains >> redirector/domains; rm -rf vpn     #+  to categorizing
-mapfile -t ar_cat < <(f_cat)          # categorizing
-f_frm "txt.*"                         # remove stale domain lists if any
-ar_dmn=()                             # used as raw-domains container
-ar_txt=()                             #+        processed-domains container
+mapfile -t ar_cat < <(f_cat)                          # categorizing
+f_frm "txt.*"                                         # sweep domain-lists
+ar_dmn=()                                             # used as raw-domains container
+ar_txt=()                                             #+        processed-domains container
 for B in "${!ar_cat[@]}"; do
    ar_dmn+=("${ar_cat[B]}"/domains); ar_txt+=(txt."${ar_cat[B]}")
 done
@@ -199,11 +198,11 @@ f_sm8 "${ar_cat[1]}"                                   # fixing false-bad entrie
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -s -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
-# summarize
+# summarize.
 printf "\nprocessing sources-urls (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
-   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"
-   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"
+   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"        # 'trust+' gets extra from those that pass
+   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"   #+  filtration (see: grab_library line 184)
 done
 printf "%12s: %'d entries\n" "TOTAL" "$(awk 'END {print NR}' "${ar_txt[@]}")"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | tail -1 | awk -F' ' '{print ($1/1024^2)}')"
