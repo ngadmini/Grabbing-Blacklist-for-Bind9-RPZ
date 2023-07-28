@@ -243,8 +243,8 @@ f_g4c() {   # remarking rpz.* files
 
    if ! grep -q "/libs/${_foo}" "$1"; then
       _sed -i "/${_gen}/a; ${_ori}\/libs\/${_foo}" "$1"; else
-      if [[ "$(grep https "$1" | cut -d/ -f6)" != "${_ver}" ]]; then
-         _sed -i "/https/c; ${_ori}\/libs\/${_foo}" "$1"
+      if [[ "$(grep "; https" "$1" | cut -d/ -f6)" != "${_ver}" ]]; then
+         _sed -i "/; https/c; ${_ori}\/libs\/${_foo}" "$1"
       fi
    fi
 }
