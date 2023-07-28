@@ -181,7 +181,7 @@ f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 f_add() { curl -s "$1" || f_xcd 251 "$1"; }   # grabbing domains from sources-urls
 # fixing false and bad entries AND turn-back (domains) passed filtering to trust+ category
 f_fix() { f_sm8 "$1"; dos2unix -q "$2"; _sed -E "${ar_reg[0]}" "$2" | _srt -us > "$3"; }
-f_out() { _grp -E "${ar_reg[2]}" "$1" >> "$2"; _srt -us "$2" -o "$2"; _sed -i -E "/${ar_reg[2]}/d" "$1"; f_do; }
+f_out() { _grp -E "${ar_reg[2]}" "$1" >> "$2"; _srt -us "$2" -o "$2"; _sed -E -i "/${ar_reg[2]}/d" "$1"; f_do; }
 
 f_fip() {   # capture ip-address entry. turn to CIDR & save it into ipv4 CATEGORY
    printf "%12s: %-66s" "moving" "IP-address entries into $3 CATEGORY"
@@ -233,19 +233,23 @@ f_dpn() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
    _srt -s "$3" "$4" | uniq -d > "$5"
 }
 
-f_g4c() {   # used by grab_cereal.sh to remarking rpz.*
+f_g4c() {   # remarking rpz.* files
    if ! grep -q "^; $1" "$1";  then _sed -i "1i ; ${1}" "$1"; fi
 
    if ! grep -q "^; generate at" "$1"; then
-      _sed -i "/; ${1}/a${_gen}" "$1"
-   else
+      _sed -i "/; ${1}/a${_gen}" "$1"; else
       _sed -i "s/; generate.*/${_gen}/" "$1"
    fi
 
-   if ! grep -q "${_ori}/libs/${_foo}" "$1"; then _sed -i "/${_gen}/a; ${_ori}\/libs\/${_foo}" "$1"; fi
+   if ! grep -q "/libs/${_foo}" "$1"; then
+      _sed -i "/${_gen}/a; ${_ori}\/libs\/${_foo}" "$1"; else
+      if [[ "$(grep https "$1" | cut -d/ -f6)" != "${_ver}" ]]; then
+         _sed -i "/https/c; ${_ori}\/libs\/${_foo}" "$1"
+      fi
+   fi
 }
 
-f_g4b() {   # remarking db.*
+f_g4b() {   # remarking db.* files
    local acq_al
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
