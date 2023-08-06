@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v10.2
+#   grab_library v10.3
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -24,42 +24,22 @@ _lct=$(date +%a\ %Y-%m-%d\ %T\ %Z)
 _gen="; generate at ${_lct} by ${_foo} ${_ver}"
 _tld="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 
-# colorizing
-_cyn='\e[96m'
-_grn='\e[92m'
-_ncl='\e[0m'
-_red='\e[91m'
-_ylw='\e[93m'
-_ccl="${_grn}(Ctrl+C)${_ncl}"
-_cnt="${_cyn}CONTINUED to :${_ncl}"
-_CYN="${_cyn}%s${_ncl}"
-_don="${_grn}[DONE]${_ncl}"
-_err="${_red}[FAIL]${_ncl}"
-_GRN="${_grn}%s${_ncl}"
-_hnt="${_cyn}[HINT]${_ncl}"
-_inf="${_cyn}[INFO]${_ncl}"
-_pre="${_cyn}PREPARING TASKs:${_ncl}"
-_RED="${_red}%s${_ncl}"
-_rnr="${_grn}'rndc reload'${_ncl}"
-_shd="${_grn}'shutdown -c'${_ncl}"
-_tks="${_red}TASKs${_ncl}"
-_wn0="${_ylw}WARNING:${_ncl}"
-_wn1="${_ylw}[WARN]${_ncl}"
+# colors
+_cyn='\e[96m';    _grn='\e[92m';   _ncl='\e[0m';    _red='\e[91m';   _ylw='\e[93m'
+_ccl="${_grn}(Ctrl+C)${_ncl}";   _cnt="${_cyn}CONTINUED to :${_ncl}";   _CYN="${_cyn}%s${_ncl}";
+_don="${_grn}[DONE]${_ncl}";     _err="${_red}[FAIL]${_ncl}";           _GRN="${_grn}%s${_ncl}"
+_hnt="${_cyn}[HINT]${_ncl}";     _inf="${_cyn}[INFO]${_ncl}";           _pre="${_cyn}PREPARING TASKs:${_ncl}"
+_RED="${_red}%s${_ncl}";         _rnr="${_grn}'rndc reload'${_ncl}";    _shd="${_grn}'shutdown -c'${_ncl}"
+_tks="${_red}TASKs${_ncl}";      _wn0="${_ylw}WARNING:${_ncl}";         _wn1="${_ylw}[WARN]${_ncl}"
 _YLW="${_ylw}%s${_ncl}"
 
-f_tmp() {   # remove temporary files, directories & arrays, generated while script execution
+f_tmp() {   # remove temporary files & directories, generated while script execution
    find . -maxdepth 1 -regex "^.*\(dmn\|prn\|sed\|tm[pq]\|txt.adulta\|txt.trust\+a\).*\|.*\(gz\|swp\)$" -print0 | xargs -r0 rm -rf
    find . -maxdepth 1 -type d ! -name "." -print0 | xargs -r0 rm -rf
    find /tmp -maxdepth 1 -type f -name "txt.*" -print0 | xargs -r0 mv -t .
 }
 
-f_set() {
-   unset -v ar_{CAT,CNF,DBC,RPZ,VAR,cat,cnf,dbc,dom,dmn,dwn,exe,num,pkg,prn,reg,rpz,shn,shy,spl,tmp,txt,uri,url,zon}
-   set +Eeuo pipefail
-   shopt -u expand_aliases
-}
-
-f_cln() { printf "\n"; f_tmp; f_set; }
+f_cln() { printf "\n"; f_tmp; }
 f_trp() { trap f_cln EXIT TERM; trap 'f_cln; exit 130' INT; }
 
 f_xcd() {   # exit code {244..255}
@@ -110,7 +90,7 @@ f_xcd() {   # exit code {244..255}
    done
 }
 
-f_sm0() {   # display offering options
+f_sm0() {   # displays bidding options
    printf "${_wn1} there are still remaining :\n"
    printf "   - duplicate entries across CATEGORIES\n"
    printf "   - sub-domains and it's parent-domain across CATEGORIES\n"
@@ -126,18 +106,14 @@ f_sm0() {   # display offering options
    printf "please hit: ${_CYN} to continue OR ${_ccl} to quit\n" "(1|2|3|4)"
 }
 
-f_sm1() {   # f_sm[1..5]: display messages while chosing option
+f_sm1() {   # f_sm[1..5]: displaying chosen option
    printf "\n${_red}[%s'st] TASK options chosen${_ncl}\n" "${opsi}"
    printf "${_cnt}\n%4s) pruning ipv4, duplicate & sub-domain entries across CATEGORIES\n" "1"
    f_sm10 "st"
 }
 
 f_sm2() { f_sm5 "nd"; f_sm10 "nd"; }
-f_sm3() {
-   f_sm5 "th"
-   printf "%4s) incrementing serial zones [rpz.* files]\n" "3"
-   f_sm10 "th"
-}
+f_sm3() { f_sm5 "th"; printf "%4s) incrementing serial zones [rpz.* files]\n" "3"; f_sm10 "th"; }
 
 f_sm4() {
    f_sm5 "th"
@@ -158,6 +134,7 @@ f_sm7() { printf "\nprocessing ${_CYN} with (%d) additional sources-url(s)\n" "$
 f_sm8() { printf "%12s: %-66s" "fixing" "bads, duplicates and false entries at ${1^^}"; }
 f_sm9() { printf "${_tks} based on %s'%s options: ${_GRN}\nbye!\n" "${opsi}" "$1" "DONE"; }
 f_sm10() { printf "${_cyn}PERFORMING TASKs:${_ncl} based on %s'%s options ...\n" "${opsi}" "$1"; }
+
 f_sm11() {   # f_sm[6..11]: display processing messages
    if [[ ${RNDC_RELOAD} =~ [nN][oO] ]]; then
       printf "%6s${_wn0} remote-host %s will REBOOT due to low memory\n" "" "${HOST}"
@@ -168,18 +145,18 @@ f_sm11() {   # f_sm[6..11]: display processing messages
 }
 
 f_tim() {   # time elapsed in minute:second:milisecond
-   local S="$((T/1000000000))"
-   local MS="$((T%1000000000/1000000))"
+   local S="$((T/1000000000))" MS="$((T%1000000000/1000000))"
    printf "${_don} completed IN ${_cyn}%'dm:%'ds:%'dms${_ncl}\n" "$((S/60%60))" "$((S%60))" "${MS}"
 }
+f_end() { T="$(($(date +%s%N)-T))"; f_tim; exit 0; }
 
 f_up() { printf "${_GRN}\n" "isUP"; }
 f_ok() { printf "${_GRN}\n" "isOK"; }
 f_do() { printf "${_GRN}\n" "DONE"; }
 f_no() { printf "\n${_err} missing file(s): ${_CYN}\n" "$1"; }
 
-f_add() { curl -s "$1" || f_xcd 251 "$1"; }   # grabbing domains from sources-urls
-# fixing false and bad entries AND turn-back (domains) passed filtering to trust+ category
+f_add() { curl -s "$1" || f_xcd 251 "$1"; }   # grabbing domains from grab_urls
+# fixing false-bad entries AND turn-back (domains) passed filtering to trust+ category
 f_fix() { f_sm8 "$1"; dos2unix -q "$2"; _sed -E "${ar_reg[0]}" "$2" | _srt -us > "$3"; }
 f_out() { _grp -E "${ar_reg[2]}" "$1" >> "$2"; _srt -us "$2" -o "$2"; _sed -E -i "/${ar_reg[2]}/d" "$1"; f_do; }
 
@@ -192,37 +169,28 @@ f_fip() {   # capture ip-address entry. turn to CIDR & save it into ipv4 CATEGOR
 }
 
 f_uri() {   # verify remote-urls [grab_urls] is available
-   ar_uri=()
-   local ar_dwn=()
-   local i=-1
+   set +e; ar_uri=(); local ar_dwn=() i=-1
 
-   while read -r uri; do   # slicing url && add as an element to ${ar_uri[@]}
-      local l ll _uri _stc
-      ll="${uri##htt*\/\/}"
-      l="${ll/\/*/}"
-      _uri="${l}/..?../${uri##*/}"
+   while read -r uri; do
+      local l ll _uri _stc;    ll="${uri##htt*\/\/}"           # urls slicing && add as
+      l="${ll/\/*/}";          _uri="${l}/..?../${uri##*/}"    #+  an element to ${ar_uri[@]}
+      ar_uri+=("${_uri}");     ((i++))                         #+
 
-      ar_uri+=("${_uri}")   # starting check
-      ((i++))
       printf "%12s: %-66s" "url_${i}" "${ar_uri[i]}"
       _stc=$(curl -so /dev/null -Iw "%{http_code}" "${uri}")
       _ret=$?
-
       if [[ ${_ret} =~ (0|35) ]]; then
-         f_up   # ignored in case https://trustpositif.kominfo.go.id/assets/db/domains_isp
-      else      #+  curl_code=35. SSL connect error. the SSL handshaking failed
+         f_up   # in case https://trustpositif.kominfo.go.id/assets/db/domains_isp
+      else      #+  curl_code=35. SSL connect error and the SSL handshaking failed
           printf "${_RED}\n" "curl-code: ${_ret}"
           ar_dwn+=("[exit-code: ${_ret}] ${uri}")
       fi
    done < "$1"
 
-   if [[ ${#ar_dwn[@]} -eq 0 ]]; then   # display result
-      printf "%30s\n" " " | tr " " -
-      printf "All URLs of sources-url(s) isUP.\n"
+   if [[ ${#ar_dwn[@]} -eq 0 ]]; then
+      printf "%30s\n" " " | tr " " -; printf "All URLs of sources-url(s) isUP.\n"
    else
-      printf "%84s\n" " " | tr " " -
-      printf "${_CYN}\n" "${ar_dwn[@]}"
-      f_xcd 250
+      printf "%84s\n" " " | tr " " -; printf "${_CYN}\n" "${ar_dwn[@]}"; f_xcd 250
    fi
 }
 
@@ -234,14 +202,14 @@ f_dpn() {   # f_dpl, f_dpm & f_dpn: used by grab_duplic.sh
 }
 
 f_g4c() {   # remarking rpz.* files
-   if ! grep -q "^; $1" "$1";  then _sed -i "1i ; ${1}" "$1"; fi
+   if ! _grp -q "^; $1" "$1";  then _sed -i "1i ; ${1}" "$1"; fi
 
-   if ! grep -q "^; generate at" "$1"; then
+   if ! _grp -q "^; generate at" "$1"; then
       _sed -i "/; ${1}/a${_gen}" "$1"; else
       _sed -i "s/; generate.*/${_gen}/" "$1"
    fi
 
-   if ! grep -q "/libs/${_foo}" "$1"; then
+   if ! _grp -q "/libs/${_foo}" "$1"; then
       _sed -i "/${_gen}/a; ${_ori}\/libs\/${_foo}" "$1"; else
       if [[ "$(grep "; https" "$1" | cut -d/ -f6)" != "${_ver}" ]]; then
          _sed -i "/; https/c; ${_ori}\/libs\/${_foo}" "$1"
@@ -302,8 +270,7 @@ f_cer() {   # used by grab_cereal.sh [grabbing zone-files if notFOUND]
 
 f_ori() {
    printf "${_inf} trying to get ${_CYN} from origin:\n%s\n" "$2" "${_ori}/$1"
-   local _val
-   _val=$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
+   local _val;  _val=$(curl -so /dev/null -I -w "%{http_code}" "${_ori}/$1")
 
    if [[ ${_val} -eq 200 ]]; then
       curl -s "${_ori}/$1" >> "$2" || f_xcd 251
@@ -325,7 +292,7 @@ f_awk() { awk 'FILENAME == ARGV[1] && FNR==NR{a[$1];next} !($1 in a)' "$1" "$2" 
 
 f_dft() {   # fallback to these default values if grab_config missing or missconfigured
    printf "\n${_wn0} ${_CYN} continued with default configurations\n" "${_foo}"
-   : "${HOST:=rpz.warnet-ersa.net}"         # or ip-address
+   : "${HOST:=rpz.warnet-ersa.net}"         # OR ip-address
    : "${REGEX:=2}"                          # fix number of lines grab_regex
    : "${RNDC_RELOAD:=no}"                   # yes OR no
    : "${RPZ_DOM:=CNAME .}"                  # rpz policy
@@ -359,8 +326,8 @@ f_cnf() {   # valuation variables in grab_config
                  *) return 1;;
          esac
       fi
-   else     # missing file: "${CNF}". fallback to default values
-      f_no "${CNF##*/}"
+   else
+      f_no "${CNF##*/}"     # missing file: "${CNF}". fallback to default values
       printf "${_CYN} do you want continue with default configurations (Y/n)? " "[CONFIRM]"
       read -r confirm
       case ${confirm:0:1} in
@@ -372,7 +339,7 @@ f_cnf() {   # valuation variables in grab_config
 
 f_stt() {   # starting main script
    printf "\n${_RED}\nstarting ${0##*/} ${_ver} at ${_CYN}\n" "$1" "${_lct}"
-   if [[ ${_get} != "${_ver}" ]]; then   # confirm to the latest release
+   if [[ ${_get} != "${_ver}" ]]; then   # check the latest release of scripts-pack
       printf "${_inf} an update is available\ndo you want upgrade to ${_CYN} (Y/n)? " "${0##*/} version ${_get}"
       read -r confirm
       case ${confirm:0:1} in
@@ -390,5 +357,13 @@ disable=SC2059
 disable=SC2148
 disable=SC2154
 eof
+   fi
+
+   if ! [[ -e ~/.curlrc ]]; then
+      echo 'insecure' | tee -a ~/.curlrc >> /dev/null 2>&1
+   else
+      if ! _grp -q "^insecure" ~/.curlrc; then
+         echo 'insecure' | tee -a ~/.curlrc >> /dev/null 2>&1
+      fi
    fi
 }

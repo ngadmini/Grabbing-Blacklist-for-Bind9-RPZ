@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v10.2
+#   grab_duplic.sh v10.3
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -29,10 +29,8 @@ else
    fi
 fi
 
-f_stt "[1'st] TASKs:"
-[[ ! ${UID} -eq 0 ]] || f_xcd 247
-
-# inspecting required files <categories> first
+f_stt "[1'st] TASKs:"; [[ ! ${UID} -eq 0 ]] || f_xcd 247
+# inspecting required files
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)
@@ -41,10 +39,8 @@ if [[ ${#ar_CAT[@]} -eq "${#ar_cat[@]}"  &&  ${ar_CAT[*]} == "${ar_cat[*]}" ]]; 
    unset -v ar_cat
    ar_cat=(); ar_dmn=(); ar_tmp=(); ar_prn=()
    for B in "${!ar_CAT[@]}"; do
-      ar_cat+=("${ar_CAT[B]/txt./}")
-      ar_dmn+=(dmn."${ar_CAT[B]/txt./}")
-      ar_tmp+=(tmp."${ar_CAT[B]/txt./}")
-      ar_prn+=(prn."${ar_CAT[B]/txt./}")
+      ar_dmn+=(dmn."${ar_CAT[B]/txt./}");   ar_tmp+=(tmp."${ar_CAT[B]/txt./}")
+      ar_prn+=(prn."${ar_CAT[B]/txt./}");   ar_cat+=("${ar_CAT[B]/txt./}")
    done
 
    printf "${_inf} FOUND %s CATEGORIES: ${_CYN}\n" "${#ar_CAT[@]}" "${ar_cat[*]}"
@@ -83,15 +79,15 @@ else
 fi
 
 printf "\n${_CYN} IPV4 and sub-domains if parent domain exist across CATEGORIES%-4s" "[PRUNE]"
-prun_ini=$(mktemp -p "${_DIR}")   # pruning sub-domains if parent
-prun_out=$(mktemp -p "${_DIR}")   #+ domain exist across CATEGORIES
+prun_ini=$(mktemp -p "${_DIR}")   # pruning sub-domains if parent domain exist across CATEGORIES
+prun_out=$(mktemp -p "${_DIR}")   #+
 _srt -us "${ar_CAT[0]}" "${ar_CAT[@]:2:5}" > "${prun_ini}"
 _sed "s/^/\./" "${prun_ini}" | rev | _srt -us \
    | awk 'p == "" || substr($0,1,length(p)) != p { print $0; p = $0 }' \
    | rev | _sed "s/^\.//" > "${prun_out}"
 f_do
 
-# if found invalid TLDs, then creating regex to removing it's TLDs
+# find invalid TLDs, then create regex to removing it's
 printf "${_CYN} domains whose TLD is invalid. " "[PRUNE]"
 fals_tlds=$(mktemp -p "${_DIR}")  # false TLDs
 f_frm "tlds.*"
@@ -130,6 +126,4 @@ done
 # summarize
 printf "%57s : %'d entries\n" "TOTAL" "$(awk 'END {print NR}' "${ar_prn[@]}")"
 printf "%57s : %9s Megabytes\n" "disk-usage" "$(wc -c "${ar_prn[@]}" | tail -1 | awk -F' ' '{print ($1/1024^2)}')"
-T="$(($(date +%s%N)-T))"
-f_tim
-exit 0
+f_end

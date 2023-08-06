@@ -1,10 +1,10 @@
-; db.adultag = 1.410.602 lines
-; generate at Min 2023-07-23 19:45:54 WIB by grab_build.sh v10.2
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.2/libs/grab_build.sh
+; db.adultag = 1.410.582 lines
+; generate at Sun 2023-08-06 22:51:39 WIB by grab_build.sh v10.3
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.3/libs/grab_build.sh
 ;
-sucursalpersonas.iingresosegurogrupobancolombia.co CNAME .
-*.sucursalpersonas.iingresosegurogrupobancolombia.co CNAME .
-sucursalpersonas.ingresagrupobancolombiia.com CNAME .
-*.sucursalpersonas.ingresagrupobancolombiia.com CNAME .
-sucursalpersonas.ingresagruupobancolombia.com CNAME .
-*.sucursalpersonas.ingresagruupobancolombia.com CNAME .
+sud-partouze.com CNAME .
+*.sud-partouze.com CNAME .
+sud-sexe.fr CNAME .
+*.sud-sexe.fr CNAME .
+sud-sexe.zone-privilege.com CNAME .
+*.sud-sexe.zone-privilege.com CNAME .

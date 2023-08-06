@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v10.2
+#   grab_http.sh v10.3
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -68,10 +68,9 @@ ar_shy=(grab_build.sh grab_cereal.sh grab_duplic.sh grab_rsync.sh)
 ar_shn=(grab_regex grab_urls)
 for D in "${!ar_shy[@]}"; do f_pkg "${ar_shy[D]}" 755; done
 for E in "${!ar_shn[@]}"; do
-   declare -A ar_num   # numeric value. index's position of: grab_regex is no.0 at ar_shn
+   declare -A ar_num   # numeric value. index's position of grab_regex (is no.0 at ar_shn)
    ar_num[ar_shn]=$(echo "${ar_shn[*]}" | tr ' ' '\n' | awk '/grab_regex/ {print NR-1}')
-   f_pkg "${ar_shn[E]}" 644
-   _sed -i "/^$/d" "${ar_shn[E]}"
+   f_pkg "${ar_shn[E]}" 644; _sed -i "/^$/d" "${ar_shn[E]}"
    if [[ ${E} -eq ${ar_num[ar_shn]} ]]; then
       mapfile -t ar_reg < "${ar_shn[E]}"
       [[ ${#ar_reg[@]} -eq ${REGEX} ]] || f_xcd 249 "${ar_shn[E]}"
@@ -98,12 +97,12 @@ fi
 
 # initial CATEGORY. many categories are obtained but the main one is adult
 printf "${_pre} check availability of sources-urls (as listed in %s)\n" "${ar_shn[1]}"
-f_uri "${ar_shn[1]}" || :             # check availability of sources-urls
+f_uri "${ar_shn[1]}"                    # check url in grab_urls, is it UP-DOWN ?
 printf "\n${_ylw}PERFORMING TASKs:${_ncl} initiating CATEGORY of domains\n"
-f_tmp                                 # remove stale dir & files if any
-for A in {0..5}; do                   # grab blacklist from dsi.ut-capitole.fr
-   tar_dsi=$(basename "${ar_url[A]}") #+ and use as initial categories
-   ext_dsi="${tar_dsi/.tar.gz/}"
+f_tmp                                   # sweep temporary dir-files if any
+for A in {0..5}; do
+   tar_dsi=$(basename "${ar_url[A]}")   # grabbing blacklist from dsi.ut-capitole.fr
+   ext_dsi="${tar_dsi/.tar.gz/}"        #+  and use as initial categories
    find . -maxdepth 1 -type d -o -type f -name "${ext_dsi}" -print0 | xargs -0 -r rm -rf
    printf "%12s: %-66s" "${ext_dsi^^}" "${ar_uri[A]}"
    curl -sO "${ar_url[A]}" || f_xcd 251 "${ar_url[A]}"
@@ -114,9 +113,9 @@ done
 mkdir ipv4; mv phishing malware; mv gambling trust+   # make some adjusment
 cat vpn/domains >> redirector/domains; rm -rf vpn     #+  to categorizing
 mapfile -t ar_cat < <(f_cat)                          # categorizing
-f_frm "txt.*"                                         # sweep domain-lists
-ar_dmn=()                                             # used as raw-domains container
-ar_txt=()                                             #+        processed-domains container
+f_frm "txt.*"                                         # sweep stale domain-lists
+ar_dmn=()                                             # tmp files: raw-domains
+ar_txt=()                                             #+         : processed-domains
 for B in "${!ar_cat[@]}"; do
    ar_dmn+=("${ar_cat[B]}"/domains); ar_txt+=(txt."${ar_cat[B]}")
 done
@@ -134,12 +133,12 @@ f_sm6 7 "${ar_uri[7]}"                   # https://trustpositif.kominfo.go.id/as
 f_add "${ar_url[7]}" > "${trust}"        #+  frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
 #cp ~/Downloads/domains_isp "${trust}"   #+  download then switch line above to comment and it's to uncomment
 LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"   # capture non a legal IDN, then use
-cat "${idna}" >> "${trust}"; f_do                                          #+  idn tool to convert to ASCII
+cat "${idna}" >> "${trust}"; f_do                                          #+  idn tool to convert it's to ASCII
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
-f_add "${ar_url[18]}" > "${porn}"                         # used as a control to reducing
-_srt -us "${trust}" -o "${trust}"                         #+  adult-domains as listed in "${trust}",
-_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"     #+  then move adult-domains to
-_grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"         #+  adult category "${ar_dmn[0]}"
+f_add "${ar_url[18]}" > "${porn}"                         # used as a control to reducing adult-domains as
+_srt -us "${trust}" -o "${trust}"                         #+  listed in "${trust}", then move it's to
+_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"     #+  adult category "${ar_dmn[0]}"
+_grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"         #+
 f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"              # reducing adult entries by moving it's
 cat "${untrust}" >> "${ar_dmn[0]}"                        #+  to adult category
 f_do
@@ -150,7 +149,7 @@ f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"      #+
 # contents: adult-porn domains
 #+          ${ar_cat[0]} with 2 additional entries: ${ar_url[0,6]} and some from the trust+ category
 f_sm7 "${ar_cat[0]}" 2
-f_sm6 0 "${ar_uri[0]}"; f_do                           # done while initializing category
+f_sm6 0 "${ar_uri[0]}"; f_do                           # in the initial category
 f_sm6 6 "${ar_uri[6]}"; f_add "${ar_url[6]}" | _grp -v '^#' >> "${ar_dmn[0]}"; f_do
 f_fix "${ar_cat[0]}" "${ar_dmn[0]}" "${ar_txt[0]}"     # fixing false-bad entries
 f_out "${ar_txt[0]}" "${ar_txt[5]}"                    #+
@@ -159,55 +158,54 @@ f_fip "${ar_txt[0]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
 # category: REDIRECTOR
 # contents: vpn and proxy domains
 #+          ${ar_cat[4]} with 2 additional entries: ${ar_url[4,5]}
-f_sm7 "${ar_cat[4]}" 2                                 # done while initializing category
-for F in {4,5}; do f_sm6 "${F}" "${ar_uri[F]}"; f_do; done
-f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_txt[4]}"     # fixing false-bad entries
-f_out "${ar_txt[4]}" "${ar_txt[5]}"                    #+
-f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
+f_sm7 "${ar_cat[4]}" 2
+for F in {4,5}; do f_sm6 "${F}" "${ar_uri[F]}"; f_do; done   # in the initial category
+f_fix "${ar_cat[4]}" "${ar_dmn[4]}" "${ar_txt[4]}"
+f_out "${ar_txt[4]}" "${ar_txt[5]}"
+f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: PUBLICITE
 # contents: adv domains
 #+          ${ar_cat[3]} with 5 additional entries: ${ar_url[3,8..11]}
 f_sm7 "${ar_cat[3]}" 5
-f_sm6 3 "${ar_uri[3]}"; f_do                           # done while initializing category
+f_sm6 3 "${ar_uri[3]}"; f_do                           # in the initial category
 for G in {8..11}; do
    f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
 done
-f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_txt[3]}"     # fixing false-bad entries
-f_out "${ar_txt[3]}" "${ar_txt[5]}"                    #+
-f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
+f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_txt[3]}"
+f_out "${ar_txt[3]}" "${ar_txt[5]}"
+f_fip "${ar_txt[3]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: MALWARE
 # contents: malware, phishing and ransomware domains
 #+          ${ar_cat[2]} with 8 additional entries: ${ar_url[2,12..17]}
 f_sm7 "${ar_cat[2]}" 7
-f_sm6 2 "${ar_uri[2]}"; f_do                           # done while initializing category
+f_sm6 2 "${ar_uri[2]}"; f_do                           # in the initial category
 f_sm6 12 "${ar_uri[12]}"; f_add "${ar_url[12]}" | _grp -Ev "^(#|:)" | cut -d' ' -f2 >> "${ar_dmn[2]}"; f_do
 f_sm6 13 "${ar_uri[13]}"; f_add "${ar_url[13]}" | _sed "1,11d;/^;/d" | cut -d' ' -f1 >> "${ar_dmn[2]}"; f_do
 for H in {14..17}; do
    f_sm6 "${H}" "${ar_uri[H]}"; f_add "${ar_url[H]}" | _grp -v "^#" >> "${ar_dmn[2]}"; f_do
 done
-f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_txt[2]}"     # fixing false-bad entries
-f_out "${ar_txt[2]}" "${ar_txt[5]}"                    #+
-f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"   #+
+f_fix "${ar_cat[2]}" "${ar_dmn[2]}" "${ar_txt[2]}"
+f_out "${ar_txt[2]}" "${ar_txt[5]}"
+f_fip "${ar_txt[2]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 
 # category: IPV4
 # contents: ipv4 as a CIDR block comes from another category
 f_sm7 "${ar_cat[1]}" 0
-f_sm8 "${ar_cat[1]}"                                   # fixing false-bad entries
+f_sm8 "${ar_cat[1]}"
 awk '!x[$0]++' "${ar_dmn[1]}" | _srt -n -t . -k1,1 -k2,2 -k3,3 -k4,4 -s -o "${ar_txt[1]}"; f_do
 printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 
 # summarize.
 printf "\nprocessing sources-urls (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
-   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"        # 'trust+' gets extra from those that pass
-   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"   #+  filtration (see: grab_library line 184)
+   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"        # 'trust+' gets extra (grab_library line 184)
+   printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"   #+  from those that pass filtration
 done
 printf "%12s: %'d entries\n" "TOTAL" "$(awk 'END {print NR}' "${ar_txt[@]}")"
 printf "%12s: %9s Megabytes\n\n" "disk-usage" "$(wc -c "${ar_txt[@]}" | tail -1 | awk -F' ' '{print ($1/1024^2)}')"
-T="$(($(date +%s%N)-T))"
-f_tim
+T="$(($(date +%s%N)-T))"; f_tim
 
 f_sm0; read -r opsi   # completed by offering OPTIONs: continued to various tasks OR stop here
 until [[ ${opsi} =~ ^[1-4]{1}$ ]]; do

@@ -1,6 +1,6 @@
-### readme version v10.2
+### readme version v10.3
    *) Bash scripts to update blacklisted domains in BIND9-Response Policy Zone
-   *) this v10.2 version is the next release after the previous release. it's a maintenance
+   *) this v10.3 version is the next release after the previous release. it's a maintenance
          release which improves version compatibility with sources-list in grab_urls
 
 ### author:
@@ -12,9 +12,8 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v10.2:
-*) convert Unicode characters to ASCII. [idn](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html)
-   is used to encode a non legal IDN coming from [domains_isp](https://trustpositif.kominfo.go.id/assets/db/domains_isp)
+### what's new in v10.3:
+*) compacting script-pack
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
@@ -61,8 +60,8 @@
            - ipv4-address filtering
 
    9. grab_rsync.sh --syncronizing updated db.* and rpz.* files to BIND9-server.
-        *) in addition to synchronizing, this script also generates a tar-file to bakcup
-              old db.* and rpz.* files in BIND9-server and save it in home directory
+        *) in addition to synchronizing, this script also generates a tar-file to backup
+              old db.* and rpz.* files in BIND9-server and save it in $HOME directory
 
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
          rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
@@ -72,14 +71,14 @@
 ### prerequisites:
 *) on your linux desktop workstation
       # check required package (dependencies)
-      ~$ sudo apt policy curl dos2unix faketime rsync libnet-netmask-perl
-      ~$ sudo apt install -y curl dos2unix faketime rsync libnet-netmask-perl
+      ~$ sudo apt policy curl dos2unix idn faketime rsync libnet-netmask-perl
+      ~$ sudo apt install -y curl dos2unix idn faketime rsync libnet-netmask-perl
       ~$ echo 'insecure' | tee -a ~/.curlrc
 
 *) modify file grab_config according to your BIND9-server environment
       # modify file grab_config to fit your BIND9-server environment
       #   *) type in format VARIABLE=value
-      #   *) blank lines and lines starting with '#' will be ignored
+      #   *) blank lines and leading '#' will be ignored
       #   *) all variables must be determined. if NOT it will fallback to their default
       #      values. THEN and OR
       #   *) change all variables in grab_library refer to this file. go to line:
