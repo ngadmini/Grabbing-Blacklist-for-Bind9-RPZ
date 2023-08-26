@@ -110,20 +110,17 @@ for A in {0..5}; do
    f_do
 done
 
-mkdir ipv4; mv phishing malware; mv gambling trust+   # make some adjusment
-cat vpn/domains >> redirector/domains; rm -rf vpn     #+  to categorizing
-mapfile -t ar_cat < <(f_cat)                          # categorizing
+mkdir ipv4; mv phishing malware; mv gambling trust+   # make some adjusment to categorizing
+cat vpn/domains >> redirector/domains; rm -rf vpn
+mapfile -t ar_cat < <(f_cat)
 f_frm "txt.*"                                         # sweep stale domain-lists
-ar_dmn=()                                             # tmp files: raw-domains
-ar_txt=()                                             #+         : processed-domains
-for B in "${!ar_cat[@]}"; do
-   ar_dmn+=("${ar_cat[B]}"/domains); ar_txt+=(txt."${ar_cat[B]}")
-done
+ar_dmn=(); ar_txt=()                                  # tmp files: raw-domains  && processed-domains
+for B in "${!ar_cat[@]}"; do ar_dmn+=("${ar_cat[B]}"/domains); ar_txt+=(txt."${ar_cat[B]}"); done
 printf "%12s: ${_CYN}\n" "categorized" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
 
 
 # category: TRUST+
-# contents: gambling domains and [TRUST+Positif](https://trustpositif.kominfo.go.id/assets/db/domains_isp)
+# contents: gambling domains and TRUST+
 #+          ${ar_cat[5]} with 2 additional entries: ${ar_url[1,7]}
 f_sm7 "${ar_cat[5]}" 2
 trust=$(mktemp -p "${_DIR}");     porn=$(mktemp -p "${_DIR}")
@@ -132,16 +129,15 @@ f_sm6 1 "${ar_uri[1]}"; f_do             # add gambling-domains to trust+ catego
 f_sm6 7 "${ar_uri[7]}"                   # https://trustpositif.kominfo.go.id/assets/db/domains_isp
 f_add "${ar_url[7]}" > "${trust}"        #+  frequently error-code curl: (35) & firefox: PR_CONNECT_RESET_ERROR
 #cp ~/Downloads/domains_isp "${trust}"   #+  download then switch line above to comment and it's to uncomment
-LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"   # capture non a legal IDN, then use
-cat "${idna}" >> "${trust}"; f_do                                          #+  idn tool to convert it's to ASCII
+LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"   # capture non a legal IDN, then
+cat "${idna}" >> "${trust}"; f_do                                          #+  convert it's to ASCII with idn tool
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[18]}" > "${porn}"                         # used as a control to reducing adult-domains as
 _srt -us "${trust}" -o "${trust}"                         #+  listed in "${trust}", then move it's to
 _srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"     #+  adult category "${ar_dmn[0]}"
 _grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"         #+
 f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"              # reducing adult entries by moving it's
-cat "${untrust}" >> "${ar_dmn[0]}"                        #+  to adult category
-f_do
+cat "${untrust}" >> "${ar_dmn[0]}"; f_do                  #+  to adult category
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_txt[5]}"; f_do  # fixing false-bad entries
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"      #+
 

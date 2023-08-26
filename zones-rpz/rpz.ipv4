@@ -32,7 +32,7 @@ $ORIGIN ipv4.domain.
 ; 45.144.149.78   xhtree.com
 ; 45.144.149.79   xhtree1.com
 ; 45.144.149.81   xhbranch13.com
-; 45.144.149.0/25 xh(adult|branch|eve|tree|vid[^e]|victory)
+; 45.144.149.0/25 xh(adult|branch|eve|tree|a?vid|victory)
 ;
 ; Policy Trigger - IP Trigger - NXDOMAIN Action
 25.0.149.144.45.rpz-ip CNAME .
