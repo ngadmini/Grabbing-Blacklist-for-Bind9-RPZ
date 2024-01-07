@@ -1,10 +1,10 @@
-; db.adultag = 1.410.582 lines
-; generate at Sun 2023-08-06 22:51:39 WIB by grab_build.sh v10.3
-; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.3/libs/grab_build.sh
+; db.adultag = 1.415.564 entries
+; generate at Sun 2024-01-07 21:11:17 WIB by grab_build.sh v10.4
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.4/libs/grab_build.sh
 ;
-sud-partouze.com CNAME .
-*.sud-partouze.com CNAME .
-sud-sexe.fr CNAME .
-*.sud-sexe.fr CNAME .
-sud-sexe.zone-privilege.com CNAME .
-*.sud-sexe.zone-privilege.com CNAME .
+sultanbetgirii.blogspot.com.uy CNAME .
+*.sultanbetgirii.blogspot.com.uy CNAME .
+sultanbetgirii.blogspot.cz CNAME .
+*.sultanbetgirii.blogspot.cz CNAME .
+sultanbetgirii.blogspot.de CNAME .
+*.sultanbetgirii.blogspot.de CNAME .

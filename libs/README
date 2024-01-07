@@ -1,6 +1,6 @@
-### readme version v10.3
+### readme version v10.4
    *) Bash scripts to update blacklisted domains in BIND9-Response Policy Zone
-   *) this v10.3 version is the next release after the previous release. it's a maintenance
+   *) this v10.4 version is the next release after the previous release. it's a maintenance
          release which improves version compatibility with sources-list in grab_urls
 
 ### author:
@@ -12,15 +12,15 @@
 *) Creative Commons Attribution-ShareAlike 4.0 International License
 *) For more information, please refer to <https://creativecommons.org/licenses/by-sa/4.0/>
 
-### what's new in v10.3:
-*) compacting script-pack
+### what's new in v10.4:
+*) splitting trust+ category into 3 sub-categories, i.e: trust+aa.domain, trust+ab.domain and trust+ac.domain
 
 ### Get url to download script-pack (latest version) :
    ~ curl -s https://api.github.com/repos/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/releases/latest \
         | grep download_url | awk -F\" '{print $4}'
 
 ### file parts
-   1. grab_http.sh --grabing and proccessing raw domains.
+   1. grab_http.sh --grabbing and proccessing raw domains.
         *) run this script as long as the below script and rpz.* are available in the same directory.
         *) script completed by offering 4 options. IF no option are selected, it just generates a txt.*
               which are not free from duplicate entries and invalid TLDs
@@ -64,7 +64,7 @@
               old db.* and rpz.* files in BIND9-server and save it in $HOME directory
 
   10. rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-         rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
+         rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab rpz.trust+ac
 
   11. .shellcheckrc --intended to shellcheck portability
 
@@ -133,9 +133,9 @@
 
 ### output:
 *) db.adultaa db.adultab db.adultac db.adultad db.adultae db.adultaf db.adultag
-      db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab
+      db.ipv4 db.malware db.publicite db.redirector db.trust+aa db.trust+ab db.trust+ac
 *) rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
-      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab
+      rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab rpz.trust+ac
 *) txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+ 
       ~ https://github.com/ngadmini/partial-output
  

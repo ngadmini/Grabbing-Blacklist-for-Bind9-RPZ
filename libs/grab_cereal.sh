@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_cereal.sh v10.3
+#   grab_cereal.sh v10.4
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -35,11 +35,11 @@ printf "${_inf} %-65s" "check availability configuration file"
 f_cnf; [[ ! ${UID} -eq 0 ]] || f_xcd 247
 
 # inspecting zone-files
-ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf \
-   rpz.adultag rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab)
+ar_rpz=(rpz.adultaa rpz.adultab rpz.adultac rpz.adultad rpz.adultae rpz.adultaf rpz.adultag
+   rpz.ipv4 rpz.malware rpz.publicite rpz.redirector rpz.trust+aa rpz.trust+ab rpz.trust+ac)
 mapfile -t ar_zon < <(f_fnd "rpz.*")
 miss_v=$(echo "${ar_rpz[@]}" "${ar_zon[@]}" | f_sed)
-printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:7}" "${ar_rpz[*]:7:6}"
+printf -v mr_p "%s\n%s" "${ar_rpz[*]:0:7}" "${ar_rpz[*]:7:7}"
 
 printf "${_inf} check availability zone-files: "
 if [[ ${#ar_zon[@]} -eq "${#ar_rpz[@]}" ]]; then

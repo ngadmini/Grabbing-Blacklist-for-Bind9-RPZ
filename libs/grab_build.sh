@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_build.sh v10.3
+#   grab_build.sh v10.4
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -36,13 +36,13 @@ f_cnf; [[ ! ${UID} -eq 0 ]] || f_xcd 247
 
 # inspecting required files
 ar_cat=(txt.adult txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+)
-ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf \
-   txt.adultag txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+aa txt.trust+ab)
+ar_spl=(txt.adultaa txt.adultab txt.adultac txt.adultad txt.adultae txt.adultaf txt.adultag
+   txt.ipv4 txt.malware txt.publicite txt.redirector txt.trust+aa txt.trust+ab txt.trust+ac)
 
 declare -A ar_num   # get index's position of ipv4 category "${ar_spl[7]}"
 ar_num[db_ipv4]=$(echo "${ar_spl[*]}" | tr ' ' '\n' | awk '/txt\.ipv4/ {print NR-1}')
 _spl_adult=$((($(awk 'END {print NR}' "${ar_cat[0]}")/7)+1))   # split txt.adult
-_spl_trust=$((($(awk 'END {print NR}' "${ar_cat[5]}")/2)+1))   #+      txt.trust+
+_spl_trust=$((($(awk 'END {print NR}' "${ar_cat[5]}")/3)+1))   #+      txt.trust+
 
 mapfile -t ar_CAT < <(f_fnd "txt.*")
 miss_v=$(echo "${ar_cat[@]}" "${ar_CAT[@]}" | f_sed)

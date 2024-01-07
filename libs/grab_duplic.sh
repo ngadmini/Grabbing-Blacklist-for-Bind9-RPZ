@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_duplic.sh v10.3
+#   grab_duplic.sh v10.4
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -97,7 +97,7 @@ f_awk tlds.iana "${fals_tlds}" tlds.inva
 
 if [[ -s tlds.inva ]]; then       # remove invalid TLD's entries
    printf "FOUND: %s invalid TLDs%-12s" "$(awk 'END {print NR}' tlds.inva)" ""
-   _sed -i ':a;N;$!ba;s/\n/\|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' tlds.inva
+   _sed -i ':a;N;$!ba;s/\n/|/g;s/^/\/\\.\(/;s/$/\)\$\/d/' tlds.inva
    _sed -E -i -f tlds.inva "${prun_out}"
    f_do
 else

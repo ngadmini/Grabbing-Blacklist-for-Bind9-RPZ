@@ -1,0 +1,10 @@
+; db.trust+ac = 1.016.226 entries
+; generate at Sun 2024-01-07 21:11:17 WIB by grab_build.sh v10.4
+; https://raw.githubusercontent.com/ngadmini/Grabbing-Blacklist-for-Bind9-RPZ/v10.4/libs/grab_build.sh
+;
+pinkrab.net CNAME .
+*.pinkrab.net CNAME .
+pinkraja.blogspot.com CNAME .
+*.pinkraja.blogspot.com CNAME .
+pinkranger.net CNAME .
+*.pinkranger.net CNAME .

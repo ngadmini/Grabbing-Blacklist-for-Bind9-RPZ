@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_library v10.3
+#   grab_library v10.4
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -25,8 +25,8 @@ _gen="; generate at ${_lct} by ${_foo} ${_ver}"
 _tld="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
 
 # colors
-_cyn='\e[96m';    _grn='\e[92m';   _ncl='\e[0m';    _red='\e[91m';   _ylw='\e[93m'
-_ccl="${_grn}(Ctrl+C)${_ncl}";   _cnt="${_cyn}CONTINUED to :${_ncl}";   _CYN="${_cyn}%s${_ncl}";
+_cyn='\e[96m';  _grn='\e[92m';   _ncl='\e[0m';         _red='\e[91m';   _ylw='\e[93m'
+_ccl="${_grn}(Ctrl+C)${_ncl}";   _cnt="${_cyn}CONTINUED to :${_ncl}";   _CYN="${_cyn}%s${_ncl}"
 _don="${_grn}[DONE]${_ncl}";     _err="${_red}[FAIL]${_ncl}";           _GRN="${_grn}%s${_ncl}"
 _hnt="${_cyn}[HINT]${_ncl}";     _inf="${_cyn}[INFO]${_ncl}";           _pre="${_cyn}PREPARING TASKs:${_ncl}"
 _RED="${_red}%s${_ncl}";         _rnr="${_grn}'rndc reload'${_ncl}";    _shd="${_grn}'shutdown -c'${_ncl}"
@@ -119,8 +119,7 @@ f_sm4() {
    f_sm5 "th"
    printf "%4s) incrementing serial zone-files [rpz.*]\n" "3"
    printf "%4s) syncronizing latest [rpz.* and db.*] files to '%s'\n" "4" "${HOST}"
-   f_sm11
-   f_sm10 "th"
+   f_sm11; f_sm10 "th"
 }
 
 f_sm5() {
@@ -221,7 +220,7 @@ f_g4b() {   # remarking db.* files
    local acq_al
    printf -v acq_al "%'d" "$(wc -l < "$1")"
    printf "%10s entries\n" "${acq_al}"
-   _sed -i "1i ; ${1} = ${acq_al} lines\n${_gen}\n; ${_ori}\/libs\/${_foo}\n;" "$1"
+   _sed -i "1i ; ${1} = ${acq_al} entries\n${_gen}\n; ${_ori}\/libs\/${_foo}\n;" "$1"
 }
 
 f_rpz() {   # f_rpz & f_ip4, both are used by grab_build.sh

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TAGS
-#   grab_http.sh v10.3
+#   grab_http.sh v10.4
 #   https://github.com/ngadmini
 # AUTHOR
 #   ngadimin@warnet-ersa.net
@@ -118,7 +118,6 @@ ar_dmn=(); ar_txt=()                                  # tmp files: raw-domains  
 for B in "${!ar_cat[@]}"; do ar_dmn+=("${ar_cat[B]}"/domains); ar_txt+=(txt."${ar_cat[B]}"); done
 printf "%12s: ${_CYN}\n" "categorized" "${ar_cat[*]} (${#ar_cat[@]} CATEGORIES)"
 
-
 # category: TRUST+
 # contents: gambling domains and TRUST+
 #+          ${ar_cat[5]} with 2 additional entries: ${ar_url[1,7]}
@@ -133,11 +132,11 @@ LC_COLLATE=C grep -P '[^\x00-\x7F]' "${trust}" | idn --quiet > "${idna}"   # cap
 cat "${idna}" >> "${trust}"; f_do                                          #+  convert it's to ASCII with idn tool
 printf "%12s: %-66s" "reducing" "porn domains and move it's to ${ar_cat[0]^^} CATEGORY"
 f_add "${ar_url[18]}" > "${porn}"                         # used as a control to reducing adult-domains as
-_srt -us "${trust}" -o "${trust}"                         #+  listed in "${trust}", then move it's to
-_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"     #+  adult category "${ar_dmn[0]}"
+_srt -us "${trust}" -o "${trust}"                         #+  listed in "${trust}"
+_srt -s "${trust}" "${porn}" | uniq -d > "${untrust}"     #+
 _grp -E "${ar_reg[1]}" "${trust}" >> "${untrust}"         #+
 f_awk "${untrust}" "${trust}" "${ar_dmn[5]}"              # reducing adult entries by moving it's
-cat "${untrust}" >> "${ar_dmn[0]}"; f_do                  #+  to adult category
+cat "${untrust}" >> "${ar_dmn[0]}"; f_do                  #+  to adult category "${ar_dmn[0]}"
 f_fix "${ar_cat[5]}" "${ar_dmn[5]}" "${ar_txt[5]}"; f_do  # fixing false-bad entries
 f_fip "${ar_txt[5]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"      #+
 
@@ -166,7 +165,7 @@ f_fip "${ar_txt[4]}" "${ar_dmn[1]}" "${ar_cat[1]^^}"
 f_sm7 "${ar_cat[3]}" 5
 f_sm6 3 "${ar_uri[3]}"; f_do                           # in the initial category
 for G in {8..11}; do
-   f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -v "^#" >> "${ar_dmn[3]}"; f_do
+   f_sm6 "${G}" "${ar_uri[G]}"; f_add "${ar_url[G]}" | _grp -Ev "^(#|$)" >> "${ar_dmn[3]}"; f_do
 done
 f_fix "${ar_cat[3]}" "${ar_dmn[3]}" "${ar_txt[3]}"
 f_out "${ar_txt[3]}" "${ar_txt[5]}"
@@ -196,7 +195,7 @@ printf "%12s: %'d entries.\n" "acquired" "$(wc -l < "${ar_txt[1]}")"
 # summarize.
 printf "\nprocessing sources-urls (${_CYN}) in summary:\n" "${#ar_txt[@]} CATEGORIES"
 for J in "${!ar_cat[@]}"; do
-   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"        # 'trust+' gets extra (grab_library line 184)
+   printf -v _sum "%'d" "$(wc -l < "${ar_txt[J]}")"        # 'trust+' gets extra (grab_library line 161)
    printf "%12s: %9s entries\n" "${ar_cat[J]}" "${_sum}"   #+  from those that pass filtration
 done
 printf "%12s: %'d entries\n" "TOTAL" "$(awk 'END {print NR}' "${ar_txt[@]}")"
